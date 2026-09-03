@@ -36,3 +36,23 @@ pi 的资源**全部是进程内按目录发现 + settings 记录**，没有编�
 ## 3. Skills 到底需不需要？（直接回答）
 
 **需要，M2 做。** 理由：skill = 让 pi 现学现用某类任务（流程+脚本+参考）的标准格式（Agent Skills 规范，Claude/Codex 生态通用），社区仓库多；不装 UI，用户只能手动往 `~/.pi/agent/skills/` 塞文件。最小 UI = 列表 + 启用/停用 + 从文件/包导入 + SKILL.md 查看（编辑用文件浏览器）。**不需要**在 App 里做技能运行逻辑——加载/按需注入全在引擎侧。
+
+## 4. 斜杠命令（源码核实，pi 0.84.x）
+
+- 三类来源：扩展 `registerCommand`(`/name`)；prompt 模板 `.md`(`/name`)；skills(`/skill:name`)。
+- **RPC 一键方案（App 不需要解析模板）**：`get_commands` 返回 `{name,description,source(extension/prompt/skill),location,path}`；**执行 = 直接发 `prompt` 消息，正文以 `/name args` 开头，pi 服务端展开**。
+- TUI 内置命令（/settings、/hotkeys…）不进 get_commands、RPC 也不执行 → App 用等价 RPC 命令实现（set_model/compact/set_thinking_level…）。
+- App UI = "命令面板"（输入 `/` 弹出 get_commands 列表，含分组：插件/模板/技能），点击 → prompt `/name …`。零客户端模板逻辑。
+
+## 5. pi 更新后 UI 要动吗？（稳定性分层）
+
+| 层 | pi 更新时 | 对策 |
+|---|---|---|
+| App UI 代码 | **基本不动** | UI 只消费：①自己的事件协议 ②文件格式（settings/models.json/skills 目录——pi 保证向后兼容）③ get_commands/schema 数据 |
+| settings 表单 | 新增 key 时 | 双模：核心项手写 + **未知键 opaque JSON 编辑器**（永远兜底） |
+| 模型/provider 目录 | 变化频繁 | 运行时拉取（RPC get_available_models / provider 列表），UI 无硬编码 |
+| RPC 协议 | 偶发演进 | 版本跟随管道里跑"RPC 冒烟门禁"，漂移先拦截 |
+| 扩展 API | 插件作者侧 | 与我们 UI 无关（扩展跑在引擎内） |
+| Pi Host 适配层 | pi 内部 API 变化时 | 唯一可能改动点 = 桥的协议翻译；随 engines 包版本化，CI 冒烟验证 |
+
+结论：**架构把 UI 与 pi 版本解耦**——日常 pi 更新只换引擎包（热更新），UI 不需要跟随改动；个别大版本如 RPC 消息变化，改 Pi Host 翻译层（独立版本），App 依旧不动。

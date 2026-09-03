@@ -1,0 +1,41 @@
+# REMOTE-AUDIT — 远端操控功能盘点与处置（Pi X 本地化）
+
+范围：apps/mobile（Flutter UI + 服务）+ packages/bridge（Node）。原则：远端操控/遥控类功能删除或本地化；本地仍有意义的（断线重连、审批流）保留；纯本地化后需要补的 UI 列入"新增"。
+
+## 已处置 ✅
+
+| # | 功能 | 处置 | 说明 |
+|---|---|---|---|
+| 1 | QR 扫码连接（`qr_scan_screen.dart` + 路由 + 按钮链 + 桌面测试） | **删** | commit 21a7b72，零残留 |
+| 2 | Setup guide 远端 4 页（bridge 搭建/扫码连接/Tailscale/launchd 自启） | **删** | 替换为 `GuidePageLocalRuntime`（commit 待记），引导 3 页：About → 本机运行 → Ready |
+
+## 计划处置（按优先级）
+
+| # | 功能 | 位置 | 处置 | 备注 |
+|---|---|---|---|---|
+| 3 | mDNS 服务器发现 | `widgets/discovered_servers_list.dart`、`services/server_discovery_{service,impl_io,impl_stub}.dart`、`providers/server_discovery_cubit.dart`、ConnectForm 发现区、main.dart provider | **删** | 需同步清 session_list 的 discoveredServers 贯通与桥侧 mdns/bonjour |
+| 4 | 机器/主机管理 UI | `widgets/machine_{list,card,edit_sheet}.dart`、ConnectForm 机器区、`providers/machine_manager_cubit.dart`、`services/machine_manager_service.dart` | **本地化收敛** | 保留"单一本机(127.0.0.1)"模型：默认自建本地项，删 增/改/收藏/发现 交互 |
+| 5 | SSH 隧道/启动 | `services/ssh_bridge_tunnel_service.dart`、`services/ssh_startup_service.dart` 及其 UI 引用 | **删** | 本地无远端主机 |
+| 6 | 连接 URL 解析/端点探测 | `services/connection_url_parser.dart`、`services/bridge_endpoint_probe.dart` | **删** | 本地固定 ws://127.0.0.1 |
+| 7 | 远端更新横幅 | `widgets/{app_update,bridge_update}_banner.dart`、`home_content.dart` 横幅区、`services/app_update_service.dart`、`bridge_latest_version_service.dart` | **删/改造** | App 更新走我们自己的管道（后续）；横幅先行移除 |
+| 8 | 会话分享链接 | `features/session_link/`（勘察中） | **待定** | 若依赖云端 relay → 删；若本地导入/导出 → 保留改造 |
+| 9 | 远程推送 | FCM/`services/{fcm,notification}_service.dart`、`functions/`(仓库根，云端) | **删 UI/服务引用** | 本地通知如需另行实现；functions 不随 App 分发 |
+| 10 | 商业远程服务 | RevenueCat/Supporter、Shorebird OTA、macOS 原生横幅 | **删/待定** | 非"远端操控"，M4 前清理；macos_native_app_banner 先删 |
+| 11 | 断线重连/离线队列 | `reconnect_banner`、`session_reconnect_banner`、`offline_pending_action` | **保留** | 本地引擎进程重启/后台回收时仍有用 |
+
+## 桥侧（packages/bridge，Pi Host 里程碑处理）
+
+mdns/bonjour、qrcode、firebase-auth、push-relay、proxy/socks、sharp(原生依赖)、distribution(远程装 agent)、codex-*/claude-provider → 替换为 pi-provider（进程内嵌 pi AgentSession）。协议层保留：`approve/reject/answer/permission_request`（对接 pi ctx.ui 审批）、`stream_delta`、session/worktree/git。
+
+## Pi X 需新增的 UI（100% pi 兼容清单）
+
+1. Provider/模型选择器（pi 目录，含订阅登录设备码流，WebView 承接 OAuth）
+2. thinking 层级切换与独立渲染块
+3. 设置页（pi settings schema 驱动；当前远端"连接"区移除）
+4. 会话树/分支浏览（pi JSONL，`/tree` 等价物）
+5. 扩展/技能/提示模板/主题管理（包安装 UI：npm/git/本地）
+6. 项目信任对话框（pi trust.json 语义）
+7. 工具调用审批卡 + 可折叠输出（协议已支持）
+8. 用量/成本展示（pi usage 事件）
+9. 本地引擎状态/启停卡（`LocalEngineCard` 已加，待接真状态）
+10. 终端页（可选：xterm.dart + 本地 PTY）

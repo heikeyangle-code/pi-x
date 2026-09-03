@@ -447,7 +447,6 @@ Widget _buildWorkspaceApp({
           value: resolvedMachineManagerCubit,
         ),
         BlocProvider<SettingsCubit>.value(value: settingsCubit),
-        ),
       ],
       child: MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,

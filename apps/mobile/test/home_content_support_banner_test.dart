@@ -103,7 +103,6 @@ Widget _buildHomeContent({
           value: cubit,
           child: HomeContent(
             connectionState: BridgeConnectionState.connected,
-            bridgeVersion: bridgeVersion,
             sessions: const [],
             recentSessions: [_session(id: 's1')],
             accumulatedProjectPaths: const {},

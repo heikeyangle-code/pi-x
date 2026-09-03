@@ -109,7 +109,7 @@ class MachineManagerService {
           isFavorite: true,
         ),
       );
-      await _saveMachines();
+      await _saveToPrefs();
     }
     _sortMachines();
     _notifyListeners();

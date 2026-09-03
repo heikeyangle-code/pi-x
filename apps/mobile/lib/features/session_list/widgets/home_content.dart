@@ -29,8 +29,6 @@ import 'section_header.dart';
 import 'session_filter_bar.dart';
 import 'session_list_empty_state.dart';
 import 'session_list_loading_view.dart';
-import 'app_update_banner.dart';
-import 'bridge_update_banner.dart';
 import 'session_reconnect_banner.dart';
 import 'support_banner.dart';
 

@@ -31,7 +31,6 @@ void main() {
       );
 
       final shouldShow = await service.shouldShow(
-        hasBridgeUpdate: false,
         catalog: _inactiveCatalog,
       );
 
@@ -61,7 +60,6 @@ void main() {
 
       await service.dismiss();
       final shouldShow = await service.shouldShow(
-        hasBridgeUpdate: false,
         catalog: _inactiveCatalog,
       );
 
@@ -90,7 +88,6 @@ void main() {
       );
 
       final shouldShow = await service.shouldShow(
-        hasBridgeUpdate: true,
         catalog: _inactiveCatalog,
       );
 
@@ -111,7 +108,6 @@ void main() {
 
       await service.setDebugForceShowOverride(true);
       final shouldShow = await service.shouldShow(
-        hasBridgeUpdate: true,
         catalog: const SupportCatalogState.unavailable(),
       );
 

@@ -4,6 +4,8 @@
 
 ## 已处置 ✅
 
+> CI：`.github/workflows/ci.yml`（push/PR 自动：flutter analyze/test + debug APK + bridge tsc）——编译把关交给 CI。
+
 | # | 功能 | 处置 | 说明 |
 |---|---|---|---|
 | 1 | QR 扫码连接（`qr_scan_screen.dart` + 路由 + 按钮链 + 桌面测试） | **删** | commit 21a7b72，零残留 |
@@ -13,7 +15,7 @@
 
 | # | 功能 | 位置 | 处置 | 备注 |
 |---|---|---|---|---|
-| 3 | mDNS 服务器发现 | `widgets/discovered_servers_list.dart`、`services/server_discovery_{service,impl_io,impl_stub}.dart`、`providers/server_discovery_cubit.dart`、ConnectForm 发现区、main.dart provider | **删** | 需同步清 session_list 的 discoveredServers 贯通与桥侧 mdns/bonjour |
+| 3 | mDNS 服务器发现 | （同前）| **删 ✅** | commit 305b3cc：UI widget/cubit/services/main 注册全清；桥侧 mdns/bonjour 待 Pi Host 里程碑 |
 | 4 | 机器/主机管理 UI | `widgets/machine_{list,card,edit_sheet}.dart`、ConnectForm 机器区、`providers/machine_manager_cubit.dart`、`services/machine_manager_service.dart` | **本地化收敛** | 保留"单一本机(127.0.0.1)"模型：默认自建本地项，删 增/改/收藏/发现 交互 |
 | 5 | SSH 隧道/启动 | `services/ssh_bridge_tunnel_service.dart`、`services/ssh_startup_service.dart` 及其 UI 引用 | **删** | 本地无远端主机 |
 | 6 | 连接 URL 解析/端点探测 | `services/connection_url_parser.dart`、`services/bridge_endpoint_probe.dart` | **删** | 本地固定 ws://127.0.0.1 |

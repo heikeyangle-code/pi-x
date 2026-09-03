@@ -10,7 +10,6 @@ import 'package:ccpocket/models/machine.dart';
 import 'package:ccpocket/models/messages.dart';
 import 'package:ccpocket/providers/bridge_cubits.dart';
 import 'package:ccpocket/providers/machine_manager_cubit.dart';
-import 'package:ccpocket/providers/server_discovery_cubit.dart';
 import 'package:ccpocket/services/app_icon_service.dart';
 import 'package:ccpocket/services/bridge_service.dart';
 import 'package:ccpocket/services/draft_service.dart';
@@ -448,8 +447,6 @@ Widget _buildWorkspaceApp({
           value: resolvedMachineManagerCubit,
         ),
         BlocProvider<SettingsCubit>.value(value: settingsCubit),
-        BlocProvider<ServerDiscoveryCubit>(
-          create: (_) => ServerDiscoveryCubit(),
         ),
       ],
       child: MaterialApp(

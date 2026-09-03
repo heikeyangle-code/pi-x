@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../router/app_router.dart';
-import '../../../services/app_update_service.dart';
 import '../../../widgets/workspace_pane_chrome.dart';
 
 /// Floating SliverAppBar for the session list screen.
@@ -43,8 +42,7 @@ class SessionListSliverAppBar extends StatelessWidget {
         IconButton(
           key: const ValueKey('settings_button'),
           icon: Badge(
-            isLabelVisible: AppUpdateService.instance.cachedUpdate != null,
-            smallSize: 8,
+                        smallSize: 8,
             child: const Icon(Icons.settings),
           ),
           onPressed: () => context.router.navigate(SettingsRoute()),
@@ -128,8 +126,7 @@ class SessionListPaneHeader extends StatelessWidget {
               tooltip: l.settings,
               onPressed: onOpenSettings,
               icon: Badge(
-                isLabelVisible: AppUpdateService.instance.cachedUpdate != null,
-                smallSize: 8,
+                                smallSize: 8,
                 child: const Icon(Icons.settings),
               ),
               compact: chrome.useMacOSAdaptiveChrome,

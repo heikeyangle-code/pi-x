@@ -81,8 +81,6 @@ List<_ProjectSessionGroup> _groupSessionsByProject({
 
 class HomeContent extends StatefulWidget {
   final BridgeConnectionState connectionState;
-  final String? bridgeVersion;
-  final String? latestBridgeVersion;
   final List<SessionInfo> sessions;
   final List<OfflinePendingAction> offlinePendingActions;
   final List<RecentSession> recentSessions;
@@ -141,8 +139,6 @@ class HomeContent extends StatefulWidget {
   final bool namedOnly;
   final VoidCallback onToggleProvider;
   final VoidCallback onToggleNamed;
-  final AppUpdateInfo? appUpdateInfo;
-  final VoidCallback? onDismissAppUpdate;
   final VoidCallback? onOpenBridgeSettings;
   final VoidCallback? onOpenSupportSettings;
   final VoidCallback? onOpenUsageSettings;
@@ -155,8 +151,6 @@ class HomeContent extends StatefulWidget {
   const HomeContent({
     super.key,
     required this.connectionState,
-    this.bridgeVersion,
-    this.latestBridgeVersion,
     required this.sessions,
     this.offlinePendingActions = const [],
     required this.recentSessions,
@@ -198,8 +192,6 @@ class HomeContent extends StatefulWidget {
     required this.namedOnly,
     required this.onToggleProvider,
     required this.onToggleNamed,
-    this.appUpdateInfo,
-    this.onDismissAppUpdate,
     this.onOpenBridgeSettings,
     this.onOpenSupportSettings,
     this.onOpenUsageSettings,
@@ -220,7 +212,6 @@ class HomeContentState extends State<HomeContent> {
       'session_list_group_recent_sessions';
 
   bool _isSearching = false;
-  bool _updateBannerDismissed = false;
   bool _showSupportBanner = false;
   bool _groupRecentSessions = true;
   final _searchController = TextEditingController();
@@ -305,11 +296,6 @@ class HomeContentState extends State<HomeContent> {
       setState(() => _isSearching = false);
       _searchController.clear();
     }
-    // Reset dismiss state when reconnected (new bridgeVersion received)
-    if (widget.bridgeVersion != oldWidget.bridgeVersion) {
-      _updateBannerDismissed = false;
-      _refreshSupportBannerVisibility();
-    }
   }
 
   @override
@@ -341,42 +327,8 @@ class HomeContentState extends State<HomeContent> {
     }
   }
 
-  Widget? _buildAppUpdateBanner() {
-    if (widget.appUpdateInfo == null) return null;
-    return AppUpdateBanner(
-      updateInfo: widget.appUpdateInfo!,
-      onDismiss: widget.onDismissAppUpdate,
-    );
-  }
 
-  Widget? _buildUpdateBanner() {
-    if (_updateBannerDismissed) return null;
-    if (!BridgeUpdateBanner.shouldShow(
-      widget.bridgeVersion,
-      AppConstants.expectedBridgeVersion,
-      latestBridgeVersion: widget.latestBridgeVersion,
-    )) {
-      return null;
-    }
-    return BridgeUpdateBanner(
-      currentVersion: widget.bridgeVersion!,
-      expectedVersion: AppConstants.expectedBridgeVersion,
-      latestBridgeVersion: widget.latestBridgeVersion,
-      onTap:
-          widget.onOpenBridgeSettings ??
-          () => context.pushRoute(SettingsRoute(focusConnection: true)),
-      onDismiss: () => setState(() => _updateBannerDismissed = true),
-    );
-  }
 
-  bool _hasVisibleBridgeUpdateBanner() {
-    return !_updateBannerDismissed &&
-        BridgeUpdateBanner.shouldShow(
-          widget.bridgeVersion,
-          AppConstants.expectedBridgeVersion,
-          latestBridgeVersion: widget.latestBridgeVersion,
-        );
-  }
 
   Future<void> _refreshSupportBannerVisibility() async {
     final revenueCatService = _revenueCatService;
@@ -384,7 +336,6 @@ class HomeContentState extends State<HomeContent> {
 
     final supportBannerService = context.read<SupportBannerService>();
     final shouldShow = await supportBannerService.shouldShow(
-      hasBridgeUpdate: _hasVisibleBridgeUpdateBanner(),
       catalog: revenueCatService.catalogState.value,
     );
     if (!mounted || shouldShow == _showSupportBanner) return;
@@ -481,13 +432,8 @@ class HomeContentState extends State<HomeContent> {
         widget.workspaceProjects.isNotEmpty;
     final isReconnecting =
         widget.connectionState == BridgeConnectionState.reconnecting;
-    final updateBanner = _buildUpdateBanner();
     final supportBannerService = context.read<SupportBannerService>();
-    final supportBanner =
-        updateBanner == null || supportBannerService.shouldForceShowInDebug
-        ? _buildSupportBanner()
-        : null;
-    final appUpdateBanner = _buildAppUpdateBanner();
+    final supportBanner = _buildSupportBanner();
     final shell = WorkspaceShellScreen.maybeOf(context);
     final selectedSession = shell?.selectedSession;
     final selectedSessionId = selectedSession?.sessionId;
@@ -667,9 +613,7 @@ class HomeContentState extends State<HomeContent> {
           children: [
             if (isReconnecting) const SessionReconnectBanner(),
             ?connectedBridgeBanner,
-            ?updateBanner,
             ?supportBanner,
-            ?appUpdateBanner,
             runningSessionsHeader,
             const SizedBox(height: 16),
             SectionHeader(
@@ -691,7 +635,6 @@ class HomeContentState extends State<HomeContent> {
         children: [
           if (isReconnecting) const SessionReconnectBanner(),
           ?connectedBridgeBanner,
-          ?updateBanner,
           ?supportBanner,
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -711,7 +654,6 @@ class HomeContentState extends State<HomeContent> {
       children: [
         if (isReconnecting) const SessionReconnectBanner(),
         ?connectedBridgeBanner,
-        ?updateBanner,
         ?supportBanner,
         runningSessionsHeader,
         if (hasRunningSessions) ...[

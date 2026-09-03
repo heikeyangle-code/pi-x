@@ -19,7 +19,6 @@ import '../../models/machine.dart';
 import '../../models/new_session_tab.dart';
 import '../../providers/machine_manager_cubit.dart';
 import '../../router/app_router.dart';
-import '../../services/app_update_service.dart';
 import '../../services/bridge_service.dart';
 import '../../services/in_app_review_service.dart';
 import '../../services/machine_manager_service.dart';
@@ -1156,16 +1155,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   children: [
                     // Version
                     const _VersionTile(),
-                    const _AppUpdateTile(),
-                    if (_isIOSAppOnMac) ...[
-                      Divider(
-                        height: 1,
-                        indent: 16,
-                        endIndent: 16,
-                        color: cs.outlineVariant,
-                      ),
-                      const _MacOSNativeAppTile(),
-                    ],
                     Divider(
                       height: 1,
                       indent: 16,
@@ -1950,35 +1939,6 @@ class _VersionTileState extends State<_VersionTile> {
           ),
         );
       },
-    );
-  }
-}
-
-/// Shows a download link when a newer macOS version is available.
-///
-/// Only visible on macOS desktop. Reads from [AppUpdateService.cachedUpdate].
-class _AppUpdateTile extends StatelessWidget {
-  const _AppUpdateTile();
-
-  @override
-  Widget build(BuildContext context) {
-    final update = AppUpdateService.instance.cachedUpdate;
-    if (update == null) return const SizedBox.shrink();
-
-    final cs = Theme.of(context).colorScheme;
-    final l = AppLocalizations.of(context);
-    return ListTile(
-      leading: Icon(Icons.upgrade, color: cs.primary),
-      title: Text(
-        l.appUpdateAvailable(update.latestVersion),
-        style: TextStyle(color: cs.primary, fontWeight: FontWeight.w600),
-      ),
-      trailing: TextButton(
-        onPressed: () async {
-          await AppUpdateService.instance.performUpdate(update);
-        },
-        child: Text(update.canInstallInApp ? l.update : l.download),
-      ),
     );
   }
 }

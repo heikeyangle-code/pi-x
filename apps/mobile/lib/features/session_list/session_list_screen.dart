@@ -19,7 +19,6 @@ import '../../providers/bridge_cubits.dart';
 import '../../providers/machine_manager_cubit.dart';
 import '../../providers/unseen_sessions_cubit.dart';
 import '../../router/app_router.dart';
-import '../../services/app_update_service.dart';
 import '../../services/bridge_endpoint_probe.dart';
 import '../../services/bridge_service.dart';
 import '../../services/connection_url_parser.dart';
@@ -251,9 +250,6 @@ class _SessionListScreenState extends State<SessionListScreen>
   StreamSubscription<ServerMessage>? _messageSub;
   late final ArchiveRequestTracker _archiveRequests;
 
-  // macOS app update
-  AppUpdateInfo? _appUpdateInfo;
-
   // Unseen session tracking
   final _unseenCubit = UnseenSessionsCubit();
   StreamSubscription<List<SessionInfo>>? _activeSessionsSub;
@@ -375,21 +371,6 @@ class _SessionListScreenState extends State<SessionListScreen>
     final activeCubit = context.read<ActiveSessionsCubit>();
     _unseenCubit.updateSessions(activeCubit.state);
     _activeSessionsSub = activeCubit.stream.listen(_unseenCubit.updateSessions);
-    _checkAppUpdate();
-  }
-
-  Future<void> _checkAppUpdate() async {
-    final update = await AppUpdateService.instance.checkForUpdate();
-    if (update != null &&
-        !AppUpdateService.instance.isDismissedByUser &&
-        mounted) {
-      setState(() => _appUpdateInfo = update);
-    }
-  }
-
-  void _dismissAppUpdate() {
-    AppUpdateService.instance.dismissUpdate();
-    setState(() => _appUpdateInfo = null);
   }
 
   void _onDeepLink() {
@@ -1860,8 +1841,6 @@ class _SessionListScreenState extends State<SessionListScreen>
                   IconButton(
                     key: const ValueKey('settings_button'),
                     icon: Badge(
-                      isLabelVisible:
-                          AppUpdateService.instance.cachedUpdate != null,
                       smallSize: 8,
                       child: const Icon(Icons.settings),
                     ),
@@ -1937,8 +1916,6 @@ class _SessionListScreenState extends State<SessionListScreen>
             child: HomeContent(
               key: _homeContentKey,
               connectionState: connectionState,
-              bridgeVersion: bridge.bridgeVersion,
-              latestBridgeVersion: machineState?.latestBridgeVersion,
               sessions: sessions,
               offlinePendingActions: offlinePendingActions,
               recentSessions: recentSessionsList,
@@ -2052,8 +2029,6 @@ class _SessionListScreenState extends State<SessionListScreen>
                   .toggleProviderFilter(allowedFilters: allowedProviderFilters),
               onToggleNamed: () =>
                   context.read<SessionListCubit>().toggleNamedOnly(),
-              appUpdateInfo: _appUpdateInfo,
-              onDismissAppUpdate: _dismissAppUpdate,
               onOpenBridgeSettings: _openBridgeSettings,
               onOpenSupportSettings: _openSupportSettings,
               onOpenUsageSettings: _openUsageSettings,

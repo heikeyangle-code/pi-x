@@ -25,15 +25,13 @@ class SupportBannerService extends ChangeNotifier {
   bool get isDismissed => _prefs.getBool(dismissedKey) ?? false;
 
   Future<bool> shouldShow({
-    required bool hasBridgeUpdate,
     required SupportCatalogState catalog,
   }) async {
     if (shouldForceShowInDebug) {
       return true;
     }
 
-    if (hasBridgeUpdate ||
-        isDismissed ||
+    if (isDismissed ||
         !catalog.isAvailable ||
         catalog.isSupporter ||
         !catalog.hasPackages) {

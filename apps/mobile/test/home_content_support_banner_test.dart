@@ -198,10 +198,6 @@ void main() {
     expect(find.byKey(const ValueKey('support_banner')), findsOneWidget);
     expect(find.text('CC Pocketが役に立っていたら'), findsOneWidget);
   });
-
-);
-
-);
 }
 
 const _inactiveCatalog = SupportCatalogState(

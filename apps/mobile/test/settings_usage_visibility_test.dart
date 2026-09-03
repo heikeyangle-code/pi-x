@@ -1486,12 +1486,6 @@ void main() {
     });
   });
 
-  group('Settings macOS native app link', () {
-);
-
-);
-  });
-
   group('Settings git diff interaction mode', () {
     test('persists through SettingsCubit reload', () async {
       SharedPreferences.setMockInitialValues({});

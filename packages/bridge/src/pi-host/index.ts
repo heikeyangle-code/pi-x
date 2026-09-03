@@ -1,0 +1,27 @@
+/**
+ * Pi Host — facade for engine integration (M2 wiring point).
+ *
+ * Combines: engine processes (per project), typed RPC commands, and the 1:1
+ * surface files (settings/models/resources). The bridge websocket/session
+ * layer plugs into these instead of talking to pi directly.
+ */
+
+export {
+  EngineProcess,
+  type EngineProcessOptions,
+  type EngineRequest,
+  type EngineResponse,
+  type EngineEvent,
+} from "./engine-process.js";
+export { EnginePool } from "./engine-pool.js";
+export {
+  SettingsFile,
+  ModelsFile,
+  listResourceDirs,
+  looksLikeSkillMarkdown,
+  piAgentFiles,
+  type CustomProviderApi,
+  type CustomProviderSpec,
+  type CustomModelSpec,
+} from "./surfaces.js";
+export * as rpc from "./pi-rpc.js";

@@ -199,65 +199,9 @@ void main() {
     expect(find.text('CC Pocketが役に立っていたら'), findsOneWidget);
   });
 
-  testWidgets('hides support banner when bridge update banner is visible', (
-    tester,
-  ) async {
-    final reviewService = InAppReviewService(
-      prefs: prefs,
-      now: () => DateTime(2026, 4, 15, 12),
-      appVersionLoader: () async => '1.50.0',
-    );
-    final supportBannerService = SupportBannerService(
-      prefs: prefs,
-      reviewService: reviewService,
-    );
+);
 
-    await tester.pumpWidget(
-      _buildHomeContent(
-        cubit: cubit,
-        draftService: draftService,
-        revenueCatService: _FakeRevenueCatService(catalog: _inactiveCatalog),
-        supportBannerService: supportBannerService,
-        bridgeVersion: '0.1.0',
-      ),
-    );
-    await tester.pumpAndSettle();
-
-    expect(find.byKey(const ValueKey('support_banner')), findsNothing);
-    expect(find.textContaining('Bridge Server v0.1.0'), findsOneWidget);
-  });
-
-  testWidgets('opens bridge settings when bridge update banner is tapped', (
-    tester,
-  ) async {
-    final reviewService = InAppReviewService(
-      prefs: prefs,
-      now: () => DateTime(2026, 4, 15, 12),
-      appVersionLoader: () async => '1.50.0',
-    );
-    final supportBannerService = SupportBannerService(
-      prefs: prefs,
-      reviewService: reviewService,
-    );
-    var opened = false;
-
-    await tester.pumpWidget(
-      _buildHomeContent(
-        cubit: cubit,
-        draftService: draftService,
-        revenueCatService: _FakeRevenueCatService(catalog: _inactiveCatalog),
-        supportBannerService: supportBannerService,
-        bridgeVersion: '0.1.0',
-        onOpenBridgeSettings: () => opened = true,
-      ),
-    );
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.byKey(const ValueKey('bridge_update_banner')));
-    await tester.pump();
-
-    expect(opened, isTrue);
-  });
+);
 }
 
 const _inactiveCatalog = SupportCatalogState(

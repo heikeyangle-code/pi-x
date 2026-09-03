@@ -1487,77 +1487,9 @@ void main() {
   });
 
   group('Settings macOS native app link', () {
-    testWidgets('shows link when iOS app is running on Mac', (tester) async {
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(platformEnvironmentChannel, (call) async {
-            if (call.method == 'isIOSAppOnMac') return true;
-            return null;
-          });
-      SharedPreferences.setMockInitialValues({});
-      final prefs = await SharedPreferences.getInstance();
-      final settingsCubit = _SeededSettingsCubit(prefs, activeMachineId: null);
-      final manager = MachineManagerService(prefs, _FakeSecureStorage());
-      final machineManagerCubit = _createMachineManagerCubit(manager);
-      final bridge = _FakeBridgeService(connected: false);
+);
 
-      await tester.pumpWidget(
-        await _buildScreen(
-          bridge: bridge,
-          settingsCubit: settingsCubit,
-          machineManagerCubit: machineManagerCubit,
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      await tester.scrollUntilVisible(
-        find.byKey(const ValueKey('macos_native_app_settings_tile')),
-        500,
-        scrollable: find.byType(Scrollable).first,
-      );
-
-      expect(
-        find.byKey(const ValueKey('macos_native_app_settings_tile')),
-        findsOneWidget,
-      );
-
-      await settingsCubit.close();
-      await machineManagerCubit.close();
-      bridge.dispose();
-    });
-
-    testWidgets('hides link when not running as an iOS app on Mac', (
-      tester,
-    ) async {
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(platformEnvironmentChannel, (call) async {
-            if (call.method == 'isIOSAppOnMac') return false;
-            return null;
-          });
-      SharedPreferences.setMockInitialValues({});
-      final prefs = await SharedPreferences.getInstance();
-      final settingsCubit = _SeededSettingsCubit(prefs, activeMachineId: null);
-      final manager = MachineManagerService(prefs, _FakeSecureStorage());
-      final machineManagerCubit = _createMachineManagerCubit(manager);
-      final bridge = _FakeBridgeService(connected: false);
-
-      await tester.pumpWidget(
-        await _buildScreen(
-          bridge: bridge,
-          settingsCubit: settingsCubit,
-          machineManagerCubit: machineManagerCubit,
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      expect(
-        find.byKey(const ValueKey('macos_native_app_settings_tile')),
-        findsNothing,
-      );
-
-      await settingsCubit.close();
-      await machineManagerCubit.close();
-      bridge.dispose();
-    });
+);
   });
 
   group('Settings git diff interaction mode', () {

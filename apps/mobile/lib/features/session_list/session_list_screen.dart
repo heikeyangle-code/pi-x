@@ -18,14 +18,12 @@ import '../../models/protocol_version.dart';
 import '../../providers/bridge_cubits.dart';
 import '../../providers/machine_manager_cubit.dart';
 import '../../providers/unseen_sessions_cubit.dart';
-import '../../providers/server_discovery_cubit.dart';
 import '../../router/app_router.dart';
 import '../../services/app_update_service.dart';
 import '../../services/bridge_endpoint_probe.dart';
 import '../../services/bridge_service.dart';
 import '../../services/connection_url_parser.dart';
 import '../../services/platform_environment_service.dart';
-import '../../services/server_discovery_service.dart';
 import '../../services/ssh_bridge_tunnel_service.dart';
 import '../../widgets/workspace_pane_chrome.dart';
 import '../../widgets/adaptive_context_menu.dart';
@@ -1725,7 +1723,6 @@ class _SessionListScreenState extends State<SessionListScreen>
         .watch<WorkspaceProjectsCubit>()
         .state
         .projects;
-    final discoveredServers = context.watch<ServerDiscoveryCubit>().state;
 
     final isConnected = connectionState == BridgeConnectionState.connected;
     final showConnectedUI =
@@ -1785,7 +1782,6 @@ class _SessionListScreenState extends State<SessionListScreen>
                     workspaceProjects: workspaceProjects,
                     slState: slState,
                     unseenSessionIds: unseenSessionIds,
-                    discoveredServers: discoveredServers,
                     machineState: machineState,
                     machineManagerCubit: machineManagerCubit,
                     connectedBridgeLabel: connectedBridgeLabel,
@@ -1807,7 +1803,6 @@ class _SessionListScreenState extends State<SessionListScreen>
     required List<WorkspaceProject> workspaceProjects,
     required SessionListState slState,
     required Set<String> unseenSessionIds,
-    required List<DiscoveredServer> discoveredServers,
     required MachineManagerState? machineState,
     required MachineManagerCubit? machineManagerCubit,
     required String? connectedBridgeLabel,
@@ -1831,7 +1826,6 @@ class _SessionListScreenState extends State<SessionListScreen>
       workspaceProjects: workspaceProjects,
       slState: slState,
       unseenSessionIds: unseenSessionIds,
-      discoveredServers: discoveredServers,
       machineState: machineState,
       machineManagerCubit: machineManagerCubit,
       connectedBridgeLabel: connectedBridgeLabel,
@@ -1934,7 +1928,6 @@ class _SessionListScreenState extends State<SessionListScreen>
     required List<WorkspaceProject> workspaceProjects,
     required SessionListState slState,
     required Set<String> unseenSessionIds,
-    required List<DiscoveredServer> discoveredServers,
     required MachineManagerState? machineState,
     required MachineManagerCubit? machineManagerCubit,
     required String? connectedBridgeLabel,
@@ -2134,7 +2127,6 @@ class _SessionListScreenState extends State<SessionListScreen>
       protocolCompatibility: context
           .read<BridgeService>()
           .protocolCompatibility,
-      discoveredServers: discoveredServers,
       machines: machineState?.machines ?? [],
       startingMachineId: machineState?.startingMachineId,
       updatingMachineId: machineState?.updatingMachineId,
@@ -2147,7 +2139,6 @@ class _SessionListScreenState extends State<SessionListScreen>
         }
         context.router.push(SetupGuideRoute());
       },
-      onConnectToDiscovered: _connectToDiscovered,
       onConnectToMachine: _connectToMachine,
       onStartMachine: _startMachine,
       onEditMachine: _editMachine,
@@ -2157,99 +2148,6 @@ class _SessionListScreenState extends State<SessionListScreen>
       onStopMachine: _stopMachine,
       onAddMachine: _addMachine,
       onRefreshMachines: () => machineManagerCubit?.refreshAll(),
-    );
-  }
-
-  void _connectToDiscovered(DiscoveredServer server) {
-    if (server.authRequired) {
-      // Open MachineEditSheet pre-filled with discovered server info
-      _addMachineFromDiscovered(server);
-      return;
-    }
-    _connectWithParams(server.wsUrl, null);
-  }
-
-  void _addMachineFromDiscovered(DiscoveredServer server) {
-    final cubit = context.read<MachineManagerCubit>();
-    Machine? savedMachine;
-    final uri = Uri.tryParse(
-      server.wsUrl
-          .replaceFirst('ws://', 'http://')
-          .replaceFirst('wss://', 'https://'),
-    );
-    final host = uri?.host ?? server.name;
-    final port = uri?.port ?? 8765;
-    final useSsl = uri?.scheme == 'https';
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      constraints: macOSModalBottomSheetConstraints(context),
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => MachineEditSheet(
-        machine: Machine(
-          id: '',
-          host: host,
-          port: port,
-          name: server.name,
-          useSsl: useSsl,
-          connectionMode: useSsl
-              ? BridgeConnectionMode.secureOnly
-              : BridgeConnectionMode.standardOnly,
-        ),
-        onSave:
-            ({
-              required machine,
-              apiKey,
-              sshPassword,
-              sshPrivateKey,
-              sshJumpPassword,
-              sshJumpPrivateKey,
-            }) async {
-              final newMachine = cubit.createNewMachine(
-                name: machine.name,
-                host: machine.host,
-                port: machine.port,
-                useSsl: machine.useSsl,
-              );
-              await cubit.addMachine(
-                newMachine.copyWith(
-                  useSsl: machine.useSsl,
-                  connectionMode: machine.connectionMode,
-                  sshEnabled: machine.sshEnabled,
-                  sshUsername: machine.sshUsername,
-                  sshPort: machine.sshPort,
-                  sshAuthType: machine.sshAuthType,
-                  sshJumpHost: machine.sshJumpHost,
-                  sshJumpPort: machine.sshJumpPort,
-                  sshJumpUsername: machine.sshJumpUsername,
-                  sshJumpAuthType: machine.sshJumpAuthType,
-                  isFavorite: true,
-                ),
-                apiKey: apiKey,
-                sshPassword: sshPassword,
-                sshPrivateKey: sshPrivateKey,
-                sshJumpPassword: sshJumpPassword,
-                sshJumpPrivateKey: sshJumpPrivateKey,
-              );
-              savedMachine = cubit.findByHostPort(machine.host, machine.port);
-            },
-        onSaveAndConnect: (machine, apiKey) {
-          final saved = savedMachine;
-          if (saved?.sshJumpHost?.trim().isNotEmpty == true) {
-            unawaited(_connectToMachineConfig(saved!));
-          } else if (saved != null) {
-            _connectWithParams(
-              saved.wsUrl,
-              apiKey,
-              requestedConnectionMode: saved.connectionMode,
-            );
-          } else {
-            _connectWithParams(machine.wsUrl, apiKey);
-          }
-        },
-        onTestConnection: cubit.testConnectionWithCredentials,
-      ),
     );
   }
 
@@ -2704,13 +2602,11 @@ class _SetupStep extends StatelessWidget {
 
 class _ConnectFormWidget extends StatelessWidget {
   final ProtocolCompatibility? protocolCompatibility;
-  final List<DiscoveredServer> discoveredServers;
   final List<MachineWithStatus> machines;
   final String? startingMachineId;
   final String? updatingMachineId;
   final String? latestBridgeVersion;
   final VoidCallback onViewSetupGuide;
-  final ValueChanged<DiscoveredServer> onConnectToDiscovered;
   final ValueChanged<MachineWithStatus> onConnectToMachine;
   final ValueChanged<MachineWithStatus> onStartMachine;
   final ValueChanged<MachineWithStatus> onEditMachine;
@@ -2723,13 +2619,11 @@ class _ConnectFormWidget extends StatelessWidget {
 
   const _ConnectFormWidget({
     this.protocolCompatibility,
-    required this.discoveredServers,
     required this.machines,
     this.startingMachineId,
     this.updatingMachineId,
     this.latestBridgeVersion,
     required this.onViewSetupGuide,
-    required this.onConnectToDiscovered,
     required this.onConnectToMachine,
     required this.onStartMachine,
     required this.onEditMachine,
@@ -2745,9 +2639,7 @@ class _ConnectFormWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ConnectForm(
       protocolCompatibility: protocolCompatibility,
-      discoveredServers: discoveredServers,
       onViewSetupGuide: onViewSetupGuide,
-      onConnectToDiscovered: onConnectToDiscovered,
       // Machine management
       machines: machines,
       startingMachineId: startingMachineId,

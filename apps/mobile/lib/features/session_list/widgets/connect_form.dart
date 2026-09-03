@@ -3,16 +3,12 @@ import 'package:flutter/material.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../models/machine.dart';
 import '../../../models/protocol_version.dart';
-import '../../../services/server_discovery_service.dart';
-import 'discovered_servers_list.dart';
 import 'local_engine_card.dart';
 import 'machine_list.dart';
 import 'protocol_incompatibility_card.dart';
 
 class ConnectForm extends StatelessWidget {
-  final List<DiscoveredServer> discoveredServers;
   final VoidCallback? onViewSetupGuide;
-  final ValueChanged<DiscoveredServer> onConnectToDiscovered;
 
   // Machine management
   final List<MachineWithStatus> machines;
@@ -32,9 +28,7 @@ class ConnectForm extends StatelessWidget {
 
   const ConnectForm({
     super.key,
-    required this.discoveredServers,
     this.onViewSetupGuide,
-    required this.onConnectToDiscovered,
     // Machine management
     this.machines = const [],
     this.startingMachineId,
@@ -126,15 +120,6 @@ class ConnectForm extends StatelessWidget {
               onStop: onStopMachine,
               onAddMachine: onAddMachine!,
               onRefresh: onRefreshMachines,
-            ),
-          ],
-
-          // Discovered servers via mDNS
-          if (discoveredServers.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            DiscoveredServersList(
-              servers: discoveredServers,
-              onConnect: onConnectToDiscovered,
             ),
           ],
 

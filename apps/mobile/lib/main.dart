@@ -38,7 +38,6 @@ import 'features/settings/state/settings_state.dart';
 import 'models/messages.dart';
 import 'providers/bridge_cubits.dart';
 import 'providers/machine_manager_cubit.dart';
-import 'providers/server_discovery_cubit.dart';
 import 'router/app_router.dart';
 import 'router/session_route_observer.dart';
 import 'router/session_stack_navigation.dart';
@@ -283,7 +282,6 @@ void main() async {
               bridge.projectsStream,
             ),
           ),
-          BlocProvider(create: (_) => ServerDiscoveryCubit()),
           BlocProvider(
             create: (ctx) =>
                 SessionListCubit(bridge: ctx.read<BridgeService>()),

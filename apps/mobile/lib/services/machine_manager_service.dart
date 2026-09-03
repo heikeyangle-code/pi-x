@@ -95,6 +95,22 @@ class MachineManagerService {
   Future<void> init() async {
     await _migrateIfNeeded();
     _machines = await _loadFromPrefs();
+    // Pi X is local-only: seed the on-device engine as the single machine
+    // when no machines exist (first run / after migration).
+    if (_machines.isEmpty) {
+      _machines.add(
+        Machine(
+          id: _uuid.v4(),
+          name: 'Pi X Local Engine',
+          host: '127.0.0.1',
+          port: 8765,
+          useSsl: false,
+          connectionMode: BridgeConnectionMode.automatic,
+          isFavorite: true,
+        ),
+      );
+      await _saveMachines();
+    }
     _sortMachines();
     _notifyListeners();
     // Start health check after loading

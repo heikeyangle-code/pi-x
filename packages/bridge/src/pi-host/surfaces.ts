@@ -142,6 +142,59 @@ export function looksLikeSkillMarkdown(content: string): boolean {
   return /^[\s\S]*description\s*:/m.test(front);
 }
 
+/** A discovered skill (docs/ENGINE-UI-SURFACES §6.1): global or project scope. */
+export interface SkillInfo {
+  name: string;
+  scope: "global" | "project";
+  /** First `description:` line of SKILL.md frontmatter, when present. */
+  description?: string;
+}
+
+/** Skill search roots (global ~/.pi/agent/skills + project .pi/skills). */
+export type SkillRoot = { scope: SkillInfo["scope"]; dir: string };
+
+/** First `description:` line of a skill's SKILL.md frontmatter. */
+async function skillDescription(dir: string): Promise<string | undefined> {
+  try {
+    const content = await readFile(join(dir, "SKILL.md"), "utf8");
+    const trimmed = content.trimStart();
+    if (!trimmed.startsWith("---")) return undefined;
+    const end = trimmed.indexOf("\n---", 3);
+    if (end < 0) return undefined;
+    const front = trimmed.slice(3, end);
+    const m = /^description\s*:\s*(.*)$/m.exec(front);
+    if (!m) return undefined;
+    const text = m[1].trim().replace(/^["']|["']$/g, "");
+    return text || undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/** List skills across roots, global first, each with a frontmatter description. */
+export async function listSkillInfos(roots: SkillRoot[]): Promise<SkillInfo[]> {
+  const out: SkillInfo[] = [];
+  for (const { scope, dir } of roots) {
+    for (const full of await listResourceDirs(dir)) {
+      out.push({
+        name: full.split("/").pop() ?? full,
+        scope,
+        description: await skillDescription(full),
+      });
+    }
+  }
+  return out;
+}
+
+/** Read a skill's SKILL.md body; null when missing/unreadable. */
+export async function readSkillMarkdown(dir: string): Promise<string | null> {
+  try {
+    return await readFile(join(dir, "SKILL.md"), "utf8");
+  } catch {
+    return null;
+  }
+}
+
 /** pi home layout helper: settings/models paths under ~/.pi/agent. */
 export function piAgentFiles(piHome: string): {
   agent: string;

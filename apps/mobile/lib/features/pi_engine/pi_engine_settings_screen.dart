@@ -10,6 +10,7 @@ import 'engine_flags_screen.dart';
 import 'extensions_screen.dart';
 import 'models_screen.dart';
 import 'pi_engine_widgets.dart';
+import 'skills_screen.dart';
 import 'system_prompt_screen.dart';
 
 /// Pi engine management hub: status + entry points for system prompts,
@@ -120,6 +121,21 @@ class _PiEngineSettingsScreenState extends State<PiEngineSettingsScreen> {
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute<void>(
                     builder: (_) => const ExtensionsScreen(),
+                  ),
+                ),
+              ),
+              const Divider(height: 1, indent: 56),
+              ListTile(
+                leading: Icon(
+                  Icons.auto_awesome_outlined,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                title: Text(l.piEngineSkills),
+                subtitle: Text(l.piEngineSkillsSubtitle),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const SkillsScreen(),
                   ),
                 ),
               ),

@@ -23,10 +23,13 @@ import {
   SettingsFile,
   ModelsFile,
   listResourceDirs,
+  listSkillInfos,
+  readSkillMarkdown,
   looksLikeSkillMarkdown,
   piAgentFiles,
   type CustomProviderSpec,
   type CustomModelSpec,
+  type SkillRoot,
 } from "./surfaces.js";
 
 export const PI_WIRE_PROTOCOL_VERSION = 1;
@@ -295,9 +298,32 @@ export class PiGateway {
       }
       case "list_skills": {
         const files = piAgentFiles(this.piHome);
-        const root = files.skillsDir;
-        const names = await listResourceDirs(root);
-        return { success: true, data: names.map((p) => p.split("/").pop()) };
+        const roots: SkillRoot[] = [
+          { scope: "global", dir: files.skillsDir },
+          { scope: "project", dir: join(cwd, ".pi", "skills") },
+        ];
+        return { success: true, data: await listSkillInfos(roots) };
+      }
+      case "read_skill": {
+        const scope = payload.scope === "project" ? "project" : "global";
+        const name = String(payload.name ?? "");
+        // Guard the path join: names come from the app listing, but never allow
+        // traversal into arbitrary dirs.
+        if (
+          !name ||
+          name.includes("/") ||
+          name.includes("\\") ||
+          name === ".." ||
+          name.includes("..")
+        ) {
+          return { success: false, error: "invalid_skill_name" };
+        }
+        const files = piAgentFiles(this.piHome);
+        const root = scope === "project" ? join(cwd, ".pi", "skills") : files.skillsDir;
+        return {
+          success: true,
+          data: { name, scope, content: await readSkillMarkdown(join(root, name)) },
+        };
       }
       case "list_extensions": {
         const files = piAgentFiles(this.piHome);

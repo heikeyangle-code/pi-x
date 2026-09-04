@@ -72,6 +72,17 @@
     （扩展=任意代码），空态说明放置位置，"重启引擎"入口复用 `confirmRestartEngine`；
   - 本地化键 `piEngineCommands*`/`piEngineExtensions*` 补齐 en/ja/zh/ko 四个 arb；
     新增 `pi_engine_commands_test.dart`（解析/缺失字段/相等性单测）。
+- **Skills 管理 UI（Flutter + 网关，2026-09-04）**：Pi 引擎设置页新增"技能"入口——
+  - 网关 `list_skills` 升级为全局+项目双作用域（`~/.pi/agent/skills/` + 项目 `.pi/skills/`），
+    每条返回 `{name, scope, description}`（SKILL.md frontmatter 首行 description 提取）；
+    新增 `read_skill` 算子（`{scope,name}` → SKILL.md 正文，含路径穿越防护）；
+  - `skills_screen.dart`：按作用域分组（项目/全局）列表 + 顶部安全警告（技能=可让模型
+    执行命令的提示词/脚本）+ 点击底部弹层查看 SKILL.md + 空态放置说明 + "重启引擎"入口
+    （技能启动时扫描，复用 `confirmRestartEngine`）；
+  - 本地化键 `piEngineSkills*` 补齐 en/zh/ja/ko 四个 arb（手工同步 5 个生成 .dart）；
+    新增 `pi_engine_skills_test.dart`（解析/作用域/相等性单测）+ 网关端到端单测
+    （全局/项目列表带描述、read_skill 正文与缺失、`../` 穿越拒绝）；
+    验证：bridge tsc + 1162 单测全绿。
 
 ## 已知问题（open）
 
@@ -111,7 +122,8 @@
    + 启动参数开关（--no-context-files/--no-skills/--no-extensions/--tools 等，PiHost 拼 args）
    + PiHost control op `restart_engine(projectId)`（engine-pool stop + getOrStart 拉起）~~ ✅ 全部落地
    （`system_prompt_screen.dart`/`engine_flags_screen.dart` + `confirmRestartEngine`），剩余盘点见
-   ENGINE-UI-SURFACES §6（skills/prompts/themes/packages 管理 UI 为 M2）
+   ENGINE-UI-SURFACES §6：skills 管理 UI（列表+查看 SKILL.md）已落地 `skills_screen.dart`；
+   prompts/themes/packages 管理 UI 为 M2
 
 ## 已锁定决策（规划层，详见 DECISIONS）
 - 终端：**内置 runBash 命令卡片流（必需）**；真终端（xterm.dart + 原生 PTY）**远期可选**

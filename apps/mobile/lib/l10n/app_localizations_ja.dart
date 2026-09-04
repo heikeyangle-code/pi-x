@@ -2794,6 +2794,38 @@ class AppLocalizationsJa extends AppLocalizations {
       '追加・変更した拡張はエンジンの再起動（または /reload）で反映されます。';
 
   @override
+  String get piEngineSkills => 'スキル';
+
+  @override
+  String get piEngineSkillsSubtitle => '検出されたスキルと安全性の注意';
+
+  @override
+  String get piEngineSkillsTrustWarning =>
+      'スキルはモデルを導くプロンプト/スクリプトです。使う前に SKILL.md を確認してください——モデルに任意のコマンドを実行させることがあります。';
+
+  @override
+  String get piEngineSkillsEmpty =>
+      'スキルがありません。~/.pi/agent/skills/ またはプロジェクトの .pi/skills/ に配置してください。';
+
+  @override
+  String piEngineSkillsCount(int count) {
+    return '$count 個のスキル';
+  }
+
+  @override
+  String get piEngineSkillsGroupProject => 'プロジェクト';
+
+  @override
+  String get piEngineSkillsApply => '反映';
+
+  @override
+  String get piEngineSkillsRestartHint =>
+      'スキルはエンジン起動時にスキャンされます。追加・変更したスキルはエンジンの再起動後に反映されます。';
+
+  @override
+  String get piEngineSkillMissing => 'このスキルに SKILL.md が見つかりません。';
+
+  @override
   String get piEngineModelsEmpty => 'カスタムプロバイダーはまだありません。+ をタップして追加。';
 
   @override

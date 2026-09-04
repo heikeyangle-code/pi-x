@@ -5237,6 +5237,60 @@ abstract class AppLocalizations {
   /// **'追加・変更した拡張はエンジンの再起動（または /reload）で反映されます。'**
   String get piEngineExtensionsReloadHint;
 
+  /// No description provided for @piEngineSkills.
+  ///
+  /// In ja, this message translates to:
+  /// **'スキル'**
+  String get piEngineSkills;
+
+  /// No description provided for @piEngineSkillsSubtitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'検出されたスキルと安全性の注意'**
+  String get piEngineSkillsSubtitle;
+
+  /// No description provided for @piEngineSkillsTrustWarning.
+  ///
+  /// In ja, this message translates to:
+  /// **'スキルはモデルを導くプロンプト/スクリプトです。使う前に SKILL.md を確認してください——モデルに任意のコマンドを実行させることがあります。'**
+  String get piEngineSkillsTrustWarning;
+
+  /// No description provided for @piEngineSkillsEmpty.
+  ///
+  /// In ja, this message translates to:
+  /// **'スキルがありません。~/.pi/agent/skills/ またはプロジェクトの .pi/skills/ に配置してください。'**
+  String get piEngineSkillsEmpty;
+
+  /// No description provided for @piEngineSkillsCount.
+  ///
+  /// In ja, this message translates to:
+  /// **'{count} 個のスキル'**
+  String piEngineSkillsCount(int count);
+
+  /// No description provided for @piEngineSkillsGroupProject.
+  ///
+  /// In ja, this message translates to:
+  /// **'プロジェクト'**
+  String get piEngineSkillsGroupProject;
+
+  /// No description provided for @piEngineSkillsApply.
+  ///
+  /// In ja, this message translates to:
+  /// **'反映'**
+  String get piEngineSkillsApply;
+
+  /// No description provided for @piEngineSkillsRestartHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'スキルはエンジン起動時にスキャンされます。追加・変更したスキルはエンジンの再起動後に反映されます。'**
+  String get piEngineSkillsRestartHint;
+
+  /// No description provided for @piEngineSkillMissing.
+  ///
+  /// In ja, this message translates to:
+  /// **'このスキルに SKILL.md が見つかりません。'**
+  String get piEngineSkillMissing;
+
   /// No description provided for @piEngineModelsEmpty.
   ///
   /// In ja, this message translates to:

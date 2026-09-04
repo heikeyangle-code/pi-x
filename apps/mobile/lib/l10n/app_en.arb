@@ -1206,5 +1206,19 @@
     }
   },
   "piEngineExtensionsApply": "Apply",
-  "piEngineExtensionsReloadHint": "New or changed extensions take effect after an engine restart (or /reload)."
+  "piEngineExtensionsReloadHint": "New or changed extensions take effect after an engine restart (or /reload).",
+  "piEngineSkills": "Skills",
+  "piEngineSkillsSubtitle": "Detected skills & safety note",
+  "piEngineSkillsTrustWarning": "Skills are prompts/scripts that guide the model. Review SKILL.md before use — a skill can make the model run commands.",
+  "piEngineSkillsEmpty": "No skills yet. Place them in ~/.pi/agent/skills/ or the project .pi/skills/ folder.",
+  "piEngineSkillsCount": "{count} skills",
+  "@piEngineSkillsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "piEngineSkillsGroupProject": "Project",
+  "piEngineSkillsApply": "Apply",
+  "piEngineSkillsRestartHint": "Skills are scanned when the engine starts; new or changed skills take effect after an engine restart.",
+  "piEngineSkillMissing": "No SKILL.md found for this skill."
 }

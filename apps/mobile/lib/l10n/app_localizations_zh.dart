@@ -2756,6 +2756,37 @@ class AppLocalizationsZh extends AppLocalizations {
       '新增或修改的扩展需重启引擎（或 /reload）后生效。';
 
   @override
+  String get piEngineSkills => '技能';
+
+  @override
+  String get piEngineSkillsSubtitle => '已发现的技能与安全提示';
+
+  @override
+  String get piEngineSkillsTrustWarning =>
+      '技能是指引模型的提示词/脚本，使用前请先阅读 SKILL.md——技能可能让模型执行任意命令。';
+
+  @override
+  String get piEngineSkillsEmpty =>
+      '还没有技能。请将技能放在 ~/.pi/agent/skills/ 或项目 .pi/skills/ 目录。';
+
+  @override
+  String piEngineSkillsCount(int count) {
+    return '$count 个技能';
+  }
+
+  @override
+  String get piEngineSkillsGroupProject => '项目';
+
+  @override
+  String get piEngineSkillsApply => '生效';
+
+  @override
+  String get piEngineSkillsRestartHint => '技能在引擎启动时扫描，新增或修改的技能需重启引擎后生效。';
+
+  @override
+  String get piEngineSkillMissing => '该技能没有 SKILL.md。';
+
+  @override
   String get piEngineModelsEmpty => '还没有自定义 Provider。点击 + 添加。';
 
   @override

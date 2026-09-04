@@ -2816,6 +2816,37 @@ class AppLocalizationsKo extends AppLocalizations {
       '새로 추가하거나 변경한 확장은 엔진 재시작(또는 /reload) 후 적용됩니다.';
 
   @override
+  String get piEngineSkills => '스킬';
+
+  @override
+  String get piEngineSkillsSubtitle => '발견된 스킬 및 안전 안내';
+
+  @override
+  String get piEngineSkillsTrustWarning =>
+      '스킬은 모델을 안내하는 프롬프트/스크립트입니다. 사용 전에 SKILL.md를 확인하세요 — 스킬이 모델에게 임의 명령을 실행하게 할 수 있습니다.';
+
+  @override
+  String get piEngineSkillsEmpty =>
+      '스킬이 없습니다. ~/.pi/agent/skills/ 또는 프로젝트 .pi/skills/ 폴더에 배치하세요.';
+
+  @override
+  String piEngineSkillsCount(int count) {
+    return '스킬 $count개';
+  }
+
+  @override
+  String get piEngineSkillsGroupProject => '프로젝트';
+
+  @override
+  String get piEngineSkillsApply => '적용';
+
+  @override
+  String get piEngineSkillsRestartHint => '스킬은 엔진 시작 시 스캔됩니다. 추가하거나 변경한 스킬은 엔진 재시작 후 적용됩니다.';
+
+  @override
+  String get piEngineSkillMissing => '이 스킬에 SKILL.md가 없습니다.';
+
+  @override
   String get piEngineModelsEmpty => '아직 사용자 정의 공급자가 없습니다. +를 눌러 추가하세요.';
 
   @override

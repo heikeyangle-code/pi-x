@@ -13,7 +13,7 @@
 | 4 | **模型目录刷新** | `pi update --models` | 设置内"刷新模型目录"按钮 + 上次刷新时间 | M2 |
 | 5 | **Settings** | `~/.pi/agent/settings.json`（+ 项目 `.pi/settings.json`）；RPC `get_state` | 设置页：核心项（defaultProjectTrust/offline/telemetry/…）+ 完整 JSON 编辑器双模 | M2 |
 | 6 | **项目信任** | `trust.json` + `defaultProjectTrust`；启动/切项目询问 | 首次打开工作区弹信任对话框（ask/always/never + 记住） | **M1** |
-| 7 | **Skills（需要吗？→ 需要）** | 标准：`~/.pi/agent/skills/`、项目 `.pi/skills/`、包 `pi.skills`、settings `skills[]`、`--skill`；Agent Skills 标准；按需加载 | 技能管理页：列表/启用停用/删除/查看 SKILL.md/从文件夹或包添加；**安全提示**（skill 可让模型执行任意命令） | M2 |
+| 7 | **Skills（需要吗？→ 需要）** | 标准：`~/.pi/agent/skills/`、项目 `.pi/skills/`、包 `pi.skills`、settings `skills[]`、`--skill`；Agent Skills 标准；按需加载 | 技能管理页：列表/查看 SKILL.md 已落地（`skills_screen.dart`，全局+项目分组 + 安全提示）；启用停用/删除/从文件夹或包添加 M2 | M2 |
 | 8 | **Extensions（插件=TS 代码）** | `~/.pi/agent/extensions/`、`.pi/extensions/` 自动发现；`/reload` 热重载；可注册工具/命令/事件钩子 | 扩展管理页：已加载列表、来源、启用/禁用、**任意代码信任警告**、重载按钮 | **M1** |
 | 9 | **Prompt Templates** | 目录 + 包资源 + settings；`/模板名` 展开 | 模板管理页：列表/新建/编辑/删除（纯 markdown） | M2 |
 | 10 | **Themes** | JSON 主题（默认在 ~/.pi/agent/…）；`/theme` | 主题选择器（拉引擎主题列表）+ 导入 | M3 |
@@ -72,7 +72,7 @@ pi 的资源**全部是进程内按目录发现 + settings 记录**，没有编�
 | `SYSTEM.md` | `~/.pi/agent/` + `.pi/`（项目需信任） | 整段替换默认系统提示 | ✅ 设置页"系统提示词"（`system_prompt_screen.dart`，全局/项目双作用域 + 保存后重启提示） |
 | `APPEND_SYSTEM.md` | `~/.pi/agent/` + `.pi/`（项目需信任） | 追加默认系统提示 | ✅ 同上（同屏编辑） |
 | `AGENTS.md`/`CLAUDE.md` | 工作区目录向上合并 | 项目约定/命令/安全规则 | 🔶 文件浏览器可打开，无快捷编辑 |
-| `skills/` | `~/.pi/agent/skills`、`.pi/skills`、包 `pi.skills` | Agent Skills（按需注入） | 🔶 `list_skills` 后端有；管理 UI M2 |
+| `skills/` | `~/.pi/agent/skills`、`.pi/skills`、包 `pi.skills` | Agent Skills（按需注入） | ✅ 技能管理页（`skills_screen.dart`：全局/项目列表 + 查看 SKILL.md + 安全警告；启用停用/导入 M2） |
 | `extensions/` | `~/.pi/agent/extensions`、`.pi/extensions` | 扩展（TS 代码，任意代码信任警告） | 🔶 `list_extensions` 后端有；管理 UI M1 |
 | `prompts/` | `~/.pi/agent/prompts`、`.pi/prompts` | 斜杠命令模板（markdown） | ❌ UI 无 |
 | `themes/` | `~/.pi/agent/theme` 等 | 引擎主题 JSON | 🔶 `--use-theme` 启动参数可配；主题文件管理 M3 |

@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { mkdtempSync } from "node:fs";
+import { mkdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fakeEnginePath } from "./test-utils.js";
@@ -182,6 +183,53 @@ describe("PiGateway", () => {
     // skills dir lists empty (no .pi installed) — must not throw
     const skills = await ctl("list_skills");
     expect(skills).toMatchObject({ success: true });
+    await gateway.stopAll();
+  }, slow);
+
+  it("lists skills across global+project scopes with SKILL.md descriptions and reads them back", async () => {
+    const cwd = workDir("gw-skills");
+    const piHome = workDir("gw-pihome-skills");
+    const gateway = new PiGateway({
+      piEntry: fakeEnginePath(),
+      engineVersion: "0.0.0-test",
+      piHome,
+      resolveCwd: () => cwd,
+    });
+    gateway.send = () => undefined;
+    const ctl = (op: string, payload: Record<string, unknown> = {}) =>
+      gateway.handleControl({ id: "cX", type: "control", op, projectId: "proj", payload });
+
+    // global skill with frontmatter description + a bare project skill
+    await mkdir(join(piHome, ".pi", "agent", "skills", "code-review"), { recursive: true });
+    await writeFile(
+      join(piHome, ".pi", "agent", "skills", "code-review", "SKILL.md"),
+      "---\ndescription: Run a thorough code review\n---\n# Code review\nSteps...\n",
+    );
+    await mkdir(join(cwd, ".pi", "skills", "docs"), { recursive: true });
+    await writeFile(join(cwd, ".pi", "skills", "docs", "SKILL.md"), "no frontmatter here\n");
+
+    const listed = await ctl("list_skills");
+    expect(listed).toMatchObject({ success: true });
+    const entries = (listed as { data: Array<Record<string, unknown>> }).data;
+    expect(entries).toEqual([
+      { name: "code-review", scope: "global", description: "Run a thorough code review" },
+      { name: "docs", scope: "project", description: undefined },
+    ]);
+
+    // read_skill returns the markdown body for both scopes
+    const global = await ctl("read_skill", { scope: "global", name: "code-review" });
+    expect(global).toMatchObject({ success: true });
+    expect(
+      ((global as { data: { content: string } }).data.content as string).startsWith("---"),
+    ).toBe(true);
+    const project = await ctl("read_skill", { scope: "project", name: "docs" });
+    expect((project as { data: { content: string } }).data.content).toBe("no frontmatter here\n");
+
+    // missing skill -> content null, traversal names rejected
+    const missing = await ctl("read_skill", { scope: "global", name: "nope" });
+    expect((missing as { data: { content: unknown } }).data.content).toBeNull();
+    const bad = await ctl("read_skill", { scope: "global", name: "../settings.json" });
+    expect(bad).toMatchObject({ success: false });
     await gateway.stopAll();
   }, slow);
 

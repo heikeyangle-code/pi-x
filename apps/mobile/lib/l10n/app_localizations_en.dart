@@ -2906,6 +2906,38 @@ class AppLocalizationsEn extends AppLocalizations {
       'New or changed extensions take effect after an engine restart (or /reload).';
 
   @override
+  String get piEngineSkills => 'Skills';
+
+  @override
+  String get piEngineSkillsSubtitle => 'Detected skills & safety note';
+
+  @override
+  String get piEngineSkillsTrustWarning =>
+      'Skills are prompts/scripts that guide the model. Review SKILL.md before use — a skill can make the model run commands.';
+
+  @override
+  String get piEngineSkillsEmpty =>
+      'No skills yet. Place them in ~/.pi/agent/skills/ or the project .pi/skills/ folder.';
+
+  @override
+  String piEngineSkillsCount(int count) {
+    return '$count skills';
+  }
+
+  @override
+  String get piEngineSkillsGroupProject => 'Project';
+
+  @override
+  String get piEngineSkillsApply => 'Apply';
+
+  @override
+  String get piEngineSkillsRestartHint =>
+      'Skills are scanned when the engine starts; new or changed skills take effect after an engine restart.';
+
+  @override
+  String get piEngineSkillMissing => 'No SKILL.md found for this skill.';
+
+  @override
   String get piEngineModelsEmpty =>
       'No custom providers yet. Tap + to add one.';
 

@@ -1236,5 +1236,19 @@
     }
   },
   "piEngineExtensionsApply": "反映",
-  "piEngineExtensionsReloadHint": "追加・変更した拡張はエンジンの再起動（または /reload）で反映されます。"
+  "piEngineExtensionsReloadHint": "追加・変更した拡張はエンジンの再起動（または /reload）で反映されます。",
+  "piEngineSkills": "スキル",
+  "piEngineSkillsSubtitle": "検出されたスキルと安全性の注意",
+  "piEngineSkillsTrustWarning": "スキルはモデルを導くプロンプト/スクリプトです。使う前に SKILL.md を確認してください——モデルに任意のコマンドを実行させることがあります。",
+  "piEngineSkillsEmpty": "スキルがありません。~/.pi/agent/skills/ またはプロジェクトの .pi/skills/ に配置してください。",
+  "piEngineSkillsCount": "{count} 個のスキル",
+  "@piEngineSkillsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "piEngineSkillsGroupProject": "プロジェクト",
+  "piEngineSkillsApply": "反映",
+  "piEngineSkillsRestartHint": "スキルはエンジン起動時にスキャンされます。追加・変更したスキルはエンジンの再起動後に反映されます。",
+  "piEngineSkillMissing": "このスキルに SKILL.md が見つかりません。"
 }

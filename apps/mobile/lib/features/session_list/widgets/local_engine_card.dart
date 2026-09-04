@@ -28,12 +28,14 @@ class LocalEngineCard extends StatelessWidget {
               children: [
                 Icon(Icons.bolt, size: 20, color: cs.primary),
                 const SizedBox(width: 8),
-                Text(
-                  'Pi X Local Engine',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: cs.onSurface,
+                Expanded(
+                  child: Text(
+                    'Pi X Local Engine',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: cs.onSurface,
+                    ),
                   ),
                 ),
               ],
@@ -50,9 +52,11 @@ class LocalEngineCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 6),
-                Text(
-                  'Local · 127.0.0.1',
-                  style: TextStyle(fontSize: 13, color: cs.onSurfaceVariant),
+                Flexible(
+                  child: Text(
+                    'Local · 127.0.0.1',
+                    style: TextStyle(fontSize: 13, color: cs.onSurfaceVariant),
+                  ),
                 ),
               ],
             ),

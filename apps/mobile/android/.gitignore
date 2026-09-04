@@ -13,6 +13,3 @@ key.properties
 keystore.properties
 **/*.keystore
 **/*.jks
-
-# Firebase config (contains project-specific secrets)
-app/google-services.json

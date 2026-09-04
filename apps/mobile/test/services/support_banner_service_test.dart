@@ -66,34 +66,6 @@ void main() {
       expect(shouldShow, isFalse);
     });
 
-    test('does not show banner when bridge update banner is visible', () async {
-      final now = DateTime(2026, 4, 15, 12);
-      SharedPreferences.setMockInitialValues({
-        'review.first_seen_at_ms': now
-            .subtract(const Duration(days: 5))
-            .millisecondsSinceEpoch,
-        'review.successful_connections': 3,
-        'review.created_sessions': 3,
-        'review.approval_actions': 5,
-        'review.usage_days': const ['2026-04-13', '2026-04-15'],
-      });
-      final prefs = await SharedPreferences.getInstance();
-      final service = SupportBannerService(
-        prefs: prefs,
-        reviewService: InAppReviewService(
-          prefs: prefs,
-          now: () => now,
-          appVersionLoader: () async => '1.50.0',
-        ),
-      );
-
-      final shouldShow = await service.shouldShow(
-        catalog: _inactiveCatalog,
-      );
-
-      expect(shouldShow, isFalse);
-    });
-
     test('allows debug override to force-show banner', () async {
       SharedPreferences.setMockInitialValues({});
       final prefs = await SharedPreferences.getInstance();

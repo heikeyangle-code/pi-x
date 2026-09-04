@@ -7,7 +7,6 @@ import '../constants/app_constants.dart';
 import '../models/machine.dart';
 import '../services/bridge_latest_version_service.dart';
 import '../services/machine_manager_service.dart';
-import '../services/ssh_startup_service.dart';
 
 part 'machine_manager_cubit.freezed.dart';
 
@@ -47,44 +46,23 @@ abstract class MachineManagerState with _$MachineManagerState {
 /// Cubit for managing remote machines
 class MachineManagerCubit extends Cubit<MachineManagerState> {
   final MachineManagerService _service;
-  final SshStartupService? _sshService;
   final BridgeLatestVersionService _latestVersionService;
   final bool _ownsLatestVersionService;
-  final Duration _startHealthTimeout;
-  final Duration _updateHealthTimeout;
-  final Duration _healthRetryDelay;
-  final Duration _postStartHealthRequestTimeout;
+
   StreamSubscription? _machinesSub;
 
-  static const _defaultStartHealthTimeout = Duration(seconds: 20);
-  static const _defaultUpdateHealthTimeout = Duration(seconds: 30);
-  static const _defaultHealthRetryDelay = Duration(seconds: 1);
-  static const _defaultPostStartHealthRequestTimeout = Duration(seconds: 2);
   static const _latestBridgeVersionAutoRefreshMinInterval =
       BridgeLatestVersionService.cacheDuration;
 
   DateTime? _lastLatestBridgeVersionRefreshAttemptAt;
 
   MachineManagerCubit(
-    this._service,
-    this._sshService, {
+    this._service, {
     BridgeLatestVersionService? latestVersionService,
     bool refreshLatestBridgeVersionOnInit = false,
-    Duration? healthTimeout,
-    Duration? startHealthTimeout,
-    Duration? updateHealthTimeout,
-    Duration healthRetryDelay = _defaultHealthRetryDelay,
-    Duration postStartHealthRequestTimeout =
-        _defaultPostStartHealthRequestTimeout,
   }) : _latestVersionService =
            latestVersionService ?? BridgeLatestVersionService(),
        _ownsLatestVersionService = latestVersionService == null,
-       _startHealthTimeout =
-           startHealthTimeout ?? healthTimeout ?? _defaultStartHealthTimeout,
-       _updateHealthTimeout =
-           updateHealthTimeout ?? healthTimeout ?? _defaultUpdateHealthTimeout,
-       _healthRetryDelay = healthRetryDelay,
-       _postStartHealthRequestTimeout = postStartHealthRequestTimeout,
        super(const MachineManagerState()) {
     _machinesSub = _service.machines.listen((machines) {
       emit(state.copyWith(machines: machines, isLoading: false));
@@ -95,9 +73,6 @@ class MachineManagerCubit extends Cubit<MachineManagerState> {
       unawaited(refreshLatestBridgeVersion());
     }
   }
-
-  /// Whether SSH features are available (not available on web)
-  bool get sshAvailable => _sshService != null;
 
   /// Initialize and load machines
   Future<void> init() async {
@@ -295,271 +270,6 @@ class MachineManagerCubit extends Cubit<MachineManagerState> {
   /// Toggle favorite status for a machine
   Future<void> toggleFavorite(String machineId) async {
     await _service.toggleFavorite(machineId);
-  }
-
-  /// Start Bridge Server on a machine via SSH
-  Future<bool> startBridge(
-    String machineId, {
-    String? password,
-    Future<String?> Function()? promptForPassword,
-  }) async {
-    if (_sshService == null) {
-      emit(state.copyWith(error: 'SSH not available on this platform'));
-      return false;
-    }
-
-    emit(
-      state.copyWith(
-        startingMachineId: machineId,
-        error: null,
-        successMessage: null,
-      ),
-    );
-
-    try {
-      final result = await _sshService.startBridgeServer(
-        machineId,
-        password: password,
-        promptForPassword: promptForPassword,
-      );
-
-      if (result.success) {
-        final status = await _waitForOnline(
-          machineId,
-          timeout: _startHealthTimeout,
-          password: password,
-          promptForPassword: promptForPassword,
-        );
-
-        if (status == MachineStatus.online) {
-          emit(
-            state.copyWith(
-              startingMachineId: null,
-              successMessage: 'Bridge Server started',
-            ),
-          );
-          return true;
-        } else {
-          emit(
-            state.copyWith(
-              startingMachineId: null,
-              error: 'Server process started but health check failed',
-            ),
-          );
-          return false;
-        }
-      } else {
-        emit(
-          state.copyWith(
-            startingMachineId: null,
-            error: result.error ?? 'Failed to start',
-          ),
-        );
-        return false;
-      }
-    } catch (e) {
-      emit(state.copyWith(startingMachineId: null, error: e.toString()));
-      return false;
-    }
-  }
-
-  Future<MachineStatus> _waitForOnline(
-    String machineId, {
-    required Duration timeout,
-    String? password,
-    Future<String?> Function()? promptForPassword,
-  }) async {
-    final deadline = DateTime.now().add(timeout);
-    var status = await _service.checkHealth(
-      machineId,
-      timeout: _postStartHealthRequestTimeout,
-      password: password,
-      promptForPassword: promptForPassword,
-    );
-
-    while (status != MachineStatus.online &&
-        DateTime.now().isBefore(deadline)) {
-      await Future.delayed(_healthRetryDelay);
-      status = await _service.checkHealth(
-        machineId,
-        timeout: _postStartHealthRequestTimeout,
-        password: password,
-        promptForPassword: promptForPassword,
-      );
-    }
-
-    return status;
-  }
-
-  /// Stop Bridge Server on a machine via SSH
-  Future<bool> stopBridge(String machineId, {String? password}) async {
-    if (_sshService == null) {
-      emit(state.copyWith(error: 'SSH not available on this platform'));
-      return false;
-    }
-
-    emit(state.copyWith(error: null, successMessage: null));
-
-    try {
-      final result = await _sshService.stopBridgeServer(
-        machineId,
-        password: password,
-      );
-
-      if (result.success) {
-        // Wait a moment for the server to stop
-        await Future.delayed(const Duration(seconds: 1));
-        // Check health to update status
-        await _service.checkHealth(machineId);
-
-        emit(state.copyWith(successMessage: 'Bridge Server stopped'));
-        return true;
-      } else {
-        emit(state.copyWith(error: result.error ?? 'Failed to stop'));
-        return false;
-      }
-    } catch (e) {
-      emit(state.copyWith(error: e.toString()));
-      return false;
-    }
-  }
-
-  /// Update Bridge Server on a machine via SSH
-  Future<bool> updateBridge(
-    String machineId, {
-    String? password,
-    Future<String?> Function()? promptForPassword,
-  }) async {
-    if (_sshService == null) {
-      emit(state.copyWith(error: 'SSH not available on this platform'));
-      return false;
-    }
-
-    emit(
-      state.copyWith(
-        updatingMachineId: machineId,
-        error: null,
-        successMessage: null,
-      ),
-    );
-
-    try {
-      final result = await _sshService.updateBridgeServer(
-        machineId,
-        password: password,
-        promptForPassword: promptForPassword,
-      );
-
-      if (result.success) {
-        final status = await _waitForOnline(
-          machineId,
-          timeout: _updateHealthTimeout,
-          password: password,
-          promptForPassword: promptForPassword,
-        );
-
-        if (status != MachineStatus.online) {
-          emit(
-            state.copyWith(
-              updatingMachineId: null,
-              error: 'Server process restarted but health check failed',
-            ),
-          );
-          return false;
-        }
-
-        if (_machineStillNeedsUpdate(machineId)) {
-          emit(
-            state.copyWith(
-              updatingMachineId: null,
-              error:
-                  'Bridge Server restarted but version is still older than $bridgeUpdateTargetVersion',
-            ),
-          );
-          return false;
-        }
-
-        emit(
-          state.copyWith(
-            updatingMachineId: null,
-            successMessage: 'Bridge Server updated successfully',
-          ),
-        );
-        return true;
-      } else {
-        await _refreshMachineStatusAfterUpdateAttempt(machineId);
-        emit(
-          state.copyWith(
-            updatingMachineId: null,
-            error: result.error ?? 'Failed to update',
-          ),
-        );
-        return false;
-      }
-    } catch (e) {
-      await _refreshMachineStatusAfterUpdateAttempt(machineId);
-      emit(state.copyWith(updatingMachineId: null, error: e.toString()));
-      return false;
-    }
-  }
-
-  Future<void> _refreshMachineStatusAfterUpdateAttempt(String machineId) async {
-    try {
-      await _service.checkHealth(machineId);
-    } catch (_) {
-      // Preserve the update failure as the user-facing error.
-    }
-  }
-
-  bool _machineStillNeedsUpdate(String machineId) {
-    for (final item in _service.machinesWithStatus) {
-      if (item.machine.id == machineId) {
-        return item.needsUpdate(bridgeUpdateTargetVersion);
-      }
-    }
-    return false;
-  }
-
-  /// Test SSH connection for a machine
-  Future<SshResult> testConnection(String machineId, {String? password}) async {
-    if (_sshService == null) {
-      return SshResult.failure('SSH not available on this platform');
-    }
-    return await _sshService.testConnection(machineId, password: password);
-  }
-
-  /// Test SSH connection with inline credentials (for add/edit dialog)
-  Future<SshResult> testConnectionWithCredentials({
-    required String host,
-    required int sshPort,
-    required String username,
-    required SshAuthType authType,
-    String? jumpHost,
-    int jumpPort = 22,
-    String? jumpUsername,
-    SshAuthType? jumpAuthType,
-    String? jumpPassword,
-    String? jumpPrivateKey,
-    String? password,
-    String? privateKey,
-  }) async {
-    if (_sshService == null) {
-      return SshResult.failure('SSH not available on this platform');
-    }
-    return await _sshService.testConnectionWithCredentials(
-      host: host,
-      sshPort: sshPort,
-      username: username,
-      authType: authType,
-      jumpHost: jumpHost,
-      jumpPort: jumpPort,
-      jumpUsername: jumpUsername,
-      jumpAuthType: jumpAuthType,
-      jumpPassword: jumpPassword,
-      jumpPrivateKey: jumpPrivateKey,
-      password: password,
-      privateKey: privateKey,
-    );
   }
 
   /// Get a machine by ID

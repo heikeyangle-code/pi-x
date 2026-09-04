@@ -5,7 +5,6 @@ import 'package:ccpocket/models/machine.dart';
 import 'package:ccpocket/providers/machine_manager_cubit.dart';
 import 'package:ccpocket/services/bridge_latest_version_service.dart';
 import 'package:ccpocket/services/machine_manager_service.dart';
-import 'package:ccpocket/services/ssh_startup_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
@@ -212,75 +211,11 @@ class MockMachineManagerService implements MachineManagerService {
   }
 }
 
-/// Minimal mock for SshStartupService.
-class MockSshStartupService implements SshStartupService {
-  SshResult? startResult;
-  SshResult? stopResult;
-  SshResult? updateResult;
-  SshResult? testResult;
-  SshResult? testWithCredResult;
-
-  @override
-  Future<SshResult> startBridgeServer(
-    String machineId, {
-    String? password,
-    Future<String?> Function()? promptForPassword,
-  }) async {
-    return startResult ?? SshResult.success();
-  }
-
-  @override
-  Future<SshResult> stopBridgeServer(
-    String machineId, {
-    String? password,
-  }) async {
-    return stopResult ?? SshResult.success();
-  }
-
-  @override
-  Future<SshResult> updateBridgeServer(
-    String machineId, {
-    String? password,
-    Future<String?> Function()? promptForPassword,
-  }) async {
-    return updateResult ?? SshResult.success();
-  }
-
-  @override
-  Future<SshResult> testConnection(
-    String machineId, {
-    String? password,
-    String? privateKey,
-  }) async {
-    return testResult ?? SshResult.success();
-  }
-
-  @override
-  Future<SshResult> testConnectionWithCredentials({
-    required String host,
-    required int sshPort,
-    required String username,
-    required SshAuthType authType,
-    String? jumpHost,
-    int jumpPort = 22,
-    String? jumpUsername,
-    SshAuthType? jumpAuthType,
-    String? jumpPassword,
-    String? jumpPrivateKey,
-    String? password,
-    String? privateKey,
-  }) async {
-    return testWithCredResult ?? SshResult.success();
-  }
-}
-
 void main() {
   late MockMachineManagerService mockService;
-  late MockSshStartupService mockSsh;
 
   setUp(() {
     mockService = MockMachineManagerService();
-    mockSsh = MockSshStartupService();
   });
 
   tearDown(() {
@@ -288,15 +223,11 @@ void main() {
   });
 
   MachineManagerCubit createCubit({
-    bool withSsh = true,
     String? latestBridgeVersion,
     BridgeLatestVersionService? latestVersionService,
-    Duration? healthTimeout,
-    Duration? healthRetryDelay,
   }) {
     return MachineManagerCubit(
       mockService,
-      withSsh ? mockSsh : null,
       latestVersionService:
           latestVersionService ??
           BridgeLatestVersionService(
@@ -307,14 +238,12 @@ void main() {
               ),
             ),
           ),
-      healthTimeout: healthTimeout ?? const Duration(seconds: 30),
-      healthRetryDelay: healthRetryDelay ?? const Duration(seconds: 1),
     );
   }
 
   group('MachineManagerCubit - initial state', () {
     test('has default empty state', () {
-      final cubit = createCubit(healthRetryDelay: Duration.zero);
+      final cubit = createCubit();
       addTearDown(cubit.close);
 
       expect(cubit.state.machines, isEmpty);
@@ -327,25 +256,11 @@ void main() {
     });
 
     test('calls init on creation', () async {
-      final cubit = createCubit(healthRetryDelay: Duration.zero);
+      final cubit = createCubit();
       addTearDown(cubit.close);
       await Future.microtask(() {});
 
       expect(mockService.calls, contains('init'));
-    });
-
-    test('sshAvailable returns true when ssh service provided', () {
-      final cubit = createCubit(withSsh: true);
-      addTearDown(cubit.close);
-
-      expect(cubit.sshAvailable, true);
-    });
-
-    test('sshAvailable returns false when ssh service is null', () {
-      final cubit = createCubit(withSsh: false);
-      addTearDown(cubit.close);
-
-      expect(cubit.sshAvailable, false);
     });
   });
 
@@ -541,230 +456,6 @@ void main() {
 
       expect(cubit.state.error, isNull);
       expect(cubit.state.successMessage, isNull);
-    });
-  });
-
-  group('MachineManagerCubit - SSH operations without SSH service', () {
-    test('startBridge returns false and sets error', () async {
-      final cubit = createCubit(withSsh: false);
-      addTearDown(cubit.close);
-      await Future.microtask(() {});
-
-      final result = await cubit.startBridge('m1');
-
-      expect(result, false);
-      expect(cubit.state.error, 'SSH not available on this platform');
-    });
-
-    test('stopBridge returns false and sets error', () async {
-      final cubit = createCubit(withSsh: false);
-      addTearDown(cubit.close);
-      await Future.microtask(() {});
-
-      final result = await cubit.stopBridge('m1');
-
-      expect(result, false);
-      expect(cubit.state.error, 'SSH not available on this platform');
-    });
-
-    test('updateBridge returns false and sets error', () async {
-      final cubit = createCubit(withSsh: false);
-      addTearDown(cubit.close);
-      await Future.microtask(() {});
-
-      final result = await cubit.updateBridge('m1');
-
-      expect(result, false);
-      expect(cubit.state.error, 'SSH not available on this platform');
-    });
-
-    test('testConnection returns failure result', () async {
-      final cubit = createCubit(withSsh: false);
-      addTearDown(cubit.close);
-
-      final result = await cubit.testConnection('m1');
-
-      expect(result.success, false);
-      expect(result.error, 'SSH not available on this platform');
-    });
-
-    test('testConnectionWithCredentials returns failure result', () async {
-      final cubit = createCubit(withSsh: false);
-      addTearDown(cubit.close);
-
-      final result = await cubit.testConnectionWithCredentials(
-        host: '10.0.0.1',
-        sshPort: 22,
-        username: 'user',
-        authType: SshAuthType.password,
-      );
-
-      expect(result.success, false);
-      expect(result.error, 'SSH not available on this platform');
-    });
-  });
-
-  group('MachineManagerCubit - SSH start', () {
-    test('retries health check until bridge becomes online', () async {
-      mockService.checkHealthResults = [
-        MachineStatus.offline,
-        MachineStatus.online,
-      ];
-      final cubit = createCubit();
-      addTearDown(cubit.close);
-      await Future.microtask(() {});
-
-      final result = await cubit.startBridge('m1');
-
-      expect(result, true);
-      expect(cubit.state.successMessage, 'Bridge Server started');
-      expect(
-        mockService.calls.where((call) => call == 'checkHealth:m1'),
-        hasLength(2),
-      );
-      expect(
-        mockService.checkHealthTimeouts,
-        everyElement(const Duration(seconds: 2)),
-      );
-    });
-
-    test('returns command failure before health check', () async {
-      mockSsh.startResult = SshResult.failure('launchctl failed');
-      final cubit = createCubit();
-      addTearDown(cubit.close);
-      await Future.microtask(() {});
-      mockService.calls.clear();
-
-      final result = await cubit.startBridge('m1');
-
-      expect(result, false);
-      expect(cubit.state.error, 'launchctl failed');
-      expect(mockService.calls, isNot(contains('checkHealth:m1')));
-    });
-
-    test('reports missing npx before health check', () async {
-      mockSsh.startResult = SshResult.failure(
-        'npx is not available in the remote login shell. Bridge auto-start uses npx.',
-      );
-      final cubit = createCubit();
-      addTearDown(cubit.close);
-      await Future.microtask(() {});
-      mockService.calls.clear();
-
-      final result = await cubit.startBridge('m1');
-
-      expect(result, false);
-      expect(cubit.state.error, contains('npx is not available'));
-      expect(mockService.calls, isNot(contains('checkHealth:m1')));
-    });
-  });
-
-  group('MachineManagerCubit - SSH update', () {
-    test('retries health check after restart and refreshes version', () async {
-      mockService.checkHealthResults = [
-        MachineStatus.offline,
-        MachineStatus.online,
-      ];
-      mockService.machineStatuses = [
-        MachineWithStatus(
-          machine: Machine(id: 'm1', host: '10.0.0.1'),
-          status: MachineStatus.online,
-          versionInfo: BridgeVersionInfo(version: recommendedBridgeVersion),
-        ),
-      ];
-      final cubit = createCubit();
-      addTearDown(cubit.close);
-      await Future.microtask(() {});
-
-      final result = await cubit.updateBridge('m1');
-
-      expect(result, true);
-      expect(cubit.state.successMessage, 'Bridge Server updated successfully');
-      expect(
-        mockService.calls.where((call) => call == 'checkHealth:m1'),
-        hasLength(2),
-      );
-    });
-
-    test('treats setup service missing as update failure', () async {
-      mockSsh.updateResult = SshResult.failure(
-        'Bridge auto-start setup is required',
-      );
-      final cubit = createCubit();
-      addTearDown(cubit.close);
-      await Future.microtask(() {});
-      mockService.calls.clear();
-
-      final result = await cubit.updateBridge('m1');
-
-      expect(result, false);
-      expect(cubit.state.error, 'Bridge auto-start setup is required');
-      expect(mockService.calls, contains('checkHealth:m1'));
-    });
-
-    test('fails when health never recovers after restart', () async {
-      mockService.defaultCheckHealthResult = MachineStatus.offline;
-      final cubit = createCubit(
-        healthTimeout: const Duration(milliseconds: 10),
-        healthRetryDelay: Duration.zero,
-      );
-      addTearDown(cubit.close);
-      await Future.microtask(() {});
-
-      final result = await cubit.updateBridge('m1');
-
-      expect(result, false);
-      expect(
-        cubit.state.error,
-        'Server process restarted but health check failed',
-      );
-    });
-
-    test('fails when refreshed version is still older than expected', () async {
-      mockService.machineStatuses = [
-        MachineWithStatus(
-          machine: Machine(id: 'm1', host: '10.0.0.1'),
-          status: MachineStatus.online,
-          versionInfo: BridgeVersionInfo(
-            version: olderThanRecommendedBridgeVersion,
-          ),
-        ),
-      ];
-      final cubit = createCubit();
-      addTearDown(cubit.close);
-      await Future.microtask(() {});
-
-      final result = await cubit.updateBridge('m1');
-
-      expect(result, false);
-      expect(
-        cubit.state.error,
-        'Bridge Server restarted but version is still older than $recommendedBridgeVersion',
-      );
-    });
-
-    test('validates updated bridge against npm latest when available', () async {
-      mockService.machineStatuses = [
-        MachineWithStatus(
-          machine: Machine(id: 'm1', host: '10.0.0.1'),
-          status: MachineStatus.online,
-          versionInfo: BridgeVersionInfo(version: recommendedBridgeVersion),
-        ),
-      ];
-      final cubit = createCubit(
-        latestBridgeVersion: newerThanRecommendedBridgeVersion,
-      );
-      addTearDown(cubit.close);
-      await Future.microtask(() {});
-      await cubit.refreshLatestBridgeVersion();
-
-      final result = await cubit.updateBridge('m1');
-
-      expect(result, false);
-      expect(
-        cubit.state.error,
-        'Bridge Server restarted but version is still older than $newerThanRecommendedBridgeVersion',
-      );
     });
   });
 

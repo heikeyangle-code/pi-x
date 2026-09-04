@@ -17,7 +17,6 @@ import 'package:ccpocket/services/in_app_review_service.dart';
 import 'package:ccpocket/services/machine_manager_service.dart';
 import 'package:ccpocket/services/notification_service.dart';
 import 'package:ccpocket/services/revenuecat_service.dart';
-import 'package:ccpocket/services/ssh_startup_service.dart';
 import 'package:ccpocket/services/support_banner_service.dart';
 import 'package:ccpocket/theme/app_theme.dart';
 import 'package:ccpocket/widgets/session_card.dart';
@@ -26,8 +25,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart' hide Provider;
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'helpers/bridge_version_test_values.dart';
 
 class _MockBridgeService extends BridgeService {
   final _connectionController =
@@ -204,27 +201,6 @@ class _FakeRevenueCatService extends RevenueCatService {
     : super(publicApiKey: '', platform: TargetPlatform.macOS) {
     supporterState.value = const SupporterState.inactive();
     catalogState.value = const SupportCatalogState.unavailable();
-  }
-}
-
-class _SeededSettingsCubit extends SettingsCubit {
-  _SeededSettingsCubit(super.prefs, {required String? activeMachineId}) {
-    emit(state.copyWith(activeMachineId: activeMachineId));
-  }
-}
-
-class _FakeSshStartupService extends SshStartupService {
-  final Completer<SshResult> updateCompleter = Completer<SshResult>();
-
-  _FakeSshStartupService(super.machineManager);
-
-  @override
-  Future<SshResult> updateBridgeServer(
-    String machineId, {
-    String? password,
-    Future<String?> Function()? promptForPassword,
-  }) {
-    return updateCompleter.future;
   }
 }
 
@@ -420,8 +396,7 @@ Widget _buildWorkspaceApp({
     bridge.projectsStream,
   );
   final resolvedMachineManagerCubit =
-      machineManagerCubit ??
-      MachineManagerCubit(_StaticMachineManagerService(), null);
+      machineManagerCubit ?? MachineManagerCubit(_StaticMachineManagerService());
 
   return MultiRepositoryProvider(
     providers: [
@@ -1078,7 +1053,12 @@ void main() {
 
       expect(bridge.disconnectCalled, isTrue);
       expect(find.byKey(const ValueKey('session_list_loading')), findsNothing);
-      expect(find.text('Machines'), findsOneWidget);
+      expect(
+        find.text(
+          'Bridge is not connected. Connect from the left pane, or open Setup Guide to configure a machine.',
+        ),
+        findsOneWidget,
+      );
     },
   );
 
@@ -1126,97 +1106,7 @@ void main() {
     );
   });
 
-  testWidgets(
-    'bridge update from settings disconnects and returns to machine list',
-    (tester) async {
-      await tester.binding.setSurfaceSize(const Size(1400, 900));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
 
-      final machine = Machine(
-        id: 'machine-1',
-        name: 'Remote Mac',
-        host: '100.64.0.1',
-        sshEnabled: true,
-        sshUsername: 'k9i',
-      );
-      final machineManagerService = _StaticMachineManagerService(
-        statuses: [
-          MachineWithStatus(
-            machine: machine,
-            status: MachineStatus.online,
-            versionInfo: BridgeVersionInfo(
-              version: olderThanRecommendedBridgeVersion,
-            ),
-          ),
-        ],
-        sshPassword: 'secret',
-      );
-      final sshService = _FakeSshStartupService(machineManagerService);
-      final machineManagerCubit = MachineManagerCubit(
-        machineManagerService,
-        sshService,
-      );
-      final bridge = _MockBridgeService(lastUrl: 'ws://100.64.0.1:8765');
-      final settingsCubit = _SeededSettingsCubit(
-        await SharedPreferences.getInstance(),
-        activeMachineId: 'machine-1',
-      );
-      final draftService = DraftService(await SharedPreferences.getInstance());
-      final revenueCatService = _FakeRevenueCatService();
-      final supportBannerService = await _createSupportBannerService();
-      final shellKey = GlobalKey<WorkspaceShellScreenState>();
-
-      await tester.pumpWidget(
-        _buildWorkspaceApp(
-          bridge: bridge,
-          settingsCubit: settingsCubit,
-          draftService: draftService,
-          revenueCatService: revenueCatService,
-          supportBannerService: supportBannerService,
-          shellKey: shellKey,
-          machineManagerCubit: machineManagerCubit,
-        ),
-      );
-      await _pumpUi(tester);
-
-      shellKey.currentState!.openSettingsCenter(focusConnection: true);
-      await _pumpUi(tester);
-      expect(
-        find.byKey(const ValueKey('settings_update_bridge_button')),
-        findsOneWidget,
-      );
-
-      final updateButton = tester.widget<FilledButton>(
-        find.byKey(const ValueKey('settings_update_bridge_button')),
-      );
-      updateButton.onPressed!();
-      await tester.pump();
-
-      expect(bridge.disconnectCalled, isTrue);
-      expect(machineManagerCubit.state.updatingMachineId, 'machine-1');
-      expect(
-        find.byKey(const ValueKey('embedded_settings_back_button')),
-        findsNothing,
-      );
-      expect(find.text('Machines'), findsOneWidget);
-
-      machineManagerService.replaceStatuses([
-        MachineWithStatus(
-          machine: machine,
-          status: MachineStatus.online,
-          versionInfo: BridgeVersionInfo(version: recommendedBridgeVersion),
-        ),
-      ]);
-      sshService.updateCompleter.complete(SshResult.success());
-      await tester.pump();
-      await tester.pump();
-
-      await settingsCubit.close();
-      await machineManagerCubit.close();
-      machineManagerService.dispose();
-      bridge.dispose();
-    },
-  );
 
   testWidgets('opens session gallery in right pane', (tester) async {
     final bridge = _MockBridgeService();
@@ -1968,7 +1858,7 @@ void main() {
       find.byKey(const ValueKey('workspace_setup_guide_button')),
     );
     await tester.pumpAndSettle();
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < 2; i++) {
       await tester.tap(find.byKey(const ValueKey('guide_next_button')));
       await tester.pumpAndSettle();
     }

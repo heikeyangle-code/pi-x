@@ -368,11 +368,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 .latestBridgeVersionError,
                             onRefreshLatestVersion: () => machineManagerCubit
                                 .refreshLatestBridgeVersion(forceRefresh: true),
-                            onUpdate: machineWithStatus == null
-                                ? null
-                                : () => _updateBridgeFromSettings(
-                                    machineWithStatus,
-                                  ),
+                            onUpdate: null,
                           ),
                         ],
                       ),
@@ -750,67 +746,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-
-              if (state.activeMachineId != null) ...[
-                _SectionHeader(title: l.sectionNotifications),
-                Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    children: [
-                      _PushNotificationTile(
-                        state: state,
-                        onChanged: (enabled) =>
-                            context.read<SettingsCubit>().toggleFcm(enabled),
-                      ),
-                      if (state.fcmEnabled) ...[
-                        Divider(
-                          height: 1,
-                          indent: 16,
-                          endIndent: 16,
-                          color: cs.outlineVariant,
-                        ),
-                        _PushPrivacyTile(
-                          value: state.fcmPrivacy,
-                          syncInProgress: state.fcmSyncInProgress,
-                          onChanged: (enabled) => context
-                              .read<SettingsCubit>()
-                              .toggleFcmPrivacy(enabled),
-                        ),
-                        Divider(
-                          height: 1,
-                          indent: 16,
-                          endIndent: 16,
-                          color: cs.outlineVariant,
-                        ),
-                        _UpdateNotificationLanguageTile(
-                          syncInProgress: state.fcmSyncInProgress,
-                          onTap: () async {
-                            final cubit = context.read<SettingsCubit>();
-                            await cubit.syncPushLocale();
-                            if (context.mounted) {
-                              final status = cubit.state.fcmStatusKey;
-                              final isSuccess =
-                                  status == FcmStatusKey.enabled ||
-                                  status == FcmStatusKey.enabledPending;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    isSuccess
-                                        ? l.notificationLanguageUpdated
-                                        : l.fcmTokenFailed,
-                                  ),
-                                  duration: const Duration(seconds: 2),
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 8),
-              ],
 
               // ── Editor ──
               _SectionHeader(title: l.sectionEditor),
@@ -1294,88 +1229,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
     return null;
   }
-
-  void _updateBridgeFromSettings(MachineWithStatus machine) async {
-    final cubit = context.read<MachineManagerCubit>();
-    final bridge = context.read<BridgeService>();
-    final settingsCubit = context.read<SettingsCubit>();
-    final messenger = ScaffoldMessenger.of(context);
-    final l = AppLocalizations.of(context);
-
-    String? password;
-    if (machine.machine.sshAuthType == SshAuthType.password) {
-      final savedPassword = await cubit.getSshPassword(machine.machine.id);
-      password = savedPassword;
-      if (password == null || password.isEmpty) {
-        password = await _promptForPassword(machine.machine.displayName);
-        if (password == null) return;
-      }
-    }
-
-    if (!mounted) return;
-
-    messenger.showSnackBar(SnackBar(content: Text(l.bridgeUpdateStarted)));
-
-    final isActiveMachine =
-        settingsCubit.state.activeMachineId == machine.machine.id;
-    if (isActiveMachine && bridge.isConnected) {
-      bridge.disconnect();
-    }
-
-    if (widget.embedded) {
-      WorkspaceShellScreen.maybeOf(context)?.popCenterOverlay();
-    } else {
-      await context.router.maybePop();
-    }
-
-    final success = await cubit.updateBridge(
-      machine.machine.id,
-      password: password,
-    );
-
-    final message = success
-        ? l.bridgeUpdateReconnectHint
-        : cubit.state.error ?? l.failedToUpdateServer;
-    messenger.showSnackBar(SnackBar(content: Text(message)));
-  }
-
-  Future<String?> _promptForPassword(String machineName) async {
-    final controller = TextEditingController();
-    final l = AppLocalizations.of(context);
-    return showDialog<String>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l.sshPassword),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(l.sshPasswordPrompt(machineName)),
-            const SizedBox(height: 16),
-            TextField(
-              controller: controller,
-              obscureText: true,
-              autofocus: true,
-              decoration: InputDecoration(
-                labelText: l.password,
-                border: const OutlineInputBorder(),
-              ),
-              onSubmitted: (value) => Navigator.pop(ctx, value),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(l.cancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, controller.text),
-            child: Text(l.update),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 String _gitDiffInteractionModeDescription(
@@ -1634,101 +1487,6 @@ class _BridgeUpdateSetupStep extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(child: Text(text)),
       ],
-    );
-  }
-}
-
-class _PushNotificationTile extends StatelessWidget {
-  final SettingsState state;
-  final ValueChanged<bool> onChanged;
-
-  const _PushNotificationTile({required this.state, required this.onChanged});
-
-  static String? _resolveFcmStatus(AppLocalizations l, FcmStatusKey? key) {
-    if (key == null) return null;
-    return switch (key) {
-      FcmStatusKey.unavailable => l.pushNotificationsUnavailable,
-      FcmStatusKey.bridgeNotInitialized => l.fcmBridgeNotInitialized,
-      FcmStatusKey.tokenFailed => l.fcmTokenFailed,
-      FcmStatusKey.registrationFailed => l.fcmRegistrationFailed,
-      FcmStatusKey.enabled => l.fcmEnabled,
-      FcmStatusKey.enabledPending => l.fcmEnabledPending,
-      FcmStatusKey.disabled => l.fcmDisabled,
-      FcmStatusKey.disabledPending => l.fcmDisabledPending,
-    };
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context);
-    final baseSubtitle = state.fcmAvailable
-        ? l.pushNotificationsSubtitle
-        : l.pushNotificationsUnavailable;
-    final subtitle = _resolveFcmStatus(l, state.fcmStatusKey) ?? baseSubtitle;
-
-    return SwitchListTile(
-      value: state.fcmEnabled,
-      onChanged: state.fcmSyncInProgress ? null : onChanged,
-      title: Text(l.pushNotifications),
-      subtitle: Text(subtitle),
-      secondary: state.fcmSyncInProgress
-          ? const SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : const Icon(Icons.notifications_active_outlined),
-    );
-  }
-}
-
-class _PushPrivacyTile extends StatelessWidget {
-  final bool value;
-  final bool syncInProgress;
-  final ValueChanged<bool> onChanged;
-
-  const _PushPrivacyTile({
-    required this.value,
-    required this.syncInProgress,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context);
-    return SwitchListTile(
-      value: value,
-      onChanged: syncInProgress ? null : onChanged,
-      title: Text(l.pushPrivacyMode),
-      subtitle: Text(l.pushPrivacyModeSubtitle),
-      secondary: const Icon(Icons.visibility_off_outlined),
-    );
-  }
-}
-
-class _UpdateNotificationLanguageTile extends StatelessWidget {
-  final bool syncInProgress;
-  final VoidCallback onTap;
-
-  const _UpdateNotificationLanguageTile({
-    required this.syncInProgress,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context);
-    return ListTile(
-      leading: const Icon(Icons.translate_outlined),
-      title: Text(l.updateNotificationLanguage),
-      trailing: syncInProgress
-          ? const SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : const Icon(Icons.chevron_right, size: 20),
-      onTap: syncInProgress ? null : onTap,
     );
   }
 }

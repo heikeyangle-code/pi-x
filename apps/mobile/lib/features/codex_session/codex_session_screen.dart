@@ -641,7 +641,6 @@ class _CodexChatBody extends HookWidget {
     final showRemoteGitStatusBadge = context.select(
       (SettingsCubit cubit) => cubit.state.showRemoteGitStatusBadge,
     );
-    final settingsCubit = context.read<SettingsCubit>();
 
     // Custom hooks
     final lifecycleState = useAppLifecycleState();
@@ -786,7 +785,7 @@ class _CodexChatBody extends HookWidget {
           effects,
           sessionId: sessionId,
           isBackground: isBackgroundRef.value,
-          remoteNotificationsReady: settingsCubit.state.fcmReady,
+          remoteNotificationsReady: false,
           approval: chatSessionCubit.state.approval,
           l: l,
           collapseToolResults: collapseToolResults,

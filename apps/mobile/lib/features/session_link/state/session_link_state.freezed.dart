@@ -201,7 +201,7 @@ return unavailable();case _:
 
 class SessionLinkResolving implements SessionLinkState {
   const SessionLinkResolving();
-
+  
 
 
 
@@ -233,7 +233,7 @@ String toString() {
 
 class SessionLinkResuming implements SessionLinkState {
   const SessionLinkResuming();
-
+  
 
 
 
@@ -265,7 +265,7 @@ String toString() {
 
 class SessionLinkOpenLive implements SessionLinkState {
   const SessionLinkOpenLive({required this.bridgeSessionId, required this.provider});
-
+  
 
  final  String bridgeSessionId;
  final  String provider;
@@ -333,7 +333,7 @@ as String,
 
 class SessionLinkOpenResumed implements SessionLinkState {
   const SessionLinkOpenResumed({required this.session, this.gitBranch});
-
+  
 
  final  SystemMessage session;
  final  String? gitBranch;
@@ -401,7 +401,7 @@ as String?,
 
 class SessionLinkOpenLegacy implements SessionLinkState {
   const SessionLinkOpenLegacy();
-
+  
 
 
 
@@ -433,7 +433,7 @@ String toString() {
 
 class SessionLinkUnavailable implements SessionLinkState {
   const SessionLinkUnavailable();
-
+  
 
 
 

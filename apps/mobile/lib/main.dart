@@ -16,7 +16,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:app_links/app_links.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -47,7 +46,6 @@ import 'services/connection_url_parser.dart';
 import 'services/database_service.dart';
 import 'services/deep_link_dispatcher.dart';
 import 'services/draft_service.dart';
-import 'services/fcm_service.dart';
 import 'services/in_app_review_service.dart';
 import 'services/machine_manager_service.dart';
 import 'services/mock_preview_extension.dart';
@@ -55,23 +53,12 @@ import 'services/notification_service.dart';
 import 'services/performance_probe_extension.dart';
 import 'services/prompt_history_service.dart';
 import 'services/revenuecat_service.dart';
-import 'services/ssh_bridge_tunnel_service.dart';
-import 'services/ssh_startup_service.dart';
 import 'services/support_banner_service.dart';
 import 'theme/app_theme.dart';
 import 'services/store_screenshot_extension.dart';
 import 'theme/markdown_style.dart';
 import 'utils/platform_helper.dart';
 import 'widgets/release_error_widget.dart';
-
-/// Top-level handler for FCM background messages.
-/// Required by firebase_messaging to process messages when app is in background.
-@pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // No-op: FCM notification messages are automatically displayed by the OS.
-  // This handler is registered to prevent the "no onBackgroundMessage handler"
-  // warning on Android.
-}
 
 /// Checks for Shorebird patches using the user-selected update track.
 Future<void> _checkShorebirdUpdate(SharedPreferences prefs) async {
@@ -129,19 +116,6 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
   const secureStorage = FlutterSecureStorage();
   final machineManagerService = MachineManagerService(prefs, secureStorage);
-  // SSH is only supported on native platforms (not web)
-  final sshStartupService = kIsWeb
-      ? null
-      : SshStartupService(machineManagerService);
-  final sshBridgeTunnelService = kIsWeb
-      ? null
-      : SshBridgeTunnelService(machineManagerService);
-  if (sshBridgeTunnelService != null) {
-    machineManagerService.configureBridgeTunnelResolvers(
-      wsUrlResolver: sshBridgeTunnelService.buildWsUrl,
-      httpBaseUrlResolver: sshBridgeTunnelService.buildHttpBaseUrl,
-    );
-  }
 
   // Shorebird manual update check (auto_update is disabled in shorebird.yaml).
   // Reads the user-selected track from SharedPreferences and checks for patches
@@ -152,8 +126,6 @@ void main() async {
   }
 
   final bridge = BridgeService();
-  bridge.onDisconnect = sshBridgeTunnelService?.closeAll;
-  final fcmService = FcmService();
   final draftService = DraftService(prefs);
   final inAppReviewService = InAppReviewService(prefs: prefs);
   await inAppReviewService.attachToBridge(bridge);
@@ -180,7 +152,6 @@ void main() async {
     prefs,
     bridgeService: bridge,
     machineManager: machineManagerService,
-    fcmService: fcmService,
     revenueCatService: revenueCatService,
     appIconService: appIconService,
   );
@@ -240,14 +211,6 @@ void main() async {
           lazy: false,
           dispose: (service) => service.dispose(),
         ),
-        if (sshStartupService != null)
-          RepositoryProvider<SshStartupService>.value(value: sshStartupService),
-        if (sshBridgeTunnelService != null)
-          RepositoryProvider<SshBridgeTunnelService>(
-            create: (_) => sshBridgeTunnelService,
-            lazy: false,
-            dispose: (service) => unawaited(service.closeAll()),
-          ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -289,7 +252,6 @@ void main() async {
           BlocProvider(
             create: (_) => MachineManagerCubit(
               machineManagerService,
-              sshStartupService,
               refreshLatestBridgeVersionOnInit: true,
             ),
           ),
@@ -298,16 +260,14 @@ void main() async {
             lazy: false,
           ),
         ],
-        child: CcpocketApp(fcmService: fcmService),
+        child: CcpocketApp(),
       ),
     ),
   );
 }
 
 class CcpocketApp extends StatefulWidget {
-  const CcpocketApp({required this.fcmService, super.key});
-
-  final FcmService fcmService;
+  const CcpocketApp({super.key});
 
   @override
   State<CcpocketApp> createState() => _CcpocketAppState();
@@ -317,13 +277,10 @@ class _CcpocketAppState extends State<CcpocketApp> {
   AppLinks? _appLinks;
   final _deepLinkNotifier = ValueNotifier<ConnectionParams?>(null);
   StreamSubscription<Uri>? _linkSub;
-  StreamSubscription<RemoteMessage>? _fcmOnMessageSub;
-  StreamSubscription<RemoteMessage>? _fcmOnMessageOpenedAppSub;
 
   late final AppRouter _appRouter;
   late final DeepLinkDispatcher _deepLinkDispatcher;
   bool _routerInitialized = false;
-  bool _fcmHandlersInitialized = false;
   late final AppLifecycleListener _lifecycleListener;
 
   @override
@@ -361,65 +318,6 @@ class _CcpocketAppState extends State<CcpocketApp> {
         _deepLinkDispatcher.markReady();
       }
     });
-  }
-
-  void _initFcmHandlers() {
-    if (kIsWeb || _fcmHandlersInitialized || !widget.fcmService.isAvailable) {
-      return;
-    }
-    _fcmHandlersInitialized = true;
-
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-    _fcmOnMessageSub = FirebaseMessaging.onMessage.listen((message) {
-      _handleForegroundFcmMessage(message);
-    });
-    _fcmOnMessageOpenedAppSub = FirebaseMessaging.onMessageOpenedApp.listen((
-      message,
-    ) {
-      _openSessionFromData(message.data);
-    });
-
-    FirebaseMessaging.instance
-        .getInitialMessage()
-        .then((message) {
-          if (message != null) {
-            _openSessionFromData(message.data);
-          }
-        })
-        .catchError((e) {
-          logger.error('[fcm] getInitialMessage failed', e);
-        });
-  }
-
-  Future<void> _handleForegroundFcmMessage(RemoteMessage message) async {
-    final data = Map<String, dynamic>.from(message.data);
-    final sessionId = data['sessionId']?.toString();
-    final provider = _normalizeProvider(data['provider']?.toString());
-    if (sessionId == null || sessionId.isEmpty) return;
-    if (NotificationService.instance.isActiveSession(
-      sessionId: sessionId,
-      provider: provider,
-    )) {
-      return;
-    }
-
-    final notification = message.notification;
-    final title =
-        notification?.title ?? data['title']?.toString() ?? 'CC Pocket';
-    final body =
-        notification?.body ??
-        data['body']?.toString() ??
-        'New update available';
-    final eventType = data['eventType']?.toString() ?? '';
-    final payload = jsonEncode({'sessionId': sessionId, 'provider': provider});
-
-    await NotificationService.instance.show(
-      title: title,
-      body: body,
-      payload: payload,
-      id: _notificationId(sessionId, provider, eventType),
-    );
   }
 
   void _openSessionFromPayload(String? payload) {
@@ -469,15 +367,6 @@ class _CcpocketAppState extends State<CcpocketApp> {
     return provider == 'codex' ? 'codex' : 'claude';
   }
 
-  int _notificationId(String sessionId, String provider, String eventType) {
-    final raw = '$provider:$sessionId:$eventType';
-    var hash = 0;
-    for (final code in raw.codeUnits) {
-      hash = ((hash * 31) + code) & 0x7fffffff;
-    }
-    return hash;
-  }
-
   void _initDeepLinks() {
     // app_links includes the cold-start URI as the first stream event.
     try {
@@ -506,8 +395,6 @@ class _CcpocketAppState extends State<CcpocketApp> {
   void dispose() {
     _lifecycleListener.dispose();
     _linkSub?.cancel();
-    _fcmOnMessageSub?.cancel();
-    _fcmOnMessageOpenedAppSub?.cancel();
     _deepLinkNotifier.dispose();
     super.dispose();
   }
@@ -519,9 +406,6 @@ class _CcpocketAppState extends State<CcpocketApp> {
 
     return BlocBuilder<SettingsCubit, SettingsState>(
       builder: (context, settings) {
-        if (settings.fcmEnabledMachines.isNotEmpty && settings.fcmAvailable) {
-          _initFcmHandlers();
-        }
         final appLocale = settings.appLocaleId.isEmpty
             ? null
             : Locale(settings.appLocaleId);

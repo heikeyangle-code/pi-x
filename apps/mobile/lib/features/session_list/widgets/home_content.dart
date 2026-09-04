@@ -254,6 +254,7 @@ class HomeContentState extends State<HomeContent> {
       _refreshSupportBannerVisibility();
     }
 
+    final supportBannerService = context.read<SupportBannerService>();
     if (!identical(_supportBannerService, supportBannerService)) {
       if (_supportBannerService != null && _supportBannerListener != null) {
         _supportBannerService!.removeListener(_supportBannerListener!);

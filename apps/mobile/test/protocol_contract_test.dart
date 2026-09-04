@@ -33,7 +33,12 @@ void main() {
         final json = fixture(name);
 
         expect(json['type'], 'client_capabilities');
-        expect(json['supportedServerMessages'], isA<List<dynamic>>());
+        // ClientMessage.clientCapabilities omits the field when the list is
+        // empty, so a legacy bundle legitimately has no such key.
+        expect(
+          json['supportedServerMessages'],
+          anyOf(isNull, isA<List<dynamic>>()),
+        );
       });
     }
   });

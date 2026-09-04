@@ -22,7 +22,6 @@ import '../../router/app_router.dart';
 import '../../services/bridge_endpoint_probe.dart';
 import '../../services/bridge_service.dart';
 import '../../services/connection_url_parser.dart';
-import '../../services/ssh_bridge_tunnel_service.dart';
 import '../../widgets/workspace_pane_chrome.dart';
 import '../../widgets/adaptive_context_menu.dart';
 import '../../widgets/new_session_sheet.dart';
@@ -516,11 +515,6 @@ class _SessionListScreenState extends State<SessionListScreen>
     }
 
     if (!mounted) return;
-    final tunnelService = context.read<SshBridgeTunnelService?>();
-    if (tunnelService != null) {
-      await tunnelService.closeAll();
-    }
-    if (!mounted) return;
     var connectUrl = url;
     if (trimmedApiKey.isNotEmpty) {
       final sep = connectUrl.contains('?') ? '&' : '?';
@@ -682,10 +676,6 @@ class _SessionListScreenState extends State<SessionListScreen>
       setState(() => _isAutoConnecting = false);
     }
     context.read<BridgeService>().disconnect();
-    final tunnelService = context.read<SshBridgeTunnelService?>();
-    if (tunnelService != null) {
-      unawaited(tunnelService.closeAll());
-    }
     WorkspaceShellScreen.maybeOf(context)?.resetWorkspace();
     context.read<SessionListCubit>().resetFilters();
   }
@@ -2114,7 +2104,6 @@ class _SessionListScreenState extends State<SessionListScreen>
   }) async {
     final cubit = context.read<MachineManagerCubit>();
     final bridge = context.read<BridgeService>();
-    final tunnelService = context.read<SshBridgeTunnelService?>();
     unawaited(cubit.refreshLatestBridgeVersionIfStale());
     late final String wsUrl;
     try {
@@ -2130,12 +2119,10 @@ class _SessionListScreenState extends State<SessionListScreen>
       return false;
     }
     if (!_canContinueConnection(shouldConnect)) {
-      await tunnelService?.closeAll();
       return false;
     }
     final apiKey = await cubit.getApiKey(machine.id);
     if (!_canContinueConnection(shouldConnect)) {
-      await tunnelService?.closeAll();
       return false;
     }
 
@@ -2144,7 +2131,6 @@ class _SessionListScreenState extends State<SessionListScreen>
         resolvedMachine.sshJumpHost?.trim().isNotEmpty == true;
     final actualUseSsl = wsUrl.startsWith('wss://');
     if (!usesEncryptedTunnel && actualUseSsl != resolvedMachine.useSsl) {
-      await tunnelService?.closeAll();
       return await _connectToMachineConfig(
         resolvedMachine,
         shouldConnect: shouldConnect,
@@ -2158,14 +2144,12 @@ class _SessionListScreenState extends State<SessionListScreen>
     )) {
       final shouldContinue = await _confirmAutomaticWsWithApiKey();
       if (shouldContinue != true || !_canContinueConnection(shouldConnect)) {
-        await tunnelService?.closeAll();
         return false;
       }
     }
 
     final machineBeforeRecord = cubit.getMachine(machine.id) ?? machine;
     if (!_hasSameConnectionTarget(resolvedMachine, machineBeforeRecord)) {
-      await tunnelService?.closeAll();
       return await _connectToMachineConfig(
         machineBeforeRecord,
         shouldConnect: shouldConnect,
@@ -2181,12 +2165,10 @@ class _SessionListScreenState extends State<SessionListScreen>
     );
 
     if (!_canContinueConnection(shouldConnect)) {
-      await tunnelService?.closeAll();
       return false;
     }
     final machineBeforeConnect = cubit.getMachine(machine.id) ?? machine;
     if (!_hasSameConnectionTarget(machineBeforeRecord, machineBeforeConnect)) {
-      await tunnelService?.closeAll();
       return await _connectToMachineConfig(
         machineBeforeConnect,
         shouldConnect: shouldConnect,
@@ -2194,9 +2176,6 @@ class _SessionListScreenState extends State<SessionListScreen>
     }
     bridge.connect(wsUrl);
     bridge.savePreferences(machineBeforeConnect.wsUrl);
-    if (tunnelService != null) {
-      unawaited(tunnelService.closeAllExcept(machine.id));
-    }
     return true;
   }
 
@@ -2216,6 +2195,18 @@ class _SessionListScreenState extends State<SessionListScreen>
       before.sshJumpPort == after.sshJumpPort &&
       before.sshJumpUsername == after.sshJumpUsername &&
       before.sshJumpAuthType == after.sshJumpAuthType;
+}
+
+class _SetupStep extends StatelessWidget {
+  final String number;
+  final String title;
+  final String command;
+
+  const _SetupStep({
+    required this.number,
+    required this.title,
+    required this.command,
+  });
 
   @override
   Widget build(BuildContext context) {

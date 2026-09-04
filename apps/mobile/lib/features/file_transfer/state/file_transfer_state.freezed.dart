@@ -201,7 +201,7 @@ return cancelled();case _:
 
 class FileTransferIdle implements FileTransferState {
   const FileTransferIdle();
-
+  
 
 
 
@@ -233,7 +233,7 @@ String toString() {
 
 class FileTransferPreparing implements FileTransferState {
   const FileTransferPreparing();
-
+  
 
 
 
@@ -265,7 +265,7 @@ String toString() {
 
 class FileTransferDownloading implements FileTransferState {
   const FileTransferDownloading({required this.receivedBytes, required this.totalBytes});
-
+  
 
  final  int receivedBytes;
  final  int totalBytes;
@@ -333,7 +333,7 @@ as int,
 
 class FileTransferReady implements FileTransferState {
   const FileTransferReady({required this.localPath, required this.fileName, required this.mimeType, required this.sizeBytes});
-
+  
 
  final  String localPath;
  final  String fileName;
@@ -405,7 +405,7 @@ as int,
 
 class FileTransferFailed implements FileTransferState {
   const FileTransferFailed({required this.errorCode, required this.message});
-
+  
 
  final  String errorCode;
  final  String message;
@@ -473,7 +473,7 @@ as String,
 
 class FileTransferCancelled implements FileTransferState {
   const FileTransferCancelled();
-
+  
 
 
 

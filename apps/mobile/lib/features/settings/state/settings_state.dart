@@ -10,18 +10,6 @@ import '../../../models/terminal_app.dart';
 
 part 'settings_state.freezed.dart';
 
-/// Keys for FCM status messages (resolved to localized strings in the UI).
-enum FcmStatusKey {
-  unavailable,
-  bridgeNotInitialized,
-  tokenFailed,
-  registrationFailed,
-  enabled,
-  enabledPending,
-  disabled,
-  disabledPending,
-}
-
 enum UsageDisplayMode { remaining, used }
 
 /// Application-wide user settings.
@@ -41,23 +29,8 @@ abstract class SettingsState with _$SettingsState {
     /// Empty string means use device default.
     @Default('') String speechLocaleId,
 
-    /// Set of Machine IDs that have push notifications enabled.
-    @Default({}) Set<String> fcmEnabledMachines,
-
-    /// Set of Machine IDs that have privacy mode enabled for push notifications.
-    @Default({}) Set<String> fcmPrivacyMachines,
-
     /// Currently connected Machine ID (null when disconnected).
     String? activeMachineId,
-
-    /// Whether Firebase Messaging is available in this runtime.
-    @Default(false) bool fcmAvailable,
-
-    /// True while token registration/unregistration is being synchronized.
-    @Default(false) bool fcmSyncInProgress,
-
-    /// Last push sync status key (resolved to localized string in UI).
-    FcmStatusKey? fcmStatusKey,
 
     /// Shorebird update track ('stable' or 'staging').
     @Default('stable') String shorebirdTrack,
@@ -123,16 +96,4 @@ abstract class SettingsState with _$SettingsState {
     /// Whether new Claude sessions should be automatically named after the first turn.
     @Default(false) bool autoRenameClaudeSessions,
   }) = _SettingsState;
-
-  /// Whether push notifications are enabled for the currently connected machine.
-  bool get fcmEnabled =>
-      activeMachineId != null && fcmEnabledMachines.contains(activeMachineId);
-
-  /// Whether this Bridge has acknowledged the active token registration.
-  bool get fcmReady =>
-      fcmAvailable && fcmEnabled && fcmStatusKey == FcmStatusKey.enabled;
-
-  /// Whether privacy mode is enabled for the currently connected machine.
-  bool get fcmPrivacy =>
-      activeMachineId != null && fcmPrivacyMachines.contains(activeMachineId);
 }

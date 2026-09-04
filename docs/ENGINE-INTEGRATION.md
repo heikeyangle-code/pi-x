@@ -64,3 +64,13 @@ Flutter App ──(CC Pocket 协议, ws@127.0.0.1)──▶ Pi Host(Node, 稳定
 - RPC 无 `ctx.ui.custom()`/TUI 键盘组件 → GUI 不依赖，无需支持
 - 扩展的 `notify`/`setStatus`/`setTitle` → 映射为 App 内通知/状态条/标题
 - 若未来需要进程内扩展 GUI（setWidget 级别）→ 再评估 AgentSession 内嵌（B），届时 pi-provider 作为独立 bundle 维护
+
+## 6. 决策修订：wire = pi 直通（薄转发），映射表降级为可选过渡
+
+- 长期目标：Pi Host = 薄网关（进程池 + FS 操作 + **pi 帧直通**），App 直接消费 pi 事件模型
+  （message_update text/thinking/toolcall delta、extension_ui_request、agent_*、compaction…）——
+  与引擎 1:1、单一版本维度、无双重翻译。
+- 映射表（M2-WIRING）仅作"复用上游 CC Pocket UI"的过渡路径，不作为最终形态。
+- 帧 envelope：`{engineVersion, protocolVersion}` + manifest。App 按版本前向兼容；
+  事件契约冒烟（get_commands/prompt/审批回路字段断言）进版本管道；破坏性协议变化走
+  `breaking.protocol` → 客户端适配版随引擎一起发。

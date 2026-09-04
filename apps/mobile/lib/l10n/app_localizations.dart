@@ -5147,6 +5147,96 @@ abstract class AppLocalizations {
   /// **'カスタムプロバイダーとモデル（models.json）'**
   String get piEngineModelsSubtitle;
 
+  /// No description provided for @piEngineCommands.
+  ///
+  /// In ja, this message translates to:
+  /// **'コマンドパレット'**
+  String get piEngineCommands;
+
+  /// No description provided for @piEngineCommandsSubtitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'スラッシュコマンド・テンプレート・スキル（get_commands）'**
+  String get piEngineCommandsSubtitle;
+
+  /// No description provided for @piEngineCommandsHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'コマンドはエンジン側で展開されます。タップして /name をコピーし、チャット入力欄に貼り付けてください。'**
+  String get piEngineCommandsHint;
+
+  /// No description provided for @piEngineCommandsEmpty.
+  ///
+  /// In ja, this message translates to:
+  /// **'エンジンはコマンドを返しませんでした。'**
+  String get piEngineCommandsEmpty;
+
+  /// No description provided for @piEngineCommandsGroupExtension.
+  ///
+  /// In ja, this message translates to:
+  /// **'拡張'**
+  String get piEngineCommandsGroupExtension;
+
+  /// No description provided for @piEngineCommandsGroupPrompt.
+  ///
+  /// In ja, this message translates to:
+  /// **'テンプレート'**
+  String get piEngineCommandsGroupPrompt;
+
+  /// No description provided for @piEngineCommandsGroupSkill.
+  ///
+  /// In ja, this message translates to:
+  /// **'スキル'**
+  String get piEngineCommandsGroupSkill;
+
+  /// No description provided for @piEngineCommandsCopied.
+  ///
+  /// In ja, this message translates to:
+  /// **'「/{name}」をコピーしました。入力欄に貼り付けて使用してください。'**
+  String piEngineCommandsCopied(String name);
+
+  /// No description provided for @piEngineExtensions.
+  ///
+  /// In ja, this message translates to:
+  /// **'拡張機能'**
+  String get piEngineExtensions;
+
+  /// No description provided for @piEngineExtensionsSubtitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'検出された拡張と信頼の警告'**
+  String get piEngineExtensionsSubtitle;
+
+  /// No description provided for @piEngineExtensionsTrustWarning.
+  ///
+  /// In ja, this message translates to:
+  /// **'拡張は任意のコードを実行できます（ファイル・ネットワークへのアクセスを含む）。信頼できる提供元のものだけをインストールしてください。'**
+  String get piEngineExtensionsTrustWarning;
+
+  /// No description provided for @piEngineExtensionsEmpty.
+  ///
+  /// In ja, this message translates to:
+  /// **'拡張はまだありません。~/.pi/agent/extensions/ かプロジェクトの .pi/extensions/ に置いてください。'**
+  String get piEngineExtensionsEmpty;
+
+  /// No description provided for @piEngineExtensionsCount.
+  ///
+  /// In ja, this message translates to:
+  /// **'{count} 個の拡張'**
+  String piEngineExtensionsCount(int count);
+
+  /// No description provided for @piEngineExtensionsApply.
+  ///
+  /// In ja, this message translates to:
+  /// **'反映'**
+  String get piEngineExtensionsApply;
+
+  /// No description provided for @piEngineExtensionsReloadHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'追加・変更した拡張はエンジンの再起動（または /reload）で反映されます。'**
+  String get piEngineExtensionsReloadHint;
+
   /// No description provided for @piEngineModelsEmpty.
   ///
   /// In ja, this message translates to:

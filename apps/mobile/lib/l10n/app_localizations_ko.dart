@@ -2762,6 +2762,60 @@ class AppLocalizationsKo extends AppLocalizations {
   String get piEngineModelsSubtitle => '사용자 정의 공급자 및 모델(models.json)';
 
   @override
+  String get piEngineCommands => '명령 팔레트';
+
+  @override
+  String get piEngineCommandsSubtitle =>
+      '슬래시 명령·템플릿·스킬 (get_commands)';
+
+  @override
+  String get piEngineCommandsHint =>
+      '명령은 엔진에서 확장됩니다. 탭하여 /name 을 복사한 뒤 채팅 입력란에 붙여넣으세요.';
+
+  @override
+  String get piEngineCommandsEmpty => '엔진이 명령을 반환하지 않았습니다.';
+
+  @override
+  String get piEngineCommandsGroupExtension => '확장';
+
+  @override
+  String get piEngineCommandsGroupPrompt => '템플릿';
+
+  @override
+  String get piEngineCommandsGroupSkill => '스킬';
+
+  @override
+  String piEngineCommandsCopied(String name) {
+    return '/$name 을(를) 복사했습니다. 입력란에 붙여넣어 사용하세요.';
+  }
+
+  @override
+  String get piEngineExtensions => '확장 기능';
+
+  @override
+  String get piEngineExtensionsSubtitle => '감지된 확장 및 신뢰 경고';
+
+  @override
+  String get piEngineExtensionsTrustWarning =>
+      '확장은 파일과 네트워크에 접근할 수 있는 임의 코드를 실행합니다. 신뢰할 수 있는 출처의 확장만 설치하세요.';
+
+  @override
+  String get piEngineExtensionsEmpty =>
+      '확장이 아직 없습니다. ~/.pi/agent/extensions/ 또는 프로젝트의 .pi/extensions/ 폴더에 넣으세요.';
+
+  @override
+  String piEngineExtensionsCount(int count) {
+    return '확장 $count개';
+  }
+
+  @override
+  String get piEngineExtensionsApply => '적용';
+
+  @override
+  String get piEngineExtensionsReloadHint =>
+      '새로 추가하거나 변경한 확장은 엔진 재시작(또는 /reload) 후 적용됩니다.';
+
+  @override
   String get piEngineModelsEmpty => '아직 사용자 정의 공급자가 없습니다. +를 눌러 추가하세요.';
 
   @override

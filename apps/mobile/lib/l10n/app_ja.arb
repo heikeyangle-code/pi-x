@@ -1211,5 +1211,30 @@
   "piEngineProviderId": "プロバイダー ID",
   "piEngineProviderBaseUrl": "ベース URL",
   "piEngineProviderApi": "API",
-  "piEngineProviderApiKey": "API キー"
+  "piEngineProviderApiKey": "API キー",
+  "piEngineCommands": "コマンドパレット",
+  "piEngineCommandsSubtitle": "スラッシュコマンド・テンプレート・スキル（get_commands）",
+  "piEngineCommandsHint": "コマンドはエンジン側で展開されます。タップして /name をコピーし、チャット入力欄に貼り付けてください。",
+  "piEngineCommandsEmpty": "エンジンはコマンドを返しませんでした。",
+  "piEngineCommandsGroupExtension": "拡張",
+  "piEngineCommandsGroupPrompt": "テンプレート",
+  "piEngineCommandsGroupSkill": "スキル",
+  "piEngineCommandsCopied": "「/{name}」をコピーしました。入力欄に貼り付けて使用してください。",
+  "@piEngineCommandsCopied": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "piEngineExtensions": "拡張機能",
+  "piEngineExtensionsSubtitle": "検出された拡張と信頼の警告",
+  "piEngineExtensionsTrustWarning": "拡張は任意のコードを実行できます（ファイル・ネットワークへのアクセスを含む）。信頼できる提供元のものだけをインストールしてください。",
+  "piEngineExtensionsEmpty": "拡張はまだありません。~/.pi/agent/extensions/ かプロジェクトの .pi/extensions/ に置いてください。",
+  "piEngineExtensionsCount": "{count} 個の拡張",
+  "@piEngineExtensionsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "piEngineExtensionsApply": "反映",
+  "piEngineExtensionsReloadHint": "追加・変更した拡張はエンジンの再起動（または /reload）で反映されます。"
 }

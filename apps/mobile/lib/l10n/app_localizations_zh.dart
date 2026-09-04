@@ -2703,6 +2703,59 @@ class AppLocalizationsZh extends AppLocalizations {
   String get piEngineModelsSubtitle => '自定义 Provider 与模型（models.json）';
 
   @override
+  String get piEngineCommands => '命令面板';
+
+  @override
+  String get piEngineCommandsSubtitle => '斜杠命令、模板与技能（get_commands）';
+
+  @override
+  String get piEngineCommandsHint =>
+      '命令由引擎展开。点击复制 /name，粘贴到聊天输入框即可使用。';
+
+  @override
+  String get piEngineCommandsEmpty => '引擎没有返回任何命令。';
+
+  @override
+  String get piEngineCommandsGroupExtension => '扩展';
+
+  @override
+  String get piEngineCommandsGroupPrompt => '模板';
+
+  @override
+  String get piEngineCommandsGroupSkill => '技能';
+
+  @override
+  String piEngineCommandsCopied(String name) {
+    return '已复制 /$name，粘贴到输入框使用。';
+  }
+
+  @override
+  String get piEngineExtensions => '扩展';
+
+  @override
+  String get piEngineExtensionsSubtitle => '已发现的扩展与信任警告';
+
+  @override
+  String get piEngineExtensionsTrustWarning =>
+      '扩展是可执行代码，可访问你的文件和网络。请只安装可信来源的扩展。';
+
+  @override
+  String get piEngineExtensionsEmpty =>
+      '还没有扩展。请放入 ~/.pi/agent/extensions/ 或项目的 .pi/extensions/ 目录。';
+
+  @override
+  String piEngineExtensionsCount(int count) {
+    return '$count 个扩展';
+  }
+
+  @override
+  String get piEngineExtensionsApply => '应用更改';
+
+  @override
+  String get piEngineExtensionsReloadHint =>
+      '新增或修改的扩展需重启引擎（或 /reload）后生效。';
+
+  @override
   String get piEngineModelsEmpty => '还没有自定义 Provider。点击 + 添加。';
 
   @override

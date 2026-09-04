@@ -1286,5 +1286,30 @@
   "piEngineProviderId": "Provider ID",
   "piEngineProviderBaseUrl": "基础地址",
   "piEngineProviderApi": "API",
-  "piEngineProviderApiKey": "API 密钥"
+  "piEngineProviderApiKey": "API 密钥",
+  "piEngineCommands": "命令面板",
+  "piEngineCommandsSubtitle": "斜杠命令、模板与技能（get_commands）",
+  "piEngineCommandsHint": "命令由引擎展开。点击复制 /name，粘贴到聊天输入框即可使用。",
+  "piEngineCommandsEmpty": "引擎没有返回任何命令。",
+  "piEngineCommandsGroupExtension": "扩展",
+  "piEngineCommandsGroupPrompt": "模板",
+  "piEngineCommandsGroupSkill": "技能",
+  "piEngineCommandsCopied": "已复制 /{name}，粘贴到输入框使用。",
+  "@piEngineCommandsCopied": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "piEngineExtensions": "扩展",
+  "piEngineExtensionsSubtitle": "已发现的扩展与信任警告",
+  "piEngineExtensionsTrustWarning": "扩展是可执行代码，可访问你的文件和网络。请只安装可信来源的扩展。",
+  "piEngineExtensionsEmpty": "还没有扩展。请放入 ~/.pi/agent/extensions/ 或项目的 .pi/extensions/ 目录。",
+  "piEngineExtensionsCount": "{count} 个扩展",
+  "@piEngineExtensionsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "piEngineExtensionsApply": "应用更改",
+  "piEngineExtensionsReloadHint": "新增或修改的扩展需重启引擎（或 /reload）后生效。"
 }

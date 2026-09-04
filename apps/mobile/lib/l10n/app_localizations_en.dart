@@ -2851,6 +2851,61 @@ class AppLocalizationsEn extends AppLocalizations {
       'Custom providers and models (models.json)';
 
   @override
+  String get piEngineCommands => 'Command palette';
+
+  @override
+  String get piEngineCommandsSubtitle =>
+      'Slash commands, templates & skills (get_commands)';
+
+  @override
+  String get piEngineCommandsHint =>
+      'Commands expand engine-side. Tap to copy /name, then paste it into the chat input.';
+
+  @override
+  String get piEngineCommandsEmpty => 'The engine returned no commands.';
+
+  @override
+  String get piEngineCommandsGroupExtension => 'Extensions';
+
+  @override
+  String get piEngineCommandsGroupPrompt => 'Templates';
+
+  @override
+  String get piEngineCommandsGroupSkill => 'Skills';
+
+  @override
+  String piEngineCommandsCopied(String name) {
+    return 'Copied /$name. Paste it into the input to use it.';
+  }
+
+  @override
+  String get piEngineExtensions => 'Extensions';
+
+  @override
+  String get piEngineExtensionsSubtitle =>
+      'Detected extensions & trust warning';
+
+  @override
+  String get piEngineExtensionsTrustWarning =>
+      'Extensions run arbitrary code with access to your files and network. Only install extensions from sources you trust.';
+
+  @override
+  String get piEngineExtensionsEmpty =>
+      'No extensions yet. Place them in ~/.pi/agent/extensions/ or the project .pi/extensions/ folder.';
+
+  @override
+  String piEngineExtensionsCount(int count) {
+    return '$count extensions';
+  }
+
+  @override
+  String get piEngineExtensionsApply => 'Apply';
+
+  @override
+  String get piEngineExtensionsReloadHint =>
+      'New or changed extensions take effect after an engine restart (or /reload).';
+
+  @override
   String get piEngineModelsEmpty =>
       'No custom providers yet. Tap + to add one.';
 

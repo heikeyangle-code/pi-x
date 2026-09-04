@@ -5,7 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../services/pi_host_service.dart';
+import 'commands_screen.dart';
 import 'engine_flags_screen.dart';
+import 'extensions_screen.dart';
 import 'models_screen.dart';
 import 'pi_engine_widgets.dart';
 import 'system_prompt_screen.dart';
@@ -88,6 +90,36 @@ class _PiEngineSettingsScreenState extends State<PiEngineSettingsScreen> {
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute<void>(
                     builder: (_) => const EngineFlagsScreen(),
+                  ),
+                ),
+              ),
+              const Divider(height: 1, indent: 56),
+              ListTile(
+                leading: Icon(
+                  Icons.terminal,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                title: Text(l.piEngineCommands),
+                subtitle: Text(l.piEngineCommandsSubtitle),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const CommandsScreen(),
+                  ),
+                ),
+              ),
+              const Divider(height: 1, indent: 56),
+              ListTile(
+                leading: Icon(
+                  Icons.extension_outlined,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                title: Text(l.piEngineExtensions),
+                subtitle: Text(l.piEngineExtensionsSubtitle),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const ExtensionsScreen(),
                   ),
                 ),
               ),

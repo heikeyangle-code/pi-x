@@ -1181,5 +1181,30 @@
   "piEngineProviderId": "Provider ID",
   "piEngineProviderBaseUrl": "Base URL",
   "piEngineProviderApi": "API",
-  "piEngineProviderApiKey": "API key"
+  "piEngineProviderApiKey": "API key",
+  "piEngineCommands": "Command palette",
+  "piEngineCommandsSubtitle": "Slash commands, templates & skills (get_commands)",
+  "piEngineCommandsHint": "Commands expand engine-side. Tap to copy /name, then paste it into the chat input.",
+  "piEngineCommandsEmpty": "The engine returned no commands.",
+  "piEngineCommandsGroupExtension": "Extensions",
+  "piEngineCommandsGroupPrompt": "Templates",
+  "piEngineCommandsGroupSkill": "Skills",
+  "piEngineCommandsCopied": "Copied /{name}. Paste it into the input to use it.",
+  "@piEngineCommandsCopied": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "piEngineExtensions": "Extensions",
+  "piEngineExtensionsSubtitle": "Detected extensions & trust warning",
+  "piEngineExtensionsTrustWarning": "Extensions run arbitrary code with access to your files and network. Only install extensions from sources you trust.",
+  "piEngineExtensionsEmpty": "No extensions yet. Place them in ~/.pi/agent/extensions/ or the project .pi/extensions/ folder.",
+  "piEngineExtensionsCount": "{count} extensions",
+  "@piEngineExtensionsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "piEngineExtensionsApply": "Apply",
+  "piEngineExtensionsReloadHint": "New or changed extensions take effect after an engine restart (or /reload)."
 }

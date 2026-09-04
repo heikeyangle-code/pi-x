@@ -63,6 +63,15 @@
   - 共享助手 `confirmRestartEngine`（各管理子页统一"重启引擎"入口）+ `ensurePiHostConnected`
     （首连/重连引导）；本地化键 `piEngine*` 补齐 en/zh/ja/ko 四个 arb。
     验证：flutter analyze 无 error/warning、pi_engine 模型层单测全绿、bridge tsc + 1161 单测全过。
+- **命令面板 + 扩展管理 UI（Flutter，2026-09-04）**：Pi 引擎设置页新增两个入口——
+  - 命令面板（`commands_screen.dart` + `pi_engine_commands.dart`）：`get_commands` 拉取
+    引擎全部斜杠命令/模板/技能，按来源（extension/prompt/skill）分组展示（名称+描述），
+    点击复制 `/name ` 到剪贴板（命令由引擎侧展开，App 零模板逻辑，docs/ENGINE-UI-SURFACES §4）；
+  - 扩展管理（`extensions_screen.dart`）：`list_extensions` 列出
+    `~/.pi/agent/extensions/` 与项目 `.pi/extensions/` 下已发现的扩展，顶部信任警告
+    （扩展=任意代码），空态说明放置位置，"重启引擎"入口复用 `confirmRestartEngine`；
+  - 本地化键 `piEngineCommands*`/`piEngineExtensions*` 补齐 en/ja/zh/ko 四个 arb；
+    新增 `pi_engine_commands_test.dart`（解析/缺失字段/相等性单测）。
 
 ## 已知问题（open）
 
@@ -93,7 +102,8 @@
 2. App ⇄ PiHost 的 wire client（Flutter 消费 envelope）→ 真机/模拟器端到端
    （`pi_host_service.dart` + 管理页已就绪，待真机连本机引擎全链路冒烟）
 3. ~~M1 页面：Provider/模型管理（models.json 表单）~~ ✅ `models_screen.dart` 已实现；
-   命令面板（get_commands）、扩展管理 UI（list_extensions）待补
+   ~~命令面板（get_commands）、扩展管理 UI（list_extensions）~~ ✅ `commands_screen.dart` +
+   `extensions_screen.dart` 已实现（命令面板 M1 为浏览+复制，执行随 wire client 落地）
 4. ~~引擎包运行时（APK 内置基线 + 热更）落地 ENGINE-BUNDLE 配方~~ ✅ 配方已脚本化并过 CI；APK 内置+热更运行时待 Android 侧落地
 5. ~~Flutter 端补扩展 UI 四个对话框控件（confirm/select/input/editor，接已打通的
    `extension_ui_request/response` 闭环）~~ ✅ `extension_ui_dialogs.dart` + `PiExtensionUiHost` 已实现，扩展 UI 兼容在 App 层落地

@@ -2740,6 +2740,60 @@ class AppLocalizationsJa extends AppLocalizations {
   String get piEngineModelsSubtitle => 'カスタムプロバイダーとモデル（models.json）';
 
   @override
+  String get piEngineCommands => 'コマンドパレット';
+
+  @override
+  String get piEngineCommandsSubtitle =>
+      'スラッシュコマンド・テンプレート・スキル（get_commands）';
+
+  @override
+  String get piEngineCommandsHint =>
+      'コマンドはエンジン側で展開されます。タップして /name をコピーし、チャット入力欄に貼り付けてください。';
+
+  @override
+  String get piEngineCommandsEmpty => 'エンジンはコマンドを返しませんでした。';
+
+  @override
+  String get piEngineCommandsGroupExtension => '拡張';
+
+  @override
+  String get piEngineCommandsGroupPrompt => 'テンプレート';
+
+  @override
+  String get piEngineCommandsGroupSkill => 'スキル';
+
+  @override
+  String piEngineCommandsCopied(String name) {
+    return '「/$name」をコピーしました。入力欄に貼り付けて使用してください。';
+  }
+
+  @override
+  String get piEngineExtensions => '拡張機能';
+
+  @override
+  String get piEngineExtensionsSubtitle => '検出された拡張と信頼の警告';
+
+  @override
+  String get piEngineExtensionsTrustWarning =>
+      '拡張は任意のコードを実行できます（ファイル・ネットワークへのアクセスを含む）。信頼できる提供元のものだけをインストールしてください。';
+
+  @override
+  String get piEngineExtensionsEmpty =>
+      '拡張はまだありません。~/.pi/agent/extensions/ かプロジェクトの .pi/extensions/ に置いてください。';
+
+  @override
+  String piEngineExtensionsCount(int count) {
+    return '$count 個の拡張';
+  }
+
+  @override
+  String get piEngineExtensionsApply => '反映';
+
+  @override
+  String get piEngineExtensionsReloadHint =>
+      '追加・変更した拡張はエンジンの再起動（または /reload）で反映されます。';
+
+  @override
   String get piEngineModelsEmpty => 'カスタムプロバイダーはまだありません。+ をタップして追加。';
 
   @override

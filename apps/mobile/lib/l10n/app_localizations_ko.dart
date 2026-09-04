@@ -809,9 +809,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get bridgeUpdateAvailable => '업데이트 사용 가능';
 
   @override
-  String get bridgeUpdateRequiresSetup => 'SSH 및 Bridge 자동 시작 설정이 필요합니다';
-
-  @override
   String get bridgeVersionUnknown => 'Bridge 버전 알 수 없음';
 
   @override
@@ -832,22 +829,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get bridgeLatestVersionRetry => '최신 버전 확인 재시도';
-
-  @override
-  String get bridgeUpdateSetupTitle => 'Bridge 업데이트 준비';
-
-  @override
-  String get bridgeUpdateSetupDescription =>
-      '앱에서 Bridge를 업데이트하려면 컴퓨터의 SSH 접속과 Bridge 자동 시작 설정이 필요합니다.';
-
-  @override
-  String get bridgeUpdateSetupEnableSsh => 'Bridge 연결 설정에서 SSH를 활성화하세요.';
-
-  @override
-  String get bridgeUpdateSetupRunCommand => '대상 컴퓨터에서 설정 명령을 실행하세요.';
-
-  @override
-  String get bridgeUpdateSetupCommand => 'npx @ccpocket/bridge@1 setup';
 
   @override
   String get stopServer => '서버 중지';

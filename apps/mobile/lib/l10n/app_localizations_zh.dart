@@ -801,9 +801,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get bridgeUpdateAvailable => '有可用更新';
 
   @override
-  String get bridgeUpdateRequiresSetup => '需要 SSH 和 Bridge 自动启动设置';
-
-  @override
   String get bridgeVersionUnknown => '无法确认 Bridge 版本';
 
   @override
@@ -824,22 +821,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get bridgeLatestVersionRetry => '重新检查最新版本';
-
-  @override
-  String get bridgeUpdateSetupTitle => '准备 Bridge 更新';
-
-  @override
-  String get bridgeUpdateSetupDescription =>
-      '要从应用更新 Bridge，需要为这台机器启用 SSH 连接并完成 Bridge 自动启动设置。';
-
-  @override
-  String get bridgeUpdateSetupEnableSsh => '在 Bridge 连接设置中启用 SSH。';
-
-  @override
-  String get bridgeUpdateSetupRunCommand => '在目标机器上运行设置命令。';
-
-  @override
-  String get bridgeUpdateSetupCommand => 'npx @ccpocket/bridge@1 setup';
 
   @override
   String get stopServer => '停止服务器';

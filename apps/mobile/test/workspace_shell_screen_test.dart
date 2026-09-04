@@ -206,10 +206,9 @@ class _FakeRevenueCatService extends RevenueCatService {
 
 class _StaticMachineManagerService implements MachineManagerService {
   final _controller = StreamController<List<MachineWithStatus>>.broadcast();
-  List<MachineWithStatus> statuses;
-  final String? sshPassword;
+  List<MachineWithStatus> statuses = const [];
 
-  _StaticMachineManagerService({this.statuses = const [], this.sshPassword});
+  _StaticMachineManagerService();
 
   @override
   Stream<List<MachineWithStatus>> get machines => _controller.stream;
@@ -235,8 +234,6 @@ class _StaticMachineManagerService implements MachineManagerService {
   Future<MachineStatus> checkHealth(
     String machineId, {
     Duration timeout = const Duration(seconds: 5),
-    String? password,
-    Future<String?> Function()? promptForPassword,
   }) async {
     for (final status in statuses) {
       if (status.machine.id == machineId) return status.status;
@@ -262,35 +259,6 @@ class _StaticMachineManagerService implements MachineManagerService {
   );
 
   @override
-  Future<void> addMachine(
-    Machine machine, {
-    String? apiKey,
-    String? sshPassword,
-    String? sshPrivateKey,
-    String? sshJumpPassword,
-    String? sshJumpPrivateKey,
-  }) async {}
-
-  @override
-  Future<void> updateMachine(
-    Machine machine, {
-    String? apiKey,
-    String? sshPassword,
-    String? sshPrivateKey,
-    String? sshJumpPassword,
-    String? sshJumpPrivateKey,
-    bool clearApiKey = false,
-    bool clearCredentials = false,
-    bool clearJumpCredentials = false,
-  }) async {}
-
-  @override
-  Future<void> deleteMachine(String id) async {}
-
-  @override
-  Future<void> toggleFavorite(String machineId) async {}
-
-  @override
   Machine? getMachine(String id) {
     for (final status in statuses) {
       if (status.machine.id == id) return status.machine;
@@ -299,43 +267,14 @@ class _StaticMachineManagerService implements MachineManagerService {
   }
 
   @override
+  Machine? get localMachine =>
+      statuses.isNotEmpty ? statuses.first.machine : null;
+
+  @override
   Future<String?> getApiKey(String machineId) async => null;
 
   @override
-  Future<String?> getSshPassword(String machineId) async => sshPassword;
-
-  @override
-  Future<String?> getSshPrivateKey(String machineId) async => null;
-
-  @override
-  Future<String?> getSshJumpPassword(String machineId) async => null;
-
-  @override
-  Future<String?> getSshJumpPrivateKey(String machineId) async => null;
-
-  @override
   Future<String> buildWsUrl(String machineId) async => 'ws://127.0.0.1:8765';
-
-  @override
-  Future<String> buildWsUrlWithSshCredentials(
-    String machineId, {
-    String? password,
-    Future<String?> Function()? promptForPassword,
-  }) async => 'ws://127.0.0.1:8765';
-
-  @override
-  void configureBridgeTunnelResolvers({
-    BridgeWsUrlResolver? wsUrlResolver,
-    BridgeHttpBaseUrlResolver? httpBaseUrlResolver,
-  }) {}
-
-  @override
-  Machine createNew({
-    String? name,
-    required String host,
-    int port = 8765,
-    bool useSsl = false,
-  }) => Machine(id: 'new', host: host, port: port, name: name, useSsl: useSsl);
 
   @override
   Machine? findByHostPort(String host, int port) {
@@ -347,7 +286,9 @@ class _StaticMachineManagerService implements MachineManagerService {
   }
 
   @override
-  void startPeriodicHealthCheck({Duration? interval}) {}
+  void startPeriodicHealthCheck({
+    Duration interval = const Duration(seconds: 30),
+  }) {}
 
   @override
   void stopPeriodicHealthCheck() {}

@@ -120,9 +120,8 @@ class _FakeSecureStorage extends Fake implements FlutterSecureStorage {
 class _StaticMachineManagerService implements MachineManagerService {
   final _controller = StreamController<List<MachineWithStatus>>.broadcast();
   List<MachineWithStatus> _statuses;
-  final String? sshPassword;
 
-  _StaticMachineManagerService(this._statuses, {this.sshPassword});
+  _StaticMachineManagerService(this._statuses);
 
   @override
   Stream<List<MachineWithStatus>> get machines => _controller.stream;
@@ -141,8 +140,6 @@ class _StaticMachineManagerService implements MachineManagerService {
   Future<MachineStatus> checkHealth(
     String machineId, {
     Duration timeout = const Duration(seconds: 5),
-    String? password,
-    Future<String?> Function()? promptForPassword,
   }) async => _findStatus(machineId)?.status ?? MachineStatus.unknown;
 
   @override
@@ -165,86 +162,22 @@ class _StaticMachineManagerService implements MachineManagerService {
   }
 
   @override
-  Future<void> addMachine(
-    Machine machine, {
-    String? apiKey,
-    String? sshPassword,
-    String? sshPrivateKey,
-    String? sshJumpPassword,
-    String? sshJumpPrivateKey,
-  }) async {}
-
-  @override
-  Future<void> updateMachine(
-    Machine machine, {
-    String? apiKey,
-    String? sshPassword,
-    String? sshPrivateKey,
-    String? sshJumpPassword,
-    String? sshJumpPrivateKey,
-    bool clearApiKey = false,
-    bool clearCredentials = false,
-    bool clearJumpCredentials = false,
-  }) async {}
-
-  @override
-  Future<void> deleteMachine(String id) async {}
-
-  @override
-  Future<void> toggleFavorite(String machineId) async {}
-
-  @override
   Machine? getMachine(String id) => _findStatus(id)?.machine;
+
+  @override
+  Machine? get localMachine =>
+      _statuses.isNotEmpty ? _statuses.first.machine : null;
 
   @override
   Future<String?> getApiKey(String machineId) async => null;
 
   @override
-  Future<String?> getSshPassword(String machineId) async => sshPassword;
-
-  @override
-  Future<String?> getSshPrivateKey(String machineId) async => null;
-
-  @override
-  Future<String?> getSshJumpPassword(String machineId) async => null;
-
-  @override
-  Future<String?> getSshJumpPrivateKey(String machineId) async => null;
-
-  @override
   Future<String> buildWsUrl(String machineId) async => 'ws://127.0.0.1:8765';
 
   @override
-  Future<String> buildWsUrlWithSshCredentials(
-    String machineId, {
-    String? password,
-    Future<String?> Function()? promptForPassword,
-  }) async => 'ws://127.0.0.1:8765';
-
-  @override
-  void configureBridgeTunnelResolvers({
-    BridgeWsUrlResolver? wsUrlResolver,
-    BridgeHttpBaseUrlResolver? httpBaseUrlResolver,
+  void startPeriodicHealthCheck({
+    Duration interval = const Duration(seconds: 30),
   }) {}
-
-  @override
-  Machine createNew({
-    String? name,
-    required String host,
-    int port = 8765,
-    bool useSsl = false,
-  }) {
-    return Machine(
-      id: 'new',
-      host: host,
-      port: port,
-      name: name,
-      useSsl: useSsl,
-    );
-  }
-
-  @override
-  void startPeriodicHealthCheck({Duration? interval}) {}
 
   @override
   void stopPeriodicHealthCheck() {}
@@ -381,10 +314,8 @@ void main() {
           MachineWithStatus(
             machine: Machine(
               id: 'machine-1',
-              name: 'Remote Mac',
-              host: '100.64.0.1',
-              sshEnabled: true,
-              sshUsername: 'k9i',
+              name: 'Pi X Local Engine',
+              host: '127.0.0.1',
             ),
             status: MachineStatus.online,
             versionInfo: BridgeVersionInfo(
@@ -397,7 +328,7 @@ void main() {
         );
         final bridge = _FakeBridgeService(
           connected: true,
-          fakeLastUrl: 'ws://100.64.0.1:8765',
+          fakeLastUrl: 'ws://127.0.0.1:8765',
         );
 
         await tester.pumpWidget(
@@ -411,9 +342,10 @@ void main() {
         final l = AppLocalizations.of(tester.element(find.byType(Scaffold)));
 
         expect(find.text(l.bridgeUpdateAvailable), findsOneWidget);
+        // No in-app update action is wired for the local engine.
         expect(
           find.byKey(const ValueKey('settings_update_bridge_button')),
-          findsOneWidget,
+          findsNothing,
         );
 
         await settingsCubit.close();
@@ -436,10 +368,8 @@ void main() {
           MachineWithStatus(
             machine: Machine(
               id: 'machine-1',
-              name: 'Remote Mac',
-              host: '100.64.0.1',
-              sshEnabled: true,
-              sshUsername: 'k9i',
+              name: 'Pi X Local Engine',
+              host: '127.0.0.1',
             ),
             status: MachineStatus.online,
             versionInfo: BridgeVersionInfo(version: recommendedBridgeVersion),
@@ -459,7 +389,7 @@ void main() {
         await machineManagerCubit.refreshLatestBridgeVersion();
         final bridge = _FakeBridgeService(
           connected: true,
-          fakeLastUrl: 'ws://100.64.0.1:8765',
+          fakeLastUrl: 'ws://127.0.0.1:8765',
         );
 
         await tester.pumpWidget(
@@ -484,7 +414,7 @@ void main() {
         );
         expect(
           find.byKey(const ValueKey('settings_update_bridge_button')),
-          findsOneWidget,
+          findsNothing,
         );
 
         await settingsCubit.close();
@@ -494,7 +424,7 @@ void main() {
       },
     );
 
-    testWidgets('hides bridge update button when latest or SSH is missing', (
+    testWidgets('shows bridge update status for the local engine', (
       tester,
     ) async {
       SharedPreferences.setMockInitialValues({});
@@ -507,10 +437,8 @@ void main() {
         MachineWithStatus(
           machine: Machine(
             id: 'machine-1',
-            name: 'Remote Mac',
-            host: '100.64.0.1',
-            sshEnabled: true,
-            sshUsername: 'k9i',
+            name: 'Pi X Local Engine',
+            host: '127.0.0.1',
           ),
           status: MachineStatus.online,
           versionInfo: BridgeVersionInfo(version: recommendedBridgeVersion),
@@ -519,7 +447,7 @@ void main() {
       final latestCubit = _createMachineManagerCubit(latestService);
       final latestBridge = _FakeBridgeService(
         connected: true,
-        fakeLastUrl: 'ws://100.64.0.1:8765',
+        fakeLastUrl: 'ws://127.0.0.1:8765',
       );
 
       await tester.pumpWidget(
@@ -537,76 +465,26 @@ void main() {
         find.byKey(const ValueKey('settings_update_bridge_button')),
         findsNothing,
       );
+      expect(
+        find.byKey(const ValueKey('settings_bridge_update_setup_tile')),
+        findsNothing,
+      );
 
       await latestSettingsCubit.close();
       await latestCubit.close();
       latestService.dispose();
       latestBridge.dispose();
 
-      final latestMissingSshSettingsCubit = _SeededSettingsCubit(
+      final updateSettingsCubit = _SeededSettingsCubit(
         prefs,
         activeMachineId: 'machine-1',
       );
-      final latestMissingSshService = _StaticMachineManagerService([
+      final updateService = _StaticMachineManagerService([
         MachineWithStatus(
           machine: Machine(
             id: 'machine-1',
-            name: 'Remote Mac',
-            host: '100.64.0.1',
-            sshEnabled: false,
-          ),
-          status: MachineStatus.online,
-          versionInfo: BridgeVersionInfo(version: recommendedBridgeVersion),
-        ),
-      ]);
-      final latestMissingSshCubit = _createMachineManagerCubit(
-        latestMissingSshService,
-      );
-      final latestMissingSshBridge = _FakeBridgeService(
-        connected: true,
-        fakeLastUrl: 'ws://100.64.0.1:8765',
-      );
-
-      await tester.pumpWidget(
-        await _buildScreen(
-          bridge: latestMissingSshBridge,
-          settingsCubit: latestMissingSshSettingsCubit,
-          machineManagerCubit: latestMissingSshCubit,
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      expect(find.text(l.bridgeIsUpToDate), findsOneWidget);
-      expect(
-        find.text(
-          l.bridgeVersionCurrentExpected(
-            recommendedBridgeVersion,
-            recommendedBridgeVersion,
-          ),
-        ),
-        findsOneWidget,
-      );
-      expect(
-        find.byKey(const ValueKey('settings_bridge_update_setup_tile')),
-        findsNothing,
-      );
-
-      await latestMissingSshSettingsCubit.close();
-      await latestMissingSshCubit.close();
-      latestMissingSshService.dispose();
-      latestMissingSshBridge.dispose();
-
-      final missingSshSettingsCubit = _SeededSettingsCubit(
-        prefs,
-        activeMachineId: 'machine-1',
-      );
-      final missingSshService = _StaticMachineManagerService([
-        MachineWithStatus(
-          machine: Machine(
-            id: 'machine-1',
-            name: 'Remote Mac',
-            host: '100.64.0.1',
-            sshEnabled: false,
+            name: 'Pi X Local Engine',
+            host: '127.0.0.1',
           ),
           status: MachineStatus.online,
           versionInfo: BridgeVersionInfo(
@@ -614,44 +492,37 @@ void main() {
           ),
         ),
       ]);
-      final missingSshCubit = _createMachineManagerCubit(missingSshService);
-      final missingSshBridge = _FakeBridgeService(
+      final updateCubit = _createMachineManagerCubit(updateService);
+      final updateBridge = _FakeBridgeService(
         connected: true,
-        fakeLastUrl: 'ws://100.64.0.1:8765',
+        fakeLastUrl: 'ws://127.0.0.1:8765',
       );
 
       await tester.pumpWidget(
         await _buildScreen(
-          bridge: missingSshBridge,
-          settingsCubit: missingSshSettingsCubit,
-          machineManagerCubit: missingSshCubit,
+          bridge: updateBridge,
+          settingsCubit: updateSettingsCubit,
+          machineManagerCubit: updateCubit,
         ),
       );
       await tester.pumpAndSettle();
 
-      expect(find.text(l.bridgeUpdateRequiresSetup), findsOneWidget);
+      expect(find.text(l.bridgeUpdateAvailable), findsOneWidget);
+      // No in-app update action is wired for the local engine, so the tile is
+      // informational rather than offering remote SSH startup.
       expect(
         find.byKey(const ValueKey('settings_update_bridge_button')),
         findsNothing,
       );
       expect(
         find.byKey(const ValueKey('settings_bridge_update_setup_tile')),
-        findsOneWidget,
+        findsNothing,
       );
 
-      await tester.tap(
-        find.byKey(const ValueKey('settings_bridge_update_setup_tile')),
-      );
-      await tester.pumpAndSettle();
-
-      expect(find.text(l.bridgeUpdateSetupTitle), findsOneWidget);
-      expect(find.text(l.bridgeUpdateSetupEnableSsh), findsOneWidget);
-      expect(find.text(l.bridgeUpdateSetupCommand), findsOneWidget);
-
-      await missingSshSettingsCubit.close();
-      await missingSshCubit.close();
-      missingSshService.dispose();
-      missingSshBridge.dispose();
+      await updateSettingsCubit.close();
+      await updateCubit.close();
+      updateService.dispose();
+      updateBridge.dispose();
     });
 
     testWidgets(

@@ -831,10 +831,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bridgeUpdateAvailable => 'Update available';
 
   @override
-  String get bridgeUpdateRequiresSetup =>
-      'Requires SSH and Bridge auto-start setup';
-
-  @override
   String get bridgeVersionUnknown => 'Bridge version unknown';
 
   @override
@@ -856,24 +852,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bridgeLatestVersionRetry => 'Retry latest version check';
-
-  @override
-  String get bridgeUpdateSetupTitle => 'Prepare Bridge updates';
-
-  @override
-  String get bridgeUpdateSetupDescription =>
-      'To update Bridge from this app, the machine needs SSH access and Bridge auto-start setup.';
-
-  @override
-  String get bridgeUpdateSetupEnableSsh =>
-      'Enable SSH in the Bridge connection settings.';
-
-  @override
-  String get bridgeUpdateSetupRunCommand =>
-      'Run the setup command on the target machine.';
-
-  @override
-  String get bridgeUpdateSetupCommand => 'npx @ccpocket/bridge@1 setup';
 
   @override
   String get stopServer => 'Stop Server';

@@ -42,7 +42,6 @@ import 'router/session_route_observer.dart';
 import 'router/session_stack_navigation.dart';
 import 'services/app_icon_service.dart';
 import 'services/bridge_service.dart';
-import 'services/connection_url_parser.dart';
 import 'services/database_service.dart';
 import 'services/deep_link_dispatcher.dart';
 import 'services/draft_service.dart';
@@ -53,6 +52,7 @@ import 'services/notification_service.dart';
 import 'services/performance_probe_extension.dart';
 import 'services/prompt_history_service.dart';
 import 'services/revenuecat_service.dart';
+import 'services/session_link_parser.dart';
 import 'services/support_banner_service.dart';
 import 'theme/app_theme.dart';
 import 'services/store_screenshot_extension.dart';
@@ -275,7 +275,6 @@ class CcpocketApp extends StatefulWidget {
 
 class _CcpocketAppState extends State<CcpocketApp> {
   AppLinks? _appLinks;
-  final _deepLinkNotifier = ValueNotifier<ConnectionParams?>(null);
   StreamSubscription<Uri>? _linkSub;
 
   late final AppRouter _appRouter;
@@ -380,22 +379,17 @@ class _CcpocketAppState extends State<CcpocketApp> {
   }
 
   void _handleUri(Uri uri) {
-    final params = ConnectionUrlParser.parse(uri.toString());
+    final params = SessionLinkParser.parse(uri.toString());
     if (params == null) return;
-
-    switch (params) {
-      case ConnectionParams():
-        _deepLinkNotifier.value = params;
-      case SessionLinkParams(:final sessionId, :final provider):
-        _openSessionFromData({'sessionId': sessionId, 'provider': provider});
-    }
+    _openSessionFromData(
+      {'sessionId': params.sessionId, 'provider': params.provider},
+    );
   }
 
   @override
   void dispose() {
     _lifecycleListener.dispose();
     _linkSub?.cancel();
-    _deepLinkNotifier.dispose();
     super.dispose();
   }
 

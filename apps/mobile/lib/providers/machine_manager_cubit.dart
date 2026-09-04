@@ -200,78 +200,6 @@ class MachineManagerCubit extends Cubit<MachineManagerState> {
     );
   }
 
-  /// Add a new machine
-  Future<void> addMachine(
-    Machine machine, {
-    String? apiKey,
-    String? sshPassword,
-    String? sshPrivateKey,
-    String? sshJumpPassword,
-    String? sshJumpPrivateKey,
-  }) async {
-    emit(state.copyWith(error: null, successMessage: null));
-    try {
-      await _service.addMachine(
-        machine,
-        apiKey: apiKey,
-        sshPassword: sshPassword,
-        sshPrivateKey: sshPrivateKey,
-        sshJumpPassword: sshJumpPassword,
-        sshJumpPrivateKey: sshJumpPrivateKey,
-      );
-      emit(state.copyWith(successMessage: 'Machine added successfully'));
-    } catch (e) {
-      emit(state.copyWith(error: e.toString()));
-    }
-  }
-
-  /// Update an existing machine
-  Future<void> updateMachine(
-    Machine machine, {
-    String? apiKey,
-    String? sshPassword,
-    String? sshPrivateKey,
-    String? sshJumpPassword,
-    String? sshJumpPrivateKey,
-    bool clearApiKey = false,
-    bool clearCredentials = false,
-    bool clearJumpCredentials = false,
-  }) async {
-    emit(state.copyWith(error: null, successMessage: null));
-    try {
-      await _service.updateMachine(
-        machine,
-        apiKey: apiKey,
-        sshPassword: sshPassword,
-        sshPrivateKey: sshPrivateKey,
-        sshJumpPassword: sshJumpPassword,
-        sshJumpPrivateKey: sshJumpPrivateKey,
-        clearApiKey: clearApiKey,
-        clearCredentials: clearCredentials,
-        clearJumpCredentials: clearJumpCredentials,
-      );
-      emit(state.copyWith(successMessage: 'Machine updated successfully'));
-    } catch (e) {
-      emit(state.copyWith(error: e.toString()));
-    }
-  }
-
-  /// Delete a machine
-  Future<void> deleteMachine(String machineId) async {
-    emit(state.copyWith(error: null, successMessage: null));
-    try {
-      await _service.deleteMachine(machineId);
-      emit(state.copyWith(successMessage: 'Machine deleted'));
-    } catch (e) {
-      emit(state.copyWith(error: e.toString()));
-    }
-  }
-
-  /// Toggle favorite status for a machine
-  Future<void> toggleFavorite(String machineId) async {
-    await _service.toggleFavorite(machineId);
-  }
-
   /// Get a machine by ID
   Machine? getMachine(String id) => _service.getMachine(id);
 
@@ -282,40 +210,9 @@ class MachineManagerCubit extends Cubit<MachineManagerState> {
   /// Get API key for a machine
   Future<String?> getApiKey(String machineId) => _service.getApiKey(machineId);
 
-  /// Get SSH password for a machine
-  Future<String?> getSshPassword(String machineId) =>
-      _service.getSshPassword(machineId);
-
-  /// Get SSH private key for a machine
-  Future<String?> getSshPrivateKey(String machineId) =>
-      _service.getSshPrivateKey(machineId);
-
-  /// Get SSH jump host password for a machine
-  Future<String?> getSshJumpPassword(String machineId) =>
-      _service.getSshJumpPassword(machineId);
-
-  /// Get SSH jump host private key for a machine
-  Future<String?> getSshJumpPrivateKey(String machineId) =>
-      _service.getSshJumpPrivateKey(machineId);
-
   /// Build WebSocket URL with API key
-  Future<String> buildWsUrl(
-    String machineId, {
-    String? password,
-    Future<String?> Function()? promptForPassword,
-  }) => _service.buildWsUrlWithSshCredentials(
-    machineId,
-    password: password,
-    promptForPassword: promptForPassword,
-  );
-
-  /// Create a new machine instance
-  Machine createNewMachine({
-    String? name,
-    required String host,
-    int port = 8765,
-    bool useSsl = false,
-  }) => _service.createNew(name: name, host: host, port: port, useSsl: useSsl);
+  Future<String> buildWsUrl(String machineId) =>
+      _service.buildWsUrl(machineId);
 
   /// Start periodic health check
   void startPeriodicHealthCheck() {

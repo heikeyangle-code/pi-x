@@ -15,14 +15,12 @@ part of 'app_router.dart';
 class AdaptiveHomeRoute extends PageRouteInfo<AdaptiveHomeRouteArgs> {
   AdaptiveHomeRoute({
     Key? key,
-    ValueNotifier<ConnectionParams?>? deepLinkNotifier,
     List<RecentSession>? debugRecentSessions,
     List<PageRouteInfo>? children,
   }) : super(
          AdaptiveHomeRoute.name,
          args: AdaptiveHomeRouteArgs(
            key: key,
-           deepLinkNotifier: deepLinkNotifier,
            debugRecentSessions: debugRecentSessions,
          ),
          initialChildren: children,
@@ -38,7 +36,6 @@ class AdaptiveHomeRoute extends PageRouteInfo<AdaptiveHomeRouteArgs> {
       );
       return AdaptiveHomeScreen(
         key: args.key,
-        deepLinkNotifier: args.deepLinkNotifier,
         debugRecentSessions: args.debugRecentSessions,
       );
     },
@@ -46,21 +43,15 @@ class AdaptiveHomeRoute extends PageRouteInfo<AdaptiveHomeRouteArgs> {
 }
 
 class AdaptiveHomeRouteArgs {
-  const AdaptiveHomeRouteArgs({
-    this.key,
-    this.deepLinkNotifier,
-    this.debugRecentSessions,
-  });
+  const AdaptiveHomeRouteArgs({this.key, this.debugRecentSessions});
 
   final Key? key;
-
-  final ValueNotifier<ConnectionParams?>? deepLinkNotifier;
 
   final List<RecentSession>? debugRecentSessions;
 
   @override
   String toString() {
-    return 'AdaptiveHomeRouteArgs{key: $key, deepLinkNotifier: $deepLinkNotifier, debugRecentSessions: $debugRecentSessions}';
+    return 'AdaptiveHomeRouteArgs{key: $key, debugRecentSessions: $debugRecentSessions}';
   }
 
   @override
@@ -68,7 +59,6 @@ class AdaptiveHomeRouteArgs {
     if (identical(this, other)) return true;
     if (other is! AdaptiveHomeRouteArgs) return false;
     return key == other.key &&
-        deepLinkNotifier == other.deepLinkNotifier &&
         const ListEquality<RecentSession>().equals(
           debugRecentSessions,
           other.debugRecentSessions,
@@ -78,7 +68,6 @@ class AdaptiveHomeRouteArgs {
   @override
   int get hashCode =>
       key.hashCode ^
-      deepLinkNotifier.hashCode ^
       const ListEquality<RecentSession>().hash(debugRecentSessions);
 }
 

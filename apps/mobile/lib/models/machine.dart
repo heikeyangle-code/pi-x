@@ -34,6 +34,19 @@ int compareSemanticVersions(String left, String right) {
   return 0;
 }
 
+/// Whether sending an API key requires explicit confirmation because the
+/// automatically selected transport is not encrypted.
+bool shouldConfirmAutomaticWsWithApiKey({
+  required BridgeConnectionMode connectionMode,
+  required bool useSsl,
+  required bool usesEncryptedTunnel,
+  required String? apiKey,
+}) =>
+    connectionMode == BridgeConnectionMode.automatic &&
+    !useSsl &&
+    !usesEncryptedTunnel &&
+    apiKey?.trim().isNotEmpty == true;
+
 /// Status of a machine's Bridge Server
 enum MachineStatus {
   /// Not checked yet

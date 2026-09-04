@@ -811,9 +811,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get bridgeUpdateAvailable => '更新があります';
 
   @override
-  String get bridgeUpdateRequiresSetup => 'SSH と Bridge の自動起動セットアップが必要です';
-
-  @override
   String get bridgeVersionUnknown => 'Bridge のバージョンを確認できません';
 
   @override
@@ -834,22 +831,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get bridgeLatestVersionRetry => '最新版の確認を再試行';
-
-  @override
-  String get bridgeUpdateSetupTitle => 'Bridge 更新の準備';
-
-  @override
-  String get bridgeUpdateSetupDescription =>
-      'このマシンで Bridge の更新機能を使うには、SSH 接続と Bridge の自動起動セットアップが必要です。';
-
-  @override
-  String get bridgeUpdateSetupEnableSsh => 'Bridge 接続設定で SSH を有効にします。';
-
-  @override
-  String get bridgeUpdateSetupRunCommand => '接続先マシンでセットアップコマンドを実行しておきます。';
-
-  @override
-  String get bridgeUpdateSetupCommand => 'npx @ccpocket/bridge@1 setup';
 
   @override
   String get stopServer => 'サーバーを停止';

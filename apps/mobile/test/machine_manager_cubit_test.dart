@@ -18,9 +18,6 @@ class MockMachineManagerService implements MachineManagerService {
 
   bool initShouldFail = false;
   bool checkAllHealthShouldFail = false;
-  bool addMachineShouldFail = false;
-  bool updateMachineShouldFail = false;
-  bool deleteMachineShouldFail = false;
   List<MachineStatus> checkHealthResults = [];
   MachineStatus defaultCheckHealthResult = MachineStatus.online;
   final List<Duration> checkHealthTimeouts = [];
@@ -54,8 +51,6 @@ class MockMachineManagerService implements MachineManagerService {
   Future<MachineStatus> checkHealth(
     String machineId, {
     Duration timeout = const Duration(seconds: 5),
-    String? password,
-    Future<String?> Function()? promptForPassword,
   }) async {
     calls.add('checkHealth:$machineId');
     checkHealthTimeouts.add(timeout);
@@ -86,100 +81,21 @@ class MockMachineManagerService implements MachineManagerService {
   }
 
   @override
-  Future<void> addMachine(
-    Machine machine, {
-    String? apiKey,
-    String? sshPassword,
-    String? sshPrivateKey,
-    String? sshJumpPassword,
-    String? sshJumpPrivateKey,
-  }) async {
-    calls.add('addMachine:${machine.id}');
-    if (addMachineShouldFail) throw Exception('addMachine failed');
-    _machines[machine.id] = machine;
-  }
-
-  @override
-  Future<void> updateMachine(
-    Machine machine, {
-    String? apiKey,
-    String? sshPassword,
-    String? sshPrivateKey,
-    String? sshJumpPassword,
-    String? sshJumpPrivateKey,
-    bool clearApiKey = false,
-    bool clearCredentials = false,
-    bool clearJumpCredentials = false,
-  }) async {
-    calls.add('updateMachine:${machine.id}');
-    if (updateMachineShouldFail) throw Exception('updateMachine failed');
-    _machines[machine.id] = machine;
-  }
-
-  @override
-  Future<void> deleteMachine(String id) async {
-    calls.add('deleteMachine:$id');
-    if (deleteMachineShouldFail) throw Exception('deleteMachine failed');
-    _machines.remove(id);
-  }
-
-  @override
-  Future<void> toggleFavorite(String machineId) async {
-    calls.add('toggleFavorite:$machineId');
-  }
-
-  @override
   Machine? getMachine(String id) => _machines[id];
+
+  @override
+  Machine? get localMachine => _machines.values.firstOrNull;
 
   @override
   Future<String?> getApiKey(String machineId) async => null;
 
   @override
-  Future<String?> getSshPassword(String machineId) async => null;
-
-  @override
-  Future<String?> getSshPrivateKey(String machineId) async => null;
-
-  @override
-  Future<String?> getSshJumpPassword(String machineId) async => null;
-
-  @override
-  Future<String?> getSshJumpPrivateKey(String machineId) async => null;
-
-  @override
   Future<String> buildWsUrl(String machineId) async => 'ws://mock:8765';
 
   @override
-  Future<String> buildWsUrlWithSshCredentials(
-    String machineId, {
-    String? password,
-    Future<String?> Function()? promptForPassword,
-  }) async => 'ws://mock:8765';
-
-  @override
-  void configureBridgeTunnelResolvers({
-    BridgeWsUrlResolver? wsUrlResolver,
-    BridgeHttpBaseUrlResolver? httpBaseUrlResolver,
-  }) {}
-
-  @override
-  Machine createNew({
-    String? name,
-    required String host,
-    int port = 8765,
-    bool useSsl = false,
+  void startPeriodicHealthCheck({
+    Duration interval = const Duration(seconds: 30),
   }) {
-    return Machine(
-      id: 'gen-id',
-      name: name,
-      host: host,
-      port: port,
-      useSsl: useSsl,
-    );
-  }
-
-  @override
-  void startPeriodicHealthCheck({Duration? interval}) {
     calls.add('startPeriodicHealthCheck');
   }
 
@@ -363,84 +279,6 @@ void main() {
     });
   });
 
-  group('MachineManagerCubit - addMachine', () {
-    test('adds machine successfully', () async {
-      final cubit = createCubit();
-      addTearDown(cubit.close);
-      await Future.microtask(() {});
-
-      final machine = Machine(id: 'm1', host: '10.0.0.1', port: 8765);
-      await cubit.addMachine(machine);
-
-      expect(cubit.state.successMessage, 'Machine added successfully');
-      expect(cubit.state.error, isNull);
-      expect(mockService.calls, contains('addMachine:m1'));
-    });
-
-    test('sets error on failure', () async {
-      final cubit = createCubit();
-      addTearDown(cubit.close);
-      await Future.microtask(() {});
-
-      mockService.addMachineShouldFail = true;
-      final machine = Machine(id: 'm1', host: '10.0.0.1', port: 8765);
-      await cubit.addMachine(machine);
-
-      expect(cubit.state.error, contains('addMachine failed'));
-      expect(cubit.state.successMessage, isNull);
-    });
-  });
-
-  group('MachineManagerCubit - updateMachine', () {
-    test('updates machine successfully', () async {
-      final cubit = createCubit();
-      addTearDown(cubit.close);
-      await Future.microtask(() {});
-
-      final machine = Machine(id: 'm1', host: '10.0.0.1', port: 8765);
-      await cubit.updateMachine(machine);
-
-      expect(cubit.state.successMessage, 'Machine updated successfully');
-      expect(cubit.state.error, isNull);
-    });
-
-    test('sets error on failure', () async {
-      final cubit = createCubit();
-      addTearDown(cubit.close);
-      await Future.microtask(() {});
-
-      mockService.updateMachineShouldFail = true;
-      final machine = Machine(id: 'm1', host: '10.0.0.1', port: 8765);
-      await cubit.updateMachine(machine);
-
-      expect(cubit.state.error, contains('updateMachine failed'));
-    });
-  });
-
-  group('MachineManagerCubit - deleteMachine', () {
-    test('deletes machine successfully', () async {
-      final cubit = createCubit();
-      addTearDown(cubit.close);
-      await Future.microtask(() {});
-
-      await cubit.deleteMachine('m1');
-
-      expect(cubit.state.successMessage, 'Machine deleted');
-      expect(mockService.calls, contains('deleteMachine:m1'));
-    });
-
-    test('sets error on failure', () async {
-      final cubit = createCubit();
-      addTearDown(cubit.close);
-      await Future.microtask(() {});
-
-      mockService.deleteMachineShouldFail = true;
-      await cubit.deleteMachine('m1');
-
-      expect(cubit.state.error, contains('deleteMachine failed'));
-    });
-  });
-
   group('MachineManagerCubit - clearMessages', () {
     test('clears error and success message', () async {
       final cubit = createCubit();
@@ -448,8 +286,8 @@ void main() {
       await Future.microtask(() {});
 
       // Create an error state
-      mockService.addMachineShouldFail = true;
-      await cubit.addMachine(Machine(id: 'm1', host: '10.0.0.1', port: 8765));
+      mockService.checkAllHealthShouldFail = true;
+      await cubit.refreshAll();
       expect(cubit.state.error, isNotNull);
 
       cubit.clearMessages();
@@ -526,16 +364,6 @@ void main() {
       addTearDown(cubit.close);
 
       expect(cubit.getMachine('nonexistent'), isNull);
-    });
-
-    test('createNewMachine delegates to service', () async {
-      final cubit = createCubit();
-      addTearDown(cubit.close);
-
-      final machine = cubit.createNewMachine(host: '10.0.0.1');
-
-      expect(machine.host, '10.0.0.1');
-      expect(machine.port, 8765);
     });
 
     test('startPeriodicHealthCheck delegates to service', () {

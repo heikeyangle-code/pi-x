@@ -19,9 +19,7 @@ import '../../providers/bridge_cubits.dart';
 import '../../providers/machine_manager_cubit.dart';
 import '../../providers/unseen_sessions_cubit.dart';
 import '../../router/app_router.dart';
-import '../../services/bridge_endpoint_probe.dart';
 import '../../services/bridge_service.dart';
-import '../../services/connection_url_parser.dart';
 import '../../widgets/workspace_pane_chrome.dart';
 import '../../widgets/adaptive_context_menu.dart';
 import '../../widgets/new_session_sheet.dart';
@@ -194,8 +192,6 @@ NewSessionParams? mergeCodexDefaultsIntoInitialSessionDefaults(
 // ---- Screen ----
 
 class SessionListScreen extends StatefulWidget {
-  final ValueNotifier<ConnectionParams?>? deepLinkNotifier;
-
   /// Pre-populated sessions for UI testing (skips bridge connection).
   final List<RecentSession>? debugRecentSessions;
   final bool embedded;
@@ -204,7 +200,6 @@ class SessionListScreen extends StatefulWidget {
 
   const SessionListScreen({
     super.key,
-    this.deepLinkNotifier,
     this.debugRecentSessions,
     this.embedded = false,
     this.onTogglePaneVisibility,
@@ -362,21 +357,12 @@ class _SessionListScreenState extends State<SessionListScreen>
             .showSnackBar(SnackBar(content: Text(text)));
       }
     });
-    widget.deepLinkNotifier?.addListener(_onDeepLink);
     _loadPreferencesAndAutoConnect();
 
     // Feed active session updates to the unseen tracker.
     final activeCubit = context.read<ActiveSessionsCubit>();
     _unseenCubit.updateSessions(activeCubit.state);
     _activeSessionsSub = activeCubit.stream.listen(_unseenCubit.updateSessions);
-  }
-
-  void _onDeepLink() {
-    final params = widget.deepLinkNotifier?.value;
-    if (params == null) return;
-    // Reset notifier to avoid re-triggering
-    widget.deepLinkNotifier?.value = null;
-    _connectWithParams(params.serverUrl, params.token);
   }
 
   Future<void> _loadPreferencesAndAutoConnect() async {
@@ -417,114 +403,6 @@ class _SessionListScreenState extends State<SessionListScreen>
     }
   }
 
-  Future<void> _connectWithParams(
-    String rawUrl,
-    String? apiKey, {
-    BridgeConnectionMode? requestedConnectionMode,
-  }) async {
-    var url = rawUrl.trim();
-    if (url.isEmpty) return;
-    if (!mounted) return;
-    final machineManagerCubit = context.read<MachineManagerCubit?>();
-    final hasExplicitScheme =
-        url.startsWith('ws://') || url.startsWith('wss://');
-    var connectionMode =
-        requestedConnectionMode ?? BridgeConnectionMode.automatic;
-    // Allow shorthand: just IP or host:port without ws:// prefix
-    if (!hasExplicitScheme) {
-      url = 'ws://$url';
-      final candidate = Uri.tryParse(url);
-      if (candidate != null && candidate.host.isNotEmpty) {
-        final port = candidate.hasPort ? candidate.port : 8765;
-        final existing = machineManagerCubit?.findByHostPort(
-          candidate.host,
-          port,
-        );
-        connectionMode =
-            requestedConnectionMode ??
-            existing?.connectionMode ??
-            BridgeConnectionMode.automatic;
-        final probeMode = switch (connectionMode) {
-          BridgeConnectionMode.secureOnly => BridgeConnectionMode.secureOnly,
-          BridgeConnectionMode.standardOnly =>
-            BridgeConnectionMode.standardOnly,
-          BridgeConnectionMode.automatic =>
-            existing?.hasResolvedTransport == true && existing?.useSsl == true
-                ? BridgeConnectionMode.secureOnly
-                : BridgeConnectionMode.automatic,
-        };
-        final probe = await BridgeEndpointProbe().probe(
-          host: candidate.host,
-          port: port,
-          mode: probeMode,
-        );
-        final useSsl = probe.isReachable
-            ? probe.useSsl
-            : probeMode == BridgeConnectionMode.secureOnly;
-        url = formatUriOrigin(
-          scheme: useSsl ? 'wss' : 'ws',
-          host: candidate.host,
-          port: port,
-        );
-      }
-    } else if (requestedConnectionMode == null) {
-      connectionMode = url.startsWith('wss://')
-          ? BridgeConnectionMode.secureOnly
-          : BridgeConnectionMode.standardOnly;
-    }
-
-    if (!mounted) return;
-
-    if (machineManagerCubit != null) {
-      unawaited(machineManagerCubit.refreshLatestBridgeVersionIfStale());
-    }
-
-    // Health check before connecting
-    final health = await BridgeService.checkHealth(url);
-    if (health == null && mounted) {
-      final shouldConnect = await _showSetupGuide(url);
-      if (shouldConnect != true) return;
-    }
-
-    if (!mounted) return;
-    // Auto-save to Machines on successful health check (or user choosing to connect)
-    final trimmedApiKey = apiKey?.trim() ?? '';
-    if (shouldConfirmAutomaticWsWithApiKey(
-      connectionMode: connectionMode,
-      useSsl: url.startsWith('wss://'),
-      usesEncryptedTunnel: false,
-      apiKey: trimmedApiKey,
-    )) {
-      final shouldContinue = await _confirmAutomaticWsWithApiKey();
-      if (shouldContinue != true || !mounted) return;
-    }
-    if (machineManagerCubit != null) {
-      // Parse host and port from URL
-      final uri = Uri.tryParse(
-        url.replaceFirst('ws://', 'http://').replaceFirst('wss://', 'https://'),
-      );
-      if (uri != null) {
-        await machineManagerCubit.recordConnection(
-          host: uri.host,
-          port: uri.port != 0 ? uri.port : 8765,
-          apiKey: trimmedApiKey.isNotEmpty ? trimmedApiKey : null,
-          useSsl: uri.scheme == 'https',
-          connectionMode: connectionMode,
-        );
-      }
-    }
-
-    if (!mounted) return;
-    var connectUrl = url;
-    if (trimmedApiKey.isNotEmpty) {
-      final sep = connectUrl.contains('?') ? '&' : '?';
-      connectUrl = '$connectUrl${sep}token=$trimmedApiKey';
-    }
-    final bridge = context.read<BridgeService>();
-    bridge.connect(connectUrl);
-    bridge.savePreferences(url);
-  }
-
   Future<bool?> _confirmAutomaticWsWithApiKey() {
     return showDialog<bool>(
       context: context,
@@ -541,90 +419,6 @@ class _SessionListScreenState extends State<SessionListScreen>
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
               child: Text(l.machineAutomaticWsApiKeyWarningConnect),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  /// Show setup guide when health check fails. Returns true if user wants
-  /// to try connecting anyway.
-  Future<bool?> _showSetupGuide(String url) {
-    return showDialog<bool>(
-      context: context,
-      builder: (ctx) {
-        final l = AppLocalizations.of(ctx);
-        return AlertDialog(
-          title: Row(
-            children: [
-              Icon(
-                Icons.warning_amber_rounded,
-                color: Theme.of(ctx).colorScheme.primary,
-              ),
-              SizedBox(width: 8),
-              Expanded(child: Text(l.serverUnreachable)),
-            ],
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  l.serverUnreachableBody,
-                  style: TextStyle(
-                    color: Theme.of(ctx).colorScheme.onSurfaceVariant,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                SelectableText(
-                  url,
-                  style: TextStyle(
-                    fontFamily: 'monospace',
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(ctx).colorScheme.primary,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  l.setupSteps,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    color: Theme.of(ctx).colorScheme.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                _SetupStep(
-                  number: '1',
-                  title: l.setupStep1Title,
-                  command: l.setupStep1Command,
-                ),
-                _SetupStep(
-                  number: '2',
-                  title: l.setupStep2Title,
-                  command: l.setupStep2Command,
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  l.setupNetworkHint,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Theme.of(ctx).colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: Text(l.cancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: Text(l.connectAnyway),
             ),
           ],
         );
@@ -650,7 +444,6 @@ class _SessionListScreenState extends State<SessionListScreen>
   void dispose() {
     _archiveRequests.dispose();
     WidgetsBinding.instance.removeObserver(this);
-    widget.deepLinkNotifier?.removeListener(_onDeepLink);
     _messageSub?.cancel();
     _activeSessionsSub?.cancel();
     _unseenCubit.close();
@@ -2096,8 +1889,6 @@ class _SessionListScreenState extends State<SessionListScreen>
 
   // ---- Machine Management ----
 
-  Future<String?> _promptForPassword(String machineName) async => null;
-
   Future<bool> _connectToMachineConfig(
     Machine machine, {
     bool Function()? shouldConnect,
@@ -2107,10 +1898,7 @@ class _SessionListScreenState extends State<SessionListScreen>
     unawaited(cubit.refreshLatestBridgeVersionIfStale());
     late final String wsUrl;
     try {
-      wsUrl = await cubit.buildWsUrl(
-        machine.id,
-        promptForPassword: () => _promptForPassword(machine.displayName),
-      );
+      wsUrl = await cubit.buildWsUrl(machine.id);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context)
@@ -2195,71 +1983,6 @@ class _SessionListScreenState extends State<SessionListScreen>
       before.sshJumpPort == after.sshJumpPort &&
       before.sshJumpUsername == after.sshJumpUsername &&
       before.sshJumpAuthType == after.sshJumpAuthType;
-}
-
-class _SetupStep extends StatelessWidget {
-  final String number;
-  final String title;
-  final String command;
-
-  const _SetupStep({
-    required this.number,
-    required this.title,
-    required this.command,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CircleAvatar(
-            radius: 10,
-            backgroundColor: cs.primaryContainer,
-            child: Text(
-              number,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-                color: cs.onPrimaryContainer,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: TextStyle(fontSize: 13)),
-                const SizedBox(height: 2),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: cs.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    command,
-                    style: TextStyle(
-                      fontFamily: 'monospace',
-                      fontSize: 11,
-                      color: cs.onSurfaceVariant,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 class _ConnectFormWidget extends StatelessWidget {

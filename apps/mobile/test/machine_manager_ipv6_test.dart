@@ -60,15 +60,10 @@ void main() {
     _FakeSecureStorage? secureStorage,
   ]) async {
     final prefs = await SharedPreferences.getInstance();
-    final manager = MachineManagerService(
+    return MachineManagerService(
       prefs,
       secureStorage ?? _FakeSecureStorage(),
     );
-    manager.configureBridgeTunnelResolvers(
-      httpBaseUrlResolver: (machine, {password, promptForPassword}) async =>
-          'http://127.0.0.1:1',
-    );
-    return manager;
   }
 
   setUp(() {
@@ -90,12 +85,11 @@ void main() {
   );
 
   test(
-    'init normalizes bracketed saved hosts without changing machine id',
+    'init normalizes bracketed saved host without changing machine id',
     () async {
       const saved = Machine(
         id: 'saved-ipv6',
-        host: '[::1]',
-        sshJumpHost: '[fe80::2%25en0]',
+        host: '::1',
       );
       SharedPreferences.setMockInitialValues({
         'machines_v2': jsonEncode([saved.toJson()]),
@@ -106,76 +100,52 @@ void main() {
 
       expect(manager.currentMachines.single.id, 'saved-ipv6');
       expect(manager.currentMachines.single.host, '::1');
-      expect(manager.currentMachines.single.sshJumpHost, 'fe80::2%en0');
       expect(manager.findByHostPort('[::1]', 8765)?.id, 'saved-ipv6');
       manager.dispose();
     },
   );
 
   test(
-    'init merges duplicate credentials into the preferred machine id',
+    'init converges multiple saved machines to the single local machine',
     () async {
-      const favorite = Machine(id: 'favorite', host: '[::1]', isFavorite: true);
-      const apiOwner = Machine(
-        id: 'api-owner',
-        host: '0:0:0:0:0:0:0:1',
-        hasApiKey: true,
+      const local = Machine(
+        id: 'local',
+        host: '127.0.0.1',
+        isFavorite: true,
       );
-      const sshOwner = Machine(
-        id: 'ssh-owner',
-        host: '::1',
-        hasCredentials: true,
-        hasJumpCredentials: true,
-      );
+      const remote = Machine(id: 'remote', host: '192.168.1.5');
+      const otherRemote = Machine(id: 'other', host: '10.0.0.9');
       SharedPreferences.setMockInitialValues({
         'machines_v2': jsonEncode([
-          favorite.toJson(),
-          apiOwner.toJson(),
-          sshOwner.toJson(),
+          remote.toJson(),
+          local.toJson(),
+          otherRemote.toJson(),
         ]),
       });
-      final storage = _FakeSecureStorage()
-        ..values['machine_api-owner_api'] = 'secret'
-        ..values['machine_ssh-owner_ssh_key'] = 'private-key'
-        ..values['machine_ssh-owner_jump_ssh_pass'] = 'jump-password';
-      final manager = await createManager(storage);
+      final manager = await createManager();
 
       await manager.init();
 
       expect(manager.currentMachines, hasLength(1));
-      expect(manager.currentMachines.single.id, 'favorite');
-      expect(manager.currentMachines.single.hasApiKey, isTrue);
-      expect(manager.currentMachines.single.hasCredentials, isTrue);
-      expect(manager.currentMachines.single.hasJumpCredentials, isTrue);
-      expect(await manager.getApiKey('favorite'), 'secret');
-      expect(await manager.getSshPrivateKey('favorite'), 'private-key');
-      expect(await manager.getSshJumpPassword('favorite'), 'jump-password');
-      expect(await manager.getApiKey('api-owner'), isNull);
-      expect(await manager.getSshPrivateKey('ssh-owner'), isNull);
-      expect(await manager.getSshJumpPassword('ssh-owner'), isNull);
+      expect(manager.currentMachines.single.id, 'local');
+      expect(manager.currentMachines.single.host, '127.0.0.1');
       manager.dispose();
     },
   );
 
   test(
-    'addMachine preserves an existing normalized endpoint identity',
+    'init seeds a fresh local machine when none exists',
     () async {
+      SharedPreferences.setMockInitialValues({});
       final manager = await createManager();
-      final existing = await manager.recordConnection(
-        host: '[::1]',
-        port: 8765,
-        apiKey: 'secret',
-      );
 
-      await manager.addMachine(
-        const Machine(id: 'replacement', host: '::1', name: 'Loopback'),
-      );
+      await manager.init();
 
       expect(manager.currentMachines, hasLength(1));
-      expect(manager.currentMachines.single.id, existing.id);
-      expect(manager.currentMachines.single.name, 'Loopback');
-      expect(manager.currentMachines.single.hasApiKey, isTrue);
-      expect(await manager.getApiKey(existing.id), 'secret');
+      final machine = manager.localMachine;
+      expect(machine, isNotNull);
+      expect(machine!.host, '127.0.0.1');
+      expect(machine.port, 8765);
       manager.dispose();
     },
   );

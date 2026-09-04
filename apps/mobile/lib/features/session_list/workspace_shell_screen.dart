@@ -17,7 +17,6 @@ import '../../models/messages.dart';
 import '../../providers/bridge_cubits.dart';
 import '../../router/app_router.dart';
 import '../../services/bridge_service.dart';
-import '../../services/connection_url_parser.dart';
 import '../../services/notification_service.dart';
 import '../../utils/diff_parser.dart';
 import '../../widgets/workspace_pane_chrome.dart';
@@ -251,12 +250,10 @@ class WorkspaceSessionSelection {
 }
 
 class WorkspaceShellScreen extends StatefulWidget {
-  final ValueNotifier<ConnectionParams?>? deepLinkNotifier;
   final List<RecentSession>? debugRecentSessions;
 
   const WorkspaceShellScreen({
     super.key,
-    this.deepLinkNotifier,
     this.debugRecentSessions,
   });
 
@@ -726,7 +723,6 @@ class WorkspaceShellScreenState extends State<WorkspaceShellScreen> {
           final layoutMode = _layoutModeForWidth(constraints.maxWidth);
           _syncLayoutState(layoutMode);
           final sessionList = SessionListScreen(
-            deepLinkNotifier: widget.deepLinkNotifier,
             debugRecentSessions: widget.debugRecentSessions,
             embedded: true,
             onTogglePaneVisibility: toggleLeftPaneVisibility,
@@ -825,12 +821,10 @@ class WorkspaceShellScreenState extends State<WorkspaceShellScreen> {
 
 @RoutePage()
 class AdaptiveHomeScreen extends StatefulWidget {
-  final ValueNotifier<ConnectionParams?>? deepLinkNotifier;
   final List<RecentSession>? debugRecentSessions;
 
   const AdaptiveHomeScreen({
     super.key,
-    this.deepLinkNotifier,
     this.debugRecentSessions,
   });
 
@@ -849,13 +843,11 @@ class _AdaptiveHomeScreenState extends State<AdaptiveHomeScreen> {
 
         if (isSinglePane) {
           return SessionListScreen(
-            deepLinkNotifier: widget.deepLinkNotifier,
             debugRecentSessions: widget.debugRecentSessions,
           );
         }
 
         return WorkspaceShellScreen(
-          deepLinkNotifier: widget.deepLinkNotifier,
           debugRecentSessions: widget.debugRecentSessions,
         );
       },

@@ -1302,9 +1302,7 @@ class _BridgeUpdateStatusTile extends StatelessWidget {
             compareSemanticVersions(latestBridgeVersion!, expectedVersion) > 0
         ? latestBridgeVersion!
         : expectedVersion;
-    final machine = machineWithStatus?.machine;
     final versionInfo = machineWithStatus?.versionInfo;
-    final hasSshSetup = machine?.canStartRemotely ?? false;
     final isOnline = machineWithStatus?.status == MachineStatus.online;
     final latestCheckFailed =
         latestBridgeVersion == null && latestBridgeVersionError != null;
@@ -1312,8 +1310,6 @@ class _BridgeUpdateStatusTile extends StatelessWidget {
         isOnline &&
         versionInfo != null &&
         versionInfo.needsUpdate(updateTargetVersion);
-    final needsUpdate = bridgeNeedsUpdate && hasSshSetup;
-    final canShowSetupHelp = bridgeNeedsUpdate && !hasSshSetup;
     final isKnownUpToDate =
         versionInfo != null &&
         !bridgeNeedsUpdate &&
@@ -1327,9 +1323,7 @@ class _BridgeUpdateStatusTile extends StatelessWidget {
         : isKnownUpToDate
         ? l.bridgeIsUpToDate
         : l.updateBridge;
-    final subtitle = canShowSetupHelp
-        ? l.bridgeUpdateRequiresSetup
-        : isCheckingLatestBridgeVersion
+    final subtitle = isCheckingLatestBridgeVersion
         ? l.bridgeLatestVersionChecking
         : versionInfo == null
         ? l.bridgeVersionUnknown
@@ -1352,15 +1346,10 @@ class _BridgeUpdateStatusTile extends StatelessWidget {
         : cs.onSurfaceVariant;
 
     return ListTile(
-      key: canShowSetupHelp
-          ? const ValueKey('settings_bridge_update_setup_tile')
-          : null,
       leading: Icon(icon, color: iconColor),
       title: Text(title),
       subtitle: Text(subtitle),
-      onTap: canShowSetupHelp
-          ? () => _showBridgeUpdateSetupSheet(context)
-          : null,
+      onTap: onRefreshLatestVersion,
       trailing: isUpdating
           ? const SizedBox(
               width: 20,
@@ -1373,15 +1362,13 @@ class _BridgeUpdateStatusTile extends StatelessWidget {
               height: 20,
               child: CircularProgressIndicator(strokeWidth: 2),
             )
-          : needsUpdate
+          : bridgeNeedsUpdate && onUpdate != null
           ? FilledButton.tonalIcon(
               key: const ValueKey('settings_update_bridge_button'),
               onPressed: onUpdate,
               icon: const Icon(Icons.system_update, size: 18),
               label: Text(l.update),
             )
-          : canShowSetupHelp
-          ? Icon(Icons.chevron_right, color: cs.onSurfaceVariant)
           : latestCheckFailed
           ? IconButton(
               key: const ValueKey('settings_bridge_latest_retry_button'),
@@ -1390,103 +1377,6 @@ class _BridgeUpdateStatusTile extends StatelessWidget {
               tooltip: l.bridgeLatestVersionRetry,
             )
           : null,
-    );
-  }
-
-  void _showBridgeUpdateSetupSheet(BuildContext context) {
-    final l = AppLocalizations.of(context);
-    final cs = Theme.of(context).colorScheme;
-    showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      builder: (context) {
-        return SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l.bridgeUpdateSetupTitle,
-                    style: Theme.of(context).textTheme.titleLarge
-                        ?.copyWith(fontWeight: FontWeight.w700),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    l.bridgeUpdateSetupDescription,
-                    style: Theme.of(context).textTheme.bodyMedium
-                        ?.copyWith(color: cs.onSurfaceVariant),
-                  ),
-                  const SizedBox(height: 20),
-                  _BridgeUpdateSetupStep(
-                    index: 1,
-                    text: l.bridgeUpdateSetupEnableSsh,
-                  ),
-                  const SizedBox(height: 12),
-                  _BridgeUpdateSetupStep(
-                    index: 2,
-                    text: l.bridgeUpdateSetupRunCommand,
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      color: cs.surfaceContainerHighest.withValues(alpha: 0.65),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: SelectableText(
-                      l.bridgeUpdateSetupCommand,
-                      style: Theme.of(context).textTheme.bodyMedium
-                          ?.copyWith(fontFamily: 'monospace'),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _BridgeUpdateSetupStep extends StatelessWidget {
-  final int index;
-  final String text;
-
-  const _BridgeUpdateSetupStep({required this.index, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 24,
-          height: 24,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: cs.primaryContainer,
-            shape: BoxShape.circle,
-          ),
-          child: Text(
-            '$index',
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              color: cs.onPrimaryContainer,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(child: Text(text)),
-      ],
     );
   }
 }

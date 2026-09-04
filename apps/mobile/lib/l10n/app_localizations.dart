@@ -1601,12 +1601,6 @@ abstract class AppLocalizations {
   /// **'更新があります'**
   String get bridgeUpdateAvailable;
 
-  /// No description provided for @bridgeUpdateRequiresSetup.
-  ///
-  /// In ja, this message translates to:
-  /// **'SSH と Bridge の自動起動セットアップが必要です'**
-  String get bridgeUpdateRequiresSetup;
-
   /// No description provided for @bridgeVersionUnknown.
   ///
   /// In ja, this message translates to:
@@ -1642,36 +1636,6 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'最新版の確認を再試行'**
   String get bridgeLatestVersionRetry;
-
-  /// No description provided for @bridgeUpdateSetupTitle.
-  ///
-  /// In ja, this message translates to:
-  /// **'Bridge 更新の準備'**
-  String get bridgeUpdateSetupTitle;
-
-  /// No description provided for @bridgeUpdateSetupDescription.
-  ///
-  /// In ja, this message translates to:
-  /// **'このマシンで Bridge の更新機能を使うには、SSH 接続と Bridge の自動起動セットアップが必要です。'**
-  String get bridgeUpdateSetupDescription;
-
-  /// No description provided for @bridgeUpdateSetupEnableSsh.
-  ///
-  /// In ja, this message translates to:
-  /// **'Bridge 接続設定で SSH を有効にします。'**
-  String get bridgeUpdateSetupEnableSsh;
-
-  /// No description provided for @bridgeUpdateSetupRunCommand.
-  ///
-  /// In ja, this message translates to:
-  /// **'接続先マシンでセットアップコマンドを実行しておきます。'**
-  String get bridgeUpdateSetupRunCommand;
-
-  /// No description provided for @bridgeUpdateSetupCommand.
-  ///
-  /// In ja, this message translates to:
-  /// **'npx @ccpocket/bridge@1 setup'**
-  String get bridgeUpdateSetupCommand;
 
   /// No description provided for @stopServer.
   ///

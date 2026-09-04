@@ -17,7 +17,6 @@ import '../features/settings/licenses_screen.dart';
 import '../features/settings/settings_screen.dart';
 import '../models/messages.dart';
 import '../screens/mock_preview_screen.dart';
-import '../services/connection_url_parser.dart';
 import '../features/setup_guide/setup_guide_screen.dart';
 import '../utils/diff_parser.dart';
 

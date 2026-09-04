@@ -67,13 +67,18 @@ export async function startPiHostServer(
     sockets.add(ws);
     ws.on("message", (data) => {
       void (async () => {
-        let msg: ClientControlMessage;
+        let raw: { type?: string; id?: string; value?: unknown };
         try {
-          msg = JSON.parse(String(data)) as ClientControlMessage;
+          raw = JSON.parse(String(data)) as { type?: string; id?: string; value?: unknown };
         } catch {
           return;
         }
-        if (msg.type !== "control") return;
+        if (raw.type === "ui_response") {
+          gateway.respondUi(String(raw.id ?? ""), raw.value);
+          return;
+        }
+        if (raw.type !== "control") return;
+        const msg = JSON.parse(String(data)) as ClientControlMessage;
         try {
           const response = await gateway.handleControl(msg);
           const frame: PiFrameEnvelope = {

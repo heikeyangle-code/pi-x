@@ -59,13 +59,15 @@ export class PiGateway {
       maxIdleMs: opts.maxIdleMs,
       env: opts.env,
       onEvent: (projectId, event) => this.emit(projectId, event),
-      onUiRequest: (projectId, request, respond) =>
+      onUiRequest: (projectId, request, respond) => {
+        const id = String((request as Record<string, unknown>)["id"] ?? "ui");
+        this.pendingUi.set(id, respond);
         this.emit(projectId, {
           type: "extension_ui_request",
           projectId,
           request,
-          respond,
-        }),
+        });
+      },
       onExit: (projectId, code, signal) =>
         this.emit(projectId, { type: "engine_exit", projectId, code, signal }),
     });
@@ -73,6 +75,17 @@ export class PiGateway {
 
   /** Wire sink installed by the transport adapter. */
   send?: (envelope: PiFrameEnvelope) => void;
+
+  private readonly pendingUi = new Map<string, (value: unknown) => void>();
+
+  /** Answer a previously emitted extension_ui_request by its id. */
+  respondUi(requestId: string, value: unknown): boolean {
+    const respond = this.pendingUi.get(requestId);
+    if (respond === undefined) return false;
+    this.pendingUi.delete(requestId);
+    respond(value);
+    return true;
+  }
 
   private emit(projectId: string, frame: unknown): void {
     this.send?.({

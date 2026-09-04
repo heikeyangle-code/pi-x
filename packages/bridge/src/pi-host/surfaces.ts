@@ -11,7 +11,7 @@
  * Pure fs/json: no pi import, safe to typecheck & unit-test standalone.
  */
 
-import { readFile, writeFile, mkdir, readdir, stat } from "node:fs/promises";
+import { readFile, writeFile, mkdir, readdir, stat, rename } from "node:fs/promises";
 import { dirname, join } from "node:path";
 
 /** Custom provider API types supported by pi (docs/models.md). */

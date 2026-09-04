@@ -16,7 +16,11 @@ export interface EnginePoolOptions {
   piEntry: string;
   onEvent?: (projectId: string, event: EngineEvent) => void;
   /** Called with (respond, value) semantics — see EngineProcess.onUiRequest. */
-  onUiRequest?: EngineProcess["onUiRequest"];
+  onUiRequest?: (
+    projectId: string,
+    request: EngineEvent,
+    respond: (value: unknown) => void,
+  ) => void;
   onExit?: (projectId: string, code: number | null, signal: NodeJS.Signals | null) => void;
   /** Default 10 minutes of inactivity before an engine process is stopped. */
   maxIdleMs?: number;
@@ -46,7 +50,7 @@ export class EnginePool {
     return this.slots.get(projectId)?.engine.running === true;
   }
 
-  async getOrStart(projectId: string, cwd: string): Promise<EngineProcess> {
+  async getOrStart(projectId: string, cwd: string, attempt = 1): Promise<EngineProcess> {
     const existing = this.slots.get(projectId);
     if (existing !== undefined && existing.engine.running) {
       this.touch(projectId, existing);
@@ -60,7 +64,7 @@ export class EnginePool {
 
     engine.onEvent = (event) => this.opts.onEvent?.(projectId, event);
     engine.onUiRequest = (request, respond) =>
-      this.opts.onUiRequest?.(request, respond);
+      this.opts.onUiRequest?.(projectId, request, respond);
     engine.onExit = (code, signal) => {
       this.slots.delete(projectId);
       this.opts.onExit?.(projectId, code, signal);
@@ -72,6 +76,14 @@ export class EnginePool {
       env: this.opts.env,
     };
     await engine.start(options);
+    // Boot guard: if the engine dies within the grace window (platform spawn
+    // races), retry a bounded number of times before exposing it to callers.
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    if (!engine.running && attempt < 3) {
+      await engine.stop().catch(() => undefined);
+      this.slots.delete(projectId);
+      return this.getOrStart(projectId, cwd, attempt + 1);
+    }
     this.touch(projectId, slot);
     return engine;
   }

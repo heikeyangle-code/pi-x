@@ -70,16 +70,29 @@ export class EngineProcess {
     const env = {
       ...process.env,
       PI_SKIP_VERSION_CHECK: "1",
+      PI_OFFLINE: "1",
       ...opts.env,
     };
-    const child = spawn(opts.piEntry, ["--mode", "rpc", ...(opts.args ?? [])], {
-      cwd: opts.cwd,
-      env,
-      stdio: ["pipe", "pipe", "pipe"],
-    });
+    const isJsEntry = false && 
+      opts.piEntry.endsWith(".js") || opts.piEntry.endsWith(".mjs") || opts.piEntry.endsWith(".cjs");
+    if (process.env.PI_DEBUG_SPAWN === "1") {
+      console.log("SPAWN", JSON.stringify({ entry: opts.piEntry, cwd: opts.cwd, env: { ...env, PI_DEBUG_SPAWN: undefined } }));
+    }
+    const child = isJsEntry
+      ? spawn(process.execPath, [opts.piEntry, "--mode", "rpc", ...(opts.args ?? [])], {
+          cwd: opts.cwd,
+          env,
+          stdio: ["pipe", "pipe", "pipe"],
+        })
+      : spawn(opts.piEntry, ["--mode", "rpc", ...(opts.args ?? [])], {
+          cwd: opts.cwd,
+          env,
+          stdio: ["pipe", "pipe", "pipe"],
+        });
     this.proc = child;
     this.lines = createInterface({ input: child.stdout });
 
+    child.stdin.on("error", () => { /* stdin EPIPE after engine exit */ });
     child.stderr.on("data", (d: Buffer) => {
       // Engine diagnostics; surface for logs, never parse as protocol.
       process.stderr.write(`[pi-engine] ${String(d)}`);

@@ -42,3 +42,16 @@ jobs:
         run: npm ci
       - name: Typecheck
         run: npx tsc --noEmit -p packages/bridge/tsconfig.json
+
+  engine-smoke:
+    name: Engine smoke (real pi bundle + EngineProcess)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Compile bridge
+        run: npm ci && npx tsc -p packages/bridge/tsconfig.json
+      - name: Real engine round-trip
+        run: node scripts/pi-host-smoke.mjs

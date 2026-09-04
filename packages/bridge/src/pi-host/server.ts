@@ -9,7 +9,7 @@
  */
 
 import { createServer, type Server as HttpServer } from "node:http";
-import { WebSocketServer, type WebSocket } from "ws";
+import { WebSocketServer, WebSocket } from "ws";
 import {
   PiGateway,
   PI_WIRE_PROTOCOL_VERSION,
@@ -48,7 +48,11 @@ export async function startPiHostServer(
   gateway.send = (envelope: PiFrameEnvelope) => {
     const raw = JSON.stringify(envelope);
     for (const ws of sockets) {
-      if (ws.readyState === ws.OPEN) ws.send(raw);
+      try {
+        if (ws.readyState === WebSocket.OPEN) ws.send(raw);
+      } catch {
+        sockets.delete(ws);
+      }
     }
   };
 
@@ -82,7 +86,7 @@ export async function startPiHostServer(
               response,
             },
           };
-          if (ws.readyState === ws.OPEN) ws.send(JSON.stringify(frame));
+          try { if (ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(frame)); } catch { /* client gone */ }
         } catch (err) {
           const frame: PiFrameEnvelope = {
             kind: "pi",
@@ -94,7 +98,7 @@ export async function startPiHostServer(
               error: err instanceof Error ? err.message : String(err),
             },
           };
-          if (ws.readyState === ws.OPEN) ws.send(JSON.stringify(frame));
+          try { if (ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(frame)); } catch { /* client gone */ }
         }
       })();
     });

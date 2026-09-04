@@ -4864,6 +4864,372 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'このコンテンツを表示できませんでした'**
   String get renderErrorFallback;
+
+  /// No description provided for @confirm.
+  ///
+  /// In ja, this message translates to:
+  /// **'確認'**
+  String get confirm;
+
+  /// No description provided for @piEngineTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'Pi エンジン'**
+  String get piEngineTitle;
+
+  /// No description provided for @piEngineSettingsSubtitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'システムプロンプト、起動フラグ、モデル'**
+  String get piEngineSettingsSubtitle;
+
+  /// No description provided for @piEngineManage.
+  ///
+  /// In ja, this message translates to:
+  /// **'Pi エンジン'**
+  String get piEngineManage;
+
+  /// No description provided for @piEngineNote.
+  ///
+  /// In ja, this message translates to:
+  /// **'メモ'**
+  String get piEngineNote;
+
+  /// No description provided for @piEngineNoteBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'Pi Host: {url}'**
+  String piEngineNoteBody(String url);
+
+  /// No description provided for @piEngineConnected.
+  ///
+  /// In ja, this message translates to:
+  /// **'Pi {version} に接続済み'**
+  String piEngineConnected(String version);
+
+  /// No description provided for @piEngineConnecting.
+  ///
+  /// In ja, this message translates to:
+  /// **'Pi エンジンに接続中…'**
+  String get piEngineConnecting;
+
+  /// No description provided for @piEngineReconnecting.
+  ///
+  /// In ja, this message translates to:
+  /// **'Pi エンジンに再接続中…'**
+  String get piEngineReconnecting;
+
+  /// No description provided for @piEngineDisconnected.
+  ///
+  /// In ja, this message translates to:
+  /// **'Pi エンジン未接続'**
+  String get piEngineDisconnected;
+
+  /// No description provided for @piEngineError.
+  ///
+  /// In ja, this message translates to:
+  /// **'Pi エンジンエラー: {error}'**
+  String piEngineError(String error);
+
+  /// No description provided for @piEngineNotConnected.
+  ///
+  /// In ja, this message translates to:
+  /// **'Pi エンジンに接続されていません。先に Pi Host サーバーを起動してください。'**
+  String get piEngineNotConnected;
+
+  /// No description provided for @piEngineSaved.
+  ///
+  /// In ja, this message translates to:
+  /// **'保存しました'**
+  String get piEngineSaved;
+
+  /// No description provided for @piEngineSystemPrompts.
+  ///
+  /// In ja, this message translates to:
+  /// **'システムプロンプト'**
+  String get piEngineSystemPrompts;
+
+  /// No description provided for @piEngineSystemPromptsSubtitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'SYSTEM.md / APPEND_SYSTEM.md の上書き'**
+  String get piEngineSystemPromptsSubtitle;
+
+  /// No description provided for @piEngineSystemPrompt.
+  ///
+  /// In ja, this message translates to:
+  /// **'システムプロンプト'**
+  String get piEngineSystemPrompt;
+
+  /// No description provided for @piEngineSystemPromptTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'SYSTEM.md'**
+  String get piEngineSystemPromptTitle;
+
+  /// No description provided for @piEngineAppendSystemPromptTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'システムプロンプトを追記'**
+  String get piEngineAppendSystemPromptTitle;
+
+  /// No description provided for @piEnginePromptHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'Markdown コンテンツ。空にすると上書きを解除します。'**
+  String get piEnginePromptHint;
+
+  /// No description provided for @piEnginePromptEmpty.
+  ///
+  /// In ja, this message translates to:
+  /// **'（空）'**
+  String get piEnginePromptEmpty;
+
+  /// No description provided for @piEngineScopeGlobal.
+  ///
+  /// In ja, this message translates to:
+  /// **'グローバル'**
+  String get piEngineScopeGlobal;
+
+  /// No description provided for @piEngineScopeProject.
+  ///
+  /// In ja, this message translates to:
+  /// **'プロジェクト'**
+  String get piEngineScopeProject;
+
+  /// No description provided for @piEngineProjectPath.
+  ///
+  /// In ja, this message translates to:
+  /// **'ワークスペースパス'**
+  String get piEngineProjectPath;
+
+  /// No description provided for @piEngineLoad.
+  ///
+  /// In ja, this message translates to:
+  /// **'読み込み'**
+  String get piEngineLoad;
+
+  /// No description provided for @piEngineLaunchFlags.
+  ///
+  /// In ja, this message translates to:
+  /// **'起動フラグ'**
+  String get piEngineLaunchFlags;
+
+  /// No description provided for @piEngineLaunchFlagsSubtitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'コンテキスト、スキル、テンプレート、拡張、ツール'**
+  String get piEngineLaunchFlagsSubtitle;
+
+  /// No description provided for @piEngineFlagSectionToggles.
+  ///
+  /// In ja, this message translates to:
+  /// **'機能スイッチ'**
+  String get piEngineFlagSectionToggles;
+
+  /// No description provided for @piEngineFlagSectionValues.
+  ///
+  /// In ja, this message translates to:
+  /// **'値付きスイッチ'**
+  String get piEngineFlagSectionValues;
+
+  /// No description provided for @piEngineFlagSectionOther.
+  ///
+  /// In ja, this message translates to:
+  /// **'その他の引数（そのまま保持）'**
+  String get piEngineFlagSectionOther;
+
+  /// No description provided for @piEngineFlagNoContextFiles.
+  ///
+  /// In ja, this message translates to:
+  /// **'コンテキストファイル（CLAUDE.md、AGENTS.md など）を読み込みません。'**
+  String get piEngineFlagNoContextFiles;
+
+  /// No description provided for @piEngineFlagNoSkills.
+  ///
+  /// In ja, this message translates to:
+  /// **'スキルを無効化します。'**
+  String get piEngineFlagNoSkills;
+
+  /// No description provided for @piEngineFlagNoPromptTemplates.
+  ///
+  /// In ja, this message translates to:
+  /// **'プロンプトテンプレートを無効化します。'**
+  String get piEngineFlagNoPromptTemplates;
+
+  /// No description provided for @piEngineFlagNoThemes.
+  ///
+  /// In ja, this message translates to:
+  /// **'テーマを無効化します。'**
+  String get piEngineFlagNoThemes;
+
+  /// No description provided for @piEngineFlagNoExtensions.
+  ///
+  /// In ja, this message translates to:
+  /// **'拡張機能を無効化します。'**
+  String get piEngineFlagNoExtensions;
+
+  /// No description provided for @piEngineFlagNoTools.
+  ///
+  /// In ja, this message translates to:
+  /// **'すべてのツールを無効化します。'**
+  String get piEngineFlagNoTools;
+
+  /// No description provided for @piEngineFlagNoBuiltinTools.
+  ///
+  /// In ja, this message translates to:
+  /// **'組み込みツール（bash、grep など）を無効化します。'**
+  String get piEngineFlagNoBuiltinTools;
+
+  /// No description provided for @piEngineFlagTools.
+  ///
+  /// In ja, this message translates to:
+  /// **'有効化するツール（カンマ区切りリスト）。'**
+  String get piEngineFlagTools;
+
+  /// No description provided for @piEngineFlagExcludeTools.
+  ///
+  /// In ja, this message translates to:
+  /// **'デフォルトのツールセットから除外します。'**
+  String get piEngineFlagExcludeTools;
+
+  /// No description provided for @piEngineFlagUseTheme.
+  ///
+  /// In ja, this message translates to:
+  /// **'テーマ有効時に適用するテーマ。'**
+  String get piEngineFlagUseTheme;
+
+  /// No description provided for @piEngineFlagsClear.
+  ///
+  /// In ja, this message translates to:
+  /// **'クリア'**
+  String get piEngineFlagsClear;
+
+  /// No description provided for @piEngineFlagsRestartHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'起動スイッチはエンジン起動時に反映されます。今すぐ反映するにはエンジンを再起動してください。'**
+  String get piEngineFlagsRestartHint;
+
+  /// No description provided for @piEngineRestartEngine.
+  ///
+  /// In ja, this message translates to:
+  /// **'エンジンを再起動'**
+  String get piEngineRestartEngine;
+
+  /// No description provided for @piEngineRestartConfirmBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'新しい起動設定を反映するためにエンジンを再起動しますか？現在のセッションは中断されます。'**
+  String get piEngineRestartConfirmBody;
+
+  /// No description provided for @piEngineRestarting.
+  ///
+  /// In ja, this message translates to:
+  /// **'エンジンを再起動中…'**
+  String get piEngineRestarting;
+
+  /// No description provided for @piEngineRestarted.
+  ///
+  /// In ja, this message translates to:
+  /// **'エンジンを再起動しました。新しい設定は次のリクエストで反映されます。'**
+  String get piEngineRestarted;
+
+  /// No description provided for @piEngineModels.
+  ///
+  /// In ja, this message translates to:
+  /// **'モデル'**
+  String get piEngineModels;
+
+  /// No description provided for @piEngineModelsSubtitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'カスタムプロバイダーとモデル（models.json）'**
+  String get piEngineModelsSubtitle;
+
+  /// No description provided for @piEngineModelsEmpty.
+  ///
+  /// In ja, this message translates to:
+  /// **'カスタムプロバイダーはまだありません。+ をタップして追加。'**
+  String get piEngineModelsEmpty;
+
+  /// No description provided for @piEngineModelAdd.
+  ///
+  /// In ja, this message translates to:
+  /// **'モデルを追加'**
+  String get piEngineModelAdd;
+
+  /// No description provided for @piEngineModelId.
+  ///
+  /// In ja, this message translates to:
+  /// **'モデル ID'**
+  String get piEngineModelId;
+
+  /// No description provided for @piEngineModelName.
+  ///
+  /// In ja, this message translates to:
+  /// **'表示名'**
+  String get piEngineModelName;
+
+  /// No description provided for @piEngineModelReasoning.
+  ///
+  /// In ja, this message translates to:
+  /// **'推論モデル'**
+  String get piEngineModelReasoning;
+
+  /// No description provided for @piEngineModelReasoningTag.
+  ///
+  /// In ja, this message translates to:
+  /// **'推論'**
+  String get piEngineModelReasoningTag;
+
+  /// No description provided for @piEngineProviderAdd.
+  ///
+  /// In ja, this message translates to:
+  /// **'プロバイダーを追加'**
+  String get piEngineProviderAdd;
+
+  /// No description provided for @piEngineProviderEdit.
+  ///
+  /// In ja, this message translates to:
+  /// **'プロバイダーを編集'**
+  String get piEngineProviderEdit;
+
+  /// No description provided for @piEngineProviderDelete.
+  ///
+  /// In ja, this message translates to:
+  /// **'プロバイダーを削除'**
+  String get piEngineProviderDelete;
+
+  /// No description provided for @piEngineProviderDeleteConfirm.
+  ///
+  /// In ja, this message translates to:
+  /// **'プロバイダー \"{id}\" を削除しますか？モデルも一緒に削除されます。'**
+  String piEngineProviderDeleteConfirm(String id);
+
+  /// No description provided for @piEngineProviderId.
+  ///
+  /// In ja, this message translates to:
+  /// **'プロバイダー ID'**
+  String get piEngineProviderId;
+
+  /// No description provided for @piEngineProviderBaseUrl.
+  ///
+  /// In ja, this message translates to:
+  /// **'ベース URL'**
+  String get piEngineProviderBaseUrl;
+
+  /// No description provided for @piEngineProviderApi.
+  ///
+  /// In ja, this message translates to:
+  /// **'API'**
+  String get piEngineProviderApi;
+
+  /// No description provided for @piEngineProviderApiKey.
+  ///
+  /// In ja, this message translates to:
+  /// **'API キー'**
+  String get piEngineProviderApiKey;
 }
 
 class _AppLocalizationsDelegate

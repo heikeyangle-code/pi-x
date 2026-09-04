@@ -1099,5 +1099,87 @@
   "approvalQuestionNotificationTitle": "Question - ccpocket",
   "approvalRequiredNotificationTitle": "Approval Required - ccpocket",
   "exitPlanModeNotificationBody": "The generated plan needs your review",
-  "renderErrorFallback": "This content couldn't be displayed."
+  "renderErrorFallback": "This content couldn't be displayed.",
+
+  "confirm": "Confirm",
+  "piEngineTitle": "Pi engine",
+  "piEngineSettingsSubtitle": "System prompts, launch flags, models",
+  "piEngineManage": "Pi engine",
+  "piEngineNote": "Note",
+  "piEngineNoteBody": "Pi Host: {url}",
+  "@piEngineNoteBody": {
+    "placeholders": {
+      "url": { "type": "String" }
+    }
+  },
+  "piEngineConnected": "Pi {version} connected",
+  "@piEngineConnected": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "piEngineConnecting": "Connecting to Pi engine…",
+  "piEngineReconnecting": "Reconnecting to Pi engine…",
+  "piEngineDisconnected": "Pi engine not connected",
+  "piEngineError": "Pi engine error: {error}",
+  "@piEngineError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "piEngineNotConnected": "Pi engine is not connected. Start the Pi Host server first.",
+  "piEngineSaved": "Saved",
+  "piEngineSystemPrompts": "System prompts",
+  "piEngineSystemPromptsSubtitle": "SYSTEM.md / APPEND_SYSTEM.md overrides",
+  "piEngineSystemPrompt": "System prompt",
+  "piEngineSystemPromptTitle": "SYSTEM.md",
+  "piEngineAppendSystemPromptTitle": "Append system prompt",
+  "piEnginePromptHint": "Markdown content. Leave empty to remove the override.",
+  "piEnginePromptEmpty": "(empty)",
+  "piEngineScopeGlobal": "Global",
+  "piEngineScopeProject": "Project",
+  "piEngineProjectPath": "Workspace path",
+  "piEngineLoad": "Load",
+  "piEngineLaunchFlags": "Launch flags",
+  "piEngineLaunchFlagsSubtitle": "Context, skills, templates, extensions, tools",
+  "piEngineFlagSectionToggles": "Capability switches",
+  "piEngineFlagSectionValues": "Value switches",
+  "piEngineFlagSectionOther": "Other arguments (kept as-is)",
+  "piEngineFlagNoContextFiles": "Do not read context files (CLAUDE.md, AGENTS.md, …).",
+  "piEngineFlagNoSkills": "Disable skills.",
+  "piEngineFlagNoPromptTemplates": "Disable prompt templates.",
+  "piEngineFlagNoThemes": "Disable themes.",
+  "piEngineFlagNoExtensions": "Disable extensions.",
+  "piEngineFlagNoTools": "Disable all tools.",
+  "piEngineFlagNoBuiltinTools": "Disable built-in tools (bash, grep, …).",
+  "piEngineFlagTools": "Tools to enable (comma-separated list).",
+  "piEngineFlagExcludeTools": "Exclude tools from the default set.",
+  "piEngineFlagUseTheme": "Theme to apply when themes are enabled.",
+  "piEngineFlagsClear": "Clear",
+  "piEngineFlagsRestartHint": "Launch switches take effect when the engine starts. Restart the engine to apply changes now.",
+  "piEngineRestartEngine": "Restart engine",
+  "piEngineRestartConfirmBody": "Restart the engine to apply the new launch settings? This interrupts the current session.",
+  "piEngineRestarting": "Restarting engine…",
+  "piEngineRestarted": "Engine restarted. New settings apply on the next request.",
+  "piEngineModels": "Models",
+  "piEngineModelsSubtitle": "Custom providers and models (models.json)",
+  "piEngineModelsEmpty": "No custom providers yet. Tap + to add one.",
+  "piEngineModelAdd": "Add model",
+  "piEngineModelId": "Model ID",
+  "piEngineModelName": "Display name",
+  "piEngineModelReasoning": "Reasoning model",
+  "piEngineModelReasoningTag": "reasoning",
+  "piEngineProviderAdd": "Add provider",
+  "piEngineProviderEdit": "Edit provider",
+  "piEngineProviderDelete": "Delete provider",
+  "piEngineProviderDeleteConfirm": "Delete provider \"{id}\"? Its models will be removed too.",
+  "@piEngineProviderDeleteConfirm": {
+    "placeholders": {
+      "id": { "type": "String" }
+    }
+  },
+  "piEngineProviderId": "Provider ID",
+  "piEngineProviderBaseUrl": "Base URL",
+  "piEngineProviderApi": "API",
+  "piEngineProviderApiKey": "API key"
 }

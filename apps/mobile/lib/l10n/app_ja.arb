@@ -1129,5 +1129,87 @@
   "approvalQuestionNotificationTitle": "質問があります - ccpocket",
   "approvalRequiredNotificationTitle": "承認待ち - ccpocket",
   "exitPlanModeNotificationBody": "作成したプランの確認が必要です",
-  "renderErrorFallback": "このコンテンツを表示できませんでした"
+  "renderErrorFallback": "このコンテンツを表示できませんでした",
+
+  "confirm": "確認",
+  "piEngineTitle": "Pi エンジン",
+  "piEngineSettingsSubtitle": "システムプロンプト、起動フラグ、モデル",
+  "piEngineManage": "Pi エンジン",
+  "piEngineNote": "メモ",
+  "piEngineNoteBody": "Pi Host: {url}",
+  "@piEngineNoteBody": {
+    "placeholders": {
+      "url": { "type": "String" }
+    }
+  },
+  "piEngineConnected": "Pi {version} に接続済み",
+  "@piEngineConnected": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "piEngineConnecting": "Pi エンジンに接続中…",
+  "piEngineReconnecting": "Pi エンジンに再接続中…",
+  "piEngineDisconnected": "Pi エンジン未接続",
+  "piEngineError": "Pi エンジンエラー: {error}",
+  "@piEngineError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "piEngineNotConnected": "Pi エンジンに接続されていません。先に Pi Host サーバーを起動してください。",
+  "piEngineSaved": "保存しました",
+  "piEngineSystemPrompts": "システムプロンプト",
+  "piEngineSystemPromptsSubtitle": "SYSTEM.md / APPEND_SYSTEM.md の上書き",
+  "piEngineSystemPrompt": "システムプロンプト",
+  "piEngineSystemPromptTitle": "SYSTEM.md",
+  "piEngineAppendSystemPromptTitle": "システムプロンプトを追記",
+  "piEnginePromptHint": "Markdown コンテンツ。空にすると上書きを解除します。",
+  "piEnginePromptEmpty": "（空）",
+  "piEngineScopeGlobal": "グローバル",
+  "piEngineScopeProject": "プロジェクト",
+  "piEngineProjectPath": "ワークスペースパス",
+  "piEngineLoad": "読み込み",
+  "piEngineLaunchFlags": "起動フラグ",
+  "piEngineLaunchFlagsSubtitle": "コンテキスト、スキル、テンプレート、拡張、ツール",
+  "piEngineFlagSectionToggles": "機能スイッチ",
+  "piEngineFlagSectionValues": "値付きスイッチ",
+  "piEngineFlagSectionOther": "その他の引数（そのまま保持）",
+  "piEngineFlagNoContextFiles": "コンテキストファイル（CLAUDE.md、AGENTS.md など）を読み込みません。",
+  "piEngineFlagNoSkills": "スキルを無効化します。",
+  "piEngineFlagNoPromptTemplates": "プロンプトテンプレートを無効化します。",
+  "piEngineFlagNoThemes": "テーマを無効化します。",
+  "piEngineFlagNoExtensions": "拡張機能を無効化します。",
+  "piEngineFlagNoTools": "すべてのツールを無効化します。",
+  "piEngineFlagNoBuiltinTools": "組み込みツール（bash、grep など）を無効化します。",
+  "piEngineFlagTools": "有効化するツール（カンマ区切りリスト）。",
+  "piEngineFlagExcludeTools": "デフォルトのツールセットから除外します。",
+  "piEngineFlagUseTheme": "テーマ有効時に適用するテーマ。",
+  "piEngineFlagsClear": "クリア",
+  "piEngineFlagsRestartHint": "起動スイッチはエンジン起動時に反映されます。今すぐ反映するにはエンジンを再起動してください。",
+  "piEngineRestartEngine": "エンジンを再起動",
+  "piEngineRestartConfirmBody": "新しい起動設定を反映するためにエンジンを再起動しますか？現在のセッションは中断されます。",
+  "piEngineRestarting": "エンジンを再起動中…",
+  "piEngineRestarted": "エンジンを再起動しました。新しい設定は次のリクエストで反映されます。",
+  "piEngineModels": "モデル",
+  "piEngineModelsSubtitle": "カスタムプロバイダーとモデル（models.json）",
+  "piEngineModelsEmpty": "カスタムプロバイダーはまだありません。+ をタップして追加。",
+  "piEngineModelAdd": "モデルを追加",
+  "piEngineModelId": "モデル ID",
+  "piEngineModelName": "表示名",
+  "piEngineModelReasoning": "推論モデル",
+  "piEngineModelReasoningTag": "推論",
+  "piEngineProviderAdd": "プロバイダーを追加",
+  "piEngineProviderEdit": "プロバイダーを編集",
+  "piEngineProviderDelete": "プロバイダーを削除",
+  "piEngineProviderDeleteConfirm": "プロバイダー \"{id}\" を削除しますか？モデルも一緒に削除されます。",
+  "@piEngineProviderDeleteConfirm": {
+    "placeholders": {
+      "id": { "type": "String" }
+    }
+  },
+  "piEngineProviderId": "プロバイダー ID",
+  "piEngineProviderBaseUrl": "ベース URL",
+  "piEngineProviderApi": "API",
+  "piEngineProviderApiKey": "API キー"
 }

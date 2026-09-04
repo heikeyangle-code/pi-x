@@ -3,7 +3,7 @@
 > 结论先行：**引擎 = `pi --mode rpc` 子进程（官方 JSONL 协议），Pi Host = 薄网关**。
 > 不内嵌 AgentSession 到 bridge（除非未来需要扩展自定义 GUI 组件）。
 
-## 1. 两条路线对比（基于 pi 0.84.x 官方文档与源码）
+## 1. 两条路线对比（基于 pi 0.85.x 官方文档与源码）
 
 | 维度 | A. `pi --mode rpc` 子进程（推荐） | B. bridge 进程内嵌 AgentSession |
 |---|---|---|
@@ -66,6 +66,9 @@ Flutter App ──(CC Pocket 协议, ws@127.0.0.1)──▶ Pi Host(Node, 稳定
 - RPC 无 `ctx.ui.custom()`/TUI 键盘组件 → GUI 不依赖，无需支持
 - 扩展的 `notify`/`setStatus`/`setTitle` → 映射为 App 内通知/状态条/标题
 - 若未来需要进程内扩展 GUI（setWidget 级别）→ 再评估 AgentSession 内嵌（B），届时 pi-provider 作为独立 bundle 维护
+- **引擎包依赖缺口（0.85.0 实测）**：CLI 入口是打包产物 `dist/bundle/cli.js`，**不依赖 `@earendil-works/pi-server`**（裸装 `pi-coding-agent@0.85.0` 冒烟通过）。
+  该依赖缺口只存在于 SDK 进程内方案（路线 B）：`dist/index.js → main.js → experimental/server.js` 静态 import `@earendil-works/pi-server`，
+  而 `pi-coding-agent` 的 dependencies 未声明它 → import 即 `ERR_MODULE_NOT_FOUND`。若未来做 B：`pi-coding-agent` + `pi-server` 必须同版本钉死。
 
 ## 6. 决策修订：wire = pi 直通（薄转发），映射表降级为可选过渡
 

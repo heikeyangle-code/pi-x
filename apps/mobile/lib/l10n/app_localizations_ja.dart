@@ -2586,4 +2586,200 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get renderErrorFallback => 'このコンテンツを表示できませんでした';
+
+  @override
+  String get confirm => '確認';
+
+  @override
+  String get piEngineTitle => 'Pi エンジン';
+
+  @override
+  String get piEngineSettingsSubtitle => 'システムプロンプト、起動フラグ、モデル';
+
+  @override
+  String get piEngineManage => 'Pi エンジン';
+
+  @override
+  String get piEngineNote => 'メモ';
+
+  @override
+  String piEngineNoteBody(String url) {
+    return 'Pi Host: $url';
+  }
+
+  @override
+  String piEngineConnected(String version) {
+    return 'Pi $version に接続済み';
+  }
+
+  @override
+  String get piEngineConnecting => 'Pi エンジンに接続中…';
+
+  @override
+  String get piEngineReconnecting => 'Pi エンジンに再接続中…';
+
+  @override
+  String get piEngineDisconnected => 'Pi エンジン未接続';
+
+  @override
+  String piEngineError(String error) {
+    return 'Pi エンジンエラー: $error';
+  }
+
+  @override
+  String get piEngineNotConnected =>
+      'Pi エンジンに接続されていません。先に Pi Host サーバーを起動してください。';
+
+  @override
+  String get piEngineSaved => '保存しました';
+
+  @override
+  String get piEngineSystemPrompts => 'システムプロンプト';
+
+  @override
+  String get piEngineSystemPromptsSubtitle =>
+      'SYSTEM.md / APPEND_SYSTEM.md の上書き';
+
+  @override
+  String get piEngineSystemPrompt => 'システムプロンプト';
+
+  @override
+  String get piEngineSystemPromptTitle => 'SYSTEM.md';
+
+  @override
+  String get piEngineAppendSystemPromptTitle => 'システムプロンプトを追記';
+
+  @override
+  String get piEnginePromptHint => 'Markdown コンテンツ。空にすると上書きを解除します。';
+
+  @override
+  String get piEnginePromptEmpty => '（空）';
+
+  @override
+  String get piEngineScopeGlobal => 'グローバル';
+
+  @override
+  String get piEngineScopeProject => 'プロジェクト';
+
+  @override
+  String get piEngineProjectPath => 'ワークスペースパス';
+
+  @override
+  String get piEngineLoad => '読み込み';
+
+  @override
+  String get piEngineLaunchFlags => '起動フラグ';
+
+  @override
+  String get piEngineLaunchFlagsSubtitle => 'コンテキスト、スキル、テンプレート、拡張、ツール';
+
+  @override
+  String get piEngineFlagSectionToggles => '機能スイッチ';
+
+  @override
+  String get piEngineFlagSectionValues => '値付きスイッチ';
+
+  @override
+  String get piEngineFlagSectionOther => 'その他の引数（そのまま保持）';
+
+  @override
+  String get piEngineFlagNoContextFiles =>
+      'コンテキストファイル（CLAUDE.md、AGENTS.md など）を読み込みません。';
+
+  @override
+  String get piEngineFlagNoSkills => 'スキルを無効化します。';
+
+  @override
+  String get piEngineFlagNoPromptTemplates => 'プロンプトテンプレートを無効化します。';
+
+  @override
+  String get piEngineFlagNoThemes => 'テーマを無効化します。';
+
+  @override
+  String get piEngineFlagNoExtensions => '拡張機能を無効化します。';
+
+  @override
+  String get piEngineFlagNoTools => 'すべてのツールを無効化します。';
+
+  @override
+  String get piEngineFlagNoBuiltinTools => '組み込みツール（bash、grep など）を無効化します。';
+
+  @override
+  String get piEngineFlagTools => '有効化するツール（カンマ区切りリスト）。';
+
+  @override
+  String get piEngineFlagExcludeTools => 'デフォルトのツールセットから除外します。';
+
+  @override
+  String get piEngineFlagUseTheme => 'テーマ有効時に適用するテーマ。';
+
+  @override
+  String get piEngineFlagsClear => 'クリア';
+
+  @override
+  String get piEngineFlagsRestartHint =>
+      '起動スイッチはエンジン起動時に反映されます。今すぐ反映するにはエンジンを再起動してください。';
+
+  @override
+  String get piEngineRestartEngine => 'エンジンを再起動';
+
+  @override
+  String get piEngineRestartConfirmBody =>
+      '新しい起動設定を反映するためにエンジンを再起動しますか？現在のセッションは中断されます。';
+
+  @override
+  String get piEngineRestarting => 'エンジンを再起動中…';
+
+  @override
+  String get piEngineRestarted => 'エンジンを再起動しました。新しい設定は次のリクエストで反映されます。';
+
+  @override
+  String get piEngineModels => 'モデル';
+
+  @override
+  String get piEngineModelsSubtitle => 'カスタムプロバイダーとモデル（models.json）';
+
+  @override
+  String get piEngineModelsEmpty => 'カスタムプロバイダーはまだありません。+ をタップして追加。';
+
+  @override
+  String get piEngineModelAdd => 'モデルを追加';
+
+  @override
+  String get piEngineModelId => 'モデル ID';
+
+  @override
+  String get piEngineModelName => '表示名';
+
+  @override
+  String get piEngineModelReasoning => '推論モデル';
+
+  @override
+  String get piEngineModelReasoningTag => '推論';
+
+  @override
+  String get piEngineProviderAdd => 'プロバイダーを追加';
+
+  @override
+  String get piEngineProviderEdit => 'プロバイダーを編集';
+
+  @override
+  String get piEngineProviderDelete => 'プロバイダーを削除';
+
+  @override
+  String piEngineProviderDeleteConfirm(String id) {
+    return 'プロバイダー \"$id\" を削除しますか？モデルも一緒に削除されます。';
+  }
+
+  @override
+  String get piEngineProviderId => 'プロバイダー ID';
+
+  @override
+  String get piEngineProviderBaseUrl => 'ベース URL';
+
+  @override
+  String get piEngineProviderApi => 'API';
+
+  @override
+  String get piEngineProviderApiKey => 'API キー';
 }

@@ -1,5 +1,5 @@
 /**
- * Typed RPC command wrappers for the pi engine (docs/rpc.md, pi 0.84.x).
+ * Typed RPC command wrappers for the pi engine (docs/rpc.md, pi 0.85.x).
  *
  * These mirror the official JSONL command surface so the bridge/UI layer can
  * drive the engine without hand-writing frames. Payloads verified against

@@ -184,4 +184,83 @@ describe("PiGateway", () => {
     expect(skills).toMatchObject({ success: true });
     await gateway.stopAll();
   }, slow);
+
+  it("restart_engine stops the running engine and next request respawns it", async () => {
+    const { gateway } = makeGateway(fakeEnginePath());
+    const first = await gateway.handleControl({ id: "c1", type: "control", op: "get_state", projectId: "proj" });
+    expect(first).toMatchObject({ success: true });
+
+    const restarted = await gateway.handleControl({ id: "c2", type: "control", op: "restart_engine", projectId: "proj" });
+    expect(restarted).toMatchObject({ success: true, restarted: true });
+
+    // engine was stopped; next request must respawn it and still round-trip
+    const after = await gateway.handleControl({ id: "c3", type: "control", op: "get_state", projectId: "proj" });
+    expect(after).toMatchObject({ success: true });
+    await gateway.stopAll();
+  }, slow);
+
+  it("round-trips pix-config (engine launch args) against an isolated piHome", async () => {
+    const cwd = workDir("gw-pix");
+    const gateway = new PiGateway({
+      piEntry: fakeEnginePath(),
+      engineVersion: "0.0.0-test",
+      piHome: workDir("gw-pihome-pix"),
+      resolveCwd: () => cwd,
+    });
+    gateway.send = () => undefined;
+    const ctl = (op: string, payload: Record<string, unknown> = {}) =>
+      gateway.handleControl({ id: "cX", type: "control", op, projectId: "proj", payload });
+
+    // empty by default
+    const empty = await ctl("get_pix_config");
+    expect(empty).toMatchObject({ success: true });
+    expect((empty as { data: { engineArgs?: string[] } }).data.engineArgs).toBeUndefined();
+
+    // update persists (filters empty strings), re-reads
+    const up = await ctl("update_pix_config", { patch: { engineArgs: ["--no-context-files", "", "--no-skills"] } });
+    expect(up.success).toBe(true);
+    expect((up as { data: { engineArgs: string[] } }).data.engineArgs).toEqual(["--no-context-files", "--no-skills"]);
+    const read = await ctl("get_pix_config");
+    expect((read as { data: { engineArgs: string[] } }).data.engineArgs).toEqual(["--no-context-files", "--no-skills"]);
+
+    // engine still round-trips with args configured (args only affect spawn)
+    const st = await ctl("get_state");
+    expect(st).toMatchObject({ success: true });
+    await gateway.stopAll();
+  }, slow);
+
+  it("reads and writes system prompt files (global + project scope)", async () => {
+    const cwd = workDir("gw-prompt");
+    const gateway = new PiGateway({
+      piEntry: fakeEnginePath(),
+      engineVersion: "0.0.0-test",
+      piHome: workDir("gw-pihome-prompt"),
+      resolveCwd: () => cwd,
+    });
+    gateway.send = () => undefined;
+    const ctl = (op: string, payload: Record<string, unknown> = {}) =>
+      gateway.handleControl({ id: "cX", type: "control", op, projectId: "proj", payload });
+
+    // empty by default (no files yet)
+    const before = await ctl("read_prompt_files");
+    const beforeData = (before as { data: { global: Record<string, unknown>; project: Record<string, unknown> } }).data;
+    expect(beforeData.global.systemPrompt).toBeNull();
+    expect(beforeData.global.appendSystemPrompt).toBeNull();
+    expect(beforeData.project.systemPrompt).toBeNull();
+
+    // write global SYSTEM.md
+    const wg = await ctl("write_prompt_file", { scope: "global", kind: "system", content: "# System\nBe concise." });
+    expect(wg.success).toBe(true);
+    // write project APPEND_SYSTEM.md
+    const wp = await ctl("write_prompt_file", { scope: "project", kind: "append", content: "## Rules\nNo emoji." });
+    expect(wp.success).toBe(true);
+
+    const after = await ctl("read_prompt_files");
+    const afterData = (after as { data: { global: Record<string, string | null>; project: Record<string, string | null> } }).data;
+    expect(afterData.global.systemPrompt).toContain("Be concise.");
+    expect(afterData.global.appendSystemPrompt).toBeNull();
+    expect(afterData.project.systemPrompt).toBeNull();
+    expect(afterData.project.appendSystemPrompt).toContain("No emoji.");
+    await gateway.stopAll();
+  }, slow);
 });

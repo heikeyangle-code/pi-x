@@ -2609,4 +2609,199 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get renderErrorFallback => '이 콘텐츠를 표시할 수 없습니다.';
+
+  @override
+  String get confirm => '확인';
+
+  @override
+  String get piEngineTitle => 'Pi 엔진';
+
+  @override
+  String get piEngineSettingsSubtitle => '시스템 프롬프트, 시작 플래그, 모델';
+
+  @override
+  String get piEngineManage => 'Pi 엔진';
+
+  @override
+  String get piEngineNote => '참고';
+
+  @override
+  String piEngineNoteBody(String url) {
+    return 'Pi Host: $url';
+  }
+
+  @override
+  String piEngineConnected(String version) {
+    return 'Pi $version 연결됨';
+  }
+
+  @override
+  String get piEngineConnecting => 'Pi 엔진 연결 중…';
+
+  @override
+  String get piEngineReconnecting => 'Pi 엔진에 다시 연결 중…';
+
+  @override
+  String get piEngineDisconnected => 'Pi 엔진 연결 안 됨';
+
+  @override
+  String piEngineError(String error) {
+    return 'Pi 엔진 오류: $error';
+  }
+
+  @override
+  String get piEngineNotConnected => 'Pi 엔진이 연결되지 않았습니다. 먼저 Pi Host 서버를 시작하세요.';
+
+  @override
+  String get piEngineSaved => '저장됨';
+
+  @override
+  String get piEngineSystemPrompts => '시스템 프롬프트';
+
+  @override
+  String get piEngineSystemPromptsSubtitle =>
+      'SYSTEM.md / APPEND_SYSTEM.md 덮어쓰기';
+
+  @override
+  String get piEngineSystemPrompt => '시스템 프롬프트';
+
+  @override
+  String get piEngineSystemPromptTitle => 'SYSTEM.md';
+
+  @override
+  String get piEngineAppendSystemPromptTitle => '시스템 프롬프트 추가';
+
+  @override
+  String get piEnginePromptHint => 'Markdown 내용. 비우면 덮어쓰기가 제거됩니다.';
+
+  @override
+  String get piEnginePromptEmpty => '(비어 있음)';
+
+  @override
+  String get piEngineScopeGlobal => '전역';
+
+  @override
+  String get piEngineScopeProject => '프로젝트';
+
+  @override
+  String get piEngineProjectPath => '작업 공간 경로';
+
+  @override
+  String get piEngineLoad => '불러오기';
+
+  @override
+  String get piEngineLaunchFlags => '시작 플래그';
+
+  @override
+  String get piEngineLaunchFlagsSubtitle => '컨텍스트, 스킬, 템플릿, 확장, 도구';
+
+  @override
+  String get piEngineFlagSectionToggles => '기능 스위치';
+
+  @override
+  String get piEngineFlagSectionValues => '값 스위치';
+
+  @override
+  String get piEngineFlagSectionOther => '기타 인수(그대로 유지)';
+
+  @override
+  String get piEngineFlagNoContextFiles =>
+      '컨텍스트 파일(CLAUDE.md, AGENTS.md 등)을 읽지 않습니다.';
+
+  @override
+  String get piEngineFlagNoSkills => '스킬을 비활성화합니다.';
+
+  @override
+  String get piEngineFlagNoPromptTemplates => '프롬프트 템플릿을 비활성화합니다.';
+
+  @override
+  String get piEngineFlagNoThemes => '테마를 비활성화합니다.';
+
+  @override
+  String get piEngineFlagNoExtensions => '확장 기능을 비활성화합니다.';
+
+  @override
+  String get piEngineFlagNoTools => '모든 도구를 비활성화합니다.';
+
+  @override
+  String get piEngineFlagNoBuiltinTools => '내장 도구(bash, grep 등)를 비활성화합니다.';
+
+  @override
+  String get piEngineFlagTools => '활성화할 도구(쉼표로 구분된 목록).';
+
+  @override
+  String get piEngineFlagExcludeTools => '기본 도구 집합에서 제외할 도구를 지정합니다.';
+
+  @override
+  String get piEngineFlagUseTheme => '테마가 활성화된 경우 적용할 테마.';
+
+  @override
+  String get piEngineFlagsClear => '지우기';
+
+  @override
+  String get piEngineFlagsRestartHint =>
+      '시작 스위치는 엔진 시작 시 적용됩니다. 지금 적용하려면 엔진을 다시 시작하세요.';
+
+  @override
+  String get piEngineRestartEngine => '엔진 다시 시작';
+
+  @override
+  String get piEngineRestartConfirmBody =>
+      '새 시작 설정을 적용하려면 엔진을 다시 시작할까요? 현재 세션이 중단됩니다.';
+
+  @override
+  String get piEngineRestarting => '엔진 다시 시작 중…';
+
+  @override
+  String get piEngineRestarted => '엔진이 다시 시작되었습니다. 새 설정은 다음 요청에 적용됩니다.';
+
+  @override
+  String get piEngineModels => '모델';
+
+  @override
+  String get piEngineModelsSubtitle => '사용자 정의 공급자 및 모델(models.json)';
+
+  @override
+  String get piEngineModelsEmpty => '아직 사용자 정의 공급자가 없습니다. +를 눌러 추가하세요.';
+
+  @override
+  String get piEngineModelAdd => '모델 추가';
+
+  @override
+  String get piEngineModelId => '모델 ID';
+
+  @override
+  String get piEngineModelName => '표시 이름';
+
+  @override
+  String get piEngineModelReasoning => '추론 모델';
+
+  @override
+  String get piEngineModelReasoningTag => '추론';
+
+  @override
+  String get piEngineProviderAdd => '공급자 추가';
+
+  @override
+  String get piEngineProviderEdit => '공급자 편집';
+
+  @override
+  String get piEngineProviderDelete => '공급자 삭제';
+
+  @override
+  String piEngineProviderDeleteConfirm(String id) {
+    return '공급자 \"$id\"을(를) 삭제할까요? 모델도 함께 제거됩니다.';
+  }
+
+  @override
+  String get piEngineProviderId => '공급자 ID';
+
+  @override
+  String get piEngineProviderBaseUrl => '기본 URL';
+
+  @override
+  String get piEngineProviderApi => 'API';
+
+  @override
+  String get piEngineProviderApiKey => 'API 키';
 }

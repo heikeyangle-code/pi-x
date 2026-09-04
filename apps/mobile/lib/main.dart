@@ -27,6 +27,7 @@ import 'package:talker_bloc_logger/talker_bloc_logger.dart';
 
 import 'core/logger.dart';
 import 'l10n/app_localizations.dart';
+import 'features/pi_engine/extension_ui_host.dart';
 import 'features/session_list/state/session_list_cubit.dart';
 import 'features/git/state/git_status_cubit.dart';
 import 'features/git/state/git_view_cache_service.dart';
@@ -48,6 +49,7 @@ import 'services/mock_preview_extension.dart';
 import 'services/notification_service.dart';
 import 'services/performance_probe_extension.dart';
 import 'services/prompt_history_service.dart';
+import 'services/pi_host_service.dart';
 import 'services/session_link_parser.dart';
 import 'theme/app_theme.dart';
 import 'services/store_screenshot_extension.dart';
@@ -110,6 +112,7 @@ void main() async {
     }
   });
   final appIconService = AppIconService();
+  final piHostService = PiHostService();
   final settingsCubit = SettingsCubit(
     prefs,
     bridgeService: bridge,
@@ -152,6 +155,11 @@ void main() async {
           value: promptHistoryService,
         ),
         RepositoryProvider<AppIconService>.value(value: appIconService),
+        RepositoryProvider<PiHostService>(
+          create: (_) => piHostService,
+          lazy: false,
+          dispose: (service) => service.dispose(),
+        ),
         RepositoryProvider<MachineManagerService>(
           create: (_) => machineManagerService,
           lazy: false,
@@ -375,7 +383,10 @@ class _CcpocketAppState extends State<CcpocketApp> {
                   multiplier: settings.textScale,
                 ),
               ),
-              child: app,
+              child: PiExtensionUiHost(
+                service: context.read<PiHostService>(),
+                child: app,
+              ),
             );
           },
           debugShowCheckedModeBanner: false,

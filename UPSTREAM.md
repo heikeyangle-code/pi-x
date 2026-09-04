@@ -14,4 +14,4 @@
 
 - 仓库：https://github.com/earendil-works/pi · npm: @earendil-works/pi-coding-agent
 - 更新方式：**不走 git merge**，走版本跟随管道（npm 发版 watch → pi-engine-<ver>.tgz + manifest → engines/<ver> 热换+回滚）。
-- 基线调研：npm latest ≈ 0.84.4（node ≥22.19）；legacy-node20 通道 = 0.74.2 保底。
+- 基线调研：npm latest = 0.85.0（node ≥22.19）；legacy-node20 通道 = 0.74.2 保底。

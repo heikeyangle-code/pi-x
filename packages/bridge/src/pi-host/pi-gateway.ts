@@ -16,6 +16,9 @@
 import { EnginePool } from "./engine-pool.js";
 import type { EngineEvent } from "./engine-process.js";
 import * as rpc from "./pi-rpc.js";
+import { PixConfigFile, type PixConfig } from "./pix-config.js";
+import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { join } from "node:path";
 import {
   SettingsFile,
   ModelsFile,
@@ -113,10 +116,26 @@ export class PiGateway {
     });
   }
 
+  /** Launch-time engine argv (from ~/.pi/agent/pix-config.json), if any. */
+  private async resolveEngineArgs(): Promise<string[] | undefined> {
+    const files = piAgentFiles(this.piHome);
+    const cfg = await new PixConfigFile(files.pixConfig).load();
+    return cfg.engineArgs;
+  }
+
   /** Handle one client control message; resolves with the engine response. */
   async handleControl(msg: ClientControlMessage): Promise<unknown> {
+    // restart_engine applies launch-time configuration changes (engineArgs,
+    // SYSTEM.md / APPEND_SYSTEM.md): stop the current engine so the next
+    // request respawns it with the new argv/files. Must not require the
+    // engine to be running.
+    if (msg.op === "restart_engine") {
+      await this.pool.stop(msg.projectId);
+      return { success: true, restarted: true };
+    }
     const cwd = this.opts.resolveCwd(msg.projectId);
-    const engine = await this.pool.getOrStart(msg.projectId, cwd);
+    const args = await this.resolveEngineArgs();
+    const engine = await this.pool.getOrStart(msg.projectId, cwd, 1, args);
     const payload = msg.payload ?? {};
 
     switch (msg.op) {
@@ -288,6 +307,39 @@ export class PiGateway {
       case "looks_like_skill": {
         return { success: true, looksLikeSkill: looksLikeSkillMarkdown(String(payload.content ?? "")) };
       }
+      // ---- Pi X config surface (engine launch args + prompt files) ----
+      case "get_pix_config": {
+        const files = piAgentFiles(this.piHome);
+        const data = await new PixConfigFile(files.pixConfig).load();
+        return { success: true, data };
+      }
+      case "update_pix_config": {
+        const files = piAgentFiles(this.piHome);
+        const data = await new PixConfigFile(files.pixConfig).update(
+          (payload.patch as Partial<PixConfig> | undefined) ?? {},
+        );
+        return { success: true, data };
+      }
+      case "read_prompt_files": {
+        const files = piAgentFiles(this.piHome);
+        const global = {
+          systemPrompt: await readPromptFile(files.systemPrompt),
+          appendSystemPrompt: await readPromptFile(files.appendSystemPrompt),
+        };
+        const project = {
+          systemPrompt: await readPromptFile(join(cwd, ".pi", "SYSTEM.md")),
+          appendSystemPrompt: await readPromptFile(join(cwd, ".pi", "APPEND_SYSTEM.md")),
+        };
+        return { success: true, data: { global, project } };
+      }
+      case "write_prompt_file": {
+        const scope = payload.scope === "project" ? join(cwd, ".pi") : piAgentFiles(this.piHome).agent;
+        const kind = payload.kind === "append" ? "APPEND_SYSTEM.md" : "SYSTEM.md";
+        const file = join(scope, kind);
+        await mkdir(scope, { recursive: true });
+        await writeFile(file, String(payload.content ?? ""), "utf8");
+        return { success: true, file };
+      }
       default:
         return {
           type: "response",
@@ -300,5 +352,14 @@ export class PiGateway {
 
   stopAll(): Promise<void> {
     return this.pool.stopAll();
+  }
+}
+
+/** Read an optional text file; null when missing/unreadable. */
+async function readPromptFile(file: string): Promise<string | null> {
+  try {
+    return await readFile(file, "utf8");
+  } catch {
+    return null;
   }
 }

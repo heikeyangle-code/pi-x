@@ -2554,4 +2554,195 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get renderErrorFallback => '无法显示此内容。';
+
+  @override
+  String get confirm => '确认';
+
+  @override
+  String get piEngineTitle => 'Pi 引擎';
+
+  @override
+  String get piEngineSettingsSubtitle => '系统提示词、启动参数、模型';
+
+  @override
+  String get piEngineManage => 'Pi 引擎';
+
+  @override
+  String get piEngineNote => '说明';
+
+  @override
+  String piEngineNoteBody(String url) {
+    return 'Pi Host：$url';
+  }
+
+  @override
+  String piEngineConnected(String version) {
+    return 'Pi $version 已连接';
+  }
+
+  @override
+  String get piEngineConnecting => '正在连接 Pi 引擎…';
+
+  @override
+  String get piEngineReconnecting => '正在重新连接 Pi 引擎…';
+
+  @override
+  String get piEngineDisconnected => 'Pi 引擎未连接';
+
+  @override
+  String piEngineError(String error) {
+    return 'Pi 引擎错误：$error';
+  }
+
+  @override
+  String get piEngineNotConnected => 'Pi 引擎未连接，请先启动 Pi Host 服务。';
+
+  @override
+  String get piEngineSaved => '已保存';
+
+  @override
+  String get piEngineSystemPrompts => '系统提示词';
+
+  @override
+  String get piEngineSystemPromptsSubtitle => 'SYSTEM.md / APPEND_SYSTEM.md 覆盖';
+
+  @override
+  String get piEngineSystemPrompt => '系统提示词';
+
+  @override
+  String get piEngineSystemPromptTitle => 'SYSTEM.md';
+
+  @override
+  String get piEngineAppendSystemPromptTitle => '追加系统提示词';
+
+  @override
+  String get piEnginePromptHint => 'Markdown 内容。留空可移除该覆盖项。';
+
+  @override
+  String get piEnginePromptEmpty => '（空）';
+
+  @override
+  String get piEngineScopeGlobal => '全局';
+
+  @override
+  String get piEngineScopeProject => '项目';
+
+  @override
+  String get piEngineProjectPath => '工作区路径';
+
+  @override
+  String get piEngineLoad => '加载';
+
+  @override
+  String get piEngineLaunchFlags => '启动参数';
+
+  @override
+  String get piEngineLaunchFlagsSubtitle => '上下文、技能、模板、扩展、工具';
+
+  @override
+  String get piEngineFlagSectionToggles => '能力开关';
+
+  @override
+  String get piEngineFlagSectionValues => '带值参数';
+
+  @override
+  String get piEngineFlagSectionOther => '其他参数（原样保留）';
+
+  @override
+  String get piEngineFlagNoContextFiles => '不读取上下文文件（CLAUDE.md、AGENTS.md 等）。';
+
+  @override
+  String get piEngineFlagNoSkills => '禁用技能。';
+
+  @override
+  String get piEngineFlagNoPromptTemplates => '禁用提示词模板。';
+
+  @override
+  String get piEngineFlagNoThemes => '禁用主题。';
+
+  @override
+  String get piEngineFlagNoExtensions => '禁用扩展。';
+
+  @override
+  String get piEngineFlagNoTools => '禁用所有工具。';
+
+  @override
+  String get piEngineFlagNoBuiltinTools => '禁用内置工具（bash、grep 等）。';
+
+  @override
+  String get piEngineFlagTools => '要启用的工具（逗号分隔列表）。';
+
+  @override
+  String get piEngineFlagExcludeTools => '从默认工具集中排除指定工具。';
+
+  @override
+  String get piEngineFlagUseTheme => '启用主题时应用的主题。';
+
+  @override
+  String get piEngineFlagsClear => '清除';
+
+  @override
+  String get piEngineFlagsRestartHint => '启动参数在引擎启动时生效。重启引擎即可立即应用更改。';
+
+  @override
+  String get piEngineRestartEngine => '重启引擎';
+
+  @override
+  String get piEngineRestartConfirmBody => '重启引擎以应用新的启动设置？这会中断当前会话。';
+
+  @override
+  String get piEngineRestarting => '正在重启引擎…';
+
+  @override
+  String get piEngineRestarted => '引擎已重启，新设置将在下次请求时生效。';
+
+  @override
+  String get piEngineModels => '模型';
+
+  @override
+  String get piEngineModelsSubtitle => '自定义 Provider 与模型（models.json）';
+
+  @override
+  String get piEngineModelsEmpty => '还没有自定义 Provider。点击 + 添加。';
+
+  @override
+  String get piEngineModelAdd => '添加模型';
+
+  @override
+  String get piEngineModelId => '模型 ID';
+
+  @override
+  String get piEngineModelName => '显示名称';
+
+  @override
+  String get piEngineModelReasoning => '推理模型';
+
+  @override
+  String get piEngineModelReasoningTag => '推理';
+
+  @override
+  String get piEngineProviderAdd => '添加 Provider';
+
+  @override
+  String get piEngineProviderEdit => '编辑 Provider';
+
+  @override
+  String get piEngineProviderDelete => '删除 Provider';
+
+  @override
+  String piEngineProviderDeleteConfirm(String id) {
+    return '删除 Provider \"$id\"？其模型也会一并移除。';
+  }
+
+  @override
+  String get piEngineProviderId => 'Provider ID';
+
+  @override
+  String get piEngineProviderBaseUrl => '基础地址';
+
+  @override
+  String get piEngineProviderApi => 'API';
+
+  @override
+  String get piEngineProviderApiKey => 'API 密钥';
 }

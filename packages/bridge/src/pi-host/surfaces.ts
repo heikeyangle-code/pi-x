@@ -144,20 +144,30 @@ export function looksLikeSkillMarkdown(content: string): boolean {
 
 /** pi home layout helper: settings/models paths under ~/.pi/agent. */
 export function piAgentFiles(piHome: string): {
+  agent: string;
   settings: string;
   models: string;
   extensionsDir: string;
   skillsDir: string;
   npmDir: string;
   gitDir: string;
+  /** Pi X app-controlled engine launch options (~/.pi/agent/pix-config.json). */
+  pixConfig: string;
+  /** pi official system prompt overrides (~/.pi/agent/SYSTEM.md / APPEND_SYSTEM.md). */
+  systemPrompt: string;
+  appendSystemPrompt: string;
 } {
   const agent = join(piHome, ".pi", "agent");
   return {
+    agent,
     settings: join(agent, "settings.json"),
     models: join(agent, "models.json"),
     extensionsDir: join(agent, "extensions"),
     skillsDir: join(agent, "skills"),
     npmDir: join(agent, "npm"),
     gitDir: join(agent, "git"),
+    pixConfig: join(agent, "pix-config.json"),
+    systemPrompt: join(agent, "SYSTEM.md"),
+    appendSystemPrompt: join(agent, "APPEND_SYSTEM.md"),
   };
 }

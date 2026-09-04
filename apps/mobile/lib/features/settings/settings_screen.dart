@@ -24,12 +24,14 @@ import '../../services/platform_environment_service.dart';
 import '../../services/prompt_history_service.dart';
 import '../../utils/platform_helper.dart';
 import '../../widgets/workspace_pane_chrome.dart';
+import '../pi_engine/pi_engine_settings_screen.dart';
 import '../session_list/workspace_shell_screen.dart';
 import 'code_font_settings_screen.dart';
 import 'state/settings_cubit.dart';
 import 'state/settings_state.dart';
 import 'widgets/app_icon_bottom_sheet.dart';
 import 'widgets/app_locale_bottom_sheet.dart';
+import 'widgets/settings_section_header.dart';
 
 import 'widgets/new_session_tabs_bottom_sheet.dart';
 import 'widgets/speech_locale_bottom_sheet.dart';
@@ -251,7 +253,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     return const SizedBox.shrink();
                   },
                 ),
-                _SectionHeader(title: l.sectionConnectionAccounts),
+                SettingsSectionHeader(title: l.sectionConnectionAccounts),
                 KeyedSubtree(
                   key: _connectionSectionKey,
                   child: AnimatedContainer(
@@ -324,7 +326,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ],
 
               // ── General ──
-              _SectionHeader(title: l.sectionGeneral),
+              SettingsSectionHeader(title: l.sectionGeneral),
               Card(
                 margin: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
@@ -538,7 +540,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               const SizedBox(height: 8),
 
-              _SectionHeader(title: 'AGENTS'),
+              SettingsSectionHeader(title: 'AGENTS'),
               Card(
                 margin: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
@@ -686,8 +688,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               const SizedBox(height: 8),
 
+              // ── Pi engine ──
+              SettingsSectionHeader(title: l.piEngineTitle),
+              Card(
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                child: ListTile(
+                  key: const ValueKey('pi_engine_settings_tile'),
+                  leading: Icon(Icons.bolt_outlined, color: cs.primary),
+                  title: Text(l.piEngineTitle),
+                  subtitle: Text(l.piEngineSettingsSubtitle),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const PiEngineSettingsScreen(),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+
               // ── Editor ──
-              _SectionHeader(title: l.sectionEditor),
+              SettingsSectionHeader(title: l.sectionEditor),
               Card(
                 margin: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
@@ -929,7 +950,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
               if (isConnected) ...[
                 // ── Spread ──
-                _SectionHeader(title: l.sectionSpread),
+                SettingsSectionHeader(title: l.sectionSpread),
                 Card(
                   margin: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
@@ -995,7 +1016,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ],
 
               // ── About ──
-              _SectionHeader(title: l.sectionAbout),
+              SettingsSectionHeader(title: l.sectionAbout),
               Card(
                 margin: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
@@ -1157,28 +1178,6 @@ String _imagePasteShortcutDescription(
     ImagePasteShortcut.ctrlV => l.imagePasteShortcutCtrlVDescription,
     ImagePasteShortcut.commandV => l.imagePasteShortcutCommandVDescription,
   };
-}
-
-class _SectionHeader extends StatelessWidget {
-  final String title;
-  const _SectionHeader({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.8,
-          color: cs.onSurfaceVariant,
-        ),
-      ),
-    );
-  }
 }
 
 class _BridgeUpdateStatusTile extends StatelessWidget {

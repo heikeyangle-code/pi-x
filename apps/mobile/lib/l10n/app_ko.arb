@@ -1063,5 +1063,87 @@
   "approvalQuestionNotificationTitle": "질문이 있습니다 - ccpocket",
   "approvalRequiredNotificationTitle": "승인 대기 중 - ccpocket",
   "exitPlanModeNotificationBody": "작성된 계획을 확인해야 합니다",
-  "renderErrorFallback": "이 콘텐츠를 표시할 수 없습니다."
+  "renderErrorFallback": "이 콘텐츠를 표시할 수 없습니다.",
+
+  "confirm": "확인",
+  "piEngineTitle": "Pi 엔진",
+  "piEngineSettingsSubtitle": "시스템 프롬프트, 시작 플래그, 모델",
+  "piEngineManage": "Pi 엔진",
+  "piEngineNote": "참고",
+  "piEngineNoteBody": "Pi Host: {url}",
+  "@piEngineNoteBody": {
+    "placeholders": {
+      "url": { "type": "String" }
+    }
+  },
+  "piEngineConnected": "Pi {version} 연결됨",
+  "@piEngineConnected": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "piEngineConnecting": "Pi 엔진 연결 중…",
+  "piEngineReconnecting": "Pi 엔진에 다시 연결 중…",
+  "piEngineDisconnected": "Pi 엔진 연결 안 됨",
+  "piEngineError": "Pi 엔진 오류: {error}",
+  "@piEngineError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "piEngineNotConnected": "Pi 엔진이 연결되지 않았습니다. 먼저 Pi Host 서버를 시작하세요.",
+  "piEngineSaved": "저장됨",
+  "piEngineSystemPrompts": "시스템 프롬프트",
+  "piEngineSystemPromptsSubtitle": "SYSTEM.md / APPEND_SYSTEM.md 덮어쓰기",
+  "piEngineSystemPrompt": "시스템 프롬프트",
+  "piEngineSystemPromptTitle": "SYSTEM.md",
+  "piEngineAppendSystemPromptTitle": "시스템 프롬프트 추가",
+  "piEnginePromptHint": "Markdown 내용. 비우면 덮어쓰기가 제거됩니다.",
+  "piEnginePromptEmpty": "(비어 있음)",
+  "piEngineScopeGlobal": "전역",
+  "piEngineScopeProject": "프로젝트",
+  "piEngineProjectPath": "작업 공간 경로",
+  "piEngineLoad": "불러오기",
+  "piEngineLaunchFlags": "시작 플래그",
+  "piEngineLaunchFlagsSubtitle": "컨텍스트, 스킬, 템플릿, 확장, 도구",
+  "piEngineFlagSectionToggles": "기능 스위치",
+  "piEngineFlagSectionValues": "값 스위치",
+  "piEngineFlagSectionOther": "기타 인수(그대로 유지)",
+  "piEngineFlagNoContextFiles": "컨텍스트 파일(CLAUDE.md, AGENTS.md 등)을 읽지 않습니다.",
+  "piEngineFlagNoSkills": "스킬을 비활성화합니다.",
+  "piEngineFlagNoPromptTemplates": "프롬프트 템플릿을 비활성화합니다.",
+  "piEngineFlagNoThemes": "테마를 비활성화합니다.",
+  "piEngineFlagNoExtensions": "확장 기능을 비활성화합니다.",
+  "piEngineFlagNoTools": "모든 도구를 비활성화합니다.",
+  "piEngineFlagNoBuiltinTools": "내장 도구(bash, grep 등)를 비활성화합니다.",
+  "piEngineFlagTools": "활성화할 도구(쉼표로 구분된 목록).",
+  "piEngineFlagExcludeTools": "기본 도구 집합에서 제외할 도구를 지정합니다.",
+  "piEngineFlagUseTheme": "테마가 활성화된 경우 적용할 테마.",
+  "piEngineFlagsClear": "지우기",
+  "piEngineFlagsRestartHint": "시작 스위치는 엔진 시작 시 적용됩니다. 지금 적용하려면 엔진을 다시 시작하세요.",
+  "piEngineRestartEngine": "엔진 다시 시작",
+  "piEngineRestartConfirmBody": "새 시작 설정을 적용하려면 엔진을 다시 시작할까요? 현재 세션이 중단됩니다.",
+  "piEngineRestarting": "엔진 다시 시작 중…",
+  "piEngineRestarted": "엔진이 다시 시작되었습니다. 새 설정은 다음 요청에 적용됩니다.",
+  "piEngineModels": "모델",
+  "piEngineModelsSubtitle": "사용자 정의 공급자 및 모델(models.json)",
+  "piEngineModelsEmpty": "아직 사용자 정의 공급자가 없습니다. +를 눌러 추가하세요.",
+  "piEngineModelAdd": "모델 추가",
+  "piEngineModelId": "모델 ID",
+  "piEngineModelName": "표시 이름",
+  "piEngineModelReasoning": "추론 모델",
+  "piEngineModelReasoningTag": "추론",
+  "piEngineProviderAdd": "공급자 추가",
+  "piEngineProviderEdit": "공급자 편집",
+  "piEngineProviderDelete": "공급자 삭제",
+  "piEngineProviderDeleteConfirm": "공급자 \"{id}\"을(를) 삭제할까요? 모델도 함께 제거됩니다.",
+  "@piEngineProviderDeleteConfirm": {
+    "placeholders": {
+      "id": { "type": "String" }
+    }
+  },
+  "piEngineProviderId": "공급자 ID",
+  "piEngineProviderBaseUrl": "기본 URL",
+  "piEngineProviderApi": "API",
+  "piEngineProviderApiKey": "API 키"
 }

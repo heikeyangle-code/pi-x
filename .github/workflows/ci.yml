@@ -73,5 +73,15 @@ jobs:
         run: npm ci && npx tsc -p packages/bridge/tsconfig.json
       - name: Real engine round-trip
         run: node scripts/pi-host-smoke.mjs
+      - name: Full RPC surface smoke
+        run: node scripts/pi-rpc-smoke.mjs
       - name: cc-adapter mapping assertions
         run: node scripts/cc-adapter-check.mjs
+      - name: Engine bundle unit tests
+        run: node --test scripts/engine-bundle.test.mjs
+      - name: Engine bundle build + verify + manifest
+        run: |
+          node scripts/engine-bundle.mjs build 0.85.0 --out /tmp/pi-engines
+          node scripts/engine-bundle.mjs verify /tmp/pi-engines/0.85.0
+          node scripts/engine-bundle.mjs manifest /tmp/pi-engines/0.85.0 | grep -q '"rpcSmoke": "pass"'
+          test -s /tmp/pi-engines/SHA256SUMS

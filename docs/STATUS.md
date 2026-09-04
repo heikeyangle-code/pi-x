@@ -2,8 +2,8 @@
 
 ## 已验证（真实执行）
 
-- pi 0.84.4 引擎包本机安装/启动成功；`--mode rpc` 官方 JSONL 协议真实往返 OK
-  （get_commands / get_state）。协议帧与 `packages/bridge/src/pi-host/pi-rpc.ts` 逐条核对一致。
+- pi 0.85.0 引擎包本机安装/启动成功；`--mode rpc` 官方 JSONL 协议真实往返 OK
+  （get_commands / get_state；0.84.4 曾为基线，升级见 ENGINE-BUNDLE）。协议帧与 `packages/bridge/src/pi-host/pi-rpc.ts` 逐条核对一致。
 - EngineProcess（子进程+JSONL+审批桥）模块级验证通过。
 - EnginePool（每项目一进程+空闲回收+回调）验证通过（含请求往返）。
 - **真实引擎冒烟再确认**：`pi-ab.mjs`（走真实 `PiGateway.handleControl` 全链路）启动
@@ -34,10 +34,35 @@
 - 引擎分发策略定稿：基线打进 APK + 新版本后台热更（npm/pi.dev 双源 + sha256 + 冒烟）。
 - UI 手术：QR 扫码、Setup guide 远端页、mDNS、macOS/更新横幅、非安卓平台目录、fastlane
   已删；单本机种子已加；Pi X 品牌 + CI（android analyze/test/apk、bridge tsc、engine-smoke）。
+- **引擎版本 0.85.0 冒烟（2026-09-04）**：裸装 `@earendil-works/pi-coding-agent@0.85.0`（`--ignore-scripts`，**不装 pi-server**）
+  → `pi --version` = 0.85.0、`--mode rpc` get_commands/get_state 往返正常。CLI 入口为打包产物 `dist/bundle/cli.js`，
+  不受 SDK `dist/index.js` 静态 import `pi-server` 缺口影响（该缺口仅影响进程内 SDK 方案，见 ENGINE-BUNDLE 备注）。
 - **S5b 单机收敛完成**：机器管理收敛为只种子/跟踪本机 `127.0.0.1:8765`（删 增/改/删/收藏/SSH/跳板/探测
   与远程连接 deep link，deep link 仅留会话分享）；Settings 连接区改为本机引擎状态+Bridge 版本信息；
   同步清理约 85 个 `fcm*`/`machineEdit*`/`ssh*`/`server*`/`setup*`/`push*` 死 l10n 键（4 语言 arb）。
   验证：`build_runner` + `flutter analyze`（无 error/warning）+ `flutter test`（1664 全绿）+ bridge `tsc` 全过。
+- **引擎包配方脚本化（scripts/engine-bundle.mjs）**：`build/verify/manifest` 三个子命令把
+  ENGINE-BUNDLE 配方固化为一行命令——npm 安装（--ignore-scripts）→ `pi --version` 版本断言 →
+  离线 JSONL RPC 冒烟（get_commands/get_state，PI_OFFLINE=1，自含不依赖 bridge dist）→ tgz 打包 →
+  manifest.json + SHA256SUMS 生成；verify 复查版本/冒烟/tgz sha256 对照 manifest。
+  单测 7/7 绿（scripts/engine-bundle.test.mjs），本机真实端到端 build→verify→manifest 全通过
+  （0.85.0，tgz 1920b02a…）；并入 engine-smoke CI 门禁与 npm scripts（engine:bundle:*）。
+- **Pi 引擎管理 UI 层落地（Flutter，2026-09-04）**：设置页新增 "Pi 引擎" 管理入口
+  （`pi_engine_settings_screen.dart`），下辖三个子页，全部走 PiHost 控制面命令：
+  - 系统提示词（`system_prompt_screen.dart`）：SYSTEM.md / APPEND_SYSTEM.md 全局+项目双作用域
+    编辑（surface 算子 `read_prompt_file`/`write_prompt_file`），保存后提示重启引擎生效；
+  - 启动参数开关（`engine_flags_screen.dart`）：--no-context-files/--no-skills/--no-prompt-templates/
+    --no-themes/--no-extensions/--no-tools/--no-builtin-tools 开关 + --tools/--exclude-tools/
+    --use-theme 带值输入，读写 `pix-config.json` engineArgs（`get_pix_config`/`update_pix_config`），
+    未知参数原样保留（parseEngineArgs/buildEngineArgs 双向映射，单测覆盖）；
+  - Provider/模型管理（`models_screen.dart`）：models.json 的 provider 增删改 + 模型列表
+    （`get_models`/`upsert_model`/`remove_model`/`add_model`），4 种 API 类型选择；
+  - 扩展 UI 对话框（`extension_ui_dialogs.dart` + `extension_ui_host.dart`）：confirm/select/input/
+    editor 四个原生对话框挂在 root navigator（`PiExtensionUiHost`，MaterialApp.builder 装配），
+    notify → SnackBar；响应经 `extension_ui_response` 回传引擎（confirmed/cancelled 语义闭环）。
+  - 共享助手 `confirmRestartEngine`（各管理子页统一"重启引擎"入口）+ `ensurePiHostConnected`
+    （首连/重连引导）；本地化键 `piEngine*` 补齐 en/zh/ja/ko 四个 arb。
+    验证：flutter analyze 无 error/warning、pi_engine 模型层单测全绿、bridge tsc + 1161 单测全过。
 
 ## 已知问题（open）
 
@@ -66,10 +91,17 @@
 
 1. 看 engine-smoke / android CI 结果，红则修
 2. App ⇄ PiHost 的 wire client（Flutter 消费 envelope）→ 真机/模拟器端到端
-3. M1 页面：Provider/模型管理（models.json 表单）、命令面板（get_commands）、扩展管理
-4. 引擎包运行时（APK 内置基线 + 热更）落地 ENGINE-BUNDLE 配方
-5. Flutter 端补扩展 UI 四个对话框控件（confirm/select/input/editor，接已打通的
-   `extension_ui_request/response` 闭环）——扩展 UI 兼容由此在 App 层真正落地
+   （`pi_host_service.dart` + 管理页已就绪，待真机连本机引擎全链路冒烟）
+3. ~~M1 页面：Provider/模型管理（models.json 表单）~~ ✅ `models_screen.dart` 已实现；
+   命令面板（get_commands）、扩展管理 UI（list_extensions）待补
+4. ~~引擎包运行时（APK 内置基线 + 热更）落地 ENGINE-BUNDLE 配方~~ ✅ 配方已脚本化并过 CI；APK 内置+热更运行时待 Android 侧落地
+5. ~~Flutter 端补扩展 UI 四个对话框控件（confirm/select/input/editor，接已打通的
+   `extension_ui_request/response` 闭环）~~ ✅ `extension_ui_dialogs.dart` + `PiExtensionUiHost` 已实现，扩展 UI 兼容在 App 层落地
+6. ~~调整选项：设置页"系统提示词"（全局 SYSTEM.md/APPEND_SYSTEM.md 编辑 + 项目 .pi/ 编辑）
+   + 启动参数开关（--no-context-files/--no-skills/--no-extensions/--tools 等，PiHost 拼 args）
+   + PiHost control op `restart_engine(projectId)`（engine-pool stop + getOrStart 拉起）~~ ✅ 全部落地
+   （`system_prompt_screen.dart`/`engine_flags_screen.dart` + `confirmRestartEngine`），剩余盘点见
+   ENGINE-UI-SURFACES §6（skills/prompts/themes/packages 管理 UI 为 M2）
 
 ## 已锁定决策（规划层，详见 DECISIONS）
 - 终端：**内置 runBash 命令卡片流（必需）**；真终端（xterm.dart + 原生 PTY）**远期可选**

@@ -55,7 +55,12 @@ export class EnginePool {
     return this.slots.get(projectId)?.engine.running === true;
   }
 
-  async getOrStart(projectId: string, cwd: string, attempt = 1): Promise<EngineProcess> {
+  async getOrStart(
+    projectId: string,
+    cwd: string,
+    attempt = 1,
+    args?: string[],
+  ): Promise<EngineProcess> {
     const existing = this.slots.get(projectId);
     if (existing !== undefined && existing.engine.running) {
       this.touch(projectId, existing);
@@ -79,6 +84,7 @@ export class EnginePool {
       piEntry: this.opts.piEntry,
       cwd,
       env: this.opts.env,
+      args,
     };
     await engine.start(options);
     // Boot guard: if the engine dies within the grace window (platform spawn
@@ -87,7 +93,7 @@ export class EnginePool {
     if (!engine.running && attempt < 3) {
       await engine.stop().catch(() => undefined);
       this.slots.delete(projectId);
-      return this.getOrStart(projectId, cwd, attempt + 1);
+      return this.getOrStart(projectId, cwd, attempt + 1, args);
     }
     this.touch(projectId, slot);
     return engine;

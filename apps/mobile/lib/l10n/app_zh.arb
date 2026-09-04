@@ -1204,5 +1204,87 @@
   "approvalQuestionNotificationTitle": "有一个问题 - ccpocket",
   "approvalRequiredNotificationTitle": "等待审批 - ccpocket",
   "exitPlanModeNotificationBody": "生成的计划需要你确认",
-  "renderErrorFallback": "无法显示此内容。"
+  "renderErrorFallback": "无法显示此内容。",
+
+  "confirm": "确认",
+  "piEngineTitle": "Pi 引擎",
+  "piEngineSettingsSubtitle": "系统提示词、启动参数、模型",
+  "piEngineManage": "Pi 引擎",
+  "piEngineNote": "说明",
+  "piEngineNoteBody": "Pi Host：{url}",
+  "@piEngineNoteBody": {
+    "placeholders": {
+      "url": { "type": "String" }
+    }
+  },
+  "piEngineConnected": "Pi {version} 已连接",
+  "@piEngineConnected": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "piEngineConnecting": "正在连接 Pi 引擎…",
+  "piEngineReconnecting": "正在重新连接 Pi 引擎…",
+  "piEngineDisconnected": "Pi 引擎未连接",
+  "piEngineError": "Pi 引擎错误：{error}",
+  "@piEngineError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "piEngineNotConnected": "Pi 引擎未连接，请先启动 Pi Host 服务。",
+  "piEngineSaved": "已保存",
+  "piEngineSystemPrompts": "系统提示词",
+  "piEngineSystemPromptsSubtitle": "SYSTEM.md / APPEND_SYSTEM.md 覆盖",
+  "piEngineSystemPrompt": "系统提示词",
+  "piEngineSystemPromptTitle": "SYSTEM.md",
+  "piEngineAppendSystemPromptTitle": "追加系统提示词",
+  "piEnginePromptHint": "Markdown 内容。留空可移除该覆盖项。",
+  "piEnginePromptEmpty": "（空）",
+  "piEngineScopeGlobal": "全局",
+  "piEngineScopeProject": "项目",
+  "piEngineProjectPath": "工作区路径",
+  "piEngineLoad": "加载",
+  "piEngineLaunchFlags": "启动参数",
+  "piEngineLaunchFlagsSubtitle": "上下文、技能、模板、扩展、工具",
+  "piEngineFlagSectionToggles": "能力开关",
+  "piEngineFlagSectionValues": "带值参数",
+  "piEngineFlagSectionOther": "其他参数（原样保留）",
+  "piEngineFlagNoContextFiles": "不读取上下文文件（CLAUDE.md、AGENTS.md 等）。",
+  "piEngineFlagNoSkills": "禁用技能。",
+  "piEngineFlagNoPromptTemplates": "禁用提示词模板。",
+  "piEngineFlagNoThemes": "禁用主题。",
+  "piEngineFlagNoExtensions": "禁用扩展。",
+  "piEngineFlagNoTools": "禁用所有工具。",
+  "piEngineFlagNoBuiltinTools": "禁用内置工具（bash、grep 等）。",
+  "piEngineFlagTools": "要启用的工具（逗号分隔列表）。",
+  "piEngineFlagExcludeTools": "从默认工具集中排除指定工具。",
+  "piEngineFlagUseTheme": "启用主题时应用的主题。",
+  "piEngineFlagsClear": "清除",
+  "piEngineFlagsRestartHint": "启动参数在引擎启动时生效。重启引擎即可立即应用更改。",
+  "piEngineRestartEngine": "重启引擎",
+  "piEngineRestartConfirmBody": "重启引擎以应用新的启动设置？这会中断当前会话。",
+  "piEngineRestarting": "正在重启引擎…",
+  "piEngineRestarted": "引擎已重启，新设置将在下次请求时生效。",
+  "piEngineModels": "模型",
+  "piEngineModelsSubtitle": "自定义 Provider 与模型（models.json）",
+  "piEngineModelsEmpty": "还没有自定义 Provider。点击 + 添加。",
+  "piEngineModelAdd": "添加模型",
+  "piEngineModelId": "模型 ID",
+  "piEngineModelName": "显示名称",
+  "piEngineModelReasoning": "推理模型",
+  "piEngineModelReasoningTag": "推理",
+  "piEngineProviderAdd": "添加 Provider",
+  "piEngineProviderEdit": "编辑 Provider",
+  "piEngineProviderDelete": "删除 Provider",
+  "piEngineProviderDeleteConfirm": "删除 Provider \"{id}\"？其模型也会一并移除。",
+  "@piEngineProviderDeleteConfirm": {
+    "placeholders": {
+      "id": { "type": "String" }
+    }
+  },
+  "piEngineProviderId": "Provider ID",
+  "piEngineProviderBaseUrl": "基础地址",
+  "piEngineProviderApi": "API",
+  "piEngineProviderApiKey": "API 密钥"
 }

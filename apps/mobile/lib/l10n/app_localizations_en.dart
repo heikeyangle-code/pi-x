@@ -2692,4 +2692,206 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get renderErrorFallback => 'This content couldn\'t be displayed.';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get piEngineTitle => 'Pi engine';
+
+  @override
+  String get piEngineSettingsSubtitle => 'System prompts, launch flags, models';
+
+  @override
+  String get piEngineManage => 'Pi engine';
+
+  @override
+  String get piEngineNote => 'Note';
+
+  @override
+  String piEngineNoteBody(String url) {
+    return 'Pi Host: $url';
+  }
+
+  @override
+  String piEngineConnected(String version) {
+    return 'Pi $version connected';
+  }
+
+  @override
+  String get piEngineConnecting => 'Connecting to Pi engine…';
+
+  @override
+  String get piEngineReconnecting => 'Reconnecting to Pi engine…';
+
+  @override
+  String get piEngineDisconnected => 'Pi engine not connected';
+
+  @override
+  String piEngineError(String error) {
+    return 'Pi engine error: $error';
+  }
+
+  @override
+  String get piEngineNotConnected =>
+      'Pi engine is not connected. Start the Pi Host server first.';
+
+  @override
+  String get piEngineSaved => 'Saved';
+
+  @override
+  String get piEngineSystemPrompts => 'System prompts';
+
+  @override
+  String get piEngineSystemPromptsSubtitle =>
+      'SYSTEM.md / APPEND_SYSTEM.md overrides';
+
+  @override
+  String get piEngineSystemPrompt => 'System prompt';
+
+  @override
+  String get piEngineSystemPromptTitle => 'SYSTEM.md';
+
+  @override
+  String get piEngineAppendSystemPromptTitle => 'Append system prompt';
+
+  @override
+  String get piEnginePromptHint =>
+      'Markdown content. Leave empty to remove the override.';
+
+  @override
+  String get piEnginePromptEmpty => '(empty)';
+
+  @override
+  String get piEngineScopeGlobal => 'Global';
+
+  @override
+  String get piEngineScopeProject => 'Project';
+
+  @override
+  String get piEngineProjectPath => 'Workspace path';
+
+  @override
+  String get piEngineLoad => 'Load';
+
+  @override
+  String get piEngineLaunchFlags => 'Launch flags';
+
+  @override
+  String get piEngineLaunchFlagsSubtitle =>
+      'Context, skills, templates, extensions, tools';
+
+  @override
+  String get piEngineFlagSectionToggles => 'Capability switches';
+
+  @override
+  String get piEngineFlagSectionValues => 'Value switches';
+
+  @override
+  String get piEngineFlagSectionOther => 'Other arguments (kept as-is)';
+
+  @override
+  String get piEngineFlagNoContextFiles =>
+      'Do not read context files (CLAUDE.md, AGENTS.md, …).';
+
+  @override
+  String get piEngineFlagNoSkills => 'Disable skills.';
+
+  @override
+  String get piEngineFlagNoPromptTemplates => 'Disable prompt templates.';
+
+  @override
+  String get piEngineFlagNoThemes => 'Disable themes.';
+
+  @override
+  String get piEngineFlagNoExtensions => 'Disable extensions.';
+
+  @override
+  String get piEngineFlagNoTools => 'Disable all tools.';
+
+  @override
+  String get piEngineFlagNoBuiltinTools =>
+      'Disable built-in tools (bash, grep, …).';
+
+  @override
+  String get piEngineFlagTools => 'Tools to enable (comma-separated list).';
+
+  @override
+  String get piEngineFlagExcludeTools => 'Exclude tools from the default set.';
+
+  @override
+  String get piEngineFlagUseTheme => 'Theme to apply when themes are enabled.';
+
+  @override
+  String get piEngineFlagsClear => 'Clear';
+
+  @override
+  String get piEngineFlagsRestartHint =>
+      'Launch switches take effect when the engine starts. Restart the engine to apply changes now.';
+
+  @override
+  String get piEngineRestartEngine => 'Restart engine';
+
+  @override
+  String get piEngineRestartConfirmBody =>
+      'Restart the engine to apply the new launch settings? This interrupts the current session.';
+
+  @override
+  String get piEngineRestarting => 'Restarting engine…';
+
+  @override
+  String get piEngineRestarted =>
+      'Engine restarted. New settings apply on the next request.';
+
+  @override
+  String get piEngineModels => 'Models';
+
+  @override
+  String get piEngineModelsSubtitle =>
+      'Custom providers and models (models.json)';
+
+  @override
+  String get piEngineModelsEmpty =>
+      'No custom providers yet. Tap + to add one.';
+
+  @override
+  String get piEngineModelAdd => 'Add model';
+
+  @override
+  String get piEngineModelId => 'Model ID';
+
+  @override
+  String get piEngineModelName => 'Display name';
+
+  @override
+  String get piEngineModelReasoning => 'Reasoning model';
+
+  @override
+  String get piEngineModelReasoningTag => 'reasoning';
+
+  @override
+  String get piEngineProviderAdd => 'Add provider';
+
+  @override
+  String get piEngineProviderEdit => 'Edit provider';
+
+  @override
+  String get piEngineProviderDelete => 'Delete provider';
+
+  @override
+  String piEngineProviderDeleteConfirm(String id) {
+    return 'Delete provider \"$id\"? Its models will be removed too.';
+  }
+
+  @override
+  String get piEngineProviderId => 'Provider ID';
+
+  @override
+  String get piEngineProviderBaseUrl => 'Base URL';
+
+  @override
+  String get piEngineProviderApi => 'API';
+
+  @override
+  String get piEngineProviderApiKey => 'API key';
 }

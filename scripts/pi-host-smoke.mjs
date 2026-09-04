@@ -7,7 +7,7 @@ import { join } from "node:path";
 
 const work = join(tmpdir(), "pi-host-smoke");
 mkdirSync(work, { recursive: true });
-execSync("npm init -y && npm install --ignore-scripts --no-audit --no-fund @earendil-works/pi-coding-agent@0.84.4", {
+execSync("npm init -y && npm install --ignore-scripts --no-audit --no-fund @earendil-works/pi-coding-agent@0.85.0", {
   cwd: work,
   stdio: "inherit",
 });

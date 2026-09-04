@@ -8,6 +8,7 @@ import 'package:ccpocket/main.dart';
 import 'package:ccpocket/models/messages.dart';
 import 'package:ccpocket/providers/bridge_cubits.dart';
 import 'package:ccpocket/services/bridge_service.dart';
+import 'package:ccpocket/services/pi_host_service.dart';
 
 void main() {
   testWidgets('Initial screen shows connect UI', (WidgetTester tester) async {
@@ -16,8 +17,14 @@ void main() {
     final bridge = BridgeService();
 
     await tester.pumpWidget(
-      RepositoryProvider<BridgeService>.value(
-        value: bridge,
+      MultiRepositoryProvider(
+        providers: [
+          RepositoryProvider<BridgeService>.value(value: bridge),
+          RepositoryProvider<PiHostService>(
+            create: (_) => PiHostService(),
+            dispose: (service) => service.dispose(),
+          ),
+        ],
         child: MultiBlocProvider(
           providers: [
             BlocProvider(create: (_) => SettingsCubit(prefs)),

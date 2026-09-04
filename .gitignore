@@ -1,6 +1,10 @@
 # Dependencies
 node_modules/
 
+# Engine bundles (built on CI / release machines, never committed)
+engines/
+*.tgz
+
 # Build output
 dist/
 

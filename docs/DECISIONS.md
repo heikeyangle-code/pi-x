@@ -13,6 +13,6 @@
 | 9 | 资源作用域 | 用户级（~/.pi/agent/*，所有项目共享）vs 项目级（.pi/*，先信任）；包默认用户级，`-l` 项目级 | 调研（与 pi 官方一致） |
 | 10 | 斜杠命令 | 命令面板 = `get_commands` + 发送 `prompt "/name"`（服务端展开）；TUI 内置命令用等价 RPC | ENGINE-UI-SURFACES.md §4 |
 | 11 | 平台 | **只做安卓**（ios/macos/linux/windows/web 源码已删；iOS 受 exec/后台限制不现实） | 对话评审 |
-| 12 | 安卓运行时 | exec 用"自带 runtime 目录 + 同 UID exec"模型（Termux 同原理）；**不降 targetSdk**；native 依赖（sharp 等）不引入 | 对话评审 |
+| 12 | 安卓运行时 | **不依赖 nodejs-mobile(仅18.x) 也不依赖 bun(无Android目标)**；主路径=自带 Termux 系 bionic **node ≥22** + 同 UID exec（现代 Termux 0.118+ 已 targetSdk33 验证此路，本环境实测 node24+pi 在安卓运行）；兜底 B=proot（UserLAnd/Aether 路线）；兜底 C=nativeLibraryDir 放置；**绝不 targetSdk 28**；M2 真机矩阵验证 | 三方核实+本会话实测 |
 | 13 | 更新稳定性 | App UI 不随 pi 发版变动；协议漂移由 engine-smoke CI + envelope 版本兜底 | ENGINE-UI-SURFACES.md §5 |
 | 14 | 引擎包安卓入口 | 专用 `pi-host-entry.ts`（绕开 index.ts 的 sharp 链） | STATUS.md open#2 |

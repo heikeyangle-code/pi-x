@@ -67,14 +67,27 @@ export async function startPiHostServer(
     sockets.add(ws);
     ws.on("message", (data) => {
       void (async () => {
-        let raw: { type?: string; id?: string; value?: unknown };
+        let raw: {
+          type?: string;
+          id?: string;
+          value?: unknown;
+          confirmed?: boolean;
+          cancelled?: boolean;
+        };
         try {
-          raw = JSON.parse(String(data)) as { type?: string; id?: string; value?: unknown };
+          raw = JSON.parse(String(data)) as typeof raw;
         } catch {
           return;
         }
         if (raw.type === "ui_response") {
-          gateway.respondUi(String(raw.id ?? ""), raw.value);
+          // Forward the full dialog result to the engine. pi's dialog methods
+          // expect their result as spread fields: select/input/editor ->
+          // {value} | {cancelled:true}, confirm -> {confirmed:true|false} |
+          // {cancelled:true}. Passing only `value` (as before) dropped
+          // confirmed/cancelled, so cancel and yes/no confirmations never
+          // reached the extension.
+          const { type: _t, id: _id, ...result } = raw;
+          gateway.respondUi(String(raw.id ?? ""), result);
           return;
         }
         if (raw.type !== "control") return;

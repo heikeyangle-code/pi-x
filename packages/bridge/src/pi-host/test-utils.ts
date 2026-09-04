@@ -30,6 +30,11 @@ rl.on("line", (raw) => {
   if (req.type === "ui_sensor") {
     return process.stdout.write(JSON.stringify({ type: "extension_ui_request", id: "u-1", method: "confirm", title: "T", message: "M" }) + "\\n");
   }
+  if (req.type === "extension_ui_response") {
+    // Echo back what the engine observed so tests can assert confirmed/cancelled
+    // actually reached the extension (not dropped/undefined).
+    return process.stdout.write(JSON.stringify({ type: "ui_response_seen", id: req.id, requestId: req.id, response: req }) + "\\n");
+  }
   return process.stdout.write(JSON.stringify({ type: "response", command: req.type, id, success: true, data: {} }) + "\\n");
 });`;
 

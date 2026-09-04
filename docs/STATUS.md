@@ -24,6 +24,13 @@
   `add_model`、`list_skills`/`list_extensions`/`looks_like_skill`。基于 pi 的 `~/.pi/agent`
   纯文件模型（settings.json/models.json/资源目录），`piHome` 可注入隔离。端到端单测覆盖
   settings 持久化往返、自定义 provider 增删、模型列表同步。
+- **扩展 UI 回传全链路修复 + 闭环断言**：pi 扩展通过 `extension_ui_request` 请求交互 UI，客户端
+  回 `extension_ui_response` 解锁扩展。此前 `server.ts` 只把 `value` 透传给引擎，**丢掉了
+  `confirmed` / `cancelled`**——confirm 的 yes/no 与对话框取消永远到不了扩展。现已透传完整
+  结果体（select/input/editor→`{value}`|`{cancelled:true}`，confirm→`{confirmed:bool}`|
+  `{cancelled:true}`）；fake 引擎新增 `ui_response_seen` 回显，端到端断言 confirmed/cancelled
+  真实到达引擎（先前无法验证）。扩展 UI 全量方法（select/confirm/input/editor/notify/
+  setStatus/setWidget/setTitle/set_editor_text）经原样透传 1:1 兼容。
 - 引擎分发策略定稿：基线打进 APK + 新版本后台热更（npm/pi.dev 双源 + sha256 + 冒烟）。
 - UI 手术：QR 扫码、Setup guide 远端页、mDNS、macOS/更新横幅、非安卓平台目录、fastlane
   已删；单本机种子已加；Pi X 品牌 + CI（android analyze/test/apk、bridge tsc、engine-smoke）。

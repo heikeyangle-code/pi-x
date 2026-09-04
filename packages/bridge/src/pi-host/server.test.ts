@@ -24,7 +24,7 @@ type ServerHandle = {
   stop: () => Promise<void>;
 };
 
-/** Find an ephemeral free port by binding a throwaway server. */
+/** Find a free ephemeral port by binding a throwaway server. */
 async function freePort(): Promise<number> {
   const srv = createServer();
   await new Promise<void>((resolve, reject) => {
@@ -72,6 +72,27 @@ function connect(wsUrl: string, protocols?: string | string[]): Promise<{
 }
 
 const openSockets = new Set<WebSocket>();
+
+/** An envelope with an unknown inner frame shape. */
+interface UnknownFrame {
+  frame?: { type?: string } & Record<string, unknown>;
+  [key: string]: unknown;
+}
+
+/** Poll `frames` until the frame matched by `finder` appears (5s cap). */
+async function waitFrame(
+  finder: () => unknown,
+  timeoutMs = 5000,
+): Promise<unknown> {
+  const start = Date.now();
+  let found = finder();
+  while (!found && Date.now() - start < timeoutMs) {
+    await new Promise((r) => setTimeout(r, 25));
+    found = finder();
+  }
+  return found;
+}
+
 afterEach(async () => {
   for (const ws of openSockets) {
     try {
@@ -155,50 +176,55 @@ describe("PiHost server (ws transport)", () => {
     expect(foundOnB).toBeDefined();
   }, slow);
 
-  it("routes ui_response back to the engine and resolves the pending approval", async () => {
+  it("delivers ui_response confirmed flag all the way to the engine", async () => {
     const { ws, frames } = await connect(server.wsUrl);
     openSockets.add(ws);
 
-    // trigger an extension_ui_request via prompt (fake engine emits one)
+    // fake engine emits an extension_ui_request whenever a prompt is sent
     await new Promise<void>((resolve) => ws.send(
       JSON.stringify({ id: "c3", type: "control", op: "prompt", projectId: "/tmp/p1", payload: { message: "go" } }),
       resolve,
     ));
-
-    // wait for the ui request frame
-    const start = Date.now();
-    let uiReq;
-    while (!uiReq && Date.now() - start < 5000) {
-      uiReq = frames.find(
-        (f) => (f as { frame?: { type?: string } }).frame?.type === "extension_ui_request",
-      );
-      if (!uiReq) await new Promise((r) => setTimeout(r, 25));
-    }
+    const uiReq = await waitFrame(() => (frames as UnknownFrame[]).map(f => (f as UnknownFrame).frame)
+      .find((f) => (f as UnknownFrame)?.type === "extension_ui_request"));
     expect(uiReq).toBeDefined();
-    const reqFrame = (uiReq as { frame: { id: string } }).frame;
+    const reqId = (uiReq as { id: string }).id;
 
-    // answering ui_response must not throw and must be accepted (no error frame)
+    // client answers confirm: yes -> the engine must observe { confirmed: true }
     await new Promise<void>((resolve) => ws.send(
-      JSON.stringify({ type: "ui_response", id: reqFrame.id, value: { confirmed: true } }),
+      JSON.stringify({ type: "ui_response", id: reqId, confirmed: true }),
       resolve,
     ));
-    // small settle window; respondUi resolves the pending engine request; we assert
-    // simply that the socket stays usable for a further control round-trip.
-    await new Promise((r) => setTimeout(r, 150));
+    const seen = await waitFrame(() => (frames as UnknownFrame[]).map(f => (f as UnknownFrame).frame)
+      .find((f) => (f as UnknownFrame)?.type === "ui_response_seen"));
+    expect(seen).toBeDefined();
+    const response = (seen as { response: Record<string, unknown> }).response;
+    expect(response).toMatchObject({ type: "extension_ui_response", id: reqId });
+    expect(response["confirmed"]).toBe(true);
+  }, slow);
 
-    const after = frames.length;
-    ws.send(
-      JSON.stringify({ id: "c4", type: "control", op: "get_available_models", projectId: "/tmp/p1" }),
-    );
-    const start2 = Date.now();
-    let resp;
-    while (!resp && Date.now() - start2 < 5000) {
-      resp = frames.slice(after).find(
-        (f) => (f as { frame?: { correlationId?: string } }).frame?.correlationId === "c4",
-      );
-      if (!resp) await new Promise((r) => setTimeout(r, 25));
-    }
-    expect((resp as { frame?: { response?: { success?: boolean } } }).frame?.response?.success).toBe(true);
+  it("delivers ui_response cancelled flag to the engine for a dismissed dialog", async () => {
+    const { ws, frames } = await connect(server.wsUrl);
+    openSockets.add(ws);
+
+    await new Promise<void>((resolve) => ws.send(
+      JSON.stringify({ id: "c5", type: "control", op: "prompt", projectId: "/tmp/p1", payload: { message: "go" } }),
+      resolve,
+    ));
+    const uiReq = await waitFrame(() => (frames as UnknownFrame[]).map(f => (f as UnknownFrame).frame)
+      .find((f) => (f as UnknownFrame)?.type === "extension_ui_request"));
+    expect(uiReq).toBeDefined();
+    const reqId = (uiReq as { id: string }).id;
+
+    await new Promise<void>((resolve) => ws.send(
+      JSON.stringify({ type: "ui_response", id: reqId, cancelled: true }),
+      resolve,
+    ));
+    const seen = await waitFrame(() => (frames as UnknownFrame[]).map(f => (f as UnknownFrame).frame)
+      .find((f) => (f as UnknownFrame)?.type === "ui_response_seen"));
+    expect(seen).toBeDefined();
+    const response = (seen as { response: Record<string, unknown> }).response;
+    expect(response["cancelled"]).toBe(true);
   }, slow);
 
   it("closes unauthorized sockets when apiKey is set", async () => {

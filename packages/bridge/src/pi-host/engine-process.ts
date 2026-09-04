@@ -73,7 +73,7 @@ export class EngineProcess {
       PI_OFFLINE: "1",
       ...opts.env,
     };
-    const isJsEntry = false && 
+    const isJsEntry =
       opts.piEntry.endsWith(".js") || opts.piEntry.endsWith(".mjs") || opts.piEntry.endsWith(".cjs");
     if (process.env.PI_DEBUG_SPAWN === "1") {
       console.log("SPAWN", JSON.stringify({ entry: opts.piEntry, cwd: opts.cwd, env: { ...env, PI_DEBUG_SPAWN: undefined } }));

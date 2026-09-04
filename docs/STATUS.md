@@ -36,3 +36,8 @@
 2. App ⇄ PiHost 的 wire client（Flutter 消费 envelope）→ 真机/模拟器端到端
 3. M1 页面：Provider/模型管理（models.json 表单）、命令面板（get_commands）、扩展管理
 4. 引擎包运行时（APK 内置基线 + 热更）落地 ENGINE-BUNDLE 配方
+
+## Termux 快速跑通（开发路径，不等自带运行时）
+`scripts/termux-setup.sh`：手机装 Termux → node22 + pi 引擎 → `pi-host-entry.js` 监听
+127.0.0.1:8765 → App 连本机种子。UI/审批/会话树全链路当天可验证；
+自带运行时（自编译 Node22 等）作为第二步，见 DECISIONS #12。

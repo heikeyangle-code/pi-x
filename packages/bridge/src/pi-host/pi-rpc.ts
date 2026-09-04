@@ -62,9 +62,10 @@ export async function getMessages(engine: EngineProcess): Promise<EngineResponse
 
 export async function setModel(
   engine: EngineProcess,
-  model: string,
+  provider: string,
+  modelId: string,
 ): Promise<EngineResponse> {
-  return engine.request({ type: "set_model", model });
+  return engine.request({ type: "set_model", provider, modelId });
 }
 
 export async function getAvailableModels(engine: EngineProcess): Promise<EngineResponse> {
@@ -91,9 +92,9 @@ export async function forkSession(
 
 export async function switchSession(
   engine: EngineProcess,
-  sessionId: string,
+  sessionPath: string,
 ): Promise<EngineResponse> {
-  return engine.request({ type: "switch_session", sessionId });
+  return engine.request({ type: "switch_session", sessionPath });
 }
 
 export async function getSessionStats(engine: EngineProcess): Promise<EngineResponse> {
@@ -107,7 +108,7 @@ export async function compact(
   return engine.request(
     customPrompt === undefined
       ? { type: "compact" }
-      : { type: "compact", prompt: customPrompt },
+      : { type: "compact", customInstructions: customPrompt },
   );
 }
 

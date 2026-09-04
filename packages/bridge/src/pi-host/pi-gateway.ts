@@ -109,7 +109,11 @@ export class PiGateway {
       case "get_commands":
         return rpc.getCommands(engine);
       case "set_model":
-        return rpc.setModel(engine, String(payload.model ?? ""));
+        return rpc.setModel(
+          engine,
+          String(payload.provider ?? ""),
+          String(payload.modelId ?? ""),
+        );
       case "get_available_models":
         return rpc.getAvailableModels(engine);
       case "set_thinking_level":
@@ -119,13 +123,15 @@ export class PiGateway {
       case "fork":
         return rpc.forkSession(engine, payload);
       case "switch_session":
-        return rpc.switchSession(engine, String(payload.sessionId ?? ""));
+        return rpc.switchSession(engine, String(payload.sessionPath ?? ""));
       case "get_session_stats":
         return rpc.getSessionStats(engine);
       case "compact":
         return rpc.compact(
           engine,
-          payload.prompt === undefined ? undefined : String(payload.prompt),
+          payload.customInstructions === undefined
+            ? undefined
+            : String(payload.customInstructions),
         );
       case "bash": {
         const response = await rpc.runBash(

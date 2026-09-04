@@ -23,6 +23,7 @@ import {
   PromptHistoryStore,
 } from "./prompt-history-store.js";
 import { parseAllowedDirectories } from "./path-utils.js";
+import { startPiHostServer } from "./pi-host/server.js";
 import { parseBridgePort } from "./bridge-port.js";
 import { listenForStartup } from "./server-listen.js";
 
@@ -52,6 +53,25 @@ export async function startServer() {
   );
 
   console.log("[bridge] Starting ccpocket bridge server...");
+
+  if (process.env.PI_HOST === "1") {
+    const piEntry = process.env.PI_ENGINE_ENTRY;
+    if (!piEntry) {
+      throw new Error("PI_HOST=1 requires PI_ENGINE_ENTRY (absolute path to the pi CLI entry)");
+    }
+    const engineVersion = process.env.PI_ENGINE_VERSION ?? "dev";
+    const { httpServer: piHttp } = await startPiHostServer({
+      port: PORT,
+      piEntry,
+      engineVersion,
+      resolveCwd: (projectId) => projectId,
+    });
+    console.log(`[pi-host] Ready on ws://127.0.0.1:${PORT} (pi engine ${engineVersion})`);
+    process.on("SIGINT", () => process.exit(0));
+    process.on("SIGTERM", () => process.exit(0));
+    void piHttp;
+    return;
+  }
 
   if (API_KEY) {
     console.log("[bridge] API key authentication enabled");

@@ -427,7 +427,6 @@ class HomeContentState extends State<HomeContent> {
         widget.workspaceProjects.isNotEmpty;
     final isReconnecting =
         widget.connectionState == BridgeConnectionState.reconnecting;
-    final supportBannerService = context.read<SupportBannerService>();
     final supportBanner = _buildSupportBanner();
     final shell = WorkspaceShellScreen.maybeOf(context);
     final selectedSession = shell?.selectedSession;

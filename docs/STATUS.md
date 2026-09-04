@@ -19,6 +19,11 @@
 - **EngineProcess 自动创建 cwd**：引擎按工作目录组织会话/资源（docs/sessions.md），若客户端传入
   的 projectId/cwd 目录未预建，`spawn` 会 `ENOENT`。现于 spawn 前 `mkdirSync(cwd, {recursive:true})`，
   新增回归单测（深层不存在的 cwd 也能一次往返跑通）——真机"打开新项目"不再需要预建目录。
+- **PiGateway surface-file 算子（settings/models/skills）**：补齐 Provider/模型/设置/技能管理
+  UI 所需的后端——`get_settings`/`update_settings`、`get_models`/`upsert_model`/`remove_model`/
+  `add_model`、`list_skills`/`list_extensions`/`looks_like_skill`。基于 pi 的 `~/.pi/agent`
+  纯文件模型（settings.json/models.json/资源目录），`piHome` 可注入隔离。端到端单测覆盖
+  settings 持久化往返、自定义 provider 增删、模型列表同步。
 - 引擎分发策略定稿：基线打进 APK + 新版本后台热更（npm/pi.dev 双源 + sha256 + 冒烟）。
 - UI 手术：QR 扫码、Setup guide 远端页、mDNS、macOS/更新横幅、非安卓平台目录、fastlane
   已删；单本机种子已加；Pi X 品牌 + CI（android analyze/test/apk、bridge tsc、engine-smoke）。

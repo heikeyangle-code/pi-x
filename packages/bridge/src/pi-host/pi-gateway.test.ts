@@ -86,8 +86,6 @@ describe("PiGateway", () => {
     const { gateway } = makeGateway(fakeEnginePath());
     const ctl = (op: string, payload: Record<string, unknown> = {}) =>
       gateway.handleControl({ id: "cX", type: "control", op, projectId: "proj", payload });
-
-    // Every client->engine control op from pi docs/rpc.md must produce a
     // correlated success response (no unsupported_op, no throw).
     const cases: Array<[string, Record<string, unknown>]> = [
       ["prompt", { message: "hi" }],
@@ -123,6 +121,11 @@ describe("PiGateway", () => {
       ["get_commands", {}],
       ["bash", { command: "echo hi" }],
       ["abort_bash", {}],
+      ["get_settings", {}],
+      ["get_models", {}],
+      ["list_skills", {}],
+      ["list_extensions", {}],
+      ["looks_like_skill", { content: "---\ndescription: x\n---\n" }],
     ];
     for (const [op, payload] of cases) {
       // eslint-disable-next-line no-await-in-loop
@@ -131,6 +134,54 @@ describe("PiGateway", () => {
     }
     const stopped = await ctl("stop");
     expect(stopped).toMatchObject({ stopped: true });
+    await gateway.stopAll();
+  }, slow);
+
+  it("round-trips pi surface files (settings/models) against an isolated piHome", async () => {
+    const cwd = workDir("gw-surface");
+    // Default piHome would read the host ~/.pi; isolate it to a tmp tree.
+    const gateway = new PiGateway({
+      piEntry: fakeEnginePath(),
+      engineVersion: "0.0.0-test",
+      piHome: workDir("gw-pihome"),
+      resolveCwd: () => cwd,
+    });
+    gateway.send = () => undefined;
+    const ctl = (op: string, payload: Record<string, unknown> = {}) =>
+      gateway.handleControl({ id: "cX", type: "control", op, projectId: "proj", payload });
+
+    // empty by default
+    const settings0 = await ctl("get_settings");
+    expect(settings0).toMatchObject({ success: true });
+
+    // update persists, then re-reads
+    const up = await ctl("update_settings", { patch: { approvalPolicy: "on-failure", theme: "dark" } });
+    expect(up.success).toBe(true);
+    const settings1 = await ctl("get_settings");
+    expect((settings1 as { data: Record<string, unknown> }).data).toMatchObject({
+      approvalPolicy: "on-failure",
+      theme: "dark",
+    });
+
+    // custom provider upsert -> get_models sees it
+    const ups = await ctl("upsert_model", {
+      providerId: "local",
+      spec: { api: "anthropic-messages", baseUrl: "http://127.0.0.1:11434/v1", models: [{ id: "m1" }] },
+    });
+    expect(ups.success).toBe(true);
+    const models = await ctl("get_models");
+    const providers = (models as { data: Record<string, unknown> }).data;
+    expect(providers).toHaveProperty("local");
+
+    // remove -> gone
+    const rm = await ctl("remove_model", { providerId: "local" });
+    expect(rm.success).toBe(true);
+    const after = await ctl("get_models");
+    expect((after as { data: Record<string, unknown> }).data).not.toHaveProperty("local");
+
+    // skills dir lists empty (no .pi installed) — must not throw
+    const skills = await ctl("list_skills");
+    expect(skills).toMatchObject({ success: true });
     await gateway.stopAll();
   }, slow);
 });

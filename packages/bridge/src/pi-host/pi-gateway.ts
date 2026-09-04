@@ -16,8 +16,19 @@
 import { EnginePool } from "./engine-pool.js";
 import type { EngineEvent } from "./engine-process.js";
 import * as rpc from "./pi-rpc.js";
+import {
+  SettingsFile,
+  ModelsFile,
+  listResourceDirs,
+  looksLikeSkillMarkdown,
+  piAgentFiles,
+  type CustomProviderSpec,
+  type CustomModelSpec,
+} from "./surfaces.js";
 
 export const PI_WIRE_PROTOCOL_VERSION = 1;
+/** Default pi home; overridable for tests via PiGatewayOptions.piHome. */
+const DEFAULT_PI_HOME = process.env.PI_HOME ?? (process.env.HOME ?? "");
 
 export interface PiFrameEnvelope {
   kind: "pi";
@@ -42,6 +53,8 @@ export interface PiGatewayOptions {
   protocolVersion?: number;
   maxIdleMs?: number;
   env?: Record<string, string>;
+  /** pi home root (~). Defaults to PI_HOME/HOME. */
+  piHome?: string;
   /** Resolve the cwd (filesystem path) for a project id. */
   resolveCwd: (projectId: string) => string;
 }
@@ -50,10 +63,12 @@ export class PiGateway {
   private readonly pool: EnginePool;
   private readonly opts: PiGatewayOptions;
   private readonly protocolVersion: number;
+  private readonly piHome: string;
 
   constructor(opts: PiGatewayOptions) {
     this.opts = opts;
     this.protocolVersion = opts.protocolVersion ?? PI_WIRE_PROTOCOL_VERSION;
+    this.piHome = opts.piHome ?? DEFAULT_PI_HOME;
     this.pool = new EnginePool({
       piEntry: opts.piEntry,
       maxIdleMs: opts.maxIdleMs,
@@ -219,6 +234,60 @@ export class PiGateway {
       case "stop":
         await this.pool.stop(msg.projectId);
         return { stopped: true };
+      // ---- pi surface files (settings/models/skills) — support Pi X UI ----
+      case "get_settings": {
+        const files = piAgentFiles(this.piHome);
+        const data = await new SettingsFile(files.settings).load();
+        return { success: true, data };
+      }
+      case "update_settings": {
+        const files = piAgentFiles(this.piHome);
+        const settings = new SettingsFile(files.settings);
+        await settings.update((payload.patch as Record<string, unknown>) ?? {});
+        return { success: true, data: await settings.load() };
+      }
+      case "get_models": {
+        const files = piAgentFiles(this.piHome);
+        const providers = await new ModelsFile(files.models).loadProviders();
+        return { success: true, data: providers };
+      }
+      case "upsert_model": {
+        const files = piAgentFiles(this.piHome);
+        const models = new ModelsFile(files.models);
+        const providerId = String(payload.providerId ?? "");
+        const spec = (payload.spec ?? {}) as CustomProviderSpec;
+        await models.upsertProvider(providerId, spec);
+        return { success: true, data: await models.loadProviders() };
+      }
+      case "remove_model": {
+        const files = piAgentFiles(this.piHome);
+        const models = new ModelsFile(files.models);
+        const providerId = String(payload.providerId ?? "");
+        const removed = await models.removeProvider(providerId);
+        return { success: true, removed };
+      }
+      case "add_model": {
+        const files = piAgentFiles(this.piHome);
+        const models = new ModelsFile(files.models);
+        const providerId = String(payload.providerId ?? "");
+        const model = (payload.model ?? {}) as CustomModelSpec;
+        await models.addModel(providerId, model);
+        return { success: true, data: await models.loadProviders() };
+      }
+      case "list_skills": {
+        const files = piAgentFiles(this.piHome);
+        const root = files.skillsDir;
+        const names = await listResourceDirs(root);
+        return { success: true, data: names.map((p) => p.split("/").pop()) };
+      }
+      case "list_extensions": {
+        const files = piAgentFiles(this.piHome);
+        const names = await listResourceDirs(files.extensionsDir);
+        return { success: true, data: names.map((p) => p.split("/").pop()) };
+      }
+      case "looks_like_skill": {
+        return { success: true, looksLikeSkill: looksLikeSkillMarkdown(String(payload.content ?? "")) };
+      }
       default:
         return {
           type: "response",

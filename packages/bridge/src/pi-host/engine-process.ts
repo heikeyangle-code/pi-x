@@ -15,6 +15,7 @@ import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { createInterface, type Interface } from "node:readline";
 import { once } from "node:events";
 import { randomUUID } from "node:crypto";
+import { mkdirSync } from "node:fs";
 
 /** A JSON-RPC-ish request to the engine (pi rpc command). */
 export interface EngineRequest {
@@ -66,6 +67,12 @@ export class EngineProcess {
 
   async start(opts: EngineProcessOptions): Promise<void> {
     if (this.running) throw new Error("engine already running");
+
+    // The engine organizes sessions/resources by its working directory
+    // (docs/sessions.md). If the caller's cwd isn't materialized yet (e.g. a
+    // freshly referenced project path from the mobile client), spawn would
+    // fail with ENOENT. Create it so one-round-trip "open a new project" works.
+    mkdirSync(opts.cwd, { recursive: true });
 
     const env = {
       ...process.env,

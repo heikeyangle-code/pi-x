@@ -13,6 +13,12 @@
   （prompt/steer/follow_up/abort/queue/session/model/thinking/mode/compact/retry/bash/validate/
   stats/export/fork/clone/entries/tree/name/commands 等），新增单测逐条断言全部 success，
   含 bash 的 request-id 关联与 `stop` 语义。
+- **PiHost server(ws 传输层) 端到端测试补齐**（`server.test.ts`，真 WS 客户端驱动 fake 引擎）：
+  控制往返 envelope、引擎事件向所有订阅 socket 广播、`ui_response` 回传引擎并保持连接可用、
+  `apiKey` 鉴权拒连未授权 socket。此前 ws 传输层无任何测试。
+- **EngineProcess 自动创建 cwd**：引擎按工作目录组织会话/资源（docs/sessions.md），若客户端传入
+  的 projectId/cwd 目录未预建，`spawn` 会 `ENOENT`。现于 spawn 前 `mkdirSync(cwd, {recursive:true})`，
+  新增回归单测（深层不存在的 cwd 也能一次往返跑通）——真机"打开新项目"不再需要预建目录。
 - 引擎分发策略定稿：基线打进 APK + 新版本后台热更（npm/pi.dev 双源 + sha256 + 冒烟）。
 - UI 手术：QR 扫码、Setup guide 远端页、mDNS、macOS/更新横幅、非安卓平台目录、fastlane
   已删；单本机种子已加；Pi X 品牌 + CI（android analyze/test/apk、bridge tsc、engine-smoke）。

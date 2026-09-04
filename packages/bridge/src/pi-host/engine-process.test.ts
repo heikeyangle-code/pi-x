@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { mkdtempSync } from "node:fs";
+import { mkdtempSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fakeEnginePath } from "./test-utils.js";
@@ -80,4 +80,20 @@ describe("EngineProcess", () => {
     const resp = await engine.request({ type: "get_state" });
     expect(resp).toMatchObject({ success: false, error: "engine_not_running" });
   });
+
+  it("auto-creates a non-existent cwd before spawning (no ENOENT)", async () => {
+    const piEntry = fakeEnginePath();
+    const base = workDir("ep-auto-cwd");
+    const projectCwd = join(base, "deep", "nested", "proj");
+    expect(existsSync(projectCwd)).toBe(false);
+
+    const engine = new EngineProcess();
+    await engine.start({ piEntry, cwd: projectCwd });
+    expect(engine.running).toBe(true);
+    expect(existsSync(projectCwd)).toBe(true);
+
+    const resp = await engine.request({ type: "get_state" });
+    expect(resp.success).toBe(true);
+    await engine.stop();
+  }, slow);
 });

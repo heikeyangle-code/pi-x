@@ -46,3 +46,21 @@ mdns/bonjour、qrcode、firebase-auth、push-relay、proxy/socks、sharp(原生�
 - 已删：QR 扫码、Setup guide 远端页、macOS/更新横幅、mDNS、非安卓平台目录、fastlane。
 - 已加：单本机种子（127.0.0.1:8765）、Pi X 品牌、CI（android/bridge/engine-smoke）。
 - S5 剩余（机器增改删 UI 收敛、SSH/FCM 深删）与 M2 引擎接线同步推进（见 docs/STATUS.md）。
+
+## 本轮核查的 Flutter 死代码落点（待 CI/有 Flutter 工具链的环境执行）
+> 交待在沙箱内无法跑 flutter analyze/dart pub get，以下改动必须由 CI（.github/workflows/ci.yml 的 android 任务）或本机 Flutter 编译把关后落地，勿在无工具链环境盲删。
+
+**纯远程残留（删除）**：`services/ssh_bridge_tunnel_service.dart`、`services/ssh_startup_service.dart`、
+`services/machine_manager_service.dart`、`providers/machine_manager_cubit.dart`（+#freezed）、
+`services/connection_url_parser.dart`、`services/bridge_endpoint_probe.dart`、`services/fcm_service.dart`、
+`features/session_link/`（整套，含 session_link_cubit/state/widgets）、`features/session_list/` 中
+`workspace_shell_screen.dart`、`widgets/connect_form.dart` 及 `session_list_screen.dart` 里的连接/SSH 分支。
+引用方需同步收敛：`main.dart`（ssh/fcm/deep_link 初始化）、`router/app_router.dart`、`features/settings/`
+（fcm 设置项）。L10n 清理 `app_{en,zh,ja,ko}.arb` 的 `scanQr/guideConnectionQr/guideConnectionMdns/sshPassword*` 键。
+
+**已确认 0 引用的死文件（可安全删，编译不受影响）**：`lib/services/recording_loader.dart`（自给自足）、
+`lib/services/session_runtime_store.dart`（被 `bridge_service.dart:158` `_runtimeStore` 直接引用，**不可删**）。
+其余标注存疑的死代码须以 `flutter analyze`/`dart run build_runner` 为准，勿凭 import 猜测。
+
+> 注意：第 4 项"机器管理 UI"建议按 REMOTE-AUDIT 原计划**本地化收敛**而非全删——保留单本机种子的
+> `LocalEngineCard` 路径（commit 040beb2 已移除 machine-management 页），仅删增/改/删/收藏交互。

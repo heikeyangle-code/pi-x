@@ -22,8 +22,16 @@ jobs:
         run: flutter pub get
       - name: Accept Android SDK licenses and install NDK 29
         run: |
-          yes | sdkmanager --licenses > /dev/null 2>&1 || true
-          yes | sdkmanager --install "ndk;29.0.13846066" > /dev/null 2>&1 || true
+          ANDROID_HOME="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          SDKM="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          [ -x "$SDKM" ] || SDKM="$ANDROID_HOME/cmdline-tools/bin/sdkmanager"
+          [ -x "$SDKM" ] || SDKM="/opt/android-sdk/cmdline-tools/latest/bin/sdkmanager"
+          echo "Using sdkmanager: $SDKM"
+          [ -x "$SDKM" ] || ls -R "$ANDROID_HOME/cmdline-tools" 2>/dev/null | head -20
+          yes | "$SDKM" --licenses
+          yes | "$SDKM" "ndk;29.0.13846066"
+          echo "--- installed NDKs ---"
+          ls "$ANDROID_HOME/ndk" 2>/dev/null || echo "NO NDK DIR"
       - name: Regenerate router / codegen
         run: dart run build_runner build --delete-conflicting-outputs
       - name: Static analysis

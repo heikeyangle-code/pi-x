@@ -36,7 +36,6 @@ import 'state/session_list_state.dart';
 import 'services/session_start_defaults_store.dart';
 import 'widgets/connect_form.dart';
 import 'widgets/home_content.dart';
-import 'widgets/machine_edit_sheet.dart';
 import 'widgets/session_list_app_bar.dart';
 import 'widgets/session_list_loading_view.dart';
 import 'workspace_shell_screen.dart';
@@ -2076,10 +2075,7 @@ class _SessionListScreenState extends State<SessionListScreen>
       protocolCompatibility: context
           .read<BridgeService>()
           .protocolCompatibility,
-      machines: machineState?.machines ?? [],
-      startingMachineId: machineState?.startingMachineId,
-      updatingMachineId: machineState?.updatingMachineId,
-      latestBridgeVersion: machineState?.latestBridgeVersion,
+      onConnectLocalEngine: _connectLocalEngine,
       onViewSetupGuide: () {
         final shell = WorkspaceShellScreen.maybeOf(context);
         if (widget.embedded && shell != null) {
@@ -2088,23 +2084,29 @@ class _SessionListScreenState extends State<SessionListScreen>
         }
         context.router.push(SetupGuideRoute());
       },
-      onConnectToMachine: _connectToMachine,
-      onStartMachine: _startMachine,
-      onEditMachine: _editMachine,
-      onDeleteMachine: _deleteMachine,
-      onToggleFavorite: _toggleFavorite,
-      onUpdateMachine: _updateMachine,
-      onStopMachine: _stopMachine,
-      onAddMachine: _addMachine,
-      onRefreshMachines: () => machineManagerCubit?.refreshAll(),
     );
+  }
+
+  // Pi X: connect the seeded on-device engine (127.0.0.1).
+  void _connectLocalEngine() {
+    final cubit = context.read<MachineManagerCubit>();
+    MachineWithStatus? local;
+    for (final m in cubit.state.machines) {
+      if (m.machine.host == '127.0.0.1') {
+        local = m;
+        break;
+      }
+    }
+    final target = local ??
+        (cubit.state.machines.isEmpty ? null : cubit.state.machines.first);
+    if (target != null) {
+      unawaited(_connectToMachineConfig(target.machine));
+    }
   }
 
   // ---- Machine Management ----
 
-  void _connectToMachine(MachineWithStatus m) async {
-    await _connectToMachineConfig(m.machine);
-  }
+  Future<String?> _promptForPassword(String machineName) async => null;
 
   Future<bool> _connectToMachineConfig(
     Machine machine, {
@@ -2215,286 +2217,6 @@ class _SessionListScreenState extends State<SessionListScreen>
       before.sshJumpUsername == after.sshJumpUsername &&
       before.sshJumpAuthType == after.sshJumpAuthType;
 
-  void _toggleFavorite(MachineWithStatus m) {
-    context.read<MachineManagerCubit>().toggleFavorite(m.machine.id);
-  }
-
-  void _updateMachine(MachineWithStatus m) async {
-    final cubit = context.read<MachineManagerCubit>();
-    final l = AppLocalizations.of(context);
-
-    String? password;
-    if (m.machine.sshAuthType == SshAuthType.password) {
-      final savedPassword = await cubit.getSshPassword(m.machine.id);
-      password = savedPassword;
-      if (password == null || password.isEmpty) {
-        password = await _promptForPassword(m.machine.displayName);
-        if (password == null) return; // User cancelled
-      }
-    }
-
-    final success = await cubit.updateBridge(m.machine.id, password: password);
-
-    if (success && mounted) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(l.bridgeServerUpdated)));
-    } else if (mounted) {
-      final error = cubit.state.error;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(error ?? l.failedToUpdateServer)));
-    }
-  }
-
-  void _startMachine(MachineWithStatus m) async {
-    final cubit = context.read<MachineManagerCubit>();
-    final l = AppLocalizations.of(context);
-
-    String? password;
-    if (m.machine.sshAuthType == SshAuthType.password) {
-      final savedPassword = await cubit.getSshPassword(m.machine.id);
-      password = savedPassword;
-      if (password == null || password.isEmpty) {
-        password = await _promptForPassword(m.machine.displayName);
-        if (password == null) return; // User cancelled
-      }
-    }
-
-    final success = await cubit.startBridge(m.machine.id, password: password);
-
-    if (success && mounted) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(l.bridgeServerStarted)));
-    } else if (mounted) {
-      final error = cubit.state.error;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(error ?? l.failedToStartServer)));
-    }
-  }
-
-  void _stopMachine(MachineWithStatus m) async {
-    final cubit = context.read<MachineManagerCubit>();
-    final l = AppLocalizations.of(context);
-
-    String? password;
-    if (m.machine.sshAuthType == SshAuthType.password) {
-      final savedPassword = await cubit.getSshPassword(m.machine.id);
-      password = savedPassword;
-      if (password == null || password.isEmpty) {
-        password = await _promptForPassword(m.machine.displayName);
-        if (password == null) return; // User cancelled
-      }
-    }
-
-    final success = await cubit.stopBridge(m.machine.id, password: password);
-
-    if (success && mounted) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(l.bridgeServerStopped)));
-    } else if (mounted) {
-      final error = cubit.state.error;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(error ?? l.failedToStopServer)));
-    }
-  }
-
-  Future<String?> _promptForPassword(String machineName) async {
-    final controller = TextEditingController();
-    final l = AppLocalizations.of(context);
-    return showDialog<String>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l.sshPassword),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(l.sshPasswordPrompt(machineName)),
-            const SizedBox(height: 16),
-            TextField(
-              controller: controller,
-              obscureText: true,
-              autofocus: true,
-              decoration: InputDecoration(
-                labelText: l.password,
-                border: const OutlineInputBorder(),
-              ),
-              onSubmitted: (v) => Navigator.pop(ctx, v),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(l.cancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, controller.text),
-            child: Text(l.connect),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _editMachine(MachineWithStatus m) async {
-    final cubit = context.read<MachineManagerCubit>();
-    final apiKey = await cubit.getApiKey(m.machine.id);
-    final sshPassword = await cubit.getSshPassword(m.machine.id);
-    final sshPrivateKey = await cubit.getSshPrivateKey(m.machine.id);
-    final sshJumpPassword = await cubit.getSshJumpPassword(m.machine.id);
-    final sshJumpPrivateKey = await cubit.getSshJumpPrivateKey(m.machine.id);
-
-    if (!mounted) return;
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      constraints: macOSModalBottomSheetConstraints(context),
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => MachineEditSheet(
-        machine: m.machine,
-        existingApiKey: apiKey,
-        existingSshPassword: sshPassword,
-        existingSshPrivateKey: sshPrivateKey,
-        existingSshJumpPassword: sshJumpPassword,
-        existingSshJumpPrivateKey: sshJumpPrivateKey,
-        onSave:
-            ({
-              required machine,
-              apiKey,
-              sshPassword,
-              sshPrivateKey,
-              sshJumpPassword,
-              sshJumpPrivateKey,
-            }) async {
-              await cubit.updateMachine(
-                machine,
-                apiKey: apiKey,
-                sshPassword: sshPassword,
-                sshPrivateKey: sshPrivateKey,
-                sshJumpPassword: sshJumpPassword,
-                sshJumpPrivateKey: sshJumpPrivateKey,
-                clearCredentials:
-                    !machine.sshEnabled ||
-                    machine.sshAuthType != m.machine.sshAuthType,
-                clearJumpCredentials:
-                    machine.sshJumpHost == null ||
-                    machine.sshJumpAuthType != m.machine.sshJumpAuthType,
-              );
-              await cubit.checkHealth(machine.id);
-            },
-        onTestConnection: cubit.testConnectionWithCredentials,
-      ),
-    );
-  }
-
-  void _deleteMachine(MachineWithStatus m) async {
-    final l = AppLocalizations.of(context);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l.deleteMachine),
-        content: Text(l.deleteMachineConfirm(m.machine.displayName)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(l.cancel),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(ctx).colorScheme.error,
-            ),
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text(l.delete),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed == true && mounted) {
-      context.read<MachineManagerCubit>().deleteMachine(m.machine.id);
-    }
-  }
-
-  void _addMachine() {
-    final cubit = context.read<MachineManagerCubit>();
-    Machine? savedMachine;
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      constraints: macOSModalBottomSheetConstraints(context),
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => MachineEditSheet(
-        onSave:
-            ({
-              required machine,
-              apiKey,
-              sshPassword,
-              sshPrivateKey,
-              sshJumpPassword,
-              sshJumpPrivateKey,
-            }) async {
-              final newMachine = cubit.createNewMachine(
-                name: machine.name,
-                host: machine.host,
-                port: machine.port,
-                useSsl: machine.useSsl,
-              );
-              await cubit.addMachine(
-                newMachine.copyWith(
-                  useSsl: machine.useSsl,
-                  connectionMode: machine.connectionMode,
-                  sshEnabled: machine.sshEnabled,
-                  sshUsername: machine.sshUsername,
-                  sshPort: machine.sshPort,
-                  sshAuthType: machine.sshAuthType,
-                  sshJumpHost: machine.sshJumpHost,
-                  sshJumpPort: machine.sshJumpPort,
-                  sshJumpUsername: machine.sshJumpUsername,
-                  sshJumpAuthType: machine.sshJumpAuthType,
-                  isFavorite: true, // New manually added machines are favorites
-                ),
-                apiKey: apiKey,
-                sshPassword: sshPassword,
-                sshPrivateKey: sshPrivateKey,
-                sshJumpPassword: sshJumpPassword,
-                sshJumpPrivateKey: sshJumpPrivateKey,
-              );
-              savedMachine = cubit.findByHostPort(machine.host, machine.port);
-            },
-        onSaveAndConnect: (machine, apiKey) {
-          final saved = savedMachine;
-          if (saved?.sshJumpHost?.trim().isNotEmpty == true) {
-            unawaited(_connectToMachineConfig(saved!));
-          } else if (saved != null) {
-            _connectWithParams(
-              saved.wsUrl,
-              apiKey,
-              requestedConnectionMode: saved.connectionMode,
-            );
-          } else {
-            _connectWithParams(machine.wsUrl, apiKey);
-          }
-        },
-        onTestConnection: cubit.testConnectionWithCredentials,
-      ),
-    );
-  }
-}
-
-class _SetupStep extends StatelessWidget {
-  final String number;
-  final String title;
-  final String command;
-
-  const _SetupStep({
-    required this.number,
-    required this.title,
-    required this.command,
-  });
-
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
@@ -2551,37 +2273,13 @@ class _SetupStep extends StatelessWidget {
 
 class _ConnectFormWidget extends StatelessWidget {
   final ProtocolCompatibility? protocolCompatibility;
-  final List<MachineWithStatus> machines;
-  final String? startingMachineId;
-  final String? updatingMachineId;
-  final String? latestBridgeVersion;
   final VoidCallback onViewSetupGuide;
-  final ValueChanged<MachineWithStatus> onConnectToMachine;
-  final ValueChanged<MachineWithStatus> onStartMachine;
-  final ValueChanged<MachineWithStatus> onEditMachine;
-  final ValueChanged<MachineWithStatus> onDeleteMachine;
-  final ValueChanged<MachineWithStatus> onToggleFavorite;
-  final ValueChanged<MachineWithStatus> onUpdateMachine;
-  final ValueChanged<MachineWithStatus> onStopMachine;
-  final VoidCallback onAddMachine;
-  final VoidCallback? onRefreshMachines;
+  final VoidCallback? onConnectLocalEngine;
 
   const _ConnectFormWidget({
     this.protocolCompatibility,
-    required this.machines,
-    this.startingMachineId,
-    this.updatingMachineId,
-    this.latestBridgeVersion,
     required this.onViewSetupGuide,
-    required this.onConnectToMachine,
-    required this.onStartMachine,
-    required this.onEditMachine,
-    required this.onDeleteMachine,
-    required this.onToggleFavorite,
-    required this.onUpdateMachine,
-    required this.onStopMachine,
-    required this.onAddMachine,
-    this.onRefreshMachines,
+    this.onConnectLocalEngine,
   });
 
   @override
@@ -2589,20 +2287,7 @@ class _ConnectFormWidget extends StatelessWidget {
     return ConnectForm(
       protocolCompatibility: protocolCompatibility,
       onViewSetupGuide: onViewSetupGuide,
-      // Machine management
-      machines: machines,
-      startingMachineId: startingMachineId,
-      updatingMachineId: updatingMachineId,
-      latestBridgeVersion: latestBridgeVersion,
-      onConnectToMachine: onConnectToMachine,
-      onStartMachine: onStartMachine,
-      onEditMachine: onEditMachine,
-      onDeleteMachine: onDeleteMachine,
-      onToggleFavorite: onToggleFavorite,
-      onUpdateMachine: onUpdateMachine,
-      onStopMachine: onStopMachine,
-      onAddMachine: onAddMachine,
-      onRefreshMachines: onRefreshMachines,
+      onConnectLocalEngine: onConnectLocalEngine,
     );
   }
 }

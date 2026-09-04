@@ -41,3 +41,8 @@ mdns/bonjour、qrcode、firebase-auth、push-relay、proxy/socks、sharp(原生�
 8. 用量/成本展示（pi usage 事件）
 9. 本地引擎状态/启停卡（`LocalEngineCard` 已加，待接真状态）
 10. 终端页（可选：xterm.dart + 本地 PTY）
+
+## 状态更新（2026-09）：UI 手术收尾 + 引擎接入进展
+- 已删：QR 扫码、Setup guide 远端页、macOS/更新横幅、mDNS、非安卓平台目录、fastlane。
+- 已加：单本机种子（127.0.0.1:8765）、Pi X 品牌、CI（android/bridge/engine-smoke）。
+- S5 剩余（机器增改删 UI 收敛、SSH/FCM 深删）与 M2 引擎接线同步推进（见 docs/STATUS.md）。

@@ -61,6 +61,8 @@ Flutter App ──(CC Pocket 协议, ws@127.0.0.1)──▶ Pi Host(Node, 稳定
 ## 5. 注意事项
 
 - 并行会话（git worktree）→ Pi Host 按 project 管理多个引擎子进程（复用 CC Pocket worktree-store 概念）
+- 文件能力在本地路径闭环：工作区/文件浏览走 App Dart 直读目录（最快最省），diff 查看、git 操作与受信任写回依托 Pi Host 直连 FS；**无远端引擎 → 远端文件 API 整个移除**
+- 命令执行 = **runBash 卡片流（必需）**始终为主；真终端（xterm.dart + 原生 PTY）**远期可选**，不内置为必须
 - RPC 无 `ctx.ui.custom()`/TUI 键盘组件 → GUI 不依赖，无需支持
 - 扩展的 `notify`/`setStatus`/`setTitle` → 映射为 App 内通知/状态条/标题
 - 若未来需要进程内扩展 GUI（setWidget 级别）→ 再评估 AgentSession 内嵌（B），届时 pi-provider 作为独立 bundle 维护

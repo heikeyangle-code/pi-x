@@ -8,7 +8,7 @@
 | 4 | 引擎进程模型 | **每项目一个引擎进程**（cwd=项目，对应 pi 按工作目录组织会话）；全局资源每进程共享 | engine-pool.ts + docs |
 | 5 | 审批流 | 官方 `extension_ui_request/response`（confirm/select/input/editor）→ App 审批卡 | ENGINE-INTEGRATION.md |
 | 6 | 设置/模型 UI | **1:1 文件面**：settings.json 双模（核心项+opaque JSON）、models.json 表单 | ENGINE-UI-SURFACES.md |
-| 7 | **终端** | **`TerminalStudio/xterm.dart`(MIT) 渲染 + App 原生 PTY 服务（Kotlin /dev/ptmx）**；用于 pi TUI 与手动 shell；日常走卡片流 | 调研（★655，Flutter 最成熟） |
+| 7 | **终端** | **内置"命令执行卡片流"（runBash 卡片，必需）**；**真终端（`TerminalStudio/xterm.dart`(MIT) UI + Kotlin /dev/ptmx 原生 PTY）列为远期可选**，不内置为必须。日常 bash=agent 执行+流式返回（无需 PTY）；真 PTY 仅服务用户手敲 vim/REPL/ssh 的低频场景，成本高故推迟。已验 xterm.dart 支持移动端、原生 PTY 在安卓可行（JNI /dev/ptmx），远期要加仅是新增一个页面 | 对话评审+核验 |
 | 8 | 工作区 | 两级：pi-home（私有，配置/会话/包）+ workspace（用户可见/可 SAF 挂任意目录）；项目含 .pi/+AGENTS.md+git worktree 并行 | 调研 + M2-WIRING |
 | 9 | 资源作用域 | 用户级（~/.pi/agent/*，所有项目共享）vs 项目级（.pi/*，先信任）；包默认用户级，`-l` 项目级 | 调研（与 pi 官方一致） |
 | 10 | 斜杠命令 | 命令面板 = `get_commands` + 发送 `prompt "/name"`（服务端展开）；TUI 内置命令用等价 RPC | ENGINE-UI-SURFACES.md §4 |

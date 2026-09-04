@@ -64,6 +64,13 @@
 2. App ⇄ PiHost 的 wire client（Flutter 消费 envelope）→ 真机/模拟器端到端
 3. M1 页面：Provider/模型管理（models.json 表单）、命令面板（get_commands）、扩展管理
 4. 引擎包运行时（APK 内置基线 + 热更）落地 ENGINE-BUNDLE 配方
+5. Flutter 端补扩展 UI 四个对话框控件（confirm/select/input/editor，接已打通的
+   `extension_ui_request/response` 闭环）——扩展 UI 兼容由此在 App 层真正落地
+
+## 已锁定决策（规划层，详见 DECISIONS）
+- 终端：**内置 runBash 命令卡片流（必需）**；真终端（xterm.dart + 原生 PTY）**远期可选**
+- 文件：本地路径闭环——App Dart 直读工作区目录 + Pi Host 直连 FS(diff/git/受信任写回)；无远端、无远端文件 API
+- 工作区数据模型（pi-home+workspace 两级、项目 .pi/AGENTS.md、worktree 并行、每项目一进程）：照用不变
 
 ## Termux 快速跑通（开发路径，不等自带运行时）
 `scripts/termux-setup.sh`：手机装 Termux → node22 + pi 引擎 → `pi-host-entry.js` 监听

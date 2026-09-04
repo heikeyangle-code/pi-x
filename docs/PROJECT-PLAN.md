@@ -6,7 +6,7 @@
 
 - 引擎层：pi（MIT）跑在手机本地 runtime（node22 + shell），版本化热换、回滚，插件 100% 兼容 pi 原生（extensions/skills/prompts/themes、npm/git 包、trust）。
 - UI/协议层：保留 CC Pocket 的会话/审批/diff/文件浏览/输入框/断线队列/恢复；**删除一切远程连接功能**（扫码、QR、mDNS、主机管理、远程 SSH、推送中与远程相关的部分）。
-- 日常交互 = 原生 App 直接对话内嵌 pi 引擎（不经终端）；终端页（xterm.dart + 本地 PTY）作为可选第二表面。
+- 日常交互 = 原生 App 直接对话内嵌 pi 引擎（不经终端）+ **runBash 命令卡片流**（agent 执行命令/看输出/审批，必需）；真终端页（xterm.dart + 原生 PTY）**远期可选**，不内置为必须。
 
 ## 2. 本地化删除清单（按 bridge/src 实测文件清单）
 
@@ -37,8 +37,8 @@
 ```
 Flutter App ──WS@127.0.0.1(JSONL, CC Pocket 协议)──▶ Pi Host(Node sidecar)
                                                         ├─ pi-provider: 内嵌 pi AgentSession
-                                                        ├─ workspace 文件 API
-                                                        └─ PTY 出口(终端页用)
+                                                        ├─ workspace 文件 API（App Dart 直读目录，diff/git 走此）
+                                                        └─ runBash 命令执行卡片流（必需）；PTY 出口(远期可选)
                                                         ▼
                                              engines/<ver>/current (node22+pi, 热换回滚)
 ```
@@ -55,4 +55,4 @@ pi-provider 映射重点：增量文本/thinking/工具执行事件 → CC Pocke
 M0 源码落地 + fork 初始化（git init，保留 upstream remote）
 M1 本地化删除 + 更名（Pi X）+ 编译通过（Flutter app + bridge 单测）
 M2 Pi Host：pi-provider + 本地 runtime + 版本跟随管道，端到端跑通一次对话
-M3 终端页/工作区/备份打磨；弱网队列语义本地化验证
+M3 runBash 卡片流/工作区/备份打磨；弱网队列语义本地化验证；真终端页（xterm.dart+PTY）远期可选

@@ -22,9 +22,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:marionette_flutter/marionette_flutter.dart';
 import 'package:media_kit/media_kit.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shorebird_code_push/shorebird_code_push.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger.dart';
 
 import 'core/logger.dart';
@@ -45,37 +43,16 @@ import 'services/bridge_service.dart';
 import 'services/database_service.dart';
 import 'services/deep_link_dispatcher.dart';
 import 'services/draft_service.dart';
-import 'services/in_app_review_service.dart';
 import 'services/machine_manager_service.dart';
 import 'services/mock_preview_extension.dart';
 import 'services/notification_service.dart';
 import 'services/performance_probe_extension.dart';
 import 'services/prompt_history_service.dart';
-import 'services/revenuecat_service.dart';
 import 'services/session_link_parser.dart';
-import 'services/support_banner_service.dart';
 import 'theme/app_theme.dart';
 import 'services/store_screenshot_extension.dart';
 import 'theme/markdown_style.dart';
-import 'utils/platform_helper.dart';
 import 'widgets/release_error_widget.dart';
-
-/// Checks for Shorebird patches using the user-selected update track.
-Future<void> _checkShorebirdUpdate(SharedPreferences prefs) async {
-  try {
-    final updater = ShorebirdUpdater();
-    final trackName =
-        prefs.getString(SettingsCubit.keyShorebirdTrack) ?? 'stable';
-    final track = UpdateTrack(trackName);
-    final status = await updater.checkForUpdate(track: track);
-    if (status == UpdateStatus.outdated) {
-      await updater.update(track: track);
-      logger.info('[shorebird] Patch downloaded (track: $trackName)');
-    }
-  } catch (e) {
-    logger.warning('[shorebird] Update check failed: $e');
-  }
-}
 
 void main() async {
   if (kDebugMode && !kIsWeb) {
@@ -117,22 +94,8 @@ void main() async {
   const secureStorage = FlutterSecureStorage();
   final machineManagerService = MachineManagerService(prefs, secureStorage);
 
-  // Shorebird manual update check (auto_update is disabled in shorebird.yaml).
-  // Reads the user-selected track from SharedPreferences and checks for patches
-  // in the background. The patch is applied on next app restart.
-  // Shorebird OTA is only available on mobile platforms (iOS/Android).
-  if (!kIsWeb && isMobilePlatform) {
-    unawaited(_checkShorebirdUpdate(prefs));
-  }
-
   final bridge = BridgeService();
   final draftService = DraftService(prefs);
-  final inAppReviewService = InAppReviewService(prefs: prefs);
-  await inAppReviewService.attachToBridge(bridge);
-  final supportBannerService = SupportBannerService(
-    prefs: prefs,
-    reviewService: inAppReviewService,
-  );
   StoreScreenshotState.draftService = draftService;
   final dbService = DatabaseService();
   final promptHistoryService = PromptHistoryService(dbService);
@@ -147,12 +110,10 @@ void main() async {
     }
   });
   final appIconService = AppIconService();
-  final revenueCatService = RevenueCatService();
   final settingsCubit = SettingsCubit(
     prefs,
     bridgeService: bridge,
     machineManager: machineManagerService,
-    revenueCatService: revenueCatService,
     appIconService: appIconService,
   );
   final gitStatusCubit = GitStatusCubit(
@@ -164,7 +125,6 @@ void main() async {
     bridge: bridge,
     gitStatusCubit: gitStatusCubit,
   );
-  unawaited(revenueCatService.initialize());
   runApp(
     MultiRepositoryProvider(
       providers: [
@@ -188,24 +148,10 @@ void main() async {
           dispose: (service) => unawaited(service.close()),
         ),
         RepositoryProvider<DraftService>.value(value: draftService),
-        RepositoryProvider<InAppReviewService>(
-          create: (_) => inAppReviewService,
-          lazy: false,
-          dispose: (service) => service.dispose(),
-        ),
-        ChangeNotifierProvider<SupportBannerService>(
-          create: (_) => supportBannerService,
-          lazy: false,
-        ),
         RepositoryProvider<PromptHistoryService>.value(
           value: promptHistoryService,
         ),
         RepositoryProvider<AppIconService>.value(value: appIconService),
-        RepositoryProvider<RevenueCatService>(
-          create: (_) => revenueCatService,
-          lazy: false,
-          dispose: (service) => unawaited(service.dispose()),
-        ),
         RepositoryProvider<MachineManagerService>(
           create: (_) => machineManagerService,
           lazy: false,

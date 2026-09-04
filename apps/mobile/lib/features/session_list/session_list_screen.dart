@@ -482,15 +482,6 @@ class _SessionListScreenState extends State<SessionListScreen>
     await context.router.push(SettingsRoute());
   }
 
-  void _openSupportSettings() {
-    final shell = WorkspaceShellScreen.maybeOf(context);
-    if (widget.embedded && shell != null) {
-      shell.openSettingsCenter(focusSupport: true);
-      return;
-    }
-    context.pushRoute(SettingsRoute(focusSupport: true));
-  }
-
   void _openBridgeSettings() {
     final shell = WorkspaceShellScreen.maybeOf(context);
     if (widget.embedded && shell != null) {
@@ -1812,7 +1803,6 @@ class _SessionListScreenState extends State<SessionListScreen>
               onToggleNamed: () =>
                   context.read<SessionListCubit>().toggleNamedOnly(),
               onOpenBridgeSettings: _openBridgeSettings,
-              onOpenSupportSettings: _openSupportSettings,
               onOpenUsageSettings: _openUsageSettings,
               connectedBridgeLabel: connectedBridgeLabel,
               usageBridgeService: bridge,

@@ -16,7 +16,6 @@ import '../../../models/terminal_app.dart';
 import '../../../services/app_icon_service.dart';
 import '../../../services/bridge_service.dart';
 import '../../../services/machine_manager_service.dart';
-import '../../../services/revenuecat_service.dart';
 import '../../../theme/code_text_style.dart';
 import 'settings_state.dart';
 
@@ -25,18 +24,12 @@ class SettingsCubit extends Cubit<SettingsState> {
   final SharedPreferences _prefs;
   final BridgeService? _bridge;
   final MachineManagerService? _machineManager;
-  final RevenueCatService? _revenueCat;
   final AppIconService _appIconService;
   StreamSubscription<BridgeConnectionState>? _bridgeSub;
-  VoidCallback? _supporterListener;
 
   static const _keyThemeMode = 'settings_theme_mode';
   static const _keyAppLocale = 'settings_app_locale';
   static const _keySpeechLocale = 'settings_speech_locale';
-
-  /// SharedPreferences key for the Shorebird update track.
-  /// Also read directly from SharedPreferences in main.dart at startup.
-  static const keyShorebirdTrack = 'settings_shorebird_track';
   static const _keyHideVoiceInput = 'settings_hide_voice_input';
   static const _keyOpenGalleryDirectly = 'settings_open_gallery_directly';
   static const _keyImagePasteShortcut = 'settings_image_paste_shortcut';
@@ -69,11 +62,9 @@ class SettingsCubit extends Cubit<SettingsState> {
     this._prefs, {
     BridgeService? bridgeService,
     MachineManagerService? machineManager,
-    RevenueCatService? revenueCatService,
     AppIconService? appIconService,
   }) : _bridge = bridgeService,
        _machineManager = machineManager,
-       _revenueCat = revenueCatService,
        _appIconService = appIconService ?? AppIconService(),
        super(
          _load(_prefs).copyWith(
@@ -95,11 +86,6 @@ class SettingsCubit extends Cubit<SettingsState> {
       if (bridge.isConnected) {
         _updateActiveMachine();
       }
-    }
-    final revenueCat = _revenueCat;
-    if (revenueCat != null) {
-      _supporterListener = _handleSupporterStateChanged;
-      revenueCat.supporterState.addListener(_supporterListener!);
     }
     unawaited(_initializeAppIconSupport());
     unawaited(_syncAppIcon(force: true));
@@ -133,7 +119,6 @@ class SettingsCubit extends Cubit<SettingsState> {
     final appLocale = prefs.getString(_keyAppLocale) ?? '';
     final speechLocale = prefs.getString(_keySpeechLocale);
 
-    final shorebirdTrack = prefs.getString(keyShorebirdTrack) ?? 'stable';
     final indentSize = prefs.getInt(_keyIndentSize) ?? 2;
     final textScale = prefs.getDouble(_keyTextScale) ?? 1.0;
     final codeFontSize =
@@ -198,7 +183,6 @@ class SettingsCubit extends Cubit<SettingsState> {
           : ThemeMode.system,
       appLocaleId: appLocale,
       speechLocaleId: speechLocale ?? '',
-      shorebirdTrack: shorebirdTrack,
       indentSize: indentSize.clamp(1, 4),
       textScale: textScale.clamp(minTextScale, maxTextScale),
       codeFontSize: codeFontSize.clamp(minCodeFontSize, maxCodeFontSize),
@@ -266,11 +250,6 @@ class SettingsCubit extends Cubit<SettingsState> {
   void setCodeFontFamily(CodeFontFamily family) {
     _prefs.setString(_keyCodeFontFamily, family.id);
     emit(state.copyWith(codeFontFamily: family));
-  }
-
-  void setShorebirdTrack(String track) {
-    _prefs.setString(keyShorebirdTrack, track);
-    emit(state.copyWith(shorebirdTrack: track));
   }
 
   void setHideVoiceInput(bool hide) {
@@ -370,23 +349,15 @@ class SettingsCubit extends Cubit<SettingsState> {
     setUsageDisplayMode(next);
   }
 
-  void _handleSupporterStateChanged() {
-    unawaited(_syncAppIcon());
-  }
-
   Future<void> _syncAppIcon({
     bool force = false,
     bool allowResetToDefault = false,
   }) async {
     try {
-      final supporterState = _revenueCat?.supporterState.value;
-      if (supporterState != null &&
-          (!supporterState.isAvailable || supporterState.isLoading)) {
-        return;
-      }
       await _appIconService.sync(
         selectedIcon: state.selectedAppIcon,
-        isSupporter: supporterState?.isSupporter ?? false,
+        // All app icons are freely selectable; treat the user as a supporter.
+        isSupporter: true,
         force: force,
         allowResetToDefault: allowResetToDefault,
       );
@@ -398,10 +369,6 @@ class SettingsCubit extends Cubit<SettingsState> {
   @override
   Future<void> close() async {
     await _bridgeSub?.cancel();
-    final listener = _supporterListener;
-    if (listener != null) {
-      _revenueCat?.supporterState.removeListener(listener);
-    }
     return super.close();
   }
 }

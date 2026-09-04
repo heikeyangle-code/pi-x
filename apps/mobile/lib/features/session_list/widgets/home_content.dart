@@ -1,4 +1,3 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -10,11 +9,8 @@ import '../../../models/offline_pending_action.dart';
 import '../../../services/bridge_service.dart';
 import '../../../services/draft_service.dart';
 import '../../../services/notification_service.dart';
-import '../../../services/revenuecat_service.dart';
-import '../../../services/support_banner_service.dart';
 import '../../../theme/app_theme.dart';
 import '../../../theme/provider_style.dart';
-import '../../../router/app_router.dart';
 import '../../../widgets/pin_toggle_button.dart';
 import '../../../widgets/session_card.dart';
 import '../../../widgets/workspace_pane_chrome.dart';
@@ -28,7 +24,6 @@ import 'session_filter_bar.dart';
 import 'session_list_empty_state.dart';
 import 'session_list_loading_view.dart';
 import 'session_reconnect_banner.dart';
-import 'support_banner.dart';
 
 class _ProjectSessionGroup {
   final String groupKey;
@@ -136,7 +131,6 @@ class HomeContent extends StatefulWidget {
   final VoidCallback onToggleProvider;
   final VoidCallback onToggleNamed;
   final VoidCallback? onOpenBridgeSettings;
-  final VoidCallback? onOpenSupportSettings;
   final VoidCallback? onOpenUsageSettings;
   final bool? showInlineStopButtonOverride;
   final String? connectedBridgeLabel;
@@ -189,7 +183,6 @@ class HomeContent extends StatefulWidget {
     required this.onToggleProvider,
     required this.onToggleNamed,
     this.onOpenBridgeSettings,
-    this.onOpenSupportSettings,
     this.onOpenUsageSettings,
     this.showInlineStopButtonOverride,
     this.connectedBridgeLabel,
@@ -208,14 +201,9 @@ class HomeContentState extends State<HomeContent> {
       'session_list_group_recent_sessions';
 
   bool _isSearching = false;
-  bool _showSupportBanner = false;
   bool _groupRecentSessions = true;
   final _searchController = TextEditingController();
   SessionDisplayMode _displayMode = SessionDisplayMode.first;
-  RevenueCatService? _revenueCatService;
-  VoidCallback? _catalogStateListener;
-  SupportBannerService? _supportBannerService;
-  VoidCallback? _supportBannerListener;
 
   @override
   void initState() {
@@ -243,27 +231,6 @@ class HomeContentState extends State<HomeContent> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final revenueCatService = context.read<RevenueCatService>();
-    if (!identical(_revenueCatService, revenueCatService)) {
-      if (_revenueCatService != null && _catalogStateListener != null) {
-        _revenueCatService!.catalogState.removeListener(_catalogStateListener!);
-      }
-      _revenueCatService = revenueCatService;
-      _catalogStateListener = () => _refreshSupportBannerVisibility();
-      revenueCatService.catalogState.addListener(_catalogStateListener!);
-      _refreshSupportBannerVisibility();
-    }
-
-    final supportBannerService = context.read<SupportBannerService>();
-    if (!identical(_supportBannerService, supportBannerService)) {
-      if (_supportBannerService != null && _supportBannerListener != null) {
-        _supportBannerService!.removeListener(_supportBannerListener!);
-      }
-      _supportBannerService = supportBannerService;
-      _supportBannerListener = () => _refreshSupportBannerVisibility();
-      supportBannerService.addListener(_supportBannerListener!);
-      _refreshSupportBannerVisibility();
-    }
   }
 
   void _toggleDisplayMode() async {
@@ -296,12 +263,6 @@ class HomeContentState extends State<HomeContent> {
 
   @override
   void dispose() {
-    if (_revenueCatService != null && _catalogStateListener != null) {
-      _revenueCatService!.catalogState.removeListener(_catalogStateListener!);
-    }
-    if (_supportBannerService != null && _supportBannerListener != null) {
-      _supportBannerService!.removeListener(_supportBannerListener!);
-    }
     _searchController.dispose();
     super.dispose();
   }
@@ -321,39 +282,6 @@ class HomeContentState extends State<HomeContent> {
     if (!_isSearching) {
       _toggleSearch();
     }
-  }
-
-
-
-
-  Future<void> _refreshSupportBannerVisibility() async {
-    final revenueCatService = _revenueCatService;
-    if (revenueCatService == null) return;
-
-    final supportBannerService = context.read<SupportBannerService>();
-    final shouldShow = await supportBannerService.shouldShow(
-      catalog: revenueCatService.catalogState.value,
-    );
-    if (!mounted || shouldShow == _showSupportBanner) return;
-    setState(() {
-      _showSupportBanner = shouldShow;
-    });
-  }
-
-  Widget? _buildSupportBanner() {
-    if (!_showSupportBanner) return null;
-    return SupportBanner(
-      onTap:
-          widget.onOpenSupportSettings ??
-          () => context.pushRoute(SettingsRoute(focusSupport: true)),
-      onDismiss: () async {
-        await context.read<SupportBannerService>().dismiss();
-        if (!mounted) return;
-        setState(() {
-          _showSupportBanner = false;
-        });
-      },
-    );
   }
 
   Widget? _buildConnectedBridgeBanner(BuildContext context) {
@@ -428,7 +356,6 @@ class HomeContentState extends State<HomeContent> {
         widget.workspaceProjects.isNotEmpty;
     final isReconnecting =
         widget.connectionState == BridgeConnectionState.reconnecting;
-    final supportBanner = _buildSupportBanner();
     final shell = WorkspaceShellScreen.maybeOf(context);
     final selectedSession = shell?.selectedSession;
     final selectedSessionId = selectedSession?.sessionId;
@@ -608,7 +535,6 @@ class HomeContentState extends State<HomeContent> {
           children: [
             if (isReconnecting) const SessionReconnectBanner(),
             ?connectedBridgeBanner,
-            ?supportBanner,
             runningSessionsHeader,
             const SizedBox(height: 16),
             SectionHeader(
@@ -630,7 +556,6 @@ class HomeContentState extends State<HomeContent> {
         children: [
           if (isReconnecting) const SessionReconnectBanner(),
           ?connectedBridgeBanner,
-          ?supportBanner,
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: runningSessionsHeader,
@@ -649,7 +574,6 @@ class HomeContentState extends State<HomeContent> {
       children: [
         if (isReconnecting) const SessionReconnectBanner(),
         ?connectedBridgeBanner,
-        ?supportBanner,
         runningSessionsHeader,
         if (hasRunningSessions) ...[
           for (final action in widget.offlinePendingActions)

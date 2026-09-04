@@ -6,7 +6,6 @@ import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:shorebird_code_push/shorebird_code_push.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../constants/app_constants.dart';
@@ -20,12 +19,9 @@ import '../../models/new_session_tab.dart';
 import '../../providers/machine_manager_cubit.dart';
 import '../../router/app_router.dart';
 import '../../services/bridge_service.dart';
-import '../../services/in_app_review_service.dart';
 import '../../services/machine_manager_service.dart';
 import '../../services/platform_environment_service.dart';
 import '../../services/prompt_history_service.dart';
-import '../../services/revenuecat_service.dart';
-import '../../services/support_banner_service.dart';
 import '../../utils/platform_helper.dart';
 import '../../widgets/workspace_pane_chrome.dart';
 import '../session_list/workspace_shell_screen.dart';
@@ -34,7 +30,6 @@ import 'state/settings_cubit.dart';
 import 'state/settings_state.dart';
 import 'widgets/app_icon_bottom_sheet.dart';
 import 'widgets/app_locale_bottom_sheet.dart';
-import 'widgets/support_section.dart';
 
 import 'widgets/new_session_tabs_bottom_sheet.dart';
 import 'widgets/speech_locale_bottom_sheet.dart';
@@ -48,14 +43,12 @@ class SettingsScreen extends StatefulWidget {
   const SettingsScreen({
     super.key,
     this.focusConnection = false,
-    this.focusSupport = false,
     this.focusUsage = false,
     this.embedded = false,
     this.onBack,
   });
 
   final bool focusConnection;
-  final bool focusSupport;
   final bool focusUsage;
   final bool embedded;
   final VoidCallback? onBack;
@@ -67,16 +60,12 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   final _scrollController = ScrollController();
   final _connectionSectionKey = GlobalKey();
-  final _supportSectionKey = GlobalKey();
   final _usageSectionKey = GlobalKey();
   Timer? _connectionHighlightTimer;
-  Timer? _supportHighlightTimer;
   Timer? _usageHighlightTimer;
   bool _didHandleConnectionFocus = false;
-  bool _didHandleSupportFocus = false;
   bool _didHandleUsageFocus = false;
   bool _highlightConnectionSection = false;
-  bool _highlightSupportSection = false;
   bool _highlightUsageSection = false;
   bool _isIOSAppOnMac = false;
   String _appIconDeviceName = isAndroidPlatform ? 'Android' : 'iPhone';
@@ -107,46 +96,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         if (!mounted) return;
         setState(() {
           _highlightConnectionSection = false;
-        });
-      });
-    });
-  }
-
-  void _maybeFocusSupportSection() {
-    if (!widget.focusSupport || _didHandleSupportFocus) return;
-    _didHandleSupportFocus = true;
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (_supportSectionKey.currentContext == null &&
-          _scrollController.hasClients) {
-        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-        await WidgetsBinding.instance.endOfFrame;
-      }
-      if (!mounted) return;
-      final targetContext = _supportSectionKey.currentContext;
-      if (targetContext == null) {
-        _didHandleSupportFocus = false;
-        return;
-      }
-      if (!targetContext.mounted) {
-        _didHandleSupportFocus = false;
-        return;
-      }
-      await Scrollable.ensureVisible(
-        targetContext,
-        duration: const Duration(milliseconds: 450),
-        curve: Curves.easeOutCubic,
-        alignment: 0.12,
-      );
-      if (!mounted) return;
-
-      setState(() {
-        _highlightSupportSection = true;
-      });
-      _supportHighlightTimer?.cancel();
-      _supportHighlightTimer = Timer(const Duration(milliseconds: 1800), () {
-        if (!mounted) return;
-        setState(() {
-          _highlightSupportSection = false;
         });
       });
     });
@@ -219,7 +168,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void dispose() {
     _connectionHighlightTimer?.cancel();
-    _supportHighlightTimer?.cancel();
     _usageHighlightTimer?.cancel();
     _scrollController.dispose();
     super.dispose();
@@ -237,7 +185,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
     final l = AppLocalizations.of(context);
     final bridge = context.read<BridgeService>();
-    final revenueCat = context.read<RevenueCatService>();
     final leading = widget.onBack == null
         ? null
         : IconButton(
@@ -293,9 +240,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             key: const PageStorageKey('settings_list'),
             controller: _scrollController,
             scrollCacheExtent:
-                widget.focusSupport ||
-                    widget.focusConnection ||
-                    widget.focusUsage
+                widget.focusConnection || widget.focusUsage
                 ? const ScrollCacheExtent.pixels(4096)
                 : null,
             children: [
@@ -385,38 +330,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: Column(
                   children: [
                     if (state.appIconSupported) ...[
-                      ValueListenableBuilder<SupporterState>(
-                        valueListenable: revenueCat.supporterState,
-                        builder: (context, supporterState, _) {
-                          return ListTile(
-                            key: const ValueKey('app_icon_tile'),
-                            leading: Icon(
-                              Icons.apps_outlined,
-                              color: cs.primary,
-                            ),
-                            title: Text(l.appIconTitle),
-                            subtitle: Text(
-                              _getAppIconSubtitle(
-                                context,
-                                selectedIcon: state.selectedAppIcon,
-                                isSupporter: supporterState.isSupporter,
-                                deviceName: _appIconDeviceName,
-                              ),
-                            ),
-                            trailing: const Icon(Icons.chevron_right, size: 20),
-                            onTap: () async {
-                              if (!context.mounted) return;
-                              await showAppIconBottomSheet(
-                                context: context,
-                                current: state.selectedAppIcon,
-                                isSupporter: supporterState.isSupporter,
-                                onChanged: (icon) => context
-                                    .read<SettingsCubit>()
-                                    .setSelectedAppIcon(icon),
-                                onSupporterRequired: () =>
-                                    _openSupporterPerk(context),
-                              );
-                            },
+                      ListTile(
+                        key: const ValueKey('app_icon_tile'),
+                        leading: Icon(
+                          Icons.apps_outlined,
+                          color: cs.primary,
+                        ),
+                        title: Text(l.appIconTitle),
+                        subtitle: Text(
+                          _getAppIconSubtitle(
+                            context,
+                            selectedIcon: state.selectedAppIcon,
+                            isSupporter: true,
+                            deviceName: _appIconDeviceName,
+                          ),
+                        ),
+                        trailing: const Icon(Icons.chevron_right, size: 20),
+                        onTap: () async {
+                          if (!context.mounted) return;
+                          await showAppIconBottomSheet(
+                            context: context,
+                            current: state.selectedAppIcon,
+                            isSupporter: true,
+                            onChanged: (icon) => context
+                                .read<SettingsCubit>()
+                                .setSelectedAppIcon(icon),
+                            onSupporterRequired: () {},
                           );
                         },
                       ),
@@ -988,32 +927,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const SizedBox(height: 8),
               ],
 
-              ValueListenableBuilder<SupportCatalogState>(
-                valueListenable: revenueCat.catalogState,
-                builder: (context, supportState, _) {
-                  if (!supportState.isAvailable &&
-                      supportState.errorMessage == null) {
-                    return const SizedBox.shrink();
-                  }
-
-                  _maybeFocusSupportSection();
-
-                  return KeyedSubtree(
-                    key: _supportSectionKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        _SectionHeader(title: l.sectionSupport),
-                        SupportSectionCard(
-                          highlighted: _highlightSupportSection,
-                        ),
-                        const SizedBox(height: 8),
-                      ],
-                    ),
-                  );
-                },
-              ),
-
               if (isConnected) ...[
                 // ── Spread ──
                 _SectionHeader(title: l.sectionSpread),
@@ -1021,7 +934,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   margin: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
                     children: [
-                      const _SpreadAppealMessage(),
                       // Rate on Store (mobile only)
                       if (isMobilePlatform) ...[
                         ListTile(
@@ -1213,10 +1125,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     };
   }
 
-  static void _openSupporterPerk(BuildContext context) {
-    context.pushRoute(const SupporterRoute());
-  }
-
   MachineWithStatus? _activeMachineWithStatus(
     MachineManagerState machineState,
     String? activeMachineId,
@@ -1381,83 +1289,6 @@ class _BridgeUpdateStatusTile extends StatelessWidget {
   }
 }
 
-class _SpreadAppealMessage extends StatefulWidget {
-  const _SpreadAppealMessage();
-
-  @override
-  State<_SpreadAppealMessage> createState() => _SpreadAppealMessageState();
-}
-
-class _SpreadAppealMessageState extends State<_SpreadAppealMessage> {
-  Future<InAppReviewEligibility>? _eligibilityFuture;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_eligibilityFuture != null) return;
-    final reviewService = context.read<InAppReviewService?>();
-    _eligibilityFuture = reviewService?.getSupportBannerEligibility();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final supportBannerService = context.watch<SupportBannerService?>();
-    if (supportBannerService?.shouldForceShowInDebug ?? false) {
-      return const _SpreadAppealMessageContent();
-    }
-
-    final eligibilityFuture = _eligibilityFuture;
-    if (eligibilityFuture == null) return const SizedBox.shrink();
-
-    return FutureBuilder<InAppReviewEligibility>(
-      future: eligibilityFuture,
-      builder: (context, snapshot) {
-        if (!(snapshot.data?.isEligible ?? false)) {
-          return const SizedBox.shrink();
-        }
-
-        return const _SpreadAppealMessageContent();
-      },
-    );
-  }
-}
-
-class _SpreadAppealMessageContent extends StatelessWidget {
-  const _SpreadAppealMessageContent();
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-    final l = AppLocalizations.of(context);
-    return Column(
-      children: [
-        Padding(
-          key: const ValueKey('spread_appeal_message'),
-          padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(Icons.campaign_outlined, color: cs.primary, size: 22),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Text(
-                  l.spreadAppealMessage,
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: cs.onSurfaceVariant,
-                    height: 1.25,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        Divider(height: 1, indent: 16, endIndent: 16, color: cs.outlineVariant),
-      ],
-    );
-  }
-}
-
 class _TextScaleTile extends StatelessWidget {
   const _TextScaleTile({required this.value, required this.onChanged});
 
@@ -1553,19 +1384,8 @@ class _VersionTileState extends State<_VersionTile> {
     final info = await PackageInfo.fromPlatform();
     final version = '${info.version}+${info.buildNumber}';
 
-    String result = version;
-    try {
-      final updater = ShorebirdUpdater();
-      final patch = await updater.readCurrentPatch();
-      if (patch != null) {
-        result = '$version (patch ${patch.number})';
-      }
-    } catch (_) {
-      // Shorebird not available (e.g. debug builds)
-    }
-
     if (mounted) {
-      setState(() => _versionText = result);
+      setState(() => _versionText = version);
     }
   }
 
@@ -1574,19 +1394,10 @@ class _VersionTileState extends State<_VersionTile> {
     final cs = Theme.of(context).colorScheme;
     final l = AppLocalizations.of(context);
 
-    return BlocBuilder<SettingsCubit, SettingsState>(
-      builder: (context, settings) {
-        final trackSuffix = settings.shorebirdTrack != 'stable'
-            ? ' [${settings.shorebirdTrack}]'
-            : '';
-        return ListTile(
-          leading: Icon(Icons.info_outline, color: cs.onSurfaceVariant),
-          title: Text(l.version),
-          subtitle: Text(
-            _versionText != null ? '$_versionText$trackSuffix' : l.loading,
-          ),
-        );
-      },
+    return ListTile(
+      leading: Icon(Icons.info_outline, color: cs.onSurfaceVariant),
+      title: Text(l.version),
+      subtitle: Text(_versionText != null ? _versionText! : l.loading),
     );
   }
 }

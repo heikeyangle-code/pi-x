@@ -6,12 +6,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../l10n/app_localizations.dart';
 import '../features/generated_image_preview/generated_image_preview_item.dart';
 import '../features/generated_image_preview/generated_image_preview_screen.dart';
 import '../features/session_list/state/session_list_cubit.dart';
-import '../features/settings/supporter_screen.dart';
-import '../features/settings/widgets/support_section.dart';
 import '../features/git/widgets/diff_image_viewer.dart';
 import '../mock/mock_image_data.dart';
 import '../mock/mock_scenarios.dart';
@@ -23,7 +20,6 @@ import '../providers/bridge_cubits.dart';
 import '../services/bridge_service.dart';
 import '../services/draft_service.dart';
 import '../services/mock_bridge_service.dart';
-import '../services/revenuecat_service.dart';
 import '../services/replay_bridge_service.dart';
 import '../services/store_screenshot_extension.dart';
 import '../theme/app_theme.dart';
@@ -144,10 +140,10 @@ Route<void>? buildMockScenarioRoute(
       builder: (_) => _MockSessionListWrapper(scenario: scenario),
     );
   } else if (scenario.section == MockScenarioSection.supporter) {
-    return MaterialPageRoute(
-      builder: (_) => scenario == settingsSupportEntriesPreview
-          ? const _MockSupporterSettingsComparisonWrapper()
-          : _MockSupporterScreenWrapper(scenario: scenario),
+    return MaterialPageRoute<void>(
+      builder: (_) => const Scaffold(
+        body: Center(child: Text('Supporter previews are no longer available.')),
+      ),
     );
   } else {
     final mockService = MockBridgeService();
@@ -772,258 +768,6 @@ class _ReplayTabState extends State<_ReplayTab> {
   }
 }
 
-class _MockSupporterSettingsComparisonWrapper extends StatelessWidget {
-  const _MockSupporterSettingsComparisonWrapper();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Settings Support Entries')),
-      body: ListView(
-        children: [
-          const _MockSupportSettingsHeader(),
-          const _MockSupportEntryPreview(
-            label: 'Inactive',
-            catalog: _inactiveSupportCatalog,
-            supporter: SupporterState.inactive(),
-          ),
-          const SizedBox(height: 12),
-          const _MockSupportEntryPreview(
-            label: 'One-time',
-            catalog: _oneTimeSupportCatalog,
-            supporter: SupporterState.inactive(),
-          ),
-          const SizedBox(height: 12),
-          _MockSupportEntryPreview(
-            label: 'Active',
-            catalog: _activeSupportCatalog,
-            supporter: SupporterState.active(),
-          ),
-          const SizedBox(height: 24),
-        ],
-      ),
-    );
-  }
-}
-
-class _MockSupportSettingsHeader extends StatelessWidget {
-  const _MockSupportSettingsHeader();
-
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
-      child: Text(
-        l.settingsTitle,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.8,
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-        ),
-      ),
-    );
-  }
-}
-
-class _MockSupportEntryPreview extends StatelessWidget {
-  const _MockSupportEntryPreview({
-    required this.label,
-    required this.catalog,
-    required this.supporter,
-  });
-
-  final String label;
-  final SupportCatalogState catalog;
-  final SupporterState supporter;
-
-  @override
-  Widget build(BuildContext context) {
-    final service = _MockRevenueCatService(
-      catalog: catalog,
-      supporter: supporter,
-    );
-
-    return RepositoryProvider<RevenueCatService>.value(
-      value: service,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.labelMedium
-                  ?.copyWith(fontWeight: FontWeight.w700),
-            ),
-          ),
-          const SupportSectionCard(),
-        ],
-      ),
-    );
-  }
-}
-
-class _MockSupporterScreenWrapper extends StatelessWidget {
-  const _MockSupporterScreenWrapper({required this.scenario});
-
-  final MockScenario scenario;
-
-  @override
-  Widget build(BuildContext context) {
-    final service = _MockRevenueCatService(
-      catalog: _catalogForSupporterScenario(scenario),
-      supporter: _supporterForSupporterScenario(scenario),
-    );
-
-    return RepositoryProvider<RevenueCatService>.value(
-      value: service,
-      child: const SupporterScreen(),
-    );
-  }
-}
-
-class _MockRevenueCatService extends RevenueCatService {
-  _MockRevenueCatService({
-    required SupportCatalogState catalog,
-    required SupporterState supporter,
-  }) : super(publicApiKey: '', platform: TargetPlatform.iOS) {
-    catalogState.value = catalog;
-    supporterState.value = supporter;
-  }
-
-  @override
-  Future<void> refresh() async {}
-
-  @override
-  Future<SupportActionResult> purchasePackage(String packageId) async {
-    return SupportActionResult(
-      type: SupportActionResultType.success,
-      packageId: packageId,
-    );
-  }
-
-  @override
-  Future<SupportActionResult> restorePurchases() async {
-    return const SupportActionResult(type: SupportActionResultType.success);
-  }
-}
-
-const _supportPackages = [
-  SupportPackage(
-    id: r'$rc_monthly',
-    productId: 'supporter_monthly_10_ios',
-    title: 'Supporter Monthly Plus',
-    priceLabel: r'$9.99',
-    price: 9.99,
-    kind: SupportPackageKind.monthly,
-  ),
-  SupportPackage(
-    id: r'$rc_custom_monthly_3',
-    productId: 'supporter_monthly_3_ios',
-    title: 'Supporter Monthly',
-    priceLabel: r'$2.99',
-    price: 2.99,
-    kind: SupportPackageKind.monthly,
-  ),
-  SupportPackage(
-    id: r'$rc_custom_snack',
-    productId: 'support_snack_3',
-    title: 'Snack Support',
-    priceLabel: r'$2.99',
-    price: 2.99,
-    kind: SupportPackageKind.snack,
-  ),
-  SupportPackage(
-    id: r'$rc_custom_coffee',
-    productId: 'support_coffee_5',
-    title: 'Drink Support',
-    priceLabel: r'$4.99',
-    price: 4.99,
-    kind: SupportPackageKind.coffee,
-  ),
-  SupportPackage(
-    id: r'$rc_custom_lunch',
-    productId: 'support_lunch_10',
-    title: 'Lunch Support',
-    priceLabel: r'$9.99',
-    price: 9.99,
-    kind: SupportPackageKind.lunch,
-  ),
-];
-
-const _inactiveSupportCatalog = SupportCatalogState(
-  isAvailable: true,
-  isLoading: false,
-  isSupporter: false,
-  packages: _supportPackages,
-  summary: SupportHistorySummary.empty(),
-);
-
-const _oneTimeSupportCatalog = SupportCatalogState(
-  isAvailable: true,
-  isLoading: false,
-  isSupporter: false,
-  packages: _supportPackages,
-  summary: SupportHistorySummary(
-    oneTimeSupportCount: 2,
-    coffeeSupportCount: 1,
-    lunchSupportCount: 1,
-  ),
-);
-
-final _activeSupportCatalog = SupportCatalogState(
-  isAvailable: true,
-  isLoading: false,
-  isSupporter: true,
-  activeSubscriptionProductId: 'supporter_monthly_10_ios',
-  packages: _supportPackages,
-  summary: SupportHistorySummary(
-    supporterSince: DateTime(2026, 2, 14),
-    latestSubscriptionPurchaseAt: DateTime(2026, 4, 10),
-    oneTimeSupportCount: 3,
-    coffeeSupportCount: 2,
-    lunchSupportCount: 1,
-  ),
-);
-
-final _veteranSupportCatalog = SupportCatalogState(
-  isAvailable: true,
-  isLoading: false,
-  isSupporter: true,
-  activeSubscriptionProductId: 'supporter_monthly_10_ios',
-  packages: _supportPackages,
-  summary: SupportHistorySummary(
-    supporterSince: DateTime(2025, 6, 3),
-    latestSubscriptionPurchaseAt: DateTime(2026, 4, 10),
-    oneTimeSupportCount: 8,
-    coffeeSupportCount: 5,
-    lunchSupportCount: 3,
-  ),
-);
-
-SupportCatalogState _catalogForSupporterScenario(MockScenario scenario) {
-  if (scenario == supporterPreviewOneTime) {
-    return _oneTimeSupportCatalog;
-  }
-  if (scenario == supporterPreviewActive) {
-    return _activeSupportCatalog;
-  }
-  if (scenario == supporterPreviewVeteran) {
-    return _veteranSupportCatalog;
-  }
-  return _inactiveSupportCatalog;
-}
-
-SupporterState _supporterForSupporterScenario(MockScenario scenario) {
-  if (scenario == supporterPreviewActive ||
-      scenario == supporterPreviewVeteran) {
-    return const SupporterState.active();
-  }
-  return const SupporterState.inactive();
-}
 
 /// Wrapper that starts scenario playback after ClaudeSessionScreen's initState completes.
 class _MockChatWrapper extends StatefulWidget {

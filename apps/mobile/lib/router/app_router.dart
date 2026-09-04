@@ -20,8 +20,6 @@ import '../screens/mock_preview_screen.dart';
 import '../features/setup_guide/setup_guide_screen.dart';
 import '../utils/diff_parser.dart';
 
-import '../features/settings/supporter_screen.dart';
-
 part 'app_router.gr.dart';
 
 @AutoRouterConfig()
@@ -39,7 +37,6 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: LicensesRoute.page, path: '/licenses'),
     AutoRoute(page: ChangelogRoute.page, path: '/changelog'),
     AutoRoute(page: AuthHelpRoute.page, path: '/auth-help'),
-    AutoRoute(page: SupporterRoute.page, path: '/supporter'),
     AutoRoute(page: MockPreviewRoute.page, path: '/mock-preview'),
     AutoRoute(page: SetupGuideRoute.page, path: '/setup-guide'),
     AutoRoute(page: DebugRoute.page, path: '/debug'),

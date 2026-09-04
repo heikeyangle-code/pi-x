@@ -129,54 +129,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "10.0.0"
-  bonsoir:
-    dependency: "direct main"
-    description:
-      name: bonsoir
-      sha256: "1b112a966302a739d253c8dbc7ea4c1cb3eca6d8110dc59e36d76f7cf0b6edf2"
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.1.0"
-  bonsoir_android:
-    dependency: transitive
-    description:
-      name: bonsoir_android
-      sha256: bfa3ab7e2f65473cb369bce639dbdbdc75064848c01ac11b3c2bc3e16031ff3a
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.0.2"
-  bonsoir_darwin:
-    dependency: transitive
-    description:
-      name: bonsoir_darwin
-      sha256: d62fd62ed433aa09ec99f71f95dae53ffa0adf788c9051ff3d6b903463045d3c
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.1.0"
-  bonsoir_linux:
-    dependency: transitive
-    description:
-      name: bonsoir_linux
-      sha256: a49d5f328a197b27a3901b833f92c93366f2cd7085dcb495fa11ee6d9f2509a9
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.0.3"
-  bonsoir_platform_interface:
-    dependency: transitive
-    description:
-      name: bonsoir_platform_interface
-      sha256: ba1cc30daaa172dfc76f88e4fee8d090674179439201997ba2b3bd9e1cca84c0
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.1.0"
-  bonsoir_windows:
-    dependency: transitive
-    description:
-      name: bonsoir_windows
-      sha256: "01aba2516b776eb1deb68845124dc0a41095da108276d4b307bf19c4c3e2d9b1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.0.3"
   boolean_selector:
     dependency: transitive
     description:
@@ -879,22 +831,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.2"
-  in_app_review:
-    dependency: "direct main"
-    description:
-      name: in_app_review
-      sha256: "364db0c160b37fe7fad9cdaa18f968473924b17368869010af902760421b6bf8"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.12"
-  in_app_review_platform_interface:
-    dependency: transitive
-    description:
-      name: in_app_review_platform_interface
-      sha256: fed2c755f2125caa9ae10495a3c163aa7fab5af3585a9c62ef4a6920c5b45f10
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.5"
   intl:
     dependency: "direct main"
     description:
@@ -1136,14 +1072,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
-  mobile_scanner:
-    dependency: "direct main"
-    description:
-      name: mobile_scanner
-      sha256: ce3f059ebd6dbfab7292bba0e893e354b46730636820d3c9ef69005ce2d55bce
-      url: "https://pub.dev"
-    source: hosted
-    version: "7.4.0"
   mocktail:
     dependency: transitive
     description:
@@ -1368,14 +1296,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.0"
-  purchases_flutter:
-    dependency: "direct main"
-    description:
-      name: purchases_flutter
-      sha256: "7608be2dc1f48cf34f15cc5830af256b89d2d7966d5da63788a87a7a8925ff87"
-      url: "https://pub.dev"
-    source: hosted
-    version: "9.16.1"
   record_use:
     dependency: transitive
     description:
@@ -1504,14 +1424,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
-  shorebird_code_push:
-    dependency: "direct main"
-    description:
-      name: shorebird_code_push
-      sha256: "32df9946782c6ca95d7065c7f2156df74675e931b816d0dc391a3d8f8917930f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.7"
   skeletonizer:
     dependency: "direct main"
     description:

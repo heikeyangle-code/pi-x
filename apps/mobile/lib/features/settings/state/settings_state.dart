@@ -32,9 +32,6 @@ abstract class SettingsState with _$SettingsState {
     /// Currently connected Machine ID (null when disconnected).
     String? activeMachineId,
 
-    /// Shorebird update track ('stable' or 'staging').
-    @Default('stable') String shorebirdTrack,
-
     /// Indent size for list formatting (1-4 spaces).
     @Default(2) int indentSize,
 

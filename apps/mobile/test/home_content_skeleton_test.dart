@@ -8,14 +8,10 @@ import 'package:ccpocket/models/offline_pending_action.dart';
 import 'package:ccpocket/l10n/app_localizations.dart';
 import 'package:ccpocket/services/bridge_service.dart';
 import 'package:ccpocket/services/draft_service.dart';
-import 'package:ccpocket/services/in_app_review_service.dart';
-import 'package:ccpocket/services/revenuecat_service.dart';
-import 'package:ccpocket/services/support_banner_service.dart';
 import 'package:ccpocket/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skeletonizer/src/widgets/skeletonizer.dart';
 
@@ -121,16 +117,10 @@ Widget _buildHomeContent({
   ValueChanged<String>? onLoadMoreProject,
   required SessionListCubit cubit,
   required DraftService draftService,
-  required RevenueCatService revenueCatService,
-  required SupportBannerService supportBannerService,
 }) {
   return MultiRepositoryProvider(
     providers: [
       RepositoryProvider<DraftService>.value(value: draftService),
-      RepositoryProvider<RevenueCatService>.value(value: revenueCatService),
-      ChangeNotifierProvider<SupportBannerService>.value(
-        value: supportBannerService,
-      ),
     ],
     child: MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -193,24 +183,11 @@ void main() {
   late _MockBridgeService mockBridge;
   late SessionListCubit cubit;
   late DraftService draftService;
-  late RevenueCatService revenueCatService;
-  late SupportBannerService supportBannerService;
 
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
     draftService = DraftService(prefs);
-    revenueCatService = RevenueCatService(
-      publicApiKey: '',
-      platform: TargetPlatform.macOS,
-    );
-    supportBannerService = SupportBannerService(
-      prefs: prefs,
-      reviewService: InAppReviewService(
-        prefs: prefs,
-        appVersionLoader: () async => '1.0.0',
-      ),
-    );
     mockBridge = _MockBridgeService();
     cubit = SessionListCubit(bridge: mockBridge);
   });
@@ -218,7 +195,6 @@ void main() {
   tearDown(() async {
     cubit.close();
     mockBridge.dispose();
-    await revenueCatService.dispose();
   });
 
   group('HomeContent skeleton', () {
@@ -240,8 +216,6 @@ void main() {
           onSelectProject: (project) => selectedProject = project,
           cubit: cubit,
           draftService: draftService,
-          revenueCatService: revenueCatService,
-          supportBannerService: supportBannerService,
         ),
       );
       await tester.pumpAndSettle();
@@ -293,8 +267,6 @@ void main() {
           onSelectProject: (project) => selectedProject = project,
           cubit: cubit,
           draftService: draftService,
-          revenueCatService: revenueCatService,
-          supportBannerService: supportBannerService,
         ),
       );
       await tester.pumpAndSettle();
@@ -344,8 +316,6 @@ void main() {
             accumulatedProjectPaths: const {'/workspace/shared'},
             cubit: cubit,
             draftService: draftService,
-            revenueCatService: revenueCatService,
-            supportBannerService: supportBannerService,
           ),
         );
         await tester.pumpAndSettle();
@@ -400,8 +370,6 @@ void main() {
           pinnedProjectPaths: const {'project:pinned'},
           cubit: cubit,
           draftService: draftService,
-          revenueCatService: revenueCatService,
-          supportBannerService: supportBannerService,
         ),
       );
       await tester.pump(const Duration(milliseconds: 100));
@@ -435,8 +403,6 @@ void main() {
             isInitialLoading: true,
             cubit: cubit,
             draftService: draftService,
-            revenueCatService: revenueCatService,
-            supportBannerService: supportBannerService,
           ),
         );
         await tester.pump();
@@ -469,8 +435,6 @@ void main() {
           isInitialLoading: false,
           cubit: cubit,
           draftService: draftService,
-          revenueCatService: revenueCatService,
-          supportBannerService: supportBannerService,
         ),
       );
       await tester.pump();
@@ -501,8 +465,6 @@ void main() {
           onOpenUsageSettings: () => tapCount++,
           cubit: cubit,
           draftService: draftService,
-          revenueCatService: revenueCatService,
-          supportBannerService: supportBannerService,
         ),
       );
       await tester.pump();
@@ -538,8 +500,6 @@ void main() {
           onOpenUsageSettings: () {},
           cubit: cubit,
           draftService: draftService,
-          revenueCatService: revenueCatService,
-          supportBannerService: supportBannerService,
         ),
       );
       await tester.pump();
@@ -563,8 +523,6 @@ void main() {
           isInitialLoading: false,
           cubit: cubit,
           draftService: draftService,
-          revenueCatService: revenueCatService,
-          supportBannerService: supportBannerService,
         ),
       );
       await tester.pump();
@@ -589,8 +547,6 @@ void main() {
           isInitialLoading: false,
           cubit: cubit,
           draftService: draftService,
-          revenueCatService: revenueCatService,
-          supportBannerService: supportBannerService,
         ),
       );
       await tester.pump();
@@ -615,8 +571,6 @@ void main() {
           isInitialLoading: false,
           cubit: cubit,
           draftService: draftService,
-          revenueCatService: revenueCatService,
-          supportBannerService: supportBannerService,
         ),
       );
       await tester.pump();
@@ -638,8 +592,6 @@ void main() {
             isInitialLoading: false,
             cubit: cubit,
             draftService: draftService,
-            revenueCatService: revenueCatService,
-            supportBannerService: supportBannerService,
           ),
         );
         await tester.pump();
@@ -661,8 +613,6 @@ void main() {
           isInitialLoading: false,
           cubit: cubit,
           draftService: draftService,
-          revenueCatService: revenueCatService,
-          supportBannerService: supportBannerService,
         ),
       );
       await tester.pump();
@@ -708,8 +658,6 @@ void main() {
           onLoadMoreProject: (value) => requestedProject = value,
           cubit: cubit,
           draftService: draftService,
-          revenueCatService: revenueCatService,
-          supportBannerService: supportBannerService,
         ),
       );
       await tester.pump();
@@ -739,8 +687,6 @@ void main() {
             isInitialLoading: false,
             cubit: cubit,
             draftService: draftService,
-            revenueCatService: revenueCatService,
-            supportBannerService: supportBannerService,
           ),
         );
         await tester.pump();
@@ -763,8 +709,6 @@ void main() {
           isInitialLoading: false,
           cubit: cubit,
           draftService: draftService,
-          revenueCatService: revenueCatService,
-          supportBannerService: supportBannerService,
         ),
       );
       await tester.pump();
@@ -802,8 +746,6 @@ void main() {
           isInitialLoading: false,
           cubit: cubit,
           draftService: draftService,
-          revenueCatService: revenueCatService,
-          supportBannerService: supportBannerService,
         ),
       );
       await tester.pump();
@@ -828,8 +770,6 @@ void main() {
           isInitialLoading: false,
           cubit: cubit,
           draftService: draftService,
-          revenueCatService: revenueCatService,
-          supportBannerService: supportBannerService,
         ),
       );
       await tester.pump();
@@ -851,8 +791,6 @@ void main() {
             isInitialLoading: false,
             cubit: cubit,
             draftService: draftService,
-            revenueCatService: revenueCatService,
-            supportBannerService: supportBannerService,
           ),
         );
         await tester.pump();
@@ -874,8 +812,6 @@ void main() {
           isInitialLoading: true,
           cubit: cubit,
           draftService: draftService,
-          revenueCatService: revenueCatService,
-          supportBannerService: supportBannerService,
         ),
       );
       await tester.pump();
@@ -896,8 +832,6 @@ void main() {
           isInitialLoading: false,
           cubit: cubit,
           draftService: draftService,
-          revenueCatService: revenueCatService,
-          supportBannerService: supportBannerService,
         ),
       );
       await tester.pump();
@@ -932,8 +866,6 @@ void main() {
             isInitialLoading: false,
             cubit: cubit,
             draftService: draftService,
-            revenueCatService: revenueCatService,
-            supportBannerService: supportBannerService,
           ),
         );
         await tester.pump();
@@ -964,8 +896,6 @@ void main() {
           isInitialLoading: false,
           cubit: cubit,
           draftService: draftService,
-          revenueCatService: revenueCatService,
-          supportBannerService: supportBannerService,
         ),
       );
       await tester.pump();
@@ -992,8 +922,6 @@ void main() {
           isInitialLoading: true,
           cubit: cubit,
           draftService: draftService,
-          revenueCatService: revenueCatService,
-          supportBannerService: supportBannerService,
         ),
       );
       await tester.pump();

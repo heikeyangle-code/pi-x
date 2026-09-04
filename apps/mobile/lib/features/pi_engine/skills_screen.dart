@@ -78,9 +78,10 @@ class _SkillsScreenState extends State<SkillsScreen> {
       payload: {'scope': skill.scope, 'name': skill.name},
     );
     if (!mounted) return;
-    final content = result.ok
-        ? (result.data as Map<String, dynamic>?)?['content'] as String?
-        : null;
+    String? content;
+    if (result.ok && result.data is Map<String, dynamic>) {
+      content = (result.data as Map<String, dynamic>)['content'] as String?;
+    }
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,

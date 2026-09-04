@@ -1,0 +1,19 @@
+{
+  "type": "client_capabilities",
+  "appVersion": "1.0.0",
+  "protocolVersion": 1,
+  "minimumProtocolVersion": 1,
+  "supportedServerMessages": [
+    "status",
+    "session_list",
+    "message",
+    "stream_delta",
+    "permission_request",
+    "tool_result",
+    "error",
+    "usage",
+    "session_deleted",
+    "project_environment_data",
+    "clear"
+  ]
+}

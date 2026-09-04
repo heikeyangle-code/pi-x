@@ -6,16 +6,26 @@
   （get_commands / get_state）。协议帧与 `packages/bridge/src/pi-host/pi-rpc.ts` 逐条核对一致。
 - EngineProcess（子进程+JSONL+审批桥）模块级验证通过。
 - EnginePool（每项目一进程+空闲回收+回调）验证通过（含请求往返）。
+- **真实引擎冒烟再确认**：`pi-ab.mjs`（走真实 `PiGateway.handleControl` 全链路）启动
+  仅 1 实例、无 boot-guard 重启；`pi-stab.mjs`（EnginePool 直连，key=绝对路径模拟网关）
+  连续 5/5 往返成功，0 失败。唯一 SIGTERM（code 143）来自收尾显式 `stopAll()`，符合预期。
+- **PiGateway.handleControl RPC 命令面已铺满 pi docs/rpc.md 全部 33 个 client→engine 命令**
+  （prompt/steer/follow_up/abort/queue/session/model/thinking/mode/compact/retry/bash/validate/
+  stats/export/fork/clone/entries/tree/name/commands 等），新增单测逐条断言全部 success，
+  含 bash 的 request-id 关联与 `stop` 语义。
 - 引擎分发策略定稿：基线打进 APK + 新版本后台热更（npm/pi.dev 双源 + sha256 + 冒烟）。
 - UI 手术：QR 扫码、Setup guide 远端页、mDNS、macOS/更新横幅、非安卓平台目录、fastlane
   已删；单本机种子已加；Pi X 品牌 + CI（android analyze/test/apk、bridge tsc、engine-smoke）。
 
 ## 已知问题（open）
 
-1. **Gateway 上下文 spawn 秒退（安卓沙箱）**：引擎经 `PiGateway → EnginePool` spawn 时收到
-   SIGTERM（裸 EngineProcess/EnginePool 不受影响，同参数）。疑似 bun-ELF 在该模拟环境的
-   spawn 竞态。缓解：boot-guard（300ms 存活检查 + ≤3 次重启）已入代码。
-   **裁决等待 `engine-smoke` CI 任务**（ubuntu + 真实 pi）——若 CI 也复现则是真 bug，否则为沙箱怪癖。
+1. **Gateway 上下文 spawn 秒退（安卓沙箱）→ 已定位真因并修复**：早期裸 EP/EPool 不受影响而
+   PiGateway 秒退的现象，根因是 `EnginePool` 用对象展开 `{ maxIdleMs: 10min, ...opts }` 时，
+   网关传入的 `maxIdleMs: undefined` 覆盖了默认值，`setTimeout(fn, undefined)` 立即触发，
+   在 boot-guard 稳定后马上 SIGTERM 新引擎。修复：改为空值合并
+   `opts.maxIdleMs ?? DEFAULT_ENGINE_MAX_IDLE_MS`，并新增回归单测
+   （`maxIdleMs: undefined` 引擎保持存活、仍可往返）。本机真引擎 A/B 冒烟已确认修复。
+   > 若未来安卓沙箱仍出现 spawn 竞态，boot-guard（300ms 存活检查 + ≤3 次重启）依然兜底。
 2. **index.ts 全链路拉 sharp**：`PI_HOST=1` 走 `packages/bridge/src/index.ts` 时顶层 import
    链（image/media store）会加载 sharp（libvips 原生，安卓无预编译）→ 安卓端应使用
    **专用入口 `packages/bridge/src/pi-host-entry.ts`**（只依赖 pi-host/server，无 sharp）。

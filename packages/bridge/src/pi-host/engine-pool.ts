@@ -33,13 +33,18 @@ interface Slot {
   timer?: NodeJS.Timeout;
 }
 
+// Default idle-reap window. Must NOT be overwritten by an explicit `undefined`
+// from callers (e.g. PiGateway passes `maxIdleMs: opts.maxIdleMs`), otherwise
+// `setTimeout(fn, undefined)` fires ~immediately and reaps a freshly-spawned
+// engine right after the boot guard (see docs/STATUS known-issue #1).
+export const DEFAULT_ENGINE_MAX_IDLE_MS = 10 * 60_000;
+
 export class EnginePool {
   private readonly slots = new Map<string, Slot>();
-  private readonly opts: Required<Pick<EnginePoolOptions, "maxIdleMs">> &
-    EnginePoolOptions;
+  private readonly opts: { maxIdleMs: number } & EnginePoolOptions;
 
   constructor(opts: EnginePoolOptions) {
-    this.opts = { maxIdleMs: 10 * 60_000, ...opts };
+    this.opts = { ...opts, maxIdleMs: opts.maxIdleMs ?? DEFAULT_ENGINE_MAX_IDLE_MS };
   }
 
   get projectIds(): string[] {

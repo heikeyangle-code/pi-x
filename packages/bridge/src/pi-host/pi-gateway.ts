@@ -62,10 +62,12 @@ export class PiGateway {
       onUiRequest: (projectId, request, respond) => {
         const id = String((request as Record<string, unknown>)["id"] ?? "ui");
         this.pendingUi.set(id, respond);
+        // Spread the request so id/method/title land top-level (aligned with
+        // cc-adapter's permission_request mapping the app UI already renders).
         this.emit(projectId, {
           type: "extension_ui_request",
           projectId,
-          request,
+          ...(request as Record<string, unknown>),
         });
       },
       onExit: (projectId, code, signal) =>
@@ -139,6 +141,8 @@ export class PiGateway {
         return rpc.switchSession(engine, String(payload.sessionPath ?? ""));
       case "get_session_stats":
         return rpc.getSessionStats(engine);
+      case "get_messages":
+        return rpc.getMessages(engine);
       case "compact":
         return rpc.compact(
           engine,
@@ -146,6 +150,62 @@ export class PiGateway {
             ? undefined
             : String(payload.customInstructions),
         );
+      // ---- session / model / mode surface (pi --mode rpc) ----
+      case "new_session":
+        return engine.request({
+          type: "new_session",
+          ...(payload.parentSession === undefined
+            ? {}
+            : { parentSession: String(payload.parentSession) }),
+        });
+      case "cycle_model":
+        return engine.request({ type: "cycle_model" });
+      case "get_available_thinking_levels":
+        return engine.request({ type: "get_available_thinking_levels" });
+      case "cycle_thinking_level":
+        return engine.request({ type: "cycle_thinking_level" });
+      case "set_steering_mode":
+        return engine.request({
+          type: "set_steering_mode",
+          mode: String(payload.mode ?? "one-at-a-time"),
+        });
+      case "set_follow_up_mode":
+        return engine.request({
+          type: "set_follow_up_mode",
+          mode: String(payload.mode ?? "one-at-a-time"),
+        });
+      case "set_auto_compaction":
+        return engine.request({
+          type: "set_auto_compaction",
+          enabled: payload.enabled === true,
+        });
+      case "set_auto_retry":
+        return engine.request({
+          type: "set_auto_retry",
+          enabled: payload.enabled === true,
+        });
+      case "abort_retry":
+        return engine.request({ type: "abort_retry" });
+      case "clear_queue":
+        return engine.request({ type: "clear_queue" });
+      case "set_session_name":
+        return engine.request({ type: "set_session_name", name: String(payload.name ?? "") });
+      case "export_html":
+        return engine.request({
+          type: "export_html",
+          ...(payload.outputPath === undefined ? {} : { outputPath: String(payload.outputPath) }),
+        });
+      case "clone":
+        return engine.request({ type: "clone" });
+      case "get_fork_messages":
+        return engine.request({ type: "get_fork_messages" });
+      case "get_entries":
+        return engine.request({
+          type: "get_entries",
+          ...(payload.since === undefined ? {} : { since: String(payload.since) }),
+        });
+      case "get_last_assistant_text":
+        return engine.request({ type: "get_last_assistant_text" });
       case "bash": {
         const response = await rpc.runBash(
           engine,

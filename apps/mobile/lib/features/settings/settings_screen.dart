@@ -1943,26 +1943,6 @@ class _VersionTileState extends State<_VersionTile> {
   }
 }
 
-class _MacOSNativeAppTile extends StatelessWidget {
-  const _MacOSNativeAppTile();
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final l = AppLocalizations.of(context);
-    return ListTile(
-      key: const ValueKey('macos_native_app_settings_tile'),
-      leading: Icon(Icons.desktop_mac_outlined, color: cs.onSurfaceVariant),
-      title: Text(l.macosNativeAppSettingsTitle),
-      subtitle: Text(l.macosNativeAppSettingsSubtitle),
-      trailing: const Icon(Icons.open_in_new, size: 18),
-      onTap: () => launchUrl(
-        Uri.parse(AppConstants.macOSReleasesUrl),
-        mode: LaunchMode.externalApplication,
-      ),
-    );
-  }
-}
 
 class _PromptHistorySectionSlot extends StatelessWidget {
   const _PromptHistorySectionSlot({required this.bridgeService});

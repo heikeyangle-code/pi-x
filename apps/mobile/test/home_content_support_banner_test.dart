@@ -82,7 +82,6 @@ Widget _buildHomeContent({
   required DraftService draftService,
   required RevenueCatService revenueCatService,
   required SupportBannerService supportBannerService,
-  String? bridgeVersion,
   VoidCallback? onOpenBridgeSettings,
 }) {
   return MultiRepositoryProvider(

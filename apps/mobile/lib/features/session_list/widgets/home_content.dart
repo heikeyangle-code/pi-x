@@ -4,11 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../constants/app_constants.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../models/messages.dart';
 import '../../../models/offline_pending_action.dart';
-import '../../../services/app_update_service.dart';
 import '../../../services/bridge_service.dart';
 import '../../../services/draft_service.dart';
 import '../../../services/notification_service.dart';
@@ -256,7 +254,6 @@ class HomeContentState extends State<HomeContent> {
       _refreshSupportBannerVisibility();
     }
 
-    final supportBannerService = context.read<SupportBannerService>();
     if (!identical(_supportBannerService, supportBannerService)) {
       if (_supportBannerService != null && _supportBannerListener != null) {
         _supportBannerService!.removeListener(_supportBannerListener!);

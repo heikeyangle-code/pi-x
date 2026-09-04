@@ -25,3 +25,4 @@ export {
   type CustomModelSpec,
 } from "./surfaces.js";
 export * as rpc from "./pi-rpc.js";
+export { PiGateway, PI_WIRE_PROTOCOL_VERSION, type PiFrameEnvelope, type ClientControlMessage } from "./pi-gateway.js";

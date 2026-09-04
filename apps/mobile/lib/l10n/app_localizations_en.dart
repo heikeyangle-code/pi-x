@@ -412,31 +412,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dismissKeyboard => 'Dismiss keyboard';
 
   @override
-  String get serverUnreachable => 'Server Unreachable';
-
-  @override
-  String get serverUnreachableBody => 'Could not reach the Bridge server at:';
-
-  @override
-  String get setupSteps => 'Setup Steps:';
-
-  @override
-  String get setupStep1Title => 'Start the Bridge server';
-
-  @override
-  String get setupStep1Command => 'npx --yes @ccpocket/bridge@latest';
-
-  @override
-  String get setupStep2Title => 'For persistent startup, register as service';
-
-  @override
-  String get setupStep2Command => 'npx --yes @ccpocket/bridge@1 setup';
-
-  @override
-  String get setupNetworkHint =>
-      'Make sure both devices are on the same network (or use Tailscale).';
-
-  @override
   String get connectAnyway => 'Connect Anyway';
 
   @override
@@ -460,9 +435,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get editSettingsThenStart => 'Edit Settings Then Start';
-
-  @override
-  String get serverRequiresApiKey => 'This server requires an API key';
 
   @override
   String get bridgeServerUpdated => 'Bridge Server updated';
@@ -491,9 +463,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get failedToStopServer => 'Failed to stop server';
 
   @override
-  String get sshPassword => 'SSH Password';
-
-  @override
   String sshPasswordPrompt(String machineName) {
     return 'Enter SSH password for $machineName';
   }
@@ -505,80 +474,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get machineEditAddTitle => 'Add Machine';
 
   @override
-  String get machineEditEditTitle => 'Edit Machine';
-
-  @override
-  String get machineEditDismissKeyboardTooltip => 'Dismiss keyboard';
-
-  @override
-  String get machineEditBasicInfo => 'Basic Info';
-
-  @override
-  String get machineEditName => 'Name';
-
-  @override
-  String get machineEditNameHint => 'Home Mac';
-
-  @override
-  String get machineEditHostLabel => 'Host (IP or hostname)';
-
-  @override
-  String get machineEditHostHint => '100.64.1.2';
-
-  @override
-  String get machineEditPort => 'Port';
-
-  @override
-  String get machineEditBridgePortHint => '8765';
-
-  @override
   String get machineEditApiKey => 'API Key';
-
-  @override
-  String get machineEditOptional => 'Optional';
-
-  @override
-  String get machineEditUseSecureConnection => 'Use secure connection';
-
-  @override
-  String get machineEditUseSecureConnectionSubtitle =>
-      'Connect with WSS and use HTTPS for health checks';
-
-  @override
-  String get machineEditConnectionMode => 'Connection method';
-
-  @override
-  String get machineEditConnectionModeAutomatic => 'Automatic (recommended)';
-
-  @override
-  String get machineEditConnectionModeAutomaticSubtitle =>
-      'Checks without credentials and connects automatically, preferring HTTPS';
-
-  @override
-  String get machineEditConnectionModeAutomaticSshSubtitle =>
-      'Uses WS inside the SSH tunnel; the SSH connection encrypts the traffic';
-
-  @override
-  String get machineEditConnectionModeSecureOnly => 'Secure only (WSS)';
-
-  @override
-  String get machineEditConnectionModeSecureOnlySubtitle =>
-      'Requires TLS and never falls back to WS';
-
-  @override
-  String get machineEditConnectionModeStandardOnly => 'Standard (WS)';
-
-  @override
-  String get machineEditConnectionModeStandardOnlySubtitle =>
-      'Use on a local network or through a VPN such as Tailscale';
-
-  @override
-  String get machineErrorBridgeNotFound =>
-      'Bridge not found. Check that it is running and that this device is on the same network or VPN.';
-
-  @override
-  String get machineErrorSecureConnectionUnavailable =>
-      'A secure connection could not be established. Check TLS, or explicitly choose Standard (WS) if intended.';
 
   @override
   String get machineAutomaticWsApiKeyWarningTitle =>
@@ -590,103 +486,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get machineAutomaticWsApiKeyWarningConnect => 'Connect with WS';
-
-  @override
-  String get machineEditSshConfiguration => 'SSH Configuration';
-
-  @override
-  String get machineEditEnableSshRemoteStartup => 'Enable SSH remote startup';
-
-  @override
-  String get machineEditEnableSshRemoteStartupSubtitle =>
-      'Remotely start Bridge Server when offline';
-
-  @override
-  String get machineEditSshUsername => 'SSH Username';
-
-  @override
-  String get machineEditSshUsernameHint => 'myuser';
-
-  @override
-  String get machineEditSshPort => 'SSH Port';
-
-  @override
-  String get machineEditSshPortHint => '22';
-
-  @override
-  String get machineEditTargetAuthentication => 'Target Authentication';
-
-  @override
-  String get machineEditPrivateKey => 'Private Key';
-
-  @override
-  String get machineEditSshPrivateKeyPem => 'SSH Private Key (PEM)';
-
-  @override
-  String get machineEditOpenSshPrivateKeyHint =>
-      '-----BEGIN OPENSSH PRIVATE KEY-----';
-
-  @override
-  String get machineEditSavedPrivateKeyIndicator =>
-      'Private key is saved. Enter a new one to replace it.';
-
-  @override
-  String get machineEditUseSshJumpHost => 'Use SSH jump host';
-
-  @override
-  String get machineEditUseSshJumpHostSubtitle =>
-      'Connect through a bastion or intermediate SSH host';
-
-  @override
-  String get machineEditSshJumpHost => 'SSH Jump Host';
-
-  @override
-  String get machineEditJumpHost => 'Jump Host';
-
-  @override
-  String get machineEditJumpHostHint => 'bastion.example.com';
-
-  @override
-  String get machineEditJumpPort => 'Jump Port';
-
-  @override
-  String get machineEditJumpUsername => 'Jump Username';
-
-  @override
-  String get machineEditJumpUsernameHint => 'Defaults to SSH Username';
-
-  @override
-  String get machineEditJumpHostAuthentication => 'Jump Host Authentication';
-
-  @override
-  String get machineEditJumpHostAuthenticationSubtitle =>
-      'Leave blank to reuse target SSH credentials';
-
-  @override
-  String get machineEditJumpPassword => 'Jump Password';
-
-  @override
-  String get machineEditSavedJumpHostPasswordIndicator =>
-      'Jump host password is saved. Enter a new one to replace it.';
-
-  @override
-  String get machineEditJumpPrivateKeyPem => 'Jump Private Key (PEM)';
-
-  @override
-  String get machineEditSavedJumpHostPrivateKeyIndicator =>
-      'Jump host private key is saved. Enter a new one to replace it.';
-
-  @override
-  String get machineEditTesting => 'Testing...';
-
-  @override
-  String get machineEditTestConnection => 'Test Connection';
-
-  @override
-  String get machineEditConnectionSuccessful => 'Connection successful!';
-
-  @override
-  String get machineEditFillSshCredentials => 'Please fill in SSH credentials';
 
   @override
   String get machineEditAddAndConnect => 'Add & Connect';
@@ -703,22 +502,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get connectToBridgeServer => 'Connect to Bridge Server';
 
   @override
-  String get orConnectManually => 'or connect manually';
-
-  @override
-  String get serverUrl => 'Server URL';
-
-  @override
-  String get serverUrlHint => 'ws://<host-ip>:8765';
-
-  @override
   String get apiKeyOptional => 'API Key (optional)';
 
   @override
   String get apiKeyHint => 'Leave empty if no auth';
-
-  @override
-  String get scanQrCode => 'Scan QR Code';
 
   @override
   String get setupGuide => 'Setup Guide';
@@ -781,10 +568,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get add => 'Add';
 
   @override
-  String get noSavedMachinesDescription =>
-      'No saved machines.\nAdd one to quickly connect or remotely start the Bridge Server.';
-
-  @override
   String get readyToStart => 'Ready to start';
 
   @override
@@ -793,9 +576,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get newSession => 'New Session';
-
-  @override
-  String get neverConnected => 'Never connected';
 
   @override
   String get justNow => 'Just now';
@@ -868,21 +648,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get macosNativeAppBannerTitle => 'Use the native macOS app';
-
-  @override
-  String get macosNativeAppBannerSubtitle =>
-      'CC Pocket is optimized for macOS in the native desktop app. Install it from GitHub Releases.';
-
-  @override
   String get openGitHubReleases => 'Open GitHub Releases';
-
-  @override
-  String get macosNativeAppSettingsTitle => 'macOS native app';
-
-  @override
-  String get macosNativeAppSettingsSubtitle =>
-      'Recommended on Mac because it is optimized for macOS.';
 
   @override
   String get supportBannerTitle => 'CC Pocket has been useful';
@@ -2029,9 +1795,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sectionConnectionAccounts => 'Connection & Accounts';
 
   @override
-  String get sectionNotifications => 'Notifications';
-
-  @override
   String get sectionSupport => 'Support';
 
   @override
@@ -2177,16 +1940,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get voiceInput => 'Voice Input';
 
   @override
-  String get pushNotifications => 'Push Notifications';
-
-  @override
-  String get pushNotificationsSubtitle =>
-      'Receive session notifications via Bridge';
-
-  @override
-  String get pushNotificationsUnavailable => 'Available after Firebase setup';
-
-  @override
   String get version => 'Version';
 
   @override
@@ -2215,35 +1968,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get changelogFetchError => 'Failed to load changelog';
-
-  @override
-  String get fcmBridgeNotInitialized => 'Bridge not initialized';
-
-  @override
-  String get fcmTokenFailed => 'Failed to get FCM token';
-
-  @override
-  String get fcmRegistrationFailed =>
-      'Failed to register notifications with Bridge';
-
-  @override
-  String get fcmEnabled => 'Notifications enabled';
-
-  @override
-  String get fcmEnabledPending => 'Will register after Bridge reconnects';
-
-  @override
-  String get fcmDisabled => 'Notifications disabled';
-
-  @override
-  String get fcmDisabledPending => 'Will unregister after Bridge reconnects';
-
-  @override
-  String get pushPrivacyMode => 'Privacy mode';
-
-  @override
-  String get pushPrivacyModeSubtitle =>
-      'Hide project names and content from notifications';
 
   @override
   String get updateNotificationLanguage => 'Update notification language';

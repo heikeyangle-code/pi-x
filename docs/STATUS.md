@@ -34,6 +34,10 @@
 - 引擎分发策略定稿：基线打进 APK + 新版本后台热更（npm/pi.dev 双源 + sha256 + 冒烟）。
 - UI 手术：QR 扫码、Setup guide 远端页、mDNS、macOS/更新横幅、非安卓平台目录、fastlane
   已删；单本机种子已加；Pi X 品牌 + CI（android analyze/test/apk、bridge tsc、engine-smoke）。
+- **S5b 单机收敛完成**：机器管理收敛为只种子/跟踪本机 `127.0.0.1:8765`（删 增/改/删/收藏/SSH/跳板/探测
+  与远程连接 deep link，deep link 仅留会话分享）；Settings 连接区改为本机引擎状态+Bridge 版本信息；
+  同步清理约 85 个 `fcm*`/`machineEdit*`/`ssh*`/`server*`/`setup*`/`push*` 死 l10n 键（4 语言 arb）。
+  验证：`build_runner` + `flutter analyze`（无 error/warning）+ `flutter test`（1664 全绿）+ bridge `tsc` 全过。
 
 ## 已知问题（open）
 

@@ -1880,7 +1880,8 @@ class _SessionListScreenState extends State<SessionListScreen>
         break;
       }
     }
-    final target = local ??
+    final target =
+        local ??
         (cubit.state.machines.isEmpty ? null : cubit.state.machines.first);
     if (target != null) {
       unawaited(_connectToMachineConfig(target.machine));

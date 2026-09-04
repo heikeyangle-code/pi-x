@@ -337,7 +337,8 @@ Widget _buildWorkspaceApp({
     bridge.projectsStream,
   );
   final resolvedMachineManagerCubit =
-      machineManagerCubit ?? MachineManagerCubit(_StaticMachineManagerService());
+      machineManagerCubit ??
+      MachineManagerCubit(_StaticMachineManagerService());
 
   return MultiRepositoryProvider(
     providers: [
@@ -1046,8 +1047,6 @@ void main() {
       findsOneWidget,
     );
   });
-
-
 
   testWidgets('opens session gallery in right pane', (tester) async {
     final bridge = _MockBridgeService();

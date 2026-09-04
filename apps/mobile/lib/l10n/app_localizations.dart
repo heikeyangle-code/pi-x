@@ -833,54 +833,6 @@ abstract class AppLocalizations {
   /// **'キーボードを閉じる'**
   String get dismissKeyboard;
 
-  /// No description provided for @serverUnreachable.
-  ///
-  /// In ja, this message translates to:
-  /// **'サーバーに接続できません'**
-  String get serverUnreachable;
-
-  /// No description provided for @serverUnreachableBody.
-  ///
-  /// In ja, this message translates to:
-  /// **'Bridge サーバーに到達できません:'**
-  String get serverUnreachableBody;
-
-  /// No description provided for @setupSteps.
-  ///
-  /// In ja, this message translates to:
-  /// **'セットアップ手順:'**
-  String get setupSteps;
-
-  /// No description provided for @setupStep1Title.
-  ///
-  /// In ja, this message translates to:
-  /// **'Bridge Server を起動'**
-  String get setupStep1Title;
-
-  /// No description provided for @setupStep1Command.
-  ///
-  /// In ja, this message translates to:
-  /// **'npx --yes @ccpocket/bridge@latest'**
-  String get setupStep1Command;
-
-  /// No description provided for @setupStep2Title.
-  ///
-  /// In ja, this message translates to:
-  /// **'常時起動したい場合はサービス登録'**
-  String get setupStep2Title;
-
-  /// No description provided for @setupStep2Command.
-  ///
-  /// In ja, this message translates to:
-  /// **'npx --yes @ccpocket/bridge@1 setup'**
-  String get setupStep2Command;
-
-  /// No description provided for @setupNetworkHint.
-  ///
-  /// In ja, this message translates to:
-  /// **'両方のデバイスが同じネットワーク上にあることを確認してください（または Tailscale を使用）。'**
-  String get setupNetworkHint;
-
   /// No description provided for @connectAnyway.
   ///
   /// In ja, this message translates to:
@@ -928,12 +880,6 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'設定を変更して開始'**
   String get editSettingsThenStart;
-
-  /// No description provided for @serverRequiresApiKey.
-  ///
-  /// In ja, this message translates to:
-  /// **'このサーバーには API キーが必要です'**
-  String get serverRequiresApiKey;
 
   /// No description provided for @bridgeServerUpdated.
   ///
@@ -983,12 +929,6 @@ abstract class AppLocalizations {
   /// **'サーバーの停止に失敗しました'**
   String get failedToStopServer;
 
-  /// No description provided for @sshPassword.
-  ///
-  /// In ja, this message translates to:
-  /// **'SSH パスワード'**
-  String get sshPassword;
-
   /// No description provided for @sshPasswordPrompt.
   ///
   /// In ja, this message translates to:
@@ -1007,143 +947,11 @@ abstract class AppLocalizations {
   /// **'マシンを追加'**
   String get machineEditAddTitle;
 
-  /// No description provided for @machineEditEditTitle.
-  ///
-  /// In ja, this message translates to:
-  /// **'マシンを編集'**
-  String get machineEditEditTitle;
-
-  /// No description provided for @machineEditDismissKeyboardTooltip.
-  ///
-  /// In ja, this message translates to:
-  /// **'キーボードを閉じる'**
-  String get machineEditDismissKeyboardTooltip;
-
-  /// No description provided for @machineEditBasicInfo.
-  ///
-  /// In ja, this message translates to:
-  /// **'基本情報'**
-  String get machineEditBasicInfo;
-
-  /// No description provided for @machineEditName.
-  ///
-  /// In ja, this message translates to:
-  /// **'名前'**
-  String get machineEditName;
-
-  /// No description provided for @machineEditNameHint.
-  ///
-  /// In ja, this message translates to:
-  /// **'Home Mac'**
-  String get machineEditNameHint;
-
-  /// No description provided for @machineEditHostLabel.
-  ///
-  /// In ja, this message translates to:
-  /// **'Host（IP またはホスト名）'**
-  String get machineEditHostLabel;
-
-  /// No description provided for @machineEditHostHint.
-  ///
-  /// In ja, this message translates to:
-  /// **'100.64.1.2'**
-  String get machineEditHostHint;
-
-  /// No description provided for @machineEditPort.
-  ///
-  /// In ja, this message translates to:
-  /// **'Port'**
-  String get machineEditPort;
-
-  /// No description provided for @machineEditBridgePortHint.
-  ///
-  /// In ja, this message translates to:
-  /// **'8765'**
-  String get machineEditBridgePortHint;
-
   /// No description provided for @machineEditApiKey.
   ///
   /// In ja, this message translates to:
   /// **'API Key'**
   String get machineEditApiKey;
-
-  /// No description provided for @machineEditOptional.
-  ///
-  /// In ja, this message translates to:
-  /// **'任意'**
-  String get machineEditOptional;
-
-  /// No description provided for @machineEditUseSecureConnection.
-  ///
-  /// In ja, this message translates to:
-  /// **'セキュア接続を使う'**
-  String get machineEditUseSecureConnection;
-
-  /// No description provided for @machineEditUseSecureConnectionSubtitle.
-  ///
-  /// In ja, this message translates to:
-  /// **'WSS で接続し、ヘルスチェックに HTTPS を使います'**
-  String get machineEditUseSecureConnectionSubtitle;
-
-  /// No description provided for @machineEditConnectionMode.
-  ///
-  /// In ja, this message translates to:
-  /// **'接続方式'**
-  String get machineEditConnectionMode;
-
-  /// No description provided for @machineEditConnectionModeAutomatic.
-  ///
-  /// In ja, this message translates to:
-  /// **'自動（推奨）'**
-  String get machineEditConnectionModeAutomatic;
-
-  /// No description provided for @machineEditConnectionModeAutomaticSubtitle.
-  ///
-  /// In ja, this message translates to:
-  /// **'認証情報を送らずに確認し、HTTPSを優先して自動接続します'**
-  String get machineEditConnectionModeAutomaticSubtitle;
-
-  /// No description provided for @machineEditConnectionModeAutomaticSshSubtitle.
-  ///
-  /// In ja, this message translates to:
-  /// **'SSHトンネル内ではWSを使用し、通信はSSH接続で暗号化されます'**
-  String get machineEditConnectionModeAutomaticSshSubtitle;
-
-  /// No description provided for @machineEditConnectionModeSecureOnly.
-  ///
-  /// In ja, this message translates to:
-  /// **'セキュアのみ（WSS）'**
-  String get machineEditConnectionModeSecureOnly;
-
-  /// No description provided for @machineEditConnectionModeSecureOnlySubtitle.
-  ///
-  /// In ja, this message translates to:
-  /// **'TLS接続を必須にし、WSへ自動的に切り替えません'**
-  String get machineEditConnectionModeSecureOnlySubtitle;
-
-  /// No description provided for @machineEditConnectionModeStandardOnly.
-  ///
-  /// In ja, this message translates to:
-  /// **'標準（WS）'**
-  String get machineEditConnectionModeStandardOnly;
-
-  /// No description provided for @machineEditConnectionModeStandardOnlySubtitle.
-  ///
-  /// In ja, this message translates to:
-  /// **'ローカルネットワークまたはTailscaleなどのVPN内で使用してください'**
-  String get machineEditConnectionModeStandardOnlySubtitle;
-
-  /// No description provided for @machineErrorBridgeNotFound.
-  ///
-  /// In ja, this message translates to:
-  /// **'Bridgeが見つかりません。起動状態と同じネットワークまたはVPNへの接続を確認してください'**
-  String get machineErrorBridgeNotFound;
-
-  /// No description provided for @machineErrorSecureConnectionUnavailable.
-  ///
-  /// In ja, this message translates to:
-  /// **'セキュア接続を確立できません。TLSの設定を確認するか、意図する場合のみ「標準（WS）」を選択してください'**
-  String get machineErrorSecureConnectionUnavailable;
 
   /// No description provided for @machineAutomaticWsApiKeyWarningTitle.
   ///
@@ -1162,186 +970,6 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'WSで接続'**
   String get machineAutomaticWsApiKeyWarningConnect;
-
-  /// No description provided for @machineEditSshConfiguration.
-  ///
-  /// In ja, this message translates to:
-  /// **'SSH 設定'**
-  String get machineEditSshConfiguration;
-
-  /// No description provided for @machineEditEnableSshRemoteStartup.
-  ///
-  /// In ja, this message translates to:
-  /// **'SSH リモート起動を有効にする'**
-  String get machineEditEnableSshRemoteStartup;
-
-  /// No description provided for @machineEditEnableSshRemoteStartupSubtitle.
-  ///
-  /// In ja, this message translates to:
-  /// **'オフライン時に Bridge Server をリモート起動します'**
-  String get machineEditEnableSshRemoteStartupSubtitle;
-
-  /// No description provided for @machineEditSshUsername.
-  ///
-  /// In ja, this message translates to:
-  /// **'SSH Username'**
-  String get machineEditSshUsername;
-
-  /// No description provided for @machineEditSshUsernameHint.
-  ///
-  /// In ja, this message translates to:
-  /// **'myuser'**
-  String get machineEditSshUsernameHint;
-
-  /// No description provided for @machineEditSshPort.
-  ///
-  /// In ja, this message translates to:
-  /// **'SSH Port'**
-  String get machineEditSshPort;
-
-  /// No description provided for @machineEditSshPortHint.
-  ///
-  /// In ja, this message translates to:
-  /// **'22'**
-  String get machineEditSshPortHint;
-
-  /// No description provided for @machineEditTargetAuthentication.
-  ///
-  /// In ja, this message translates to:
-  /// **'接続先の認証'**
-  String get machineEditTargetAuthentication;
-
-  /// No description provided for @machineEditPrivateKey.
-  ///
-  /// In ja, this message translates to:
-  /// **'Private Key'**
-  String get machineEditPrivateKey;
-
-  /// No description provided for @machineEditSshPrivateKeyPem.
-  ///
-  /// In ja, this message translates to:
-  /// **'SSH Private Key (PEM)'**
-  String get machineEditSshPrivateKeyPem;
-
-  /// No description provided for @machineEditOpenSshPrivateKeyHint.
-  ///
-  /// In ja, this message translates to:
-  /// **'-----BEGIN OPENSSH PRIVATE KEY-----'**
-  String get machineEditOpenSshPrivateKeyHint;
-
-  /// No description provided for @machineEditSavedPrivateKeyIndicator.
-  ///
-  /// In ja, this message translates to:
-  /// **'Private Key は保存済みです。新しく入力すると置き換えます。'**
-  String get machineEditSavedPrivateKeyIndicator;
-
-  /// No description provided for @machineEditUseSshJumpHost.
-  ///
-  /// In ja, this message translates to:
-  /// **'SSH Jump Host を使う'**
-  String get machineEditUseSshJumpHost;
-
-  /// No description provided for @machineEditUseSshJumpHostSubtitle.
-  ///
-  /// In ja, this message translates to:
-  /// **'踏み台または中継 SSH ホスト経由で接続します'**
-  String get machineEditUseSshJumpHostSubtitle;
-
-  /// No description provided for @machineEditSshJumpHost.
-  ///
-  /// In ja, this message translates to:
-  /// **'SSH Jump Host'**
-  String get machineEditSshJumpHost;
-
-  /// No description provided for @machineEditJumpHost.
-  ///
-  /// In ja, this message translates to:
-  /// **'Jump Host'**
-  String get machineEditJumpHost;
-
-  /// No description provided for @machineEditJumpHostHint.
-  ///
-  /// In ja, this message translates to:
-  /// **'bastion.example.com'**
-  String get machineEditJumpHostHint;
-
-  /// No description provided for @machineEditJumpPort.
-  ///
-  /// In ja, this message translates to:
-  /// **'Jump Port'**
-  String get machineEditJumpPort;
-
-  /// No description provided for @machineEditJumpUsername.
-  ///
-  /// In ja, this message translates to:
-  /// **'Jump Username'**
-  String get machineEditJumpUsername;
-
-  /// No description provided for @machineEditJumpUsernameHint.
-  ///
-  /// In ja, this message translates to:
-  /// **'未入力なら SSH Username を使います'**
-  String get machineEditJumpUsernameHint;
-
-  /// No description provided for @machineEditJumpHostAuthentication.
-  ///
-  /// In ja, this message translates to:
-  /// **'Jump Host の認証'**
-  String get machineEditJumpHostAuthentication;
-
-  /// No description provided for @machineEditJumpHostAuthenticationSubtitle.
-  ///
-  /// In ja, this message translates to:
-  /// **'未入力なら接続先の SSH 認証情報を再利用します'**
-  String get machineEditJumpHostAuthenticationSubtitle;
-
-  /// No description provided for @machineEditJumpPassword.
-  ///
-  /// In ja, this message translates to:
-  /// **'Jump Password'**
-  String get machineEditJumpPassword;
-
-  /// No description provided for @machineEditSavedJumpHostPasswordIndicator.
-  ///
-  /// In ja, this message translates to:
-  /// **'Jump Host パスワードは保存済みです。新しく入力すると置き換えます。'**
-  String get machineEditSavedJumpHostPasswordIndicator;
-
-  /// No description provided for @machineEditJumpPrivateKeyPem.
-  ///
-  /// In ja, this message translates to:
-  /// **'Jump Private Key (PEM)'**
-  String get machineEditJumpPrivateKeyPem;
-
-  /// No description provided for @machineEditSavedJumpHostPrivateKeyIndicator.
-  ///
-  /// In ja, this message translates to:
-  /// **'Jump Host Private Key は保存済みです。新しく入力すると置き換えます。'**
-  String get machineEditSavedJumpHostPrivateKeyIndicator;
-
-  /// No description provided for @machineEditTesting.
-  ///
-  /// In ja, this message translates to:
-  /// **'テスト中...'**
-  String get machineEditTesting;
-
-  /// No description provided for @machineEditTestConnection.
-  ///
-  /// In ja, this message translates to:
-  /// **'接続をテスト'**
-  String get machineEditTestConnection;
-
-  /// No description provided for @machineEditConnectionSuccessful.
-  ///
-  /// In ja, this message translates to:
-  /// **'接続に成功しました'**
-  String get machineEditConnectionSuccessful;
-
-  /// No description provided for @machineEditFillSshCredentials.
-  ///
-  /// In ja, this message translates to:
-  /// **'SSH 認証情報を入力してください'**
-  String get machineEditFillSshCredentials;
 
   /// No description provided for @machineEditAddAndConnect.
   ///
@@ -1367,24 +995,6 @@ abstract class AppLocalizations {
   /// **'Bridge Server に接続'**
   String get connectToBridgeServer;
 
-  /// No description provided for @orConnectManually.
-  ///
-  /// In ja, this message translates to:
-  /// **'または手動で接続'**
-  String get orConnectManually;
-
-  /// No description provided for @serverUrl.
-  ///
-  /// In ja, this message translates to:
-  /// **'サーバー URL'**
-  String get serverUrl;
-
-  /// No description provided for @serverUrlHint.
-  ///
-  /// In ja, this message translates to:
-  /// **'ws://<host-ip>:8765'**
-  String get serverUrlHint;
-
   /// No description provided for @apiKeyOptional.
   ///
   /// In ja, this message translates to:
@@ -1396,12 +1006,6 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'認証なしの場合は空欄'**
   String get apiKeyHint;
-
-  /// No description provided for @scanQrCode.
-  ///
-  /// In ja, this message translates to:
-  /// **'QR コードをスキャン'**
-  String get scanQrCode;
 
   /// No description provided for @setupGuide.
   ///
@@ -1517,12 +1121,6 @@ abstract class AppLocalizations {
   /// **'追加'**
   String get add;
 
-  /// No description provided for @noSavedMachinesDescription.
-  ///
-  /// In ja, this message translates to:
-  /// **'保存済みのマシンはありません。\n追加すると、すばやく接続したり Bridge Server をリモート起動したりできます。'**
-  String get noSavedMachinesDescription;
-
   /// No description provided for @readyToStart.
   ///
   /// In ja, this message translates to:
@@ -1540,12 +1138,6 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'新規セッション'**
   String get newSession;
-
-  /// No description provided for @neverConnected.
-  ///
-  /// In ja, this message translates to:
-  /// **'未接続'**
-  String get neverConnected;
 
   /// No description provided for @justNow.
   ///
@@ -1661,35 +1253,11 @@ abstract class AppLocalizations {
   /// **'v{version} が利用可能です'**
   String appUpdateAvailable(String version);
 
-  /// No description provided for @macosNativeAppBannerTitle.
-  ///
-  /// In ja, this message translates to:
-  /// **'macOS ネイティブ版をおすすめします'**
-  String get macosNativeAppBannerTitle;
-
-  /// No description provided for @macosNativeAppBannerSubtitle.
-  ///
-  /// In ja, this message translates to:
-  /// **'Mac では、macOS に最適化された CC Pocket ネイティブ版を GitHub Releases からインストールできます。'**
-  String get macosNativeAppBannerSubtitle;
-
   /// No description provided for @openGitHubReleases.
   ///
   /// In ja, this message translates to:
   /// **'GitHub Releases を開く'**
   String get openGitHubReleases;
-
-  /// No description provided for @macosNativeAppSettingsTitle.
-  ///
-  /// In ja, this message translates to:
-  /// **'macOS ネイティブ版'**
-  String get macosNativeAppSettingsTitle;
-
-  /// No description provided for @macosNativeAppSettingsSubtitle.
-  ///
-  /// In ja, this message translates to:
-  /// **'macOS に最適化されているため、Mac ではネイティブ版がおすすめです。'**
-  String get macosNativeAppSettingsSubtitle;
 
   /// No description provided for @supportBannerTitle.
   ///
@@ -3695,12 +3263,6 @@ abstract class AppLocalizations {
   /// **'接続とアカウント'**
   String get sectionConnectionAccounts;
 
-  /// No description provided for @sectionNotifications.
-  ///
-  /// In ja, this message translates to:
-  /// **'通知'**
-  String get sectionNotifications;
-
   /// No description provided for @sectionSupport.
   ///
   /// In ja, this message translates to:
@@ -3965,24 +3527,6 @@ abstract class AppLocalizations {
   /// **'音声入力'**
   String get voiceInput;
 
-  /// No description provided for @pushNotifications.
-  ///
-  /// In ja, this message translates to:
-  /// **'プッシュ通知'**
-  String get pushNotifications;
-
-  /// No description provided for @pushNotificationsSubtitle.
-  ///
-  /// In ja, this message translates to:
-  /// **'Bridge 経由でセッション通知を受け取ります'**
-  String get pushNotificationsSubtitle;
-
-  /// No description provided for @pushNotificationsUnavailable.
-  ///
-  /// In ja, this message translates to:
-  /// **'Firebase 設定後に利用できます'**
-  String get pushNotificationsUnavailable;
-
   /// No description provided for @version.
   ///
   /// In ja, this message translates to:
@@ -4042,60 +3586,6 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'変更履歴の取得に失敗しました'**
   String get changelogFetchError;
-
-  /// No description provided for @fcmBridgeNotInitialized.
-  ///
-  /// In ja, this message translates to:
-  /// **'Bridge が未初期化です'**
-  String get fcmBridgeNotInitialized;
-
-  /// No description provided for @fcmTokenFailed.
-  ///
-  /// In ja, this message translates to:
-  /// **'FCM token を取得できませんでした'**
-  String get fcmTokenFailed;
-
-  /// No description provided for @fcmRegistrationFailed.
-  ///
-  /// In ja, this message translates to:
-  /// **'Bridge への通知登録に失敗しました'**
-  String get fcmRegistrationFailed;
-
-  /// No description provided for @fcmEnabled.
-  ///
-  /// In ja, this message translates to:
-  /// **'通知を有効化しました'**
-  String get fcmEnabled;
-
-  /// No description provided for @fcmEnabledPending.
-  ///
-  /// In ja, this message translates to:
-  /// **'Bridge 再接続後に通知登録します'**
-  String get fcmEnabledPending;
-
-  /// No description provided for @fcmDisabled.
-  ///
-  /// In ja, this message translates to:
-  /// **'通知を無効化しました'**
-  String get fcmDisabled;
-
-  /// No description provided for @fcmDisabledPending.
-  ///
-  /// In ja, this message translates to:
-  /// **'Bridge 再接続後に通知解除します'**
-  String get fcmDisabledPending;
-
-  /// No description provided for @pushPrivacyMode.
-  ///
-  /// In ja, this message translates to:
-  /// **'プライバシーモード'**
-  String get pushPrivacyMode;
-
-  /// No description provided for @pushPrivacyModeSubtitle.
-  ///
-  /// In ja, this message translates to:
-  /// **'通知にプロジェクト名や内容を含めない'**
-  String get pushPrivacyModeSubtitle;
 
   /// No description provided for @updateNotificationLanguage.
   ///

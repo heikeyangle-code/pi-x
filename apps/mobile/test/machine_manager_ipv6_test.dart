@@ -60,10 +60,7 @@ void main() {
     _FakeSecureStorage? secureStorage,
   ]) async {
     final prefs = await SharedPreferences.getInstance();
-    return MachineManagerService(
-      prefs,
-      secureStorage ?? _FakeSecureStorage(),
-    );
+    return MachineManagerService(prefs, secureStorage ?? _FakeSecureStorage());
   }
 
   setUp(() {
@@ -87,10 +84,7 @@ void main() {
   test(
     'init normalizes bracketed saved host without changing machine id',
     () async {
-      const saved = Machine(
-        id: 'saved-ipv6',
-        host: '::1',
-      );
+      const saved = Machine(id: 'saved-ipv6', host: '::1');
       SharedPreferences.setMockInitialValues({
         'machines_v2': jsonEncode([saved.toJson()]),
       });
@@ -108,11 +102,7 @@ void main() {
   test(
     'init converges multiple saved machines to the single local machine',
     () async {
-      const local = Machine(
-        id: 'local',
-        host: '127.0.0.1',
-        isFavorite: true,
-      );
+      const local = Machine(id: 'local', host: '127.0.0.1', isFavorite: true);
       const remote = Machine(id: 'remote', host: '192.168.1.5');
       const otherRemote = Machine(id: 'other', host: '10.0.0.9');
       SharedPreferences.setMockInitialValues({
@@ -133,20 +123,17 @@ void main() {
     },
   );
 
-  test(
-    'init seeds a fresh local machine when none exists',
-    () async {
-      SharedPreferences.setMockInitialValues({});
-      final manager = await createManager();
+  test('init seeds a fresh local machine when none exists', () async {
+    SharedPreferences.setMockInitialValues({});
+    final manager = await createManager();
 
-      await manager.init();
+    await manager.init();
 
-      expect(manager.currentMachines, hasLength(1));
-      final machine = manager.localMachine;
-      expect(machine, isNotNull);
-      expect(machine!.host, '127.0.0.1');
-      expect(machine.port, 8765);
-      manager.dispose();
-    },
-  );
+    expect(manager.currentMachines, hasLength(1));
+    final machine = manager.localMachine;
+    expect(machine, isNotNull);
+    expect(machine!.host, '127.0.0.1');
+    expect(machine.port, 8765);
+    manager.dispose();
+  });
 }

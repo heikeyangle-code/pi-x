@@ -381,9 +381,10 @@ class _CcpocketAppState extends State<CcpocketApp> {
   void _handleUri(Uri uri) {
     final params = SessionLinkParser.parse(uri.toString());
     if (params == null) return;
-    _openSessionFromData(
-      {'sessionId': params.sessionId, 'provider': params.provider},
-    );
+    _openSessionFromData({
+      'sessionId': params.sessionId,
+      'provider': params.provider,
+    });
   }
 
   @override

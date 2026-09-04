@@ -1591,7 +1591,6 @@ class _VersionTileState extends State<_VersionTile> {
   }
 }
 
-
 class _PromptHistorySectionSlot extends StatelessWidget {
   const _PromptHistorySectionSlot({required this.bridgeService});
 

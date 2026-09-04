@@ -62,17 +62,11 @@ void main() {
 
     group('remote-machine links (removed)', () {
       test('returns null for ws:// URL', () {
-        expect(
-          SessionLinkParser.parse('ws://192.168.1.1:8765'),
-          isNull,
-        );
+        expect(SessionLinkParser.parse('ws://192.168.1.1:8765'), isNull);
       });
 
       test('returns null for wss:// URL', () {
-        expect(
-          SessionLinkParser.parse('wss://example.com:8765'),
-          isNull,
-        );
+        expect(SessionLinkParser.parse('wss://example.com:8765'), isNull);
       });
 
       test('returns null for bare host:port', () {

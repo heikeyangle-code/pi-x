@@ -392,30 +392,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dismissKeyboard => '收起键盘';
 
   @override
-  String get serverUnreachable => '无法连接服务器';
-
-  @override
-  String get serverUnreachableBody => '无法访问以下 Bridge 服务器：';
-
-  @override
-  String get setupSteps => '设置步骤：';
-
-  @override
-  String get setupStep1Title => '启动 Bridge 服务器';
-
-  @override
-  String get setupStep1Command => 'npx --yes @ccpocket/bridge@latest';
-
-  @override
-  String get setupStep2Title => '如需常驻运行，请注册为服务';
-
-  @override
-  String get setupStep2Command => 'npx --yes @ccpocket/bridge@1 setup';
-
-  @override
-  String get setupNetworkHint => '请确认两台设备位于同一网络中（或使用 Tailscale）。';
-
-  @override
   String get connectAnyway => '仍然连接';
 
   @override
@@ -438,9 +414,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get editSettingsThenStart => '先修改设置再开始';
-
-  @override
-  String get serverRequiresApiKey => '此服务器需要 API 密钥';
 
   @override
   String get bridgeServerUpdated => 'Bridge 服务已更新';
@@ -467,9 +440,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get failedToStopServer => '停止服务器失败';
 
   @override
-  String get sshPassword => 'SSH 密码';
-
-  @override
   String sshPasswordPrompt(String machineName) {
     return '请输入 $machineName 的 SSH 密码';
   }
@@ -481,80 +451,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get machineEditAddTitle => '添加机器';
 
   @override
-  String get machineEditEditTitle => '编辑机器';
-
-  @override
-  String get machineEditDismissKeyboardTooltip => '收起键盘';
-
-  @override
-  String get machineEditBasicInfo => '基本信息';
-
-  @override
-  String get machineEditName => '名称';
-
-  @override
-  String get machineEditNameHint => 'Home Mac';
-
-  @override
-  String get machineEditHostLabel => 'Host（IP 或主机名）';
-
-  @override
-  String get machineEditHostHint => '100.64.1.2';
-
-  @override
-  String get machineEditPort => 'Port';
-
-  @override
-  String get machineEditBridgePortHint => '8765';
-
-  @override
   String get machineEditApiKey => 'API Key';
-
-  @override
-  String get machineEditOptional => '可选';
-
-  @override
-  String get machineEditUseSecureConnection => '使用安全连接';
-
-  @override
-  String get machineEditUseSecureConnectionSubtitle =>
-      '使用 WSS 连接，并用 HTTPS 进行健康检查';
-
-  @override
-  String get machineEditConnectionMode => '连接方式';
-
-  @override
-  String get machineEditConnectionModeAutomatic => '自动（推荐）';
-
-  @override
-  String get machineEditConnectionModeAutomaticSubtitle =>
-      '不发送凭据进行检查，优先使用 HTTPS 自动连接';
-
-  @override
-  String get machineEditConnectionModeAutomaticSshSubtitle =>
-      '在 SSH 隧道内使用 WS；通信由 SSH 连接加密';
-
-  @override
-  String get machineEditConnectionModeSecureOnly => '仅安全连接（WSS）';
-
-  @override
-  String get machineEditConnectionModeSecureOnlySubtitle =>
-      '强制使用 TLS，绝不自动降级到 WS';
-
-  @override
-  String get machineEditConnectionModeStandardOnly => '标准（WS）';
-
-  @override
-  String get machineEditConnectionModeStandardOnlySubtitle =>
-      '请仅在本地网络或 Tailscale 等 VPN 中使用';
-
-  @override
-  String get machineErrorBridgeNotFound =>
-      '找不到 Bridge。请确认它正在运行，且此设备已连接到同一网络或 VPN。';
-
-  @override
-  String get machineErrorSecureConnectionUnavailable =>
-      '无法建立安全连接。请检查 TLS 设置，或仅在确定需要时明确选择“标准（WS）”。';
 
   @override
   String get machineAutomaticWsApiKeyWarningTitle => '检测到标准连接（WS）';
@@ -565,101 +462,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get machineAutomaticWsApiKeyWarningConnect => '使用 WS 连接';
-
-  @override
-  String get machineEditSshConfiguration => 'SSH 设置';
-
-  @override
-  String get machineEditEnableSshRemoteStartup => '启用 SSH 远程启动';
-
-  @override
-  String get machineEditEnableSshRemoteStartupSubtitle =>
-      '离线时远程启动 Bridge Server';
-
-  @override
-  String get machineEditSshUsername => 'SSH Username';
-
-  @override
-  String get machineEditSshUsernameHint => 'myuser';
-
-  @override
-  String get machineEditSshPort => 'SSH Port';
-
-  @override
-  String get machineEditSshPortHint => '22';
-
-  @override
-  String get machineEditTargetAuthentication => '目标认证';
-
-  @override
-  String get machineEditPrivateKey => 'Private Key';
-
-  @override
-  String get machineEditSshPrivateKeyPem => 'SSH Private Key (PEM)';
-
-  @override
-  String get machineEditOpenSshPrivateKeyHint =>
-      '-----BEGIN OPENSSH PRIVATE KEY-----';
-
-  @override
-  String get machineEditSavedPrivateKeyIndicator =>
-      'Private Key 已保存。输入新内容会替换它。';
-
-  @override
-  String get machineEditUseSshJumpHost => '使用 SSH Jump Host';
-
-  @override
-  String get machineEditUseSshJumpHostSubtitle => '通过 bastion 或中间 SSH 主机连接';
-
-  @override
-  String get machineEditSshJumpHost => 'SSH Jump Host';
-
-  @override
-  String get machineEditJumpHost => 'Jump Host';
-
-  @override
-  String get machineEditJumpHostHint => 'bastion.example.com';
-
-  @override
-  String get machineEditJumpPort => 'Jump Port';
-
-  @override
-  String get machineEditJumpUsername => 'Jump Username';
-
-  @override
-  String get machineEditJumpUsernameHint => '留空则使用 SSH Username';
-
-  @override
-  String get machineEditJumpHostAuthentication => 'Jump Host 认证';
-
-  @override
-  String get machineEditJumpHostAuthenticationSubtitle => '留空则复用目标 SSH 认证信息';
-
-  @override
-  String get machineEditJumpPassword => 'Jump Password';
-
-  @override
-  String get machineEditSavedJumpHostPasswordIndicator =>
-      'Jump Host 密码已保存。输入新内容会替换它。';
-
-  @override
-  String get machineEditJumpPrivateKeyPem => 'Jump Private Key (PEM)';
-
-  @override
-  String get machineEditSavedJumpHostPrivateKeyIndicator =>
-      'Jump Host Private Key 已保存。输入新内容会替换它。';
-
-  @override
-  String get machineEditTesting => '正在测试...';
-
-  @override
-  String get machineEditTestConnection => '测试连接';
-
-  @override
-  String get machineEditConnectionSuccessful => '连接成功';
-
-  @override
-  String get machineEditFillSshCredentials => '请输入 SSH 认证信息';
 
   @override
   String get machineEditAddAndConnect => '添加并连接';
@@ -676,22 +478,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get connectToBridgeServer => '连接到 Bridge 服务';
 
   @override
-  String get orConnectManually => '或手动连接';
-
-  @override
-  String get serverUrl => '服务器 URL';
-
-  @override
-  String get serverUrlHint => 'ws://<host-ip>:8765';
-
-  @override
   String get apiKeyOptional => 'API 密钥（可选）';
 
   @override
   String get apiKeyHint => '如果没有认证可留空';
-
-  @override
-  String get scanQrCode => '扫描二维码';
 
   @override
   String get setupGuide => '设置指南';
@@ -752,10 +542,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get add => '添加';
 
   @override
-  String get noSavedMachinesDescription =>
-      '还没有已保存的机器。\n添加后即可快速连接或远程启动 Bridge Server。';
-
-  @override
   String get readyToStart => '准备就绪';
 
   @override
@@ -763,9 +549,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get newSession => '新建会话';
-
-  @override
-  String get neverConnected => '从未连接';
 
   @override
   String get justNow => '刚刚';
@@ -837,20 +620,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get macosNativeAppBannerTitle => '建议使用 macOS 原生版';
-
-  @override
-  String get macosNativeAppBannerSubtitle =>
-      '在 Mac 上，CC Pocket 原生桌面版针对 macOS 做了优化。可从 GitHub Releases 安装。';
-
-  @override
   String get openGitHubReleases => '打开 GitHub Releases';
-
-  @override
-  String get macosNativeAppSettingsTitle => 'macOS 原生版';
-
-  @override
-  String get macosNativeAppSettingsSubtitle => '在 Mac 上推荐使用针对 macOS 优化的原生版。';
 
   @override
   String get supportBannerTitle => '如果 CC Pocket 对你有帮助';
@@ -1926,9 +1696,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sectionConnectionAccounts => '连接与账户';
 
   @override
-  String get sectionNotifications => '通知';
-
-  @override
   String get sectionSupport => '支持';
 
   @override
@@ -2069,15 +1836,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get voiceInput => '语音输入';
 
   @override
-  String get pushNotifications => '推送通知';
-
-  @override
-  String get pushNotificationsSubtitle => '通过 Bridge 接收会话通知';
-
-  @override
-  String get pushNotificationsUnavailable => '完成 Firebase 设置后可用';
-
-  @override
   String get version => '版本';
 
   @override
@@ -2106,33 +1864,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get changelogFetchError => '加载更新日志失败';
-
-  @override
-  String get fcmBridgeNotInitialized => 'Bridge 尚未初始化';
-
-  @override
-  String get fcmTokenFailed => '获取 FCM Token 失败';
-
-  @override
-  String get fcmRegistrationFailed => '向 Bridge 注册通知失败';
-
-  @override
-  String get fcmEnabled => '通知已启用';
-
-  @override
-  String get fcmEnabledPending => 'Bridge 重新连接后将自动注册';
-
-  @override
-  String get fcmDisabled => '通知已禁用';
-
-  @override
-  String get fcmDisabledPending => 'Bridge 重新连接后将自动取消注册';
-
-  @override
-  String get pushPrivacyMode => '隐私模式';
-
-  @override
-  String get pushPrivacyModeSubtitle => '在通知中隐藏项目名称和内容';
 
   @override
   String get updateNotificationLanguage => '更新通知语言';

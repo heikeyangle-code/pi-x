@@ -36,10 +36,7 @@ class MachineManagerService {
   final Map<String, BridgeVersionInfo> _versionCache = {};
   Timer? _healthCheckTimer;
 
-  MachineManagerService(
-    this._prefs,
-    this._secureStorage,
-  );
+  MachineManagerService(this._prefs, this._secureStorage);
 
   /// Stream of machines with their current status.
   Stream<List<MachineWithStatus>> get machines => _machinesController.stream;
@@ -109,9 +106,7 @@ class MachineManagerService {
       final result = <Machine>[];
       for (final entry in list) {
         final parsed = Machine.fromJson(entry as Map<String, dynamic>);
-        result.add(
-          parsed.copyWith(host: normalizeHostInput(parsed.host)),
-        );
+        result.add(parsed.copyWith(host: normalizeHostInput(parsed.host)));
       }
       return result;
     } catch (e) {

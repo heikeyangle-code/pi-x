@@ -395,30 +395,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get dismissKeyboard => '키보드 닫기';
 
   @override
-  String get serverUnreachable => '서버에 연결할 수 없음';
-
-  @override
-  String get serverUnreachableBody => '다음 Bridge 서버에 연결할 수 없습니다:';
-
-  @override
-  String get setupSteps => '설정 단계:';
-
-  @override
-  String get setupStep1Title => 'Bridge 서버 시작';
-
-  @override
-  String get setupStep1Command => 'npx --yes @ccpocket/bridge@latest';
-
-  @override
-  String get setupStep2Title => '항상 실행하려면 서비스로 등록';
-
-  @override
-  String get setupStep2Command => 'npx --yes @ccpocket/bridge@1 setup';
-
-  @override
-  String get setupNetworkHint => '두 기기가 같은 네트워크에 있는지 확인하세요(또는 Tailscale 사용).';
-
-  @override
   String get connectAnyway => '그래도 연결';
 
   @override
@@ -441,9 +417,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get editSettingsThenStart => '설정을 편집한 뒤 시작';
-
-  @override
-  String get serverRequiresApiKey => '이 서버에는 API 키가 필요합니다';
 
   @override
   String get bridgeServerUpdated => 'Bridge 서버가 업데이트됨';
@@ -472,9 +445,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get failedToStopServer => '서버 중지 실패';
 
   @override
-  String get sshPassword => 'SSH 비밀번호';
-
-  @override
   String sshPasswordPrompt(String machineName) {
     return '$machineName의 SSH 비밀번호 입력';
   }
@@ -486,80 +456,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get machineEditAddTitle => '컴퓨터 추가';
 
   @override
-  String get machineEditEditTitle => '컴퓨터 편집';
-
-  @override
-  String get machineEditDismissKeyboardTooltip => '키보드 닫기';
-
-  @override
-  String get machineEditBasicInfo => '기본 정보';
-
-  @override
-  String get machineEditName => '이름';
-
-  @override
-  String get machineEditNameHint => 'Home Mac';
-
-  @override
-  String get machineEditHostLabel => 'Host(IP 또는 호스트 이름)';
-
-  @override
-  String get machineEditHostHint => '100.64.1.2';
-
-  @override
-  String get machineEditPort => 'Port';
-
-  @override
-  String get machineEditBridgePortHint => '8765';
-
-  @override
   String get machineEditApiKey => 'API Key';
-
-  @override
-  String get machineEditOptional => '선택 사항';
-
-  @override
-  String get machineEditUseSecureConnection => '보안 연결 사용';
-
-  @override
-  String get machineEditUseSecureConnectionSubtitle =>
-      'WSS로 연결하고 상태 확인에는 HTTPS를 사용합니다';
-
-  @override
-  String get machineEditConnectionMode => '연결 방식';
-
-  @override
-  String get machineEditConnectionModeAutomatic => '자동(권장)';
-
-  @override
-  String get machineEditConnectionModeAutomaticSubtitle =>
-      '인증 정보를 보내지 않고 확인하며 HTTPS를 우선해 자동 연결합니다';
-
-  @override
-  String get machineEditConnectionModeAutomaticSshSubtitle =>
-      'SSH 터널 안에서는 WS를 사용하며 통신은 SSH 연결로 암호화됩니다';
-
-  @override
-  String get machineEditConnectionModeSecureOnly => '보안 연결만(WSS)';
-
-  @override
-  String get machineEditConnectionModeSecureOnlySubtitle =>
-      'TLS 연결을 필수로 하며 WS로 자동 전환하지 않습니다';
-
-  @override
-  String get machineEditConnectionModeStandardOnly => '표준(WS)';
-
-  @override
-  String get machineEditConnectionModeStandardOnlySubtitle =>
-      '로컬 네트워크 또는 Tailscale 같은 VPN에서 사용하세요';
-
-  @override
-  String get machineErrorBridgeNotFound =>
-      'Bridge를 찾을 수 없습니다. 실행 상태와 같은 네트워크 또는 VPN 연결을 확인하세요.';
-
-  @override
-  String get machineErrorSecureConnectionUnavailable =>
-      '보안 연결을 설정할 수 없습니다. TLS를 확인하거나 필요한 경우에만 명시적으로 표준(WS)을 선택하세요.';
 
   @override
   String get machineAutomaticWsApiKeyWarningTitle => '표준 연결(WS)이 감지되었습니다';
@@ -570,103 +467,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get machineAutomaticWsApiKeyWarningConnect => 'WS로 연결';
-
-  @override
-  String get machineEditSshConfiguration => 'SSH 설정';
-
-  @override
-  String get machineEditEnableSshRemoteStartup => 'SSH 원격 시작 활성화';
-
-  @override
-  String get machineEditEnableSshRemoteStartupSubtitle =>
-      '오프라인일 때 Bridge Server를 원격으로 시작합니다';
-
-  @override
-  String get machineEditSshUsername => 'SSH Username';
-
-  @override
-  String get machineEditSshUsernameHint => 'myuser';
-
-  @override
-  String get machineEditSshPort => 'SSH Port';
-
-  @override
-  String get machineEditSshPortHint => '22';
-
-  @override
-  String get machineEditTargetAuthentication => '대상 인증';
-
-  @override
-  String get machineEditPrivateKey => 'Private Key';
-
-  @override
-  String get machineEditSshPrivateKeyPem => 'SSH Private Key (PEM)';
-
-  @override
-  String get machineEditOpenSshPrivateKeyHint =>
-      '-----BEGIN OPENSSH PRIVATE KEY-----';
-
-  @override
-  String get machineEditSavedPrivateKeyIndicator =>
-      'Private Key가 저장되어 있습니다. 새로 입력하면 교체됩니다.';
-
-  @override
-  String get machineEditUseSshJumpHost => 'SSH Jump Host 사용';
-
-  @override
-  String get machineEditUseSshJumpHostSubtitle =>
-      'Bastion 또는 중간 SSH 호스트를 통해 연결합니다';
-
-  @override
-  String get machineEditSshJumpHost => 'SSH Jump Host';
-
-  @override
-  String get machineEditJumpHost => 'Jump Host';
-
-  @override
-  String get machineEditJumpHostHint => 'bastion.example.com';
-
-  @override
-  String get machineEditJumpPort => 'Jump Port';
-
-  @override
-  String get machineEditJumpUsername => 'Jump Username';
-
-  @override
-  String get machineEditJumpUsernameHint => '비워 두면 SSH Username을 사용합니다';
-
-  @override
-  String get machineEditJumpHostAuthentication => 'Jump Host 인증';
-
-  @override
-  String get machineEditJumpHostAuthenticationSubtitle =>
-      '비워 두면 대상 SSH 인증 정보를 재사용합니다';
-
-  @override
-  String get machineEditJumpPassword => 'Jump Password';
-
-  @override
-  String get machineEditSavedJumpHostPasswordIndicator =>
-      'Jump Host 비밀번호가 저장되어 있습니다. 새로 입력하면 교체됩니다.';
-
-  @override
-  String get machineEditJumpPrivateKeyPem => 'Jump Private Key (PEM)';
-
-  @override
-  String get machineEditSavedJumpHostPrivateKeyIndicator =>
-      'Jump Host Private Key가 저장되어 있습니다. 새로 입력하면 교체됩니다.';
-
-  @override
-  String get machineEditTesting => '테스트 중...';
-
-  @override
-  String get machineEditTestConnection => '연결 테스트';
-
-  @override
-  String get machineEditConnectionSuccessful => '연결에 성공했습니다';
-
-  @override
-  String get machineEditFillSshCredentials => 'SSH 인증 정보를 입력하세요';
 
   @override
   String get machineEditAddAndConnect => '추가하고 연결';
@@ -683,22 +483,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get connectToBridgeServer => 'Bridge 서버에 연결';
 
   @override
-  String get orConnectManually => '또는 수동으로 연결';
-
-  @override
-  String get serverUrl => '서버 URL';
-
-  @override
-  String get serverUrlHint => 'ws://<host-ip>:8765';
-
-  @override
   String get apiKeyOptional => 'API 키(선택 사항)';
 
   @override
   String get apiKeyHint => '인증이 없으면 비워 두세요';
-
-  @override
-  String get scanQrCode => 'QR 코드 스캔';
 
   @override
   String get setupGuide => '설정 가이드';
@@ -760,10 +548,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get add => '추가';
 
   @override
-  String get noSavedMachinesDescription =>
-      '저장된 컴퓨터가 없습니다.\n추가하면 빠르게 연결하거나 Bridge 서버를 원격으로 시작할 수 있습니다.';
-
-  @override
   String get readyToStart => '시작할 준비 완료';
 
   @override
@@ -771,9 +555,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get newSession => '새 세션';
-
-  @override
-  String get neverConnected => '연결한 적 없음';
 
   @override
   String get justNow => '방금';
@@ -845,21 +626,7 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get macosNativeAppBannerTitle => '네이티브 macOS 앱 사용';
-
-  @override
-  String get macosNativeAppBannerSubtitle =>
-      'CC Pocket은 네이티브 데스크톱 앱에서 macOS에 최적화되어 있습니다. GitHub Releases에서 설치하세요.';
-
-  @override
   String get openGitHubReleases => 'GitHub Releases 열기';
-
-  @override
-  String get macosNativeAppSettingsTitle => 'macOS 네이티브 앱';
-
-  @override
-  String get macosNativeAppSettingsSubtitle =>
-      'macOS에 최적화되어 있으므로 Mac에서는 권장됩니다.';
 
   @override
   String get supportBannerTitle => 'CC Pocket이 도움이 되었나요?';
@@ -1965,9 +1732,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get sectionConnectionAccounts => '연결 및 계정';
 
   @override
-  String get sectionNotifications => '알림';
-
-  @override
   String get sectionSupport => '후원';
 
   @override
@@ -2109,15 +1873,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get voiceInput => '음성 입력';
 
   @override
-  String get pushNotifications => '푸시 알림';
-
-  @override
-  String get pushNotificationsSubtitle => 'Bridge를 통해 세션 알림 받기';
-
-  @override
-  String get pushNotificationsUnavailable => 'Firebase 설정 후 사용 가능';
-
-  @override
   String get version => '버전';
 
   @override
@@ -2146,33 +1901,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get changelogFetchError => '변경 로그를 불러오지 못했습니다';
-
-  @override
-  String get fcmBridgeNotInitialized => 'Bridge가 초기화되지 않음';
-
-  @override
-  String get fcmTokenFailed => 'FCM 토큰을 가져오지 못했습니다';
-
-  @override
-  String get fcmRegistrationFailed => 'Bridge에 알림을 등록하지 못했습니다';
-
-  @override
-  String get fcmEnabled => '알림 활성화됨';
-
-  @override
-  String get fcmEnabledPending => 'Bridge 재연결 후 등록됩니다';
-
-  @override
-  String get fcmDisabled => '알림 비활성화됨';
-
-  @override
-  String get fcmDisabledPending => 'Bridge 재연결 후 등록 해제됩니다';
-
-  @override
-  String get pushPrivacyMode => '개인정보 보호 모드';
-
-  @override
-  String get pushPrivacyModeSubtitle => '알림에서 프로젝트 이름과 내용을 숨깁니다';
 
   @override
   String get updateNotificationLanguage => '알림 언어 업데이트';

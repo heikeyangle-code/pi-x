@@ -252,10 +252,7 @@ class WorkspaceSessionSelection {
 class WorkspaceShellScreen extends StatefulWidget {
   final List<RecentSession>? debugRecentSessions;
 
-  const WorkspaceShellScreen({
-    super.key,
-    this.debugRecentSessions,
-  });
+  const WorkspaceShellScreen({super.key, this.debugRecentSessions});
 
   static WorkspaceShellScreenState? maybeOf(BuildContext context) =>
       context.findAncestorStateOfType<WorkspaceShellScreenState>();
@@ -823,10 +820,7 @@ class WorkspaceShellScreenState extends State<WorkspaceShellScreen> {
 class AdaptiveHomeScreen extends StatefulWidget {
   final List<RecentSession>? debugRecentSessions;
 
-  const AdaptiveHomeScreen({
-    super.key,
-    this.debugRecentSessions,
-  });
+  const AdaptiveHomeScreen({super.key, this.debugRecentSessions});
 
   @override
   State<AdaptiveHomeScreen> createState() => _AdaptiveHomeScreenState();

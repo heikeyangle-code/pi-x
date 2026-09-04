@@ -211,8 +211,7 @@ class MachineManagerCubit extends Cubit<MachineManagerState> {
   Future<String?> getApiKey(String machineId) => _service.getApiKey(machineId);
 
   /// Build WebSocket URL with API key
-  Future<String> buildWsUrl(String machineId) =>
-      _service.buildWsUrl(machineId);
+  Future<String> buildWsUrl(String machineId) => _service.buildWsUrl(machineId);
 
   /// Start periodic health check
   void startPeriodicHealthCheck() {

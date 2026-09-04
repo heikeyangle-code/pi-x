@@ -397,31 +397,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dismissKeyboard => 'キーボードを閉じる';
 
   @override
-  String get serverUnreachable => 'サーバーに接続できません';
-
-  @override
-  String get serverUnreachableBody => 'Bridge サーバーに到達できません:';
-
-  @override
-  String get setupSteps => 'セットアップ手順:';
-
-  @override
-  String get setupStep1Title => 'Bridge Server を起動';
-
-  @override
-  String get setupStep1Command => 'npx --yes @ccpocket/bridge@latest';
-
-  @override
-  String get setupStep2Title => '常時起動したい場合はサービス登録';
-
-  @override
-  String get setupStep2Command => 'npx --yes @ccpocket/bridge@1 setup';
-
-  @override
-  String get setupNetworkHint =>
-      '両方のデバイスが同じネットワーク上にあることを確認してください（または Tailscale を使用）。';
-
-  @override
   String get connectAnyway => '接続を続行';
 
   @override
@@ -444,9 +419,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get editSettingsThenStart => '設定を変更して開始';
-
-  @override
-  String get serverRequiresApiKey => 'このサーバーには API キーが必要です';
 
   @override
   String get bridgeServerUpdated => 'Bridge Server を更新しました';
@@ -474,9 +446,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get failedToStopServer => 'サーバーの停止に失敗しました';
 
   @override
-  String get sshPassword => 'SSH パスワード';
-
-  @override
   String sshPasswordPrompt(String machineName) {
     return '$machineName の SSH パスワードを入力';
   }
@@ -488,80 +457,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get machineEditAddTitle => 'マシンを追加';
 
   @override
-  String get machineEditEditTitle => 'マシンを編集';
-
-  @override
-  String get machineEditDismissKeyboardTooltip => 'キーボードを閉じる';
-
-  @override
-  String get machineEditBasicInfo => '基本情報';
-
-  @override
-  String get machineEditName => '名前';
-
-  @override
-  String get machineEditNameHint => 'Home Mac';
-
-  @override
-  String get machineEditHostLabel => 'Host（IP またはホスト名）';
-
-  @override
-  String get machineEditHostHint => '100.64.1.2';
-
-  @override
-  String get machineEditPort => 'Port';
-
-  @override
-  String get machineEditBridgePortHint => '8765';
-
-  @override
   String get machineEditApiKey => 'API Key';
-
-  @override
-  String get machineEditOptional => '任意';
-
-  @override
-  String get machineEditUseSecureConnection => 'セキュア接続を使う';
-
-  @override
-  String get machineEditUseSecureConnectionSubtitle =>
-      'WSS で接続し、ヘルスチェックに HTTPS を使います';
-
-  @override
-  String get machineEditConnectionMode => '接続方式';
-
-  @override
-  String get machineEditConnectionModeAutomatic => '自動（推奨）';
-
-  @override
-  String get machineEditConnectionModeAutomaticSubtitle =>
-      '認証情報を送らずに確認し、HTTPSを優先して自動接続します';
-
-  @override
-  String get machineEditConnectionModeAutomaticSshSubtitle =>
-      'SSHトンネル内ではWSを使用し、通信はSSH接続で暗号化されます';
-
-  @override
-  String get machineEditConnectionModeSecureOnly => 'セキュアのみ（WSS）';
-
-  @override
-  String get machineEditConnectionModeSecureOnlySubtitle =>
-      'TLS接続を必須にし、WSへ自動的に切り替えません';
-
-  @override
-  String get machineEditConnectionModeStandardOnly => '標準（WS）';
-
-  @override
-  String get machineEditConnectionModeStandardOnlySubtitle =>
-      'ローカルネットワークまたはTailscaleなどのVPN内で使用してください';
-
-  @override
-  String get machineErrorBridgeNotFound =>
-      'Bridgeが見つかりません。起動状態と同じネットワークまたはVPNへの接続を確認してください';
-
-  @override
-  String get machineErrorSecureConnectionUnavailable =>
-      'セキュア接続を確立できません。TLSの設定を確認するか、意図する場合のみ「標準（WS）」を選択してください';
 
   @override
   String get machineAutomaticWsApiKeyWarningTitle => '標準接続（WS）が見つかりました';
@@ -572,102 +468,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get machineAutomaticWsApiKeyWarningConnect => 'WSで接続';
-
-  @override
-  String get machineEditSshConfiguration => 'SSH 設定';
-
-  @override
-  String get machineEditEnableSshRemoteStartup => 'SSH リモート起動を有効にする';
-
-  @override
-  String get machineEditEnableSshRemoteStartupSubtitle =>
-      'オフライン時に Bridge Server をリモート起動します';
-
-  @override
-  String get machineEditSshUsername => 'SSH Username';
-
-  @override
-  String get machineEditSshUsernameHint => 'myuser';
-
-  @override
-  String get machineEditSshPort => 'SSH Port';
-
-  @override
-  String get machineEditSshPortHint => '22';
-
-  @override
-  String get machineEditTargetAuthentication => '接続先の認証';
-
-  @override
-  String get machineEditPrivateKey => 'Private Key';
-
-  @override
-  String get machineEditSshPrivateKeyPem => 'SSH Private Key (PEM)';
-
-  @override
-  String get machineEditOpenSshPrivateKeyHint =>
-      '-----BEGIN OPENSSH PRIVATE KEY-----';
-
-  @override
-  String get machineEditSavedPrivateKeyIndicator =>
-      'Private Key は保存済みです。新しく入力すると置き換えます。';
-
-  @override
-  String get machineEditUseSshJumpHost => 'SSH Jump Host を使う';
-
-  @override
-  String get machineEditUseSshJumpHostSubtitle => '踏み台または中継 SSH ホスト経由で接続します';
-
-  @override
-  String get machineEditSshJumpHost => 'SSH Jump Host';
-
-  @override
-  String get machineEditJumpHost => 'Jump Host';
-
-  @override
-  String get machineEditJumpHostHint => 'bastion.example.com';
-
-  @override
-  String get machineEditJumpPort => 'Jump Port';
-
-  @override
-  String get machineEditJumpUsername => 'Jump Username';
-
-  @override
-  String get machineEditJumpUsernameHint => '未入力なら SSH Username を使います';
-
-  @override
-  String get machineEditJumpHostAuthentication => 'Jump Host の認証';
-
-  @override
-  String get machineEditJumpHostAuthenticationSubtitle =>
-      '未入力なら接続先の SSH 認証情報を再利用します';
-
-  @override
-  String get machineEditJumpPassword => 'Jump Password';
-
-  @override
-  String get machineEditSavedJumpHostPasswordIndicator =>
-      'Jump Host パスワードは保存済みです。新しく入力すると置き換えます。';
-
-  @override
-  String get machineEditJumpPrivateKeyPem => 'Jump Private Key (PEM)';
-
-  @override
-  String get machineEditSavedJumpHostPrivateKeyIndicator =>
-      'Jump Host Private Key は保存済みです。新しく入力すると置き換えます。';
-
-  @override
-  String get machineEditTesting => 'テスト中...';
-
-  @override
-  String get machineEditTestConnection => '接続をテスト';
-
-  @override
-  String get machineEditConnectionSuccessful => '接続に成功しました';
-
-  @override
-  String get machineEditFillSshCredentials => 'SSH 認証情報を入力してください';
 
   @override
   String get machineEditAddAndConnect => '追加して接続';
@@ -684,22 +484,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get connectToBridgeServer => 'Bridge Server に接続';
 
   @override
-  String get orConnectManually => 'または手動で接続';
-
-  @override
-  String get serverUrl => 'サーバー URL';
-
-  @override
-  String get serverUrlHint => 'ws://<host-ip>:8765';
-
-  @override
   String get apiKeyOptional => 'API キー（任意）';
 
   @override
   String get apiKeyHint => '認証なしの場合は空欄';
-
-  @override
-  String get scanQrCode => 'QR コードをスキャン';
 
   @override
   String get setupGuide => 'セットアップガイド';
@@ -761,10 +549,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get add => '追加';
 
   @override
-  String get noSavedMachinesDescription =>
-      '保存済みのマシンはありません。\n追加すると、すばやく接続したり Bridge Server をリモート起動したりできます。';
-
-  @override
   String get readyToStart => '準備完了';
 
   @override
@@ -773,9 +557,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get newSession => '新規セッション';
-
-  @override
-  String get neverConnected => '未接続';
 
   @override
   String get justNow => 'たった今';
@@ -847,21 +628,7 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get macosNativeAppBannerTitle => 'macOS ネイティブ版をおすすめします';
-
-  @override
-  String get macosNativeAppBannerSubtitle =>
-      'Mac では、macOS に最適化された CC Pocket ネイティブ版を GitHub Releases からインストールできます。';
-
-  @override
   String get openGitHubReleases => 'GitHub Releases を開く';
-
-  @override
-  String get macosNativeAppSettingsTitle => 'macOS ネイティブ版';
-
-  @override
-  String get macosNativeAppSettingsSubtitle =>
-      'macOS に最適化されているため、Mac ではネイティブ版がおすすめです。';
 
   @override
   String get supportBannerTitle => 'CC Pocketが役に立っていたら';
@@ -1952,9 +1719,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get sectionConnectionAccounts => '接続とアカウント';
 
   @override
-  String get sectionNotifications => '通知';
-
-  @override
   String get sectionSupport => '応援';
 
   @override
@@ -2096,15 +1860,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get voiceInput => '音声入力';
 
   @override
-  String get pushNotifications => 'プッシュ通知';
-
-  @override
-  String get pushNotificationsSubtitle => 'Bridge 経由でセッション通知を受け取ります';
-
-  @override
-  String get pushNotificationsUnavailable => 'Firebase 設定後に利用できます';
-
-  @override
   String get version => 'バージョン';
 
   @override
@@ -2133,33 +1888,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get changelogFetchError => '変更履歴の取得に失敗しました';
-
-  @override
-  String get fcmBridgeNotInitialized => 'Bridge が未初期化です';
-
-  @override
-  String get fcmTokenFailed => 'FCM token を取得できませんでした';
-
-  @override
-  String get fcmRegistrationFailed => 'Bridge への通知登録に失敗しました';
-
-  @override
-  String get fcmEnabled => '通知を有効化しました';
-
-  @override
-  String get fcmEnabledPending => 'Bridge 再接続後に通知登録します';
-
-  @override
-  String get fcmDisabled => '通知を無効化しました';
-
-  @override
-  String get fcmDisabledPending => 'Bridge 再接続後に通知解除します';
-
-  @override
-  String get pushPrivacyMode => 'プライバシーモード';
-
-  @override
-  String get pushPrivacyModeSubtitle => '通知にプロジェクト名や内容を含めない';
 
   @override
   String get updateNotificationLanguage => '通知言語を更新';

@@ -3,6 +3,12 @@
 > 策略：**不动现有 codex/claude 路径**，新增 `PI_HOST=1` 模式：websocket 客户端协议原样保留，
 > 内部 agent 层换成 pi-host（每项目一个 pi --mode rpc 引擎）。干净 diff、可回退、易合上游。
 
+> **状态（已落地）**：`PI_HOST=1` 不再替换整台服务器。`index.ts` 在同一个
+> `BridgeWebSocketServer` 里注入 `PiAdapter`——只有聊天回合消息（start/input/approve/
+> reject/answer/stop_session）路由到 pi 引擎；文件/工作区/git/上传下载原样保留。
+> `src/pi-host/pi-adapter.ts` 为这层翻译（入站 op → `PiGateway.handleControl`/`respondUi`，
+> 出站 pi 事件 → `cc-adapter` → CC Pocket `ServerMessage`），全部单测覆盖。
+
 ## 消息映射（CC Pocket 协议 ⇄ pi RPC）
 
 ### Client → Server（parseClientMessage，parser.ts 类型）
@@ -32,14 +38,20 @@
 | `error` | response `success:false` 或 `extension_error` |
 | `session_list`/`diff_result`/`directory_listing` | 现有一致（session 索引/FS） |
 
-## 实现结构（新增文件，改动最小）
+## 实现结构（已落地，最小改动，单服务器）
 
 ```
-src/pi-host/                     ← 已有：engine-process/pool/rpc/surfaces/index
-src/pi-adapter.ts   (新)         输入消息 → EnginePool + rpc.* ；输出 pi 事件 → ServerMessage
-src/websocket.ts    (小改)       if (process.env.PI_HOST === "1") 走 PiAdapter 分支
-src/session.ts      (不改)       codex/claude 路径保留（非 pi 模式）
+src/pi-host/pi-adapter.ts   ✅ 新：入站 CC 聊天 op → PiGateway 控制 + respondUi；出站 pi 事件 → CC Pocket 消息
+src/websocket.ts            ✅ 小改：BridgeServerOptions.piAdapter 可选注入；handleClientMessage 顶部拦截聊天回合 op
+src/index.ts                ✅ 改：PI_HOST=1 不再换整台服务器，改为普通完整服务器 + 注入 PiAdapter
+src/session.ts              🔒 不改：codex/claude 路径保留（非 PI 模式）
+src/pi-host/server.ts       🔒 保留：§6 直通传输仍旧导出，供直接读 pi 帧的 App 用（index.ts 不再走它）
 ```
+
+> **引擎更新不受影响**：`PiAdapter` 只依赖 `PI_ENGINE_ENTRY`（pi CLI 入口）+ pi RPC 协议
+> （prompt/get_state/abort/handleControl），不钉引擎版本；`engineVersion` 仅作为包在
+> frame/envelope 里的版本标签。引擎换 `engines/current` 版本 → 重启引擎子进程即可，
+> bridge/UI/本 adapter 接线零改动（见 ENGINE-INTEGRATION §4）。
 
 ## 验收（端到端，真机或本机）
 

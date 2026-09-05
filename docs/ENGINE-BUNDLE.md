@@ -6,6 +6,12 @@
 >   **无需额外安装 `@earendil-works/pi-server`**——该缺口只影响 import SDK（进程内方案）的 `dist/index.js` 静态 import 链
 >   （`index.js → main.js → experimental/server.js → pi-server`，且 dependencies 未声明它）；CLI 入口是打包产物
 >   `dist/bundle/cli.js`，不依赖 pi-server。若未来走进程内 SDK（ENGINE-INTEGRATION 路线 B），需 `pi-coding-agent` + `pi-server` 同版本钉死。
+>
+> 引擎接线（单服务器）说明（2026-09-05）：`PI_HOST=1` 现在把 pi 作为引擎注入到同一个
+> `BridgeWebSocketServer`（docs/M2-WIRING.md）。bridge 侧只通过 `PI_ENGINE_ENTRY` 指定的
+> `pi --mode rpc` 入口 + RPC 协议通信，**不钉引擎版本**；`engines/current` 换版本 = 重启引擎
+> 子进程，bridge/UI/adapter 接线零改动。`engines/<ver>` 的 node 版本由 `requiresRuntime` 约束，
+> 与路线 A 内置工具链一致。
 
 ## 产物布局（App 运行时目录，随 APK 首启解压或首次下载）
 

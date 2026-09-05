@@ -3,6 +3,11 @@
 > 结论先行：**引擎 = `pi --mode rpc` 子进程（官方 JSONL 协议），Pi Host = 薄网关**。
 > 不内嵌 AgentSession 到 bridge（除非未来需要扩展自定义 GUI 组件）。
 
+> **实现状态（已落地，单服务器）**：`PI_HOST=1` 在同一个 `BridgeWebSocketServer` 中注入
+> `PiAdapter`——聊天回合消息（start/input/approve/reject/answer/stop_session）经
+> `PiGateway` 走 pi 引擎；文件/工作区/git/上传下载原样保留。见 `docs/M2-WIRING.md`。
+> `engineVersion` 仅作帧标签，adapter 不钉引擎版本 → 引擎更新零影响。
+
 ## 1. 两条路线对比（基于 pi 0.85.x 官方文档与源码）
 
 | 维度 | A. `pi --mode rpc` 子进程（推荐） | B. bridge 进程内嵌 AgentSession |

@@ -133,6 +133,10 @@ import {
   normalizeCodexPermissionsMode,
   withDerivedCodexPermissionsMode,
 } from "./codex-permissions.js";
+import {
+  PiAdapter,
+  toServerMessage,
+} from "./pi-host/pi-adapter.js";
 
 type SystemServerMessage = Extract<ServerMessage, { type: "system" }>;
 type InputClientMessage = Extract<ClientMessage, { type: "input" }>;
@@ -755,6 +759,12 @@ export interface BridgeServerOptions {
   firebaseAuth?: FirebaseAuthClient;
   promptHistoryBackup?: PromptHistoryBackupStore;
   promptHistoryStore?: PromptHistoryStore;
+  /**
+   * Optional pi engine adapter (PI_HOST=1). When present, CC chat-turn messages
+   * (start/input/approve/reject/answer/stop_session) route to the pi engine;
+   * files/workspace/git/upload/download stay on this server unchanged.
+   */
+  piAdapter?: PiAdapter | null;
   platform?: NodeJS.Platform;
   fileListMaxEntries?: number;
   fileListMaxBytes?: number;
@@ -793,6 +803,8 @@ export class BridgeWebSocketServer {
 
   private wss: WebSocketServer;
   private sessionManager: SessionManager;
+  /** Optional pi engine adapter; null in non-PI mode (behaviour unchanged). */
+  private piAdapter: PiAdapter | null = null;
   private apiKey: string | null;
   private allowedDirs: string[];
   private imageStore: ImageStore | null;
@@ -908,6 +920,13 @@ export class BridgeWebSocketServer {
     this.promptHistoryBackup = promptHistoryBackup ?? null;
     this.promptHistoryStore = promptHistoryStore ?? null;
     this.platform = platform ?? process.platform;
+    this.piAdapter = options.piAdapter ?? null;
+    if (this.piAdapter) {
+      // Route pi engine events to the owning client through this server's own
+      // send() so protocol/opt-in filtering still applies.
+      this.piAdapter.deliver = (ws, message) =>
+        this.send(ws, toServerMessage(message));
+    }
     this.fileListMaxEntries = normalizePositiveLimit(
       fileListMaxEntries,
       positiveEnvInt(
@@ -2674,6 +2693,7 @@ export class BridgeWebSocketServer {
     this.sessionManager.destroyAll();
     this.flushAllDeltaBatches();
     stopManagedCodexAppServers();
+    void this.piAdapter?.stopAll();
     this.debugEvents.clear();
     this.wss.close();
   }
@@ -2795,6 +2815,12 @@ export class BridgeWebSocketServer {
       );
       this.sendPromptHistoryStatus(ws);
       return;
+    }
+
+    // PI_HOST=1: route CC chat-turn messages to the pi engine. Everything else
+    // (files, workspace, git, upload, download) proceeds on the existing path.
+    if (this.piAdapter && this.piAdapter.accepts(msg)) {
+      if (await this.piAdapter.handle(ws, msg)) return;
     }
 
     const incomingSessionId = this.extractSessionIdFromClientMessage(msg);

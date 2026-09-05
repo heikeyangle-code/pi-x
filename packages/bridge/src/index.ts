@@ -24,7 +24,8 @@ import {
   PromptHistoryStore,
 } from "./prompt-history-store.js";
 import { parseAllowedDirectories } from "./path-utils.js";
-import { startPiHostServer } from "./pi-host/server.js";
+import { PiGateway, PI_WIRE_PROTOCOL_VERSION } from "./pi-host/pi-gateway.js";
+import { PiAdapter } from "./pi-host/pi-adapter.js";
 import { createRuntimeHooks } from "./pi-host/runtime-manager.js";
 import { parseBridgePort } from "./bridge-port.js";
 import { listenForStartup } from "./server-listen.js";
@@ -56,33 +57,40 @@ export async function startServer() {
 
   console.log("[bridge] Starting ccpocket bridge server...");
 
-  if (process.env.PI_HOST === "1") {
-    const piEntry = process.env.PI_ENGINE_ENTRY;
-    if (!piEntry) {
-      throw new Error("PI_HOST=1 requires PI_ENGINE_ENTRY (absolute path to the pi CLI entry)");
-    }
-    const engineVersion = process.env.PI_ENGINE_VERSION ?? "dev";
-    const piHome = process.env.PI_HOME ?? process.env.HOME ?? "";
-    // Route B runtime hooks (docs/ENGINE-BUNDLE.md "路线切换 UI 落地").
-    const runtime = createRuntimeHooks({
-      piHome,
-      enginesDir: dirname(piEntry),
-    });
-    const { httpServer: piHttp } = await startPiHostServer({
-      port: PORT,
-      piEntry,
-      engineVersion,
-      resolveCwd: (projectId) => projectId,
-      commandPrefix: (cwd) => runtime.resolveCommandPrefix(cwd),
-      runtimeStatus: () => runtime.status(),
-      runtimeInstall: (route, onProgress) => runtime.install(route, onProgress),
-    });
-    console.log(`[pi-host] Ready on ws://127.0.0.1:${PORT} (pi engine ${engineVersion})`);
-    process.on("SIGINT", () => process.exit(0));
-    process.on("SIGTERM", () => process.exit(0));
-    void piHttp;
-    return;
-  }
+  // PI_HOST=1: run pi as the engine INSIDE the same BridgeWebSocketServer, so
+  // files/workspace/git/upload/download keep working unchanged (docs/M2-WIRING).
+  // startPiHostServer (a standalone ws://127.0.0.1 pi-frame transport) remains
+  // exported for apps that speak the §6 envelope protocol directly, but this
+  // entry no longer branches to it.
+  const piEngineVersion = process.env.PI_ENGINE_VERSION ?? "dev";
+  const piHome = process.env.PI_HOME ?? process.env.HOME ?? "";
+  const piAdapter: PiAdapter | null =
+    process.env.PI_HOST === "1"
+      ? (() => {
+          const piEntry = process.env.PI_ENGINE_ENTRY;
+          if (!piEntry) {
+            throw new Error(
+              "PI_HOST=1 requires PI_ENGINE_ENTRY (absolute path to the pi CLI entry)",
+            );
+          }
+          const runtime = createRuntimeHooks({
+            piHome,
+            enginesDir: dirname(piEntry),
+          });
+          const gateway = new PiGateway({
+            piEntry,
+            engineVersion: piEngineVersion,
+            protocolVersion: PI_WIRE_PROTOCOL_VERSION,
+            piHome,
+            resolveCwd: (projectId) => projectId,
+            commandPrefix: (cwd) => runtime.resolveCommandPrefix(cwd),
+            runtimeStatus: () => runtime.status(),
+            runtimeInstall: (route, onProgress) =>
+              runtime.install(route, onProgress),
+          });
+          return new PiAdapter({ gateway });
+        })()
+      : null;
 
   if (API_KEY) {
     console.log("[bridge] API key authentication enabled");
@@ -314,6 +322,7 @@ export async function startServer() {
     firebaseAuth,
     promptHistoryBackup,
     promptHistoryStore,
+    piAdapter,
   });
 
   let shuttingDown = false;

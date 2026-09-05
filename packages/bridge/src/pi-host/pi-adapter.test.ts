@@ -72,13 +72,13 @@ describe("PiAdapter", () => {
     expect(handled).toBe(true);
     expect(controls[0]?.op).toBe("get_state");
     expect(controls[0]?.projectId).toBe("/proj");
-    expect(delivered).toEqual([{ type: "status", state: "idle" }]);
+    expect(delivered).toEqual([{ type: "status", status: "idle" }]);
   });
 
-  it("input routes to prompt control", async () => {
+  it("input routes to prompt control (project bound via start's projectPath)", async () => {
     const { adapter, controls } = makeAdapter();
     const { ws } = fakeSocket();
-    await adapter.handle(ws as never, { type: "start", projectId: "/p" } as never);
+    await adapter.handle(ws as never, { type: "start", projectPath: "/p" } as never);
     await adapter.handle(ws as never, { type: "input", text: "hi", sessionId: "s1" } as never);
     const prompt = controls.find((c) => c.op === "prompt");
     expect(prompt?.payload).toEqual({ message: "hi" });
@@ -88,7 +88,7 @@ describe("PiAdapter", () => {
   it("approve/reject/answer route to ui responses", async () => {
     const { adapter, responses } = makeAdapter();
     const { ws } = fakeSocket();
-    await adapter.handle(ws as never, { type: "start", projectId: "/p" } as never);
+    await adapter.handle(ws as never, { type: "start", projectPath: "/p" } as never);
     await adapter.handle(ws as never, { type: "approve", id: "r1", sessionId: "s" } as never);
     await adapter.handle(ws as never, { type: "reject", id: "r2", sessionId: "s" } as never);
     await adapter.handle(ws as never, { type: "answer", toolUseId: "r3", result: "43", sessionId: "s" } as never);
@@ -102,7 +102,7 @@ describe("PiAdapter", () => {
   it("stop_session routes to abort control", async () => {
     const { adapter, controls } = makeAdapter();
     const { ws } = fakeSocket();
-    await adapter.handle(ws as never, { type: "start", projectId: "/p" } as never);
+    await adapter.handle(ws as never, { type: "start", projectPath: "/p" } as never);
     await adapter.handle(ws as never, { type: "stop_session", sessionId: "s" } as never);
     expect(controls.some((c) => c.op === "abort")).toBe(true);
   });
@@ -111,8 +111,8 @@ describe("PiAdapter", () => {
     const { adapter, gateway, delivered } = makeAdapter();
     const a = fakeSocket();
     const b = fakeSocket();
-    void adapter.handle(a.ws as never, { type: "start", projectId: "/p1" } as never);
-    void adapter.handle(b.ws as never, { type: "start", projectId: "/p2" } as never);
+    void adapter.handle(a.ws as never, { type: "start", projectPath: "/p1" } as never);
+    void adapter.handle(b.ws as never, { type: "start", projectPath: "/p2" } as never);
     delivered.length = 0;
     gateway.send?.({
       kind: "pi",
@@ -124,13 +124,13 @@ describe("PiAdapter", () => {
         assistantMessageEvent: { type: "text_delta", delta: "hello" },
       },
     });
-    expect(delivered).toEqual([{ type: "stream_delta", delta: "hello", kind: "text" }]);
+    expect(delivered).toEqual([{ type: "stream_delta", text: "hello" }]);
   });
 
   it("maps extension_ui_request to permission_request and engine_exit to idle", () => {
     const { adapter, gateway, delivered } = makeAdapter();
     const s = fakeSocket();
-    void adapter.handle(s.ws as never, { type: "start", projectId: "/p" } as never);
+    void adapter.handle(s.ws as never, { type: "start", projectPath: "/p" } as never);
     delivered.length = 0;
     gateway.send?.({
       kind: "pi", engineVersion: "dev", protocolVersion: 1,
@@ -141,15 +141,15 @@ describe("PiAdapter", () => {
       frame: { projectId: "/p", type: "agent_settled" },
     });
     expect(delivered[0]).toMatchObject({
-      type: "permission_request", id: "u1", method: "confirm", title: "T", message: "M",
+      type: "permission_request", toolUseId: "u1", toolName: "confirm", input: { title: "T", message: "M" },
     });
-    expect(delivered[1]).toEqual({ type: "status", state: "idle" });
+    expect(delivered[1]).toEqual({ type: "status", status: "idle" });
   });
 
   it("unsubscribes a socket on close and stops delivering to it", () => {
     const { adapter, gateway, delivered } = makeAdapter();
     const s = fakeSocket();
-    void adapter.handle(s.ws as never, { type: "start", projectId: "/p" } as never);
+    void adapter.handle(s.ws as never, { type: "start", projectPath: "/p" } as never);
     s.close();
     delivered.length = 0;
     gateway.send?.({
@@ -162,7 +162,7 @@ describe("PiAdapter", () => {
   it("drops frames for unknown projects and messages without content", () => {
     const { adapter, gateway, delivered } = makeAdapter();
     const s = fakeSocket();
-    void adapter.handle(s.ws as never, { type: "start", projectId: "/p" } as never);
+    void adapter.handle(s.ws as never, { type: "start", projectPath: "/p" } as never);
     delivered.length = 0;
     gateway.send?.({
       kind: "pi", engineVersion: "dev", protocolVersion: 1,

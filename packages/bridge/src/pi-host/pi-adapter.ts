@@ -114,7 +114,7 @@ export class PiAdapter {
       await this.gateway
         .handleControl({ type: "control", op: "get_state", projectId })
         .catch(() => undefined);
-      this.deliver?.(ws, { type: "status", state: "idle" });
+      this.deliver?.(ws, { type: "status", status: "idle" });
       return true;
     }
 
@@ -135,10 +135,20 @@ export class PiAdapter {
     return true;
   }
 
-  /** Resolve the target project id from the message or the socket binding. */
+  /**
+   * Resolve the target project id from the message or the socket binding.
+   *
+   * The CC Pocket client sends the workspace path as `projectPath` on `start`
+   * (parser.ts); the pi gateway treats a project id as its cwd, so the path
+   * and the id are the same string. We therefore accept both `projectId` and
+   * `projectPath`, then fall back to the binding established by `start`.
+   */
   private projectFor(ws: WebSocket, msg: ClientMessage): string {
-    const inline = (msg as Record<string, unknown>).projectId;
-    if (typeof inline === "string" && inline !== "") return inline;
+    const raw = msg as Record<string, unknown>;
+    const id = typeof raw.projectId === "string" ? raw.projectId : "";
+    if (id !== "") return id;
+    const path = typeof raw.projectPath === "string" ? raw.projectPath : "";
+    if (path !== "") return path;
     return this.wsProject.get(ws) ?? "";
   }
 

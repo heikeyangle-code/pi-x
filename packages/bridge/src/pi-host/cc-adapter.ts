@@ -48,122 +48,158 @@ export interface HostAction {
   stop?: boolean;
 }
 
-/** pi frame -> one or more CC Pocket-style server messages. */
+/**
+ * pi frame -> one or more CC Pocket server messages (canonical wire schema).
+ *
+ * The payloads emitted here are typed as `CompatMessage` for unit tests, but
+ * their field shapes are the exact canonical shapes the Flutter app's
+ * `ServerMessage.fromJson` (apps/mobile/lib/models/messages.dart) validates
+ * with strict casts. Every type below therefore carries ALL required fields:
+ *   - status            -> { status }
+ *   - stream_delta      -> { text }
+ *   - thinking_delta    -> { text }
+ *   - assistant         -> { message: { id, role, content: [..], model } }
+ *   - tool_result       -> { toolUseId, content, toolName? }
+ *   - permission_request-> { toolUseId, toolName, input }
+ * Emitting a wrong/missing field makes the app throw on parse, so keep this
+ * aligned with the Dart checks when evolving the mapping.
+ */
 export function piFrameToServerMessages(frame: PiFrame): CompatMessage[] {
   const type = String(frame["type"] ?? "");
 
   switch (type) {
     case "message_update": {
-      const usage = frame["usage"];
       const ev = frame["assistantMessageEvent"] as PiFrame | undefined;
       if (ev === undefined) return [];
       const evType = String(ev["type"] ?? "");
-      // stream_delta carries text/thinking chunks for the existing UI.
-      if (evType === "text_delta" || evType === "thinking_delta") {
-        return [
-          {
-            type: "stream_delta",
-            delta: String(ev["delta"] ?? ""),
-            kind: evType === "thinking_delta" ? "thinking" : "text",
-            contentIndex: ev["contentIndex"],
-            usage: usage ?? undefined,
-          },
-        ];
+      switch (evType) {
+        case "text_delta":
+          return [{ type: "stream_delta", text: String(ev["delta"] ?? "") }];
+        case "thinking_delta":
+          return [{ type: "thinking_delta", text: String(ev["delta"] ?? "") }];
+        case "text_start":
+        case "thinking_start":
+          // Streaming begins on the first delta; nothing to emit at start.
+          return [];
+        case "text_end": {
+          const text = String(ev["content"] ?? "");
+          if (text === "") return [];
+          return [
+            {
+              type: "assistant",
+              message: {
+                id: String(ev["id"] ?? nonce("a")),
+                role: "assistant",
+                content: [{ type: "text", text }],
+                model: String(frame["model"] ?? ""),
+              },
+            },
+          ];
+        }
+        case "toolcall_start": {
+          const id = String(ev["id"] ?? "toolcall");
+          return [
+            {
+              type: "tool_result",
+              toolUseId: id,
+              content: "",
+              toolName: String(ev["toolName"] ?? ""),
+            },
+          ];
+        }
+        case "toolcall_end": {
+          const tool = (ev["toolCall"] as PiFrame | undefined) ?? {};
+          const id = String(tool["id"] ?? ev["id"] ?? "toolcall");
+          return [
+            {
+              type: "tool_result",
+              toolUseId: id,
+              content: stringifyInput(tool["input"]),
+              toolName: String(tool["name"] ?? ev["toolName"] ?? ""),
+            },
+          ];
+        }
+        default:
+          return [];
       }
-      if (evType === "text_start" || evType === "thinking_start") {
-        return [{ type: "assistant", role: "assistant", partial: true }];
-      }
-      if (evType === "text_end") {
-        return [
-          {
-            type: "assistant",
-            role: "assistant",
-            content: String(ev["content"] ?? ""),
-          },
-        ];
-      }
-      if (evType === "toolcall_start") {
-        return [
-          {
-            type: "tool_result",
-            toolName: String(ev["toolName"] ?? ""),
-            id: String(ev["id"] ?? ""),
-            status: "running",
-          },
-        ];
-      }
-      if (evType === "toolcall_end") {
-        const tool = (ev["toolCall"] as PiFrame | undefined) ?? {};
-        return [
-          {
-            type: "tool_result",
-            toolName: String(tool["name"] ?? ""),
-            id: String(tool["id"] ?? ev["id"] ?? ""),
-            status: "done",
-            input: tool["input"] ?? {},
-          },
-        ];
-      }
-      return [];
     }
 
     case "extension_ui_request": {
-      // permission_request-style approval the app can render as a card.
+      // Tool/extension approval -> the app's approval card. The app answers
+      // by id, which the adapter forwards to gateway.respondUi(id, ...).
+      const id = String(frame["id"] ?? "");
       const method = String(frame["method"] ?? "confirm");
-      return [
-        {
-          type: "permission_request",
-          id: String(frame["id"] ?? ""),
-          method,
-          title: String(frame["title"] ?? ""),
-          message: String(frame["message"] ?? ""),
-          options: Array.isArray(frame["options"])
-            ? frame["options"]
-            : undefined,
-        },
-      ];
+      const input: Record<string, unknown> = {
+        title: String(frame["title"] ?? ""),
+        message: String(frame["message"] ?? ""),
+      };
+      if (Array.isArray(frame["options"])) input["options"] = frame["options"];
+      return [{ type: "permission_request", toolUseId: id, toolName: method, input }];
     }
 
     case "agent_start":
-      return [{ type: "status", state: "running" }];
+      return [{ type: "status", status: "running" }];
     case "agent_settled":
-      return [{ type: "status", state: "idle" }];
+    case "agent_end":
+      return [{ type: "status", status: "idle" }];
 
     case "bash_execution_update": {
       const d = frame["delta"];
       return d === undefined
         ? []
-        : [{ type: "tool_result", status: "running", outputDelta: String(d) }];
+        : [
+            {
+              type: "tool_result",
+              toolUseId: String(frame["toolUseId"] ?? "bash"),
+              content: String(d),
+              toolName: "bash",
+            },
+          ];
     }
 
     case "tool_execution_start":
       return [
         {
           type: "tool_result",
+          toolUseId: String(frame["id"] ?? "tool"),
+          content: "",
           toolName: String(frame["toolName"] ?? ""),
-          id: String(frame["id"] ?? ""),
-          status: "running",
         },
       ];
     case "tool_execution_end":
       return [
         {
           type: "tool_result",
+          toolUseId: String(frame["id"] ?? "tool"),
+          content: String(frame["output"] ?? frame["result"] ?? ""),
           toolName: String(frame["toolName"] ?? ""),
-          id: String(frame["id"] ?? ""),
-          status: "done",
         },
       ];
 
-    case "agent_end":
-      return [{ type: "status", state: "idle" }];
-
     case "engine_exit":
-      return [{ type: "status", state: "idle", engineExited: true }];
+      return [{ type: "status", status: "idle" }];
 
     default:
       return [];
   }
+}
+
+/** Serialize a tool input to the string content a tool_result carries. */
+function stringifyInput(input: unknown): string {
+  if (input === undefined || input === null) return "";
+  if (typeof input === "string") return input;
+  try {
+    return JSON.stringify(input);
+  } catch {
+    return String(input);
+  }
+}
+
+let nonceCounter = 0;
+/** Short unique id for synthesized assistant messages. */
+function nonce(prefix: string): string {
+  nonceCounter += 1;
+  return `${prefix}-${Date.now().toString(36)}-${nonceCounter}`;
 }
 
 /**

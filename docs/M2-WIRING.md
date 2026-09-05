@@ -11,32 +11,30 @@
 
 ## 消息映射（CC Pocket 协议 ⇄ pi RPC）
 
-### Client → Server（parseClientMessage，parser.ts 类型）
+### Client → Server（已收编到 pi 的范围以 `PiAdapter.accepts` 为准）
 
-| CC Pocket 消息 | Pi Host 动作 |
-|---|---|
-| `start {projectPath, sessionId?, continue?, permissionMode?}` | `EnginePool.getOrStart(projectId, cwd)`；`continue` → `switch_session`；否则引擎内新建会话（`new_session`/直接 prompt） |
-| `input {text}` | `prompt(message)`；引擎流式中自动加 `streamingBehavior:"steer"`（对应 CC Pocket 的 steer 语义） |
-| `approve {id}` | 查该 `extension_ui_request.id` → 回 `extension_ui_response {confirmed:true}` |
-| `reject {id}` | 同上 `{confirmed:false}` 或 `{cancelled:true}` |
-| `answer {toolUseId, result}` | `extension_ui_response {id: toolUseId, value: result}` |
-| `stop_session` | `abort`（+ 可选 `abort_bash`） |
-| `list_sessions` | 项目会话 = pi JSONL 索引（`~/.pi/agent/sessions` 按项目目录）；引擎进程内可 `get_tree` 补充分支 |
-| `get_history` | `get_messages` / `get_entries` |
-| `get_diff` / `list_directory` / `get_usage` | 保留 bridge 现有直连 FS 实现（agent 无关） |
+| CC Pocket 消息 | 状态 | Pi Host 动作 |
+|---|---|---|
+| `start {projectId, projectPath}` | ✅ 收编 | `Adapter.handle`：`bind` socket→project + `get_state` 预热引擎 + 回 `status{idle}`；引擎进程随首个 `input` 启动 |
+| `input {text}` | ✅ 收编 | `prompt(message)`（`inboundToActions` → gateway `handleControl{op:"prompt"}`） |
+| `approve {id}` | ✅ 收编 | `respondUi(id, {confirmed:true})` 回答对应 `extension_ui_request` |
+| `reject {id}` | ✅ 收编 | `respondUi(id, {confirmed:false})` |
+| `answer {toolUseId, result}` | ✅ 收编 | `respondUi(toolUseId, {value:result})` |
+| `stop_session` | ✅ 收编 | `handleControl{op:"abort"}`（中断当前生成，若需停引擎则用 `abort`+`pool.stop`） |
+| `list_sessions` / `get_history` | 🔒 保留 bridge | 未收编（不走 pi 引擎）；注意：PI 模式下由 bridge 原 session 索引（codex/claude）响应，可能为空 |
+| `get_diff` / `list_directory` / `get_usage` | 🔒 保留 bridge | 直连 FS，agent 无关（原实现不变） |
 
-### Server → Client
+### Server → Client（`cc-adapter.piFrameToServerMessages` 实际落地子集）
 
-| CC Pocket 消息 | pi 事件来源 |
-|---|---|
-| `status {idle/running/waiting_approval}` | 引擎 agent_start/end/settled + 未决 extension_ui_request |
-| `stream_delta` | `message_update`：text_delta→文本；thinking_delta→思考块；toolcall_delta→工具参数缓冲 |
-| `assistant`（整条） | `message_end.message`（权威快照） |
-| `tool_result` | `tool_execution_start/update/end` + `toolcall_end.toolCall` 结果 |
-| `permission_request` | `extension_ui_request{method:confirm}`（工具/扩展审批）→ UI 弹审批卡 |
-| `result {cost, duration}` | `agent_settled` + `message_update.usage`/`get_session_stats` |
-| `error` | response `success:false` 或 `extension_error` |
-| `session_list`/`diff_result`/`directory_listing` | 现有一致（session 索引/FS） |
+| CC Pocket 消息 | pi 事件来源 | 状态 |
+|---|---|---|
+| `status {status: idle/running}` | `agent_start`→running；`agent_settled`/`agent_end`/`engine_exit`→idle | ✅ 已落地 |
+| `stream_delta {text}` / `thinking_delta {text}` | `message_update.assistantMessageEvent`：`text_delta`→`stream_delta{text}`，`thinking_delta`→`thinking_delta{text}`；`text_end`→`assistant{ message.content:[{type:text,text}] }`（`text_start`/`thinking_start` 不产消息，流从首个 delta 起） | ✅ 已落地 |
+| `tool_result {toolUseId, content}` | `toolcall_start/end`（`toolCall`）、`tool_execution_start/end`、`bash_execution_update`（content=delta） | ✅ 已落地 |
+| `permission_request {toolUseId, toolName, input}` | `extension_ui_request{method:confirm}`（工具/扩展审批）→ UI 弹审批卡 | ✅ 已落地 |
+| `result {cost, duration}` | `agent_settled` + usage/get_session_stats | ⬜ 未映射（后续加） |
+| `error` | response `success:false` / `extension_error` | ⬜ 未映射（后续加） |
+| `session_list`/`diff_result`/`directory_listing` | session 索引 / FS（bridge 直连） | 🔒 原实现不变 |
 
 ## 实现结构（已落地，最小改动，单服务器）
 

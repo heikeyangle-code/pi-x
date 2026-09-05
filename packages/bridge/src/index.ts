@@ -57,40 +57,36 @@ export async function startServer() {
 
   console.log("[bridge] Starting ccpocket bridge server...");
 
-  // PI_HOST=1: run pi as the engine INSIDE the same BridgeWebSocketServer, so
-  // files/workspace/git/upload/download keep working unchanged (docs/M2-WIRING).
-  // startPiHostServer (a standalone ws://127.0.0.1 pi-frame transport) remains
-  // exported for apps that speak the §6 envelope protocol directly, but this
-  // entry no longer branches to it.
+  // pi is the ONLY engine. The bridge runs pi inside the same
+  // BridgeWebSocketServer so files/workspace/git/upload/download keep working
+  // unchanged (docs/M2-WIRING). There is no codex/claude fallback: if the pi
+  // entry is not configured, the bridge refuses to start rather than silently
+  // running a codex/claude engine.
   const piEngineVersion = process.env.PI_ENGINE_VERSION ?? "dev";
   const piHome = process.env.PI_HOME ?? process.env.HOME ?? "";
-  const piAdapter: PiAdapter | null =
-    process.env.PI_HOST === "1"
-      ? (() => {
-          const piEntry = process.env.PI_ENGINE_ENTRY;
-          if (!piEntry) {
-            throw new Error(
-              "PI_HOST=1 requires PI_ENGINE_ENTRY (absolute path to the pi CLI entry)",
-            );
-          }
-          const runtime = createRuntimeHooks({
-            piHome,
-            enginesDir: dirname(piEntry),
-          });
-          const gateway = new PiGateway({
-            piEntry,
-            engineVersion: piEngineVersion,
-            protocolVersion: PI_WIRE_PROTOCOL_VERSION,
-            piHome,
-            resolveCwd: (projectId) => projectId,
-            commandPrefix: (cwd) => runtime.resolveCommandPrefix(cwd),
-            runtimeStatus: () => runtime.status(),
-            runtimeInstall: (route, onProgress) =>
-              runtime.install(route, onProgress),
-          });
-          return new PiAdapter({ gateway });
-        })()
-      : null;
+  const piEntry = process.env.PI_ENGINE_ENTRY;
+  if (!piEntry) {
+    throw new Error(
+      "pi-only: PI_ENGINE_ENTRY (absolute path to the pi CLI entry) is required",
+    );
+  }
+  const piAdapter: PiAdapter = (() => {
+    const runtime = createRuntimeHooks({
+      piHome,
+      enginesDir: dirname(piEntry),
+    });
+    const gateway = new PiGateway({
+      piEntry,
+      engineVersion: piEngineVersion,
+      protocolVersion: PI_WIRE_PROTOCOL_VERSION,
+      piHome,
+      resolveCwd: (projectId) => projectId,
+      commandPrefix: (cwd) => runtime.resolveCommandPrefix(cwd),
+      runtimeStatus: () => runtime.status(),
+      runtimeInstall: (route, onProgress) => runtime.install(route, onProgress),
+    });
+    return new PiAdapter({ gateway });
+  })();
 
   if (API_KEY) {
     console.log("[bridge] API key authentication enabled");

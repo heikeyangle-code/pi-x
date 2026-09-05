@@ -3,11 +3,14 @@
 > 策略：**不动现有 codex/claude 路径**，新增 `PI_HOST=1` 模式：websocket 客户端协议原样保留，
 > 内部 agent 层换成 pi-host（每项目一个 pi --mode rpc 引擎）。干净 diff、可回退、易合上游。
 
-> **状态（已落地）**：`PI_HOST=1` 不再替换整台服务器。`index.ts` 在同一个
-> `BridgeWebSocketServer` 里注入 `PiAdapter`——只有聊天回合消息（start/input/approve/
-> reject/answer/stop_session）路由到 pi 引擎；文件/工作区/git/上传下载原样保留。
+> 当前策略（已演变为 pi-only）：**pi 是唯一引擎**，codex/claude 不再被拉起。
+> `index.ts` 在同一个 `BridgeWebSocketServer` 里注入 `PiAdapter`——聊天回合消息（start/input/
+> approve/reject/answer/stop_session）路由到 pi 引擎；文件/工作区/git/上传下载原样保留。
 > `src/pi-host/pi-adapter.ts` 为这层翻译（入站 op → `PiGateway.handleControl`/`respondUi`，
 > 出站 pi 事件 → `cc-adapter` → CC Pocket `ServerMessage`），全部单测覆盖。
+> 说明：本文件早期“不动 codex/claude 路径、可回退”的策略已被推翻——入口已强制 pi-only
+> （缺 `PI_ENGINE_ENTRY` 直接拒启，不再回退 codex/claude）。codex/claude provider 的物理删除
+> 见 `docs/ENGINE-INTEGRATION.md`。
 
 ## 消息映射（CC Pocket 协议 ⇄ pi RPC）
 

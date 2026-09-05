@@ -24,6 +24,11 @@ import {
   ModelsFile,
   listResourceDirs,
   listSkillInfos,
+  listExtensionInfos,
+  listPromptTemplates,
+  sanitizeTemplateName,
+  writePromptTemplate,
+  deletePromptTemplate,
   readSkillMarkdown,
   looksLikeSkillMarkdown,
   piAgentFiles,
@@ -327,11 +332,62 @@ export class PiGateway {
       }
       case "list_extensions": {
         const files = piAgentFiles(this.piHome);
-        const names = await listResourceDirs(files.extensionsDir);
-        return { success: true, data: names.map((p) => p.split("/").pop()) };
+        // 1:1 with the engine's extension discovery (loader.ts): project-local
+        // cwd/.pi/extensions/ first, then global ~/.pi/agent/extensions/.
+        const roots: SkillRoot[] = [
+          { scope: "project", dir: join(cwd, ".pi", "extensions") },
+          { scope: "global", dir: files.extensionsDir },
+        ];
+        return { success: true, data: await listExtensionInfos(roots) };
       }
       case "looks_like_skill": {
         return { success: true, looksLikeSkill: looksLikeSkillMarkdown(String(payload.content ?? "")) };
+      }
+      // ---- prompt templates (official prompt-templates.ts semantics) ----
+      case "list_prompt_templates": {
+        return { success: true, data: await listPromptTemplates(cwd, this.piHome) };
+      }
+      case "read_prompt_template": {
+        const scope = payload.scope === "project" ? "project" : "global";
+        const name = sanitizeTemplateName(String(payload.name ?? ""));
+        if (!name) return { success: false, error: "invalid_template_name" };
+        const files = piAgentFiles(this.piHome);
+        const dir = scope === "project" ? join(cwd, ".pi", "prompts") : files.agentPromptsDir;
+        try {
+          const content = await readFile(join(dir, name), "utf8");
+          return { success: true, data: { name, scope, content } };
+        } catch {
+          return { success: false, error: "template_not_found" };
+        }
+      }
+      case "write_prompt_template": {
+        const scope = payload.scope === "project" ? "project" : "global";
+        try {
+          const file = await writePromptTemplate(
+            cwd,
+            this.piHome,
+            scope,
+            String(payload.name ?? ""),
+            String(payload.content ?? ""),
+          );
+          return { success: true, data: { file } };
+        } catch {
+          return { success: false, error: "invalid_template_name" };
+        }
+      }
+      case "delete_prompt_template": {
+        const scope = payload.scope === "project" ? "project" : "global";
+        try {
+          const deleted = await deletePromptTemplate(
+            cwd,
+            this.piHome,
+            scope,
+            String(payload.name ?? ""),
+          );
+          return { success: true, data: { deleted } };
+        } catch {
+          return { success: false, error: "invalid_template_name" };
+        }
       }
       // ---- Pi X config surface (engine launch args + prompt files) ----
       case "get_pix_config": {

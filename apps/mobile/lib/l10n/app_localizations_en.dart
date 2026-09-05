@@ -2899,6 +2899,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get piEngineExtensionsGroupGlobal => 'Global';
+
+  @override
+  String get piEngineExtensionsGroupProject => 'Project';
+
+  @override
   String get piEngineExtensionsApply => 'Apply';
 
   @override

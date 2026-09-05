@@ -5225,6 +5225,18 @@ abstract class AppLocalizations {
   /// **'{count} 個の拡張'**
   String piEngineExtensionsCount(int count);
 
+  /// No description provided for @piEngineExtensionsGroupGlobal.
+  ///
+  /// In ja, this message translates to:
+  /// **'グローバル'**
+  String get piEngineExtensionsGroupGlobal;
+
+  /// No description provided for @piEngineExtensionsGroupProject.
+  ///
+  /// In ja, this message translates to:
+  /// **'プロジェクト'**
+  String get piEngineExtensionsGroupProject;
+
   /// No description provided for @piEngineExtensionsApply.
   ///
   /// In ja, this message translates to:

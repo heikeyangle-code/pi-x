@@ -2809,6 +2809,12 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get piEngineExtensionsGroupGlobal => '전역';
+
+  @override
+  String get piEngineExtensionsGroupProject => '프로젝트';
+
+  @override
   String get piEngineExtensionsApply => '적용';
 
   @override

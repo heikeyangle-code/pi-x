@@ -2787,6 +2787,12 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String get piEngineExtensionsGroupGlobal => 'グローバル';
+
+  @override
+  String get piEngineExtensionsGroupProject => 'プロジェクト';
+
+  @override
   String get piEngineExtensionsApply => '反映';
 
   @override

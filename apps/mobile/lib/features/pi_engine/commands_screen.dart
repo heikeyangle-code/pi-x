@@ -191,13 +191,29 @@ class _CommandCard extends StatelessWidget {
                   fontSize: 15,
                 ),
               ),
-              subtitle: commands[i].description.isEmpty
+              subtitle: commands[i].description.isEmpty &&
+                      commands[i].location == null
                   ? null
-                  : Text(
-                      commands[i].description,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 13),
+                  : Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (commands[i].location != null) ...[
+                            _LocationTag(location: commands[i].location!),
+                            const SizedBox(width: 8),
+                          ],
+                          if (commands[i].description.isNotEmpty)
+                            Expanded(
+                              child: Text(
+                                commands[i].description,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(fontSize: 13),
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
               trailing: Icon(
                 Icons.content_copy,
@@ -209,6 +225,39 @@ class _CommandCard extends StatelessWidget {
             ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+/// Small badge for the official `location` value (user / project / path) of a
+/// command, matching pi rpc.md `get_commands` response semantics.
+class _LocationTag extends StatelessWidget {
+  const _LocationTag({required this.location});
+
+  final String location;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final (bg, fg) = switch (location) {
+      'project' => (cs.tertiaryContainer, cs.onTertiaryContainer),
+      'path' => (cs.surfaceContainerHighest, cs.onSurfaceVariant),
+      _ => (cs.secondaryContainer, cs.onSecondaryContainer),
+    };
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        location,
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+          color: fg,
+        ),
       ),
     );
   }

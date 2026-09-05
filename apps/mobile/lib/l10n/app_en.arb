@@ -1195,6 +1195,42 @@
       "name": { "type": "String" }
     }
   },
+  "piEnginePrompts": "Prompt templates",
+  "piEnginePromptsSubtitle": "Slash-command templates (prompt-templates)",
+  "piEnginePromptsEmpty": "No templates yet. Place them in ~/.pi/agent/prompts/ or the project .pi/prompts/ folder, or tap + to create one.",
+  "piEnginePromptsCount": "{count} templates",
+  "@piEnginePromptsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "piEnginePromptsGroupGlobal": "Global",
+  "piEnginePromptsGroupProject": "Project",
+  "piEnginePromptsNew": "New template",
+  "piEnginePromptsNewName": "Template name",
+  "piEnginePromptsNewHint": "Without .md (e.g. pr). Placed in:",
+  "piEnginePromptsSave": "Save",
+  "piEnginePromptsCancel": "Cancel",
+  "piEnginePromptsEdit": "Edit",
+  "piEnginePromptsDelete": "Delete",
+  "piEnginePromptsDeleteConfirm": "Delete template {name}?",
+  "@piEnginePromptsDeleteConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "piEnginePromptsSaved": "Saved {name}",
+  "@piEnginePromptsSaved": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "piEnginePromptsCopied": "Copied /{name}. Paste it into the chat input.",
+  "@piEnginePromptsCopied": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
   "piEngineExtensions": "Extensions",
   "piEngineExtensionsSubtitle": "Detected extensions & trust warning",
   "piEngineExtensionsTrustWarning": "Extensions run arbitrary code with access to your files and network. Only install extensions from sources you trust.",
@@ -1205,6 +1241,8 @@
       "count": { "type": "int" }
     }
   },
+  "piEngineExtensionsGroupGlobal": "Global",
+  "piEngineExtensionsGroupProject": "Project",
   "piEngineExtensionsApply": "Apply",
   "piEngineExtensionsReloadHint": "New or changed extensions take effect after an engine restart (or /reload).",
   "piEngineSkills": "Skills",

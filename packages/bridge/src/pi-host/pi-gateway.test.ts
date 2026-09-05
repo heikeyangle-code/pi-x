@@ -311,4 +311,101 @@ describe("PiGateway", () => {
     expect(afterData.project.appendSystemPrompt).toContain("No emoji.");
     await gateway.stopAll();
   }, slow);
+
+  it("lists extensions from project and global scopes (1:1 engine discovery)", async () => {
+    const cwd = workDir("gw-ext");
+    const piHome = workDir("gw-pihome-ext");
+    const gateway = new PiGateway({
+      piEntry: fakeEnginePath(),
+      engineVersion: "0.0.0-test",
+      piHome,
+      resolveCwd: () => cwd,
+    });
+    gateway.send = () => undefined;
+    const ctl = (op: string, payload: Record<string, unknown> = {}) =>
+      gateway.handleControl({ id: "cX", type: "control", op, projectId: "proj", payload });
+
+    await mkdir(join(cwd, ".pi", "extensions", "local-ext"), { recursive: true });
+    await mkdir(join(piHome, ".pi", "agent", "extensions", "global-ext"), { recursive: true });
+
+    const listed = await ctl("list_extensions");
+    const entries = (listed as { data: Array<{ name: string; scope: string }> }).data;
+    expect(entries).toEqual([
+      { name: "local-ext", scope: "project" },
+      { name: "global-ext", scope: "global" },
+    ]);
+    await gateway.stopAll();
+  }, slow);
+
+  it("round-trips prompt templates (list/read/write/delete, official template semantics)", async () => {
+    const cwd = workDir("gw-tpl");
+    const piHome = workDir("gw-pihome-tpl");
+    const gateway = new PiGateway({
+      piEntry: fakeEnginePath(),
+      engineVersion: "0.0.0-test",
+      piHome,
+      resolveCwd: () => cwd,
+    });
+    gateway.send = () => undefined;
+    const ctl = (op: string, payload: Record<string, unknown> = {}) =>
+      gateway.handleControl({ id: "cX", type: "control", op, projectId: "proj", payload });
+
+    // empty by default
+    const empty = await ctl("list_prompt_templates");
+    expect((empty as { data: unknown[] }).data).toEqual([]);
+
+    // write a global template (name without .md is appended)
+    const wg = await ctl("write_prompt_template", {
+      scope: "global",
+      name: "pr",
+      content: '---\ndescription: "Open a PR"\nargument-hint: <branch>\n---\nBody',
+    });
+    expect(wg.success).toBe(true);
+
+    // write a project template with frontmatter-less description fallback
+    const wp = await ctl("write_prompt_template", {
+      scope: "project",
+      name: "fix-tests.md",
+      content: "# Fix failing tests\n\nBody",
+    });
+    expect(wp.success).toBe(true);
+
+    const listed = await ctl("list_prompt_templates");
+    const templates = (listed as { data: Array<Record<string, unknown>> }).data;
+    expect(templates).toEqual([
+      {
+        name: "pr",
+        scope: "global",
+        description: "Open a PR",
+        argumentHint: "<branch>",
+        path: join(piHome, ".pi", "agent", "prompts", "pr.md"),
+      },
+      {
+        name: "fix-tests",
+        scope: "project",
+        description: "# Fix failing tests",
+        argumentHint: undefined,
+        path: join(cwd, ".pi", "prompts", "fix-tests.md"),
+      },
+    ]);
+
+    // read back full content including frontmatter
+    const read = await ctl("read_prompt_template", { scope: "project", name: "fix-tests" });
+    expect((read as { data: { content: string } }).data.content).toContain("# Fix failing tests");
+    const missing = await ctl("read_prompt_template", { scope: "global", name: "nope" });
+    expect(missing).toMatchObject({ success: false });
+
+    // traversal rejected
+    const bad = await ctl("write_prompt_template", { scope: "global", name: "../evil", content: "x" });
+    expect(bad).toMatchObject({ success: false });
+
+    // delete -> gone
+    const del = await ctl("delete_prompt_template", { scope: "project", name: "fix-tests" });
+    expect((del as { data: { deleted: boolean } }).data.deleted).toBe(true);
+    const after = await ctl("list_prompt_templates");
+    expect(
+      (after as { data: Array<Record<string, unknown>> }).data.map((t) => t["name"]),
+    ).toEqual(["pr"]);
+    await gateway.stopAll();
+  }, slow);
 });

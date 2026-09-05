@@ -1225,6 +1225,42 @@
       "name": { "type": "String" }
     }
   },
+  "piEnginePrompts": "プロンプトテンプレート",
+  "piEnginePromptsSubtitle": "スラッシュコマンドのテンプレート（prompt-templates）",
+  "piEnginePromptsEmpty": "テンプレートはまだありません。~/.pi/agent/prompts/ かプロジェクトの .pi/prompts/ に置くか、右下の + から作成してください。",
+  "piEnginePromptsCount": "{count} 個のテンプレート",
+  "@piEnginePromptsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "piEnginePromptsGroupGlobal": "グローバル",
+  "piEnginePromptsGroupProject": "プロジェクト",
+  "piEnginePromptsNew": "テンプレートを新規作成",
+  "piEnginePromptsNewName": "テンプレート名",
+  "piEnginePromptsNewHint": ".md を含めない（例: pr）。配置先：",
+  "piEnginePromptsSave": "保存",
+  "piEnginePromptsCancel": "キャンセル",
+  "piEnginePromptsEdit": "編集",
+  "piEnginePromptsDelete": "削除",
+  "piEnginePromptsDeleteConfirm": "テンプレート {name} を削除しますか？",
+  "@piEnginePromptsDeleteConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "piEnginePromptsSaved": "{name} を保存しました",
+  "@piEnginePromptsSaved": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "piEnginePromptsCopied": "「/{name}」をコピーしました。入力欄に貼り付けて使用してください。",
+  "@piEnginePromptsCopied": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
   "piEngineExtensions": "拡張機能",
   "piEngineExtensionsSubtitle": "検出された拡張と信頼の警告",
   "piEngineExtensionsTrustWarning": "拡張は任意のコードを実行できます（ファイル・ネットワークへのアクセスを含む）。信頼できる提供元のものだけをインストールしてください。",
@@ -1235,6 +1271,8 @@
       "count": { "type": "int" }
     }
   },
+  "piEngineExtensionsGroupGlobal": "グローバル",
+  "piEngineExtensionsGroupProject": "プロジェクト",
   "piEngineExtensionsApply": "反映",
   "piEngineExtensionsReloadHint": "追加・変更した拡張はエンジンの再起動（または /reload）で反映されます。",
   "piEngineSkills": "スキル",

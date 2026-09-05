@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../services/pi_host_service.dart';
+import 'pi_engine_extensions.dart';
 import 'pi_engine_widgets.dart';
 
 /// Manage pi extensions discovered in `~/.pi/agent/extensions/` and project
@@ -23,7 +24,7 @@ class ExtensionsScreen extends StatefulWidget {
 class _ExtensionsScreenState extends State<ExtensionsScreen> {
   bool _loading = true;
   String? _error;
-  List<String> _extensions = const [];
+  List<PiExtension> _extensions = const [];
 
   PiHostService get _service => context.read<PiHostService>();
 
@@ -54,8 +55,11 @@ class _ExtensionsScreenState extends State<ExtensionsScreen> {
       if (result.ok) {
         final raw = result.data;
         _extensions = raw is List
-            ? raw.whereType<String>().toList()
-            : const <String>[];
+            ? raw
+                .whereType<Map>()
+                .map((e) => PiExtension.fromJson(e.cast<String, dynamic>()))
+                .toList()
+            : const <PiExtension>[];
         _error = null;
       } else {
         _error = result.error ?? 'load_failed';
@@ -67,6 +71,10 @@ class _ExtensionsScreenState extends State<ExtensionsScreen> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final cs = Theme.of(context).colorScheme;
+    final projectExtensions =
+        _extensions.where((e) => e.isProject).toList();
+    final globalExtensions =
+        _extensions.where((e) => !e.isProject).toList();
     return Scaffold(
       appBar: AppBar(title: Text(l.piEngineExtensions)),
       body: RefreshIndicator(
@@ -134,33 +142,14 @@ class _ExtensionsScreenState extends State<ExtensionsScreen> {
               SettingsSectionHeader(
                 title: l.piEngineExtensionsCount(_extensions.length),
               ),
-              Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  children: [
-                    for (var i = 0; i < _extensions.length; i++) ...[
-                      if (i > 0) const Divider(height: 1, indent: 56),
-                      ListTile(
-                        key: ValueKey('extension_${_extensions[i]}'),
-                        leading: Icon(
-                          Icons.extension_outlined,
-                          size: 22,
-                          color: cs.primary,
-                        ),
-                        title: Text(
-                          _extensions[i],
-                          style: const TextStyle(
-                            fontFamily: 'monospace',
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15,
-                          ),
-                        ),
-                        dense: true,
-                      ),
-                    ],
-                  ],
-                ),
-              ),
+              if (projectExtensions.isNotEmpty) ...[
+                SettingsSectionHeader(title: l.piEngineExtensionsGroupProject),
+                _ExtensionCard(extensions: projectExtensions),
+              ],
+              if (globalExtensions.isNotEmpty) ...[
+                SettingsSectionHeader(title: l.piEngineExtensionsGroupGlobal),
+                _ExtensionCard(extensions: globalExtensions),
+              ],
             ],
             const SizedBox(height: 16),
             SettingsSectionHeader(title: l.piEngineExtensionsApply),
@@ -184,6 +173,45 @@ class _ExtensionsScreenState extends State<ExtensionsScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// One grouped extension list (project or global scope).
+class _ExtensionCard extends StatelessWidget {
+  const _ExtensionCard({required this.extensions});
+
+  final List<PiExtension> extensions;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        children: [
+          for (var i = 0; i < extensions.length; i++) ...[
+            if (i > 0) const Divider(height: 1, indent: 56),
+            ListTile(
+              key: ValueKey('extension_${extensions[i].name}'),
+              leading: Icon(
+                Icons.extension_outlined,
+                size: 22,
+                color: cs.primary,
+              ),
+              title: Text(
+                extensions[i].name,
+                style: const TextStyle(
+                  fontFamily: 'monospace',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 15,
+                ),
+              ),
+              dense: true,
+            ),
+          ],
+        ],
       ),
     );
   }

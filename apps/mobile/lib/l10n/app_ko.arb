@@ -1159,6 +1159,42 @@
       "name": { "type": "String" }
     }
   },
+  "piEnginePrompts": "프롬프트 템플릿",
+  "piEnginePromptsSubtitle": "슬래시 명령 템플릿 (prompt-templates)",
+  "piEnginePromptsEmpty": "템플릿이 아직 없습니다. ~/.pi/agent/prompts/ 또는 프로젝트의 .pi/prompts/ 폴더에 넣거나 오른쪽 아래 + 로 만드세요.",
+  "piEnginePromptsCount": "템플릿 {count}개",
+  "@piEnginePromptsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "piEnginePromptsGroupGlobal": "전역",
+  "piEnginePromptsGroupProject": "프로젝트",
+  "piEnginePromptsNew": "새 템플릿",
+  "piEnginePromptsNewName": "템플릿 이름",
+  "piEnginePromptsNewHint": ".md 제외 (예: pr). 위치:",
+  "piEnginePromptsSave": "저장",
+  "piEnginePromptsCancel": "취소",
+  "piEnginePromptsEdit": "편집",
+  "piEnginePromptsDelete": "삭제",
+  "piEnginePromptsDeleteConfirm": "템플릿 {name} 을(를) 삭제할까요?",
+  "@piEnginePromptsDeleteConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "piEnginePromptsSaved": "{name} 저장됨",
+  "@piEnginePromptsSaved": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "piEnginePromptsCopied": "/{name} 을(를) 복사했습니다. 입력란에 붙여넣어 사용하세요.",
+  "@piEnginePromptsCopied": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
   "piEngineExtensions": "확장 기능",
   "piEngineExtensionsSubtitle": "감지된 확장 및 신뢰 경고",
   "piEngineExtensionsTrustWarning": "확장은 파일과 네트워크에 접근할 수 있는 임의 코드를 실행합니다. 신뢰할 수 있는 출처의 확장만 설치하세요.",
@@ -1169,6 +1205,8 @@
       "count": { "type": "int" }
     }
   },
+  "piEngineExtensionsGroupGlobal": "전역",
+  "piEngineExtensionsGroupProject": "프로젝트",
   "piEngineExtensionsApply": "적용",
   "piEngineExtensionsReloadHint": "새로 추가하거나 변경한 확장은 엔진 재시작(또는 /reload) 후 적용됩니다.",
   "piEngineSkills": "스킬",

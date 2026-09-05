@@ -2749,6 +2749,12 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get piEngineExtensionsGroupGlobal => '全局';
+
+  @override
+  String get piEngineExtensionsGroupProject => '项目';
+
+  @override
   String get piEngineExtensionsApply => '应用更改';
 
   @override

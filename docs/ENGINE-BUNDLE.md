@@ -152,9 +152,10 @@ ldd --version 2>&1 | head -1            # bionic 而非 glibc
 默认启用路线 A（bionic 直跑，开箱即用）；路线 B 在 UI 中提供**按需下载并切换**入口，不预装（省几百 MB）。
 
 - **入口**：设置 → Pi 引擎 → "运行时路线"（`pi_engine_settings_screen.dart` 管理区新增 ListTile）。
+- **路线三选一（A / B 默认 Proroot / B 用 proot-distro）**：用户**显式选择**，不做自动探测。UI 单选卡片，默认勾选 A；选 B 时子选项 Proroot（推荐）与 proot-distro 均可选，切换即时重启引擎。选择状态存 `~/.pi/settings.json`（如 `runtime: { route: "bionic" | "proroot" | "proot-distro" }`）。
 - **RPC 算子**（`PiGateway` 新增 3 个）：
-  - `runtime_status` → `{ route: "bionic" | "proot", prootInstalled: bool, rootfsSize?: bytes, installedPackages?: string[] }`
-  - `runtime_install_proot` → 下载流程：`pkg install proot proot-distro` → `proot-distro install ubuntu`（26.04.1 LTS）→ rootfs 内装 node 24 + pi 引擎 + git/rg/python；进度经事件流回传（percent + stage）。
+  - `runtime_status` → `{ route: "bionic" | "proroot" | "proot-distro", prorootInstalled: bool, prootDistroInstalled: bool, rootfsSize?: bytes, installedPackages?: string[] }`
+  - `runtime_install_proot` → 下载所选实现的运行时：**Proroot** = 下载/校验 rootfs 镜像（5 个 .so 计划随 APK 内置到 `jniLibs/arm64-v8a/`，落地见代码实现）；**proot-distro** = `pkg install proot proot-distro` → `proot-distro install ubuntu`（26.04.1 LTS）→ rootfs 内装 node 24 + pi 引擎 + git/rg/python；进度经事件流回传（percent + stage）。
   - `runtime_switch` → 切换路线并重启引擎进程（`EngineProcess` 增加 `commandPrefix?: string[]`，路线 B 用 `proot -r <rootfs> -0 -w <cwd> -- node <entry> --mode rpc`）。
 - **UI 信息设计**（两条路线差异说明 + 已装包）：
   - 页面顶部显示**当前路线徽标**（A：bionic 直跑 / B：完整发行版）+ 一键切换按钮。
@@ -172,7 +173,7 @@ ldd --version 2>&1 | head -1            # bionic 而非 glibc
 | 1（首选） | **Proroot** | LD_PRELOAD + 二进制补丁替代 ptrace，零 ptrace 开销 | 免 root；Node 22.22/Python 3.12/Git 实测通过 |
 | 2（兜底） | **proot-distro + Ubuntu** | ptrace 拦截系统调用 | 官方成熟稳定、兼容最广（GPL-3.0） |
 
-- 统一入口：路线 B 的 `runtime_install_proot` 实际按阶梯自动选择（首选 Proroot，缺兼容再兜底 proot-distro），对 UI/协议透明。
+- 统一入口：路线 B 的两个实现（Proroot / proot-distro）由用户**显式选择**，不做自动探测（见"路线切换 UI 落地"）。下载缺失的实现时进度经事件流回传。
 - 参考：
   - **Proroot**（`coderredlab/proroot`，42 commits 活跃）：5 个 `.so` 文件从 GitHub Releases 下载，直接进 `jniLibs/arm64-v8a/` 打包进 APK；Android 8.0+/arm64；启动方式 `libproroot.so -r <rootfs> -0 --link2symlink -w <cwd> -- node <entry> --mode rpc`，支持 `-b <host>:<guest>` bind 共享。**风险**：源码未公开（专有，不可再分发修改版）、作者重心转 proroom（更新放缓）。
   - **proot-distro**（`termux/proot-distro`，1207 commits，官方）：`pkg install proot-distro`（自动拉 proot），Ubuntu 26.04.1 LTS 从 Docker Hub 拉取 OCI 镜像；`proot-distro login ubuntu -- /bin/sh -c '<cmd>'` 支持 `--bind` 共享。最稳兜底。

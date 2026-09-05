@@ -163,6 +163,32 @@ ldd --version 2>&1 | head -1            # bionic 而非 glibc
   - **切换确认**：切 B 前提示"下载约数百 MB、速度变慢、可随时切回"；切 A 前提示"返回内置环境，proot 发行版保留可再切"。
 - **回退**：两条路线 rootfs/内置集并存，切换即时生效、随时往返，不破坏任何一侧。
 
+### 跨路线共享模型（工作区 / 配置 / 插件 / 软件）
+
+换路线 = 换工具链（各自独立装软件），但**用户数据全部共享同一份**。proot 用 `-b`（bind）把宿主目录挂进 rootfs 同一路径实现。
+
+| 层 | 内容 | 路径 | 共享？ |
+|---|---|---|---|
+| 工作区 | 项目文件（引擎 cwd） | 项目目录 | ✅ bind 同一份 |
+| pi 配置 | 会话树 / 信任 / settings / prompts / themes | `~/.pi`（`$PI_HOME ?? $HOME`） | ✅ bind 同一份 |
+| **插件** | **extensions + skills** | **`~/.pi/agent/{extensions,skills}`、`.pi/{extensions,skills}`（项目）** | ✅ **bind 同一份** |
+| 软件包 | node / python / git 等 | A：`$PREFIX`（bionic 包）；B：rootfs 内（apt/glibc） | ❌ 各自独立 |
+
+**extensions/skills 细节（官方规则，双路线不变）**：
+- 官方加载位置（pi 源码 `loader.ts` + `docs/skills.md`）：项目级 `.pi/extensions/` 与 `.pi/skills/`（需信任）优先，全局 `~/.pi/agent/extensions/` 与 `~/.pi/agent/skills/` 其次；`~/.agents/skills/` 亦支持。
+- **代码共享**：extensions 是 TS/JS、skills 是 markdown+脚本，均为源码非二进制 → bind 共享后两条路线看到同一份，A 装的插件 B 自动可见。
+- **依赖各自装**：插件的脚本/npm 依赖运行在**当前路线的 node/python** 上 → 切换路线后需在目标路线重装依赖（`npm install` / `pip install`）。与"软件包各自独立"规则一致。
+- 信任模型不变：项目级插件需项目被信任（官方语义），双路线下信任状态随 `~/.pi` 共享。
+
+**命令行**：路线 B 启动引擎时 bind 三个共享挂载点：
+```bash
+proot -r <rootfs> \
+  -b <workspace>:/data/pi/workspace -b <workspace>:<同路径> \
+  -b $PI_HOME:$PI_HOME \
+  -0 -w <cwd> -- node <entry> --mode rpc
+```
+（挂载点原则：宿主路径与 rootfs 内路径一致，引擎无需感知差异；具体路径由安卓端运行时解析后定稿。）
+
 ## App 更新流程
 
 1. 检查 manifest（npm watch / 自有更新服务器）

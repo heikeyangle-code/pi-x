@@ -62,8 +62,18 @@ describe("shouldAdvertiseMdns", () => {
     expect(shouldAdvertiseMdns("darwin", true)).toBe(false);
   });
 
-  it("enables advertising on Linux by default", () => {
-    expect(shouldAdvertiseMdns("linux", false)).toBe(true);
+  it("disables advertising on Linux by default (local pi mode)", () => {
+    expect(shouldAdvertiseMdns("linux", false)).toBe(false);
+  });
+
+  it("enables advertising only when explicitly requested", () => {
+    process.env.BRIDGE_ADVERTISE_MDNS = "1";
+    try {
+      expect(shouldAdvertiseMdns("linux", false)).toBe(true);
+      expect(shouldAdvertiseMdns("linux", true)).toBe(false);
+    } finally {
+      delete process.env.BRIDGE_ADVERTISE_MDNS;
+    }
   });
 
   it("honors the explicit disable setting on other platforms", () => {

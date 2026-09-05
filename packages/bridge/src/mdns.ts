@@ -54,7 +54,13 @@ export function shouldAdvertiseMdns(
   platform: NodeJS.Platform,
   disabledByConfig: boolean,
 ): boolean {
-  return platform !== "darwin" && !disabledByConfig;
+  // LAN advertisement is a remote-era discovery feature: the bridge used to
+  // publish itself so phones on the LAN could connect to a desktop host. In
+  // local pi mode the app connects to the on-device bridge at 127.0.0.1, so
+  // advertising is now opt-in via BRIDGE_ADVERTISE_MDNS=1.
+  if (platform === "darwin") return false;
+  if (disabledByConfig) return false;
+  return process.env.BRIDGE_ADVERTISE_MDNS === "1";
 }
 
 export class MdnsAdvertiser {

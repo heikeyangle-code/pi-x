@@ -1,70 +1,20 @@
 import { describe, expect, it } from "vitest";
-import { isGlobalCodexRateLimit, mapCodexRateLimits } from "./usage.js";
+import { fetchAllUsage, fetchPiUsage } from "./usage.js";
 
-const fiveHourWindow = {
-  used_percent: 35,
-  window_minutes: 300,
-  resets_at: 1_800_000_000,
-};
-
-const sevenDayWindow = {
-  used_percent: 80,
-  window_minutes: 10_080,
-  resets_at: 1_800_500_000,
-};
-
-describe("mapCodexRateLimits", () => {
-  it("maps the usual primary and secondary windows by duration", () => {
-    const result = mapCodexRateLimits({
-      primary: fiveHourWindow,
-      secondary: sevenDayWindow,
-    });
-
-    expect(result).toEqual({
-      fiveHour: {
-        utilization: 35,
-        resetsAt: new Date(1_800_000_000 * 1000).toISOString(),
-      },
-      sevenDay: {
-        utilization: 80,
-        resetsAt: new Date(1_800_500_000 * 1000).toISOString(),
-      },
-    });
-  });
-
-  it("maps a weekly-only primary window to sevenDay", () => {
-    const result = mapCodexRateLimits({
-      primary: sevenDayWindow,
-      secondary: null,
-    });
-
+describe("usage (pi-only)", () => {
+  it("reports a single pi provider without rate-limit windows", async () => {
+    const result = await fetchPiUsage();
+    expect(result.provider).toBe("pi");
     expect(result.fiveHour).toBeNull();
-    expect(result.sevenDay?.utilization).toBe(80);
+    expect(result.sevenDay).toBeNull();
+    expect(result.error).toBeUndefined();
   });
 
-  it("does not depend on the upstream window order", () => {
-    const result = mapCodexRateLimits({
-      primary: sevenDayWindow,
-      secondary: fiveHourWindow,
-    });
-
-    expect(result.fiveHour?.utilization).toBe(35);
-    expect(result.sevenDay?.utilization).toBe(80);
-  });
-});
-
-describe("isGlobalCodexRateLimit", () => {
-  it("accepts the account-wide Codex limit", () => {
-    expect(isGlobalCodexRateLimit({ limit_id: "codex" })).toBe(true);
-  });
-
-  it("accepts legacy rate limits without an identifier", () => {
-    expect(isGlobalCodexRateLimit({})).toBe(true);
-  });
-
-  it("rejects model-specific Codex limits", () => {
-    expect(isGlobalCodexRateLimit({ limit_id: "codex_bengalfox" })).toBe(
-      false,
-    );
+  it("fetchAllUsage returns only the pi provider (no codex/claude disk reads)", async () => {
+    const all = await fetchAllUsage();
+    expect(all).toHaveLength(1);
+    expect(all[0].provider).toBe("pi");
+    expect(all[0].fiveHour).toBeNull();
+    expect(all[0].sevenDay).toBeNull();
   });
 });

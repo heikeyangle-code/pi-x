@@ -1,29 +1,21 @@
 /**
- * Bridge Server doctor command.
+ * Bridge Server doctor command — pi-only.
  *
- * Checks the health of all dependencies and provides actionable guidance
- * when issues are found — similar to `flutter doctor`.
+ * Checks the health of the local pi runtime and provides actionable guidance
+ * when issues are found — similar to `flutter doctor`. The claude/codex CLI,
+ * Tailscale, Firebase push, Keychain and desktop host-service checks were
+ * removed when the bridge became a purely local pi shell.
  */
 
-import { execFile, execSync } from "node:child_process";
+import { execSync } from "node:child_process";
 import {
   accessSync,
   constants as fsConstants,
   existsSync,
-  readFileSync,
 } from "node:fs";
 import net from "node:net";
 import { homedir } from "node:os";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
-import {
-  isClaudeBedrockModeEnabled,
-  isClaudeBedrockRegionConfigured,
-} from "./claude-provider.js";
-import {
-  BRIDGE_STABLE_SETUP_COMMAND,
-  usesUnboundedBridgeLatest,
-} from "./distribution.js";
+import { join } from "node:path";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -46,7 +38,7 @@ export interface CheckDefinition {
   run: () => Promise<CheckResult>;
 }
 
-/** Sub-result for each CLI provider (Claude Code / Codex). */
+/** Sub-result for the pi engine (the only provider). */
 export interface ProviderResult {
   name: string;
   installed: boolean;
@@ -109,132 +101,68 @@ export async function checkGit(): Promise<CheckResult> {
   }
 }
 
-/** Check both Claude Code CLI and Codex CLI. At least one must be installed. */
-export async function checkCliProviders(): Promise<
+/**
+ * Check the pi engine entry (PI_ENGINE_ENTRY). pi is the only engine, so
+ * this replaces the old claude/codex CLI provider checks.
+ */
+export async function checkPiEngine(): Promise<
   CheckResult & { providers: ProviderResult[] }
 > {
-  const providers: ProviderResult[] = [];
+  const piEntry = process.env.PI_ENGINE_ENTRY;
+  const piHome = process.env.PI_HOME ?? homedir();
 
-  // --- Claude Code CLI ---
-  {
-    let installed = false;
-    let version: string | undefined;
-    let authenticated = false;
-    let authMessage: string | undefined;
-    let remediation: string | undefined;
+  let installed = false;
+  let version: string | undefined;
+  let authenticated = false;
+  let authMessage: string | undefined;
+  let remediation: string | undefined;
 
+  if (!piEntry) {
+    remediation =
+      "Set PI_ENGINE_ENTRY to the absolute path of the pi CLI (e.g. <engine>/node_modules/.bin/pi)";
+  } else {
     try {
-      const out = execQuiet("claude --version");
+      const out = execQuiet(`"${piEntry}" --version`);
       installed = true;
       version = out.trim().split("\n")[0];
-      if (isClaudeBedrockModeEnabled()) {
-        // Validate the required local setting without calling AWS. Credential
-        // validity remains Claude Code's responsibility at session startup.
-        if (isClaudeBedrockRegionConfigured()) {
-          authenticated = true;
-          authMessage = "Amazon Bedrock configured; AWS credentials not verified";
-        } else {
-          authMessage = "Amazon Bedrock enabled; AWS_REGION is not configured";
-          remediation = "Set AWS_REGION in the Bridge environment or Claude Code user settings";
-        }
-      } else if (process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN) {
-        authenticated = true;
-        authMessage = "API credential configured";
+      const authFile = join(piHome, ".pi", "agent", "auth.json");
+      authenticated = existsSync(authFile);
+      if (authenticated) {
+        authMessage = "Credentials found (~/.pi/agent/auth.json)";
       } else {
-        try {
-          const authOut = execQuiet("claude auth status");
-          if (authOut.toLowerCase().includes("not logged in") || authOut.toLowerCase().includes("unauthenticated")) {
-            authenticated = false;
-            authMessage = "Not authenticated";
-            remediation = "Run: claude auth login";
-          } else if (process.env.BRIDGE_ALLOW_CLAUDE_OAUTH === "1") {
-            authenticated = true;
-            authMessage = "Subscription login explicitly enabled";
-          } else {
-            authenticated = false;
-            authMessage = "Subscription login detected; explicit opt-in required";
-            remediation = "Set BRIDGE_ALLOW_CLAUDE_OAUTH=1 and restart Bridge, or configure ANTHROPIC_API_KEY";
-          }
-        } catch {
-          // auth command failed — treat as unauthenticated
-          authenticated = false;
-          authMessage = "Not authenticated";
-          remediation = "Run: claude auth login";
-        }
+        authMessage = "No credentials yet — log in via /login in the pi engine";
+        remediation =
+          "Run /login in the app chat or set provider credentials in Pi engine settings";
       }
     } catch {
-      remediation = "Install Claude Code: https://docs.anthropic.com/en/docs/claude-code/getting-started";
+      remediation = `pi CLI is not runnable at ${piEntry} — install the pi engine (see docs/ENGINE-BUNDLE.md)`;
     }
+  }
 
-    providers.push({
-      name: "Claude Code CLI",
+  const providers: ProviderResult[] = [
+    {
+      name: "Pi engine",
       installed,
       version,
       authenticated,
       authMessage,
       remediation,
-    });
-  }
+    },
+  ];
 
-  // --- Codex CLI ---
-  {
-    let installed = false;
-    let version: string | undefined;
-    let authenticated = false;
-    let authMessage: string | undefined;
-    let remediation: string | undefined;
-
-    try {
-      const out = execQuiet("codex --version");
-      installed = true;
-      version = out.trim().split("\n")[0];
-      // Codex authenticates via OPENAI_API_KEY env var or ~/.codex/auth.json
-      if (process.env.OPENAI_API_KEY) {
-        authenticated = true;
-      } else {
-        const authFile = join(homedir(), ".codex", "auth.json");
-        if (existsSync(authFile)) {
-          authenticated = true;
-        } else {
-          authenticated = false;
-          authMessage = "Not authenticated";
-          remediation = "Run: codex login";
-        }
-      }
-    } catch {
-      remediation =
-        "Install Codex CLI: curl -fsSL https://chatgpt.com/codex/install.sh | sh";
-    }
-
-    providers.push({
-      name: "Codex CLI",
-      installed,
-      version,
-      authenticated,
-      authMessage,
-      remediation,
-    });
-  }
-
-  const installedCount = providers.filter((p) => p.installed).length;
-  const total = providers.length;
-
-  if (installedCount === 0) {
+  if (!installed) {
     return {
-      name: "CLI providers",
+      name: "Pi engine",
       status: "fail",
-      message: "No CLI providers installed",
-      remediation: "Install at least one: https://docs.anthropic.com/en/docs/claude-code/getting-started  OR  https://github.com/openai/codex",
+      message: "pi engine not available",
+      remediation,
       providers,
     };
   }
-
-  // At least one installed — check if any auth warnings
-  const hasAuthWarn = providers.some((p) => p.installed && !p.authenticated);
   return {
-    name: "CLI providers",
-    status: hasAuthWarn ? "warn" : "pass",
-    message: `${installedCount} of ${total} available`,
+    name: "Pi engine",
+    status: authenticated ? "pass" : "warn",
+    message: version ?? "installed",
     providers,
   };
 }
@@ -242,11 +170,7 @@ export async function checkCliProviders(): Promise<
 export async function checkDependencies(): Promise<CheckResult> {
   // In monorepo setups, node_modules may be hoisted to the workspace root.
   // Use import.meta.resolve() to check if packages are resolvable.
-  const requiredPackages = [
-    "ws",
-    "@anthropic-ai/claude-agent-sdk",
-    "bonjour-service",
-  ];
+  const requiredPackages = ["ws"];
   const missing: string[] = [];
 
   for (const pkg of requiredPackages) {
@@ -325,91 +249,6 @@ export async function checkPortAvailable(port: number): Promise<CheckResult> {
   });
 }
 
-/** Resolve the tailscale CLI binary path (may be inside macOS .app bundle). */
-function tailscaleCmd(): string {
-  // Try bare command first (Linux, Homebrew install, etc.)
-  try {
-    execQuiet("tailscale version");
-    return "tailscale";
-  } catch { /* not in PATH */ }
-
-  // macOS: Tailscale.app bundles the CLI inside the app
-  const macPath = "/Applications/Tailscale.app/Contents/MacOS/Tailscale";
-  if (existsSync(macPath)) return macPath;
-
-  throw new Error("tailscale not found");
-}
-
-export async function checkTailscale(): Promise<CheckResult> {
-  let cmd: string;
-  try {
-    cmd = tailscaleCmd();
-  } catch {
-    return {
-      name: "Tailscale",
-      status: "skip",
-      message: "Not installed (optional for remote access)",
-      remediation: "Install: https://tailscale.com/download",
-    };
-  }
-
-  try {
-    const out = execQuiet(`${cmd} status`);
-    // Extract the Tailscale IP (first IPv4 in output)
-    const ipMatch = out.match(/(\d+\.\d+\.\d+\.\d+)/);
-    const ip = ipMatch ? ipMatch[1] : "";
-    return {
-      name: "Tailscale",
-      status: "pass",
-      message: ip ? `Connected (${ip})` : "Connected",
-    };
-  } catch {
-    return {
-      name: "Tailscale",
-      status: "warn",
-      message: "Installed but not connected",
-      remediation: "Run: tailscale up",
-    };
-  }
-}
-
-export async function checkFirebaseConnectivity(): Promise<CheckResult> {
-  // Use a read-only endpoint to avoid creating anonymous accounts as a side effect
-  const FIREBASE_API_KEY = "AIzaSyAptNnokWPqJIgv2Lr3I8ETN6bqZb5BGvc";
-  const url = `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${FIREBASE_API_KEY}`;
-
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({}),
-      signal: AbortSignal.timeout(5000),
-    });
-    // Any response (even 400) means the API is reachable
-    if (response.status < 500) {
-      return {
-        name: "Firebase connectivity",
-        status: "pass",
-        message: "Firebase Auth API reachable",
-      };
-    }
-    return {
-      name: "Firebase connectivity",
-      status: "warn",
-      message: `Firebase Auth API returned ${response.status}`,
-      remediation: "Push notifications may not work. Check network connectivity.",
-    };
-  } catch {
-    return {
-      name: "Firebase connectivity",
-      status: "warn",
-      message: "Unreachable",
-      remediation:
-        "Push notifications will be disabled. Check network connectivity.",
-    };
-  }
-}
-
 export async function checkDataDirectory(): Promise<CheckResult> {
   const dir = join(homedir(), ".ccpocket");
   if (!existsSync(dir)) {
@@ -436,228 +275,6 @@ export async function checkDataDirectory(): Promise<CheckResult> {
   }
 }
 
-export async function checkLaunchdService(): Promise<CheckResult> {
-  if (process.platform !== "darwin") {
-    return {
-      name: "launchd service",
-      status: "skip",
-      message: "macOS only",
-    };
-  }
-  const plistPath = join(
-    homedir(),
-    "Library",
-    "LaunchAgents",
-    "com.ccpocket.bridge.plist",
-  );
-  if (serviceFileUsesUnboundedLatest(plistPath)) {
-    return {
-      name: "launchd service",
-      status: "warn",
-      message: "Configured with unbounded @latest updates",
-      remediation: `Pin to the current major: ${BRIDGE_STABLE_SETUP_COMMAND}`,
-    };
-  }
-  try {
-    const out = execSync("launchctl list", {
-      encoding: "utf-8",
-      stdio: ["pipe", "pipe", "pipe"],
-    });
-    if (out.includes("com.ccpocket.bridge")) {
-      return {
-        name: "launchd service",
-        status: "pass",
-        message: "Registered",
-      };
-    }
-    return {
-      name: "launchd service",
-      status: "skip",
-      message: "Not registered",
-      remediation: `Register with: ${BRIDGE_STABLE_SETUP_COMMAND}`,
-    };
-  } catch {
-    return {
-      name: "launchd service",
-      status: "skip",
-      message: "Unable to check",
-    };
-  }
-}
-
-export async function checkSystemdService(): Promise<CheckResult> {
-  if (process.platform !== "linux") {
-    return {
-      name: "systemd service",
-      status: "skip",
-      message: "Linux only",
-    };
-  }
-  const servicePath = join(
-    homedir(),
-    ".config",
-    "systemd",
-    "user",
-    "ccpocket-bridge.service",
-  );
-  if (serviceFileUsesUnboundedLatest(servicePath)) {
-    return {
-      name: "systemd service",
-      status: "warn",
-      message: "Configured with unbounded @latest updates",
-      remediation: `Pin to the current major: ${BRIDGE_STABLE_SETUP_COMMAND}`,
-    };
-  }
-  try {
-    const out = execSync(
-      "systemctl --user is-active ccpocket-bridge.service",
-      {
-        encoding: "utf-8",
-        stdio: ["pipe", "pipe", "pipe"],
-      },
-    );
-    if (out.trim() === "active") {
-      return {
-        name: "systemd service",
-        status: "pass",
-        message: "Active",
-      };
-    }
-    return {
-      name: "systemd service",
-      status: "skip",
-      message: `Status: ${out.trim()}`,
-      remediation: `Register with: ${BRIDGE_STABLE_SETUP_COMMAND}`,
-    };
-  } catch {
-    return {
-      name: "systemd service",
-      status: "skip",
-      message: "Not registered",
-      remediation: `Register with: ${BRIDGE_STABLE_SETUP_COMMAND}`,
-    };
-  }
-}
-
-function serviceFileUsesUnboundedLatest(path: string): boolean {
-  try {
-    return (
-      existsSync(path) &&
-      usesUnboundedBridgeLatest(readFileSync(path, "utf8"))
-    );
-  } catch {
-    return false;
-  }
-}
-
-// ---------------------------------------------------------------------------
-// macOS permission checks
-// ---------------------------------------------------------------------------
-
-/**
- * Swift inline script to check Screen Recording permission.
- * CGWindowListCopyWindowInfo returns window names only when the process has
- * Screen Recording permission. Without it, kCGWindowName is always empty.
- * We check if *any* on-screen window has a non-empty name.
- */
-const CHECK_SCREEN_RECORDING_SWIFT = `
-import CoreGraphics
-
-let windowList = CGWindowListCopyWindowInfo(
-    [.optionOnScreenOnly, .excludeDesktopElements],
-    kCGNullWindowID
-) as? [[String: Any]] ?? []
-
-var hasName = false
-for w in windowList {
-    guard let layer = w[kCGWindowLayer as String] as? Int, layer == 0 else { continue }
-    if let name = w[kCGWindowName as String] as? String, !name.isEmpty {
-        hasName = true
-        break
-    }
-}
-print(hasName ? "granted" : "denied")
-`;
-
-export async function checkScreenRecording(): Promise<CheckResult> {
-  if (process.platform !== "darwin") {
-    return { name: "Screen Recording", status: "skip", message: "macOS only" };
-  }
-
-  return new Promise<CheckResult>((resolve) => {
-    execFile(
-      "swift",
-      ["-e", CHECK_SCREEN_RECORDING_SWIFT],
-      { timeout: 15_000 },
-      (err, stdout) => {
-        if (err) {
-          resolve({
-            name: "Screen Recording",
-            status: "warn",
-            message: "Unable to check (swift not available)",
-            remediation:
-              "Install Xcode Command Line Tools: xcode-select --install",
-          });
-          return;
-        }
-        const result = stdout.trim();
-        if (result === "granted") {
-          resolve({
-            name: "Screen Recording",
-            status: "pass",
-            message: "Permission granted",
-          });
-        } else {
-          resolve({
-            name: "Screen Recording",
-            status: "warn",
-            message: "Permission not granted (screenshots will fail)",
-            remediation:
-              "System Settings > Privacy & Security > Screen Recording > enable your terminal app",
-          });
-        }
-      },
-    );
-  });
-}
-
-/**
- * Check if Claude Code credentials are available.
- *
- * Checks ~/.claude/.credentials.json first, then falls back to
- * macOS Keychain ("Claude Code-credentials" service).
- */
-export async function checkKeychainAccess(): Promise<CheckResult> {
-  const credPath = join(homedir(), ".claude", ".credentials.json");
-  if (existsSync(credPath)) {
-    return {
-      name: "Keychain access",
-      status: "pass",
-      message: "Claude Code credentials found (~/.claude/.credentials.json)",
-    };
-  }
-  // Fallback: check macOS Keychain
-  if (process.platform === "darwin") {
-    try {
-      const { execFileSync } = await import("node:child_process");
-      execFileSync("security", ["find-generic-password", "-s", "Claude Code-credentials"], { stdio: "ignore" });
-      return {
-        name: "Keychain access",
-        status: "pass",
-        message: "Claude Code credentials found (macOS Keychain)",
-      };
-    } catch {
-      // Not in Keychain either
-    }
-  }
-  return {
-    name: "Keychain access",
-    status: "skip",
-    message: "No Claude Code credentials stored",
-    remediation: "Run: claude auth login (if using Claude Code)",
-  };
-}
-
 // ---------------------------------------------------------------------------
 // Runner
 // ---------------------------------------------------------------------------
@@ -669,39 +286,15 @@ function getAllChecks(): CheckDefinition[] {
     // Required
     { name: "Node.js", category: "required", run: checkNodeVersion },
     { name: "Git", category: "required", run: checkGit },
-    { name: "CLI providers", category: "required", run: checkCliProviders },
+    { name: "Pi engine", category: "required", run: checkPiEngine },
     { name: "npm dependencies", category: "required", run: checkDependencies },
     {
       name: "Port availability",
       category: "required",
       run: () => checkPortAvailable(port),
     },
-    // Optional — macOS permissions
-    {
-      name: "Screen Recording",
-      category: "optional",
-      run: checkScreenRecording,
-    },
-    {
-      name: "Keychain access",
-      category: "optional",
-      run: checkKeychainAccess,
-    },
-    // Optional — connectivity & services
-    { name: "Tailscale", category: "optional", run: checkTailscale },
-    {
-      name: "Firebase connectivity",
-      category: "optional",
-      run: checkFirebaseConnectivity,
-    },
+    // Optional
     { name: "Data directory", category: "optional", run: checkDataDirectory },
-    // Platform-specific service checks
-    ...(process.platform === "darwin"
-      ? [{ name: "launchd service", category: "optional" as CheckCategory, run: checkLaunchdService }]
-      : []),
-    ...(process.platform === "linux"
-      ? [{ name: "systemd service", category: "optional" as CheckCategory, run: checkSystemdService }]
-      : []),
   ];
 }
 
@@ -779,7 +372,7 @@ export function printReport(report: DoctorReport): void {
       const nameCol = r.name.padEnd(NAME_WIDTH);
       console.log(`  ${icon} ${nameCol} ${r.message}`);
 
-      // Print provider sub-items for CLI providers check
+      // Print provider sub-items for the pi engine check
       if (r.providers) {
         for (const p of r.providers) {
           const pIcon = providerStatusIcon(p, sym);

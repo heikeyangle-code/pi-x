@@ -163,6 +163,20 @@ ldd --version 2>&1 | head -1            # bionic 而非 glibc
   - **切换确认**：切 B 前提示"下载约数百 MB、速度变慢、可随时切回"；切 A 前提示"返回内置环境，proot 发行版保留可再切"。
 - **回退**：两条路线 rootfs/内置集并存，切换即时生效、随时往返，不破坏任何一侧。
 
+### 路线 B 实现阶梯（2026-09 调研定稿）
+
+调研结论：proot+完整发行版有 ~10-15% ptrace 开销、login 20-30s、体积数百 MB；2026 年出现更快更轻的替代方案。路线 B 按"新 → 稳"三级实现，共享模型不变：
+
+| 优先级 | 方案 | 原理 | 实测 |
+|---|---|---|---|
+| 1（首选） | **glibc-runner** | 仅 21 个 glibc aarch64 库（ld-linux/libc/ssl），LD_PRELOAD 原生直跑 | 5-9x 加速，无 proot，体积最小 |
+| 2（次选） | **Proroot** | LD_PRELOAD + 二进制补丁替代 ptrace | 零 ptrace 开销，跑完整 glibc 用户空间 |
+| 3（兜底） | proot-distro + Ubuntu | ptrace 拦截系统调用 | 成熟稳定、兼容最广，慢 |
+
+- 统一入口：路线 B 的 `runtime_install_proot` 实际按阶梯自动选择（先试 glibc-runner，缺库再上 Proroot，最后兜底 proot-distro），对 UI/协议透明。
+- 参考：glibc-runner（OpenClaw Android 方案，含 21 个预编译 aarch64 glibc 库）、proroot（零 ptrace 开销 drop-in proot 替代）、proot-distro（官方 OCI 容器管理）。三者均为社区验证方案，本项目以 glibc-runner 为默认首选。
+- 体积对比：glibc-runner ~几十 MB；Proroot ~中等；proot-distro + Ubuntu 数百 MB。下载入口默认推荐方案 1。
+
 ### 跨路线共享模型（工作区 / 配置 / 插件 / 软件）
 
 换路线 = 换工具链（各自独立装软件），但**用户数据全部共享同一份**。proot 用 `-b`（bind）把宿主目录挂进 rootfs 同一路径实现。

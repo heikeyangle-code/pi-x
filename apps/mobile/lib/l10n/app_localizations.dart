@@ -6448,6 +6448,30 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'すべて選択'**
   String get selectAll;
+
+  /// No description provided for @piEngineModel.
+  ///
+  /// In ja, this message translates to:
+  /// **'モデル'**
+  String get piEngineModel;
+
+  /// No description provided for @piEngineModelSwitchTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'モデルを切り替え'**
+  String get piEngineModelSwitchTitle;
+
+  /// No description provided for @piEngineModelSwitchEmpty.
+  ///
+  /// In ja, this message translates to:
+  /// **'利用可能なモデルがありません。「モデル管理」で追加してください。'**
+  String get piEngineModelSwitchEmpty;
+
+  /// No description provided for @piEngineModelSwitched.
+  ///
+  /// In ja, this message translates to:
+  /// **'{model} に切り替えました'**
+  String piEngineModelSwitched(String model);
 }
 
 class _AppLocalizationsDelegate

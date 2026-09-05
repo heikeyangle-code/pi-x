@@ -1,7 +1,9 @@
 # SURGERY-NEXT — 下一批删除/改造执行单（CI 绿后按序执行）
 
-> 2026-09 更新：S1/S3 完成；S5a 单本机种子完成；整体状态见 docs/STATUS.md；
-> SSH(S2)/FCM(S4)/机器 UI 收敛(S5b) 与 M2 引擎接线捆绑推进。
+> 2026-09 更新：S1/S3 完成；S5a 单本机种子、S5b 机器 UI 收敛完成（见 STATUS "S5b 单机收敛完成"）；
+> SSH(S2)/FCM(S4) 已随 S5 单本机收敛一并删除（S4 推送中继随 pi-only 已移除）；
+> 整体状态见 docs/STATUS.md；M2 引擎接线推进见 ENGINE-INTEGRATION / PI-ONLY-STATUS。
+> 本执行单剩余项均已勾销，新手术清单见 STATUS "下一步主线"。
 
 > 前置：等 `.github/workflows/ci.yml` 首跑绿（或按报错修完当前盲改残留）。
 > 原则：一批一提交；每批 grep 零残留；禁止引入 Aether/GPL 代码。

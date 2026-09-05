@@ -22,7 +22,9 @@
   "removeProjectConfirm": "Remove \"{name}\" from recent projects?",
   "@removeProjectConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "rename": "Rename",
@@ -41,22 +43,34 @@
   "protocolRangeDetails": "App protocol {appMin}–{appMax}; Bridge protocol {bridgeMin}–{bridgeMax}",
   "@protocolRangeDetails": {
     "placeholders": {
-      "appMin": { "type": "int" },
-      "appMax": { "type": "int" },
-      "bridgeMin": { "type": "int" },
-      "bridgeMax": { "type": "int" }
+      "appMin": {
+        "type": "int"
+      },
+      "appMax": {
+        "type": "int"
+      },
+      "bridgeMin": {
+        "type": "int"
+      },
+      "bridgeMax": {
+        "type": "int"
+      }
     }
   },
   "toolSuggestionTitle": "Add {toolName} to Codex?",
   "@toolSuggestionTitle": {
     "placeholders": {
-      "toolName": { "type": "String" }
+      "toolName": {
+        "type": "String"
+      }
     }
   },
   "toolSuggestionInstall": "Install {toolName}",
   "@toolSuggestionInstall": {
     "placeholders": {
-      "toolName": { "type": "String" }
+      "toolName": {
+        "type": "String"
+      }
     }
   },
   "toolSuggestionInstalling": "Installing…",
@@ -65,7 +79,9 @@
   "toolSuggestionConnect": "Connect {appName}",
   "@toolSuggestionConnect": {
     "placeholders": {
-      "appName": { "type": "String" }
+      "appName": {
+        "type": "String"
+      }
     }
   },
   "toolSuggestionComplete": "I've finished connecting",
@@ -141,7 +157,9 @@
   "galleryWithCount": "Gallery ({count})",
   "@galleryWithCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "disconnect": "Disconnect",
@@ -173,7 +191,9 @@
   "sshPasswordPrompt": "Enter SSH password for {machineName}",
   "@sshPasswordPrompt": {
     "placeholders": {
-      "machineName": { "type": "String" }
+      "machineName": {
+        "type": "String"
+      }
     }
   },
   "password": "Password",
@@ -187,7 +207,9 @@
   "deleteMachineConfirm": "Delete \"{displayName}\"? This will remove all saved credentials.",
   "@deleteMachineConfirm": {
     "placeholders": {
-      "displayName": { "type": "String" }
+      "displayName": {
+        "type": "String"
+      }
     }
   },
   "connectToBridgeServer": "Connect to Bridge Server",
@@ -219,19 +241,25 @@
   "minutesAgo": "{minutes}m ago",
   "@minutesAgo": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "hoursAgo": "{hours}h ago",
   "@hoursAgo": {
     "placeholders": {
-      "hours": { "type": "int" }
+      "hours": {
+        "type": "int"
+      }
     }
   },
   "daysAgo": "{days}d ago",
   "@daysAgo": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "unfavorite": "Unfavorite",
@@ -243,15 +271,23 @@
   "bridgeVersionCurrentExpected": "Current v{current}, recommended v{expected}+",
   "@bridgeVersionCurrentExpected": {
     "placeholders": {
-      "current": { "type": "String" },
-      "expected": { "type": "String" }
+      "current": {
+        "type": "String"
+      },
+      "expected": {
+        "type": "String"
+      }
     }
   },
   "bridgeVersionCurrentLatest": "Current v{current}, latest v{latest}",
   "@bridgeVersionCurrentLatest": {
     "placeholders": {
-      "current": { "type": "String" },
-      "latest": { "type": "String" }
+      "current": {
+        "type": "String"
+      },
+      "latest": {
+        "type": "String"
+      }
     }
   },
   "bridgeLatestVersionChecking": "Checking latest Bridge version...",
@@ -263,7 +299,9 @@
   "appUpdateAvailable": "v{version} is available",
   "@appUpdateAvailable": {
     "placeholders": {
-      "version": { "type": "String" }
+      "version": {
+        "type": "String"
+      }
     }
   },
   "openGitHubReleases": "Open GitHub Releases",
@@ -316,7 +354,9 @@
   "worktreeExisting": "Existing ({count})",
   "@worktreeExisting": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "branchOptional": "Branch (optional)",
@@ -383,21 +423,27 @@
   "changePermissionModeBody": "Switching to {mode} will restart the session. Your conversation will be preserved.",
   "@changePermissionModeBody": {
     "placeholders": {
-      "mode": { "type": "String" }
+      "mode": {
+        "type": "String"
+      }
     }
   },
   "changeExecutionModeTitle": "Change Execution Mode",
   "changeExecutionModeBody": "Switching to {mode} will restart the session. Your conversation will be preserved.",
   "@changeExecutionModeBody": {
     "placeholders": {
-      "mode": { "type": "String" }
+      "mode": {
+        "type": "String"
+      }
     }
   },
   "changeApprovalPolicyTitle": "Change Approval Policy",
   "changeApprovalPolicyBody": "Switching to {mode} will restart the session. Your conversation will be preserved.",
   "@changeApprovalPolicyBody": {
     "placeholders": {
-      "mode": { "type": "String" }
+      "mode": {
+        "type": "String"
+      }
     }
   },
   "codexApprovalUntrustedDescription": "Auto-run only trusted commands; ask for everything else",
@@ -416,7 +462,9 @@
   "guardianApprovalAuthorization": "Authorization: {authorization}",
   "@guardianApprovalAuthorization": {
     "placeholders": {
-      "authorization": { "type": "String" }
+      "authorization": {
+        "type": "String"
+      }
     }
   },
   "enablePlanModeTitle": "Enable Plan Mode",
@@ -427,7 +475,9 @@
   "changeSandboxModeBody": "Switching to {mode} will restart the session. Your conversation will be preserved.",
   "@changeSandboxModeBody": {
     "placeholders": {
-      "mode": { "type": "String" }
+      "mode": {
+        "type": "String"
+      }
     }
   },
   "messagePlaceholder": "Message Claude...",
@@ -439,7 +489,9 @@
   "queuedInputImageCount": "{count, plural, =1{{count} image} other{{count} images}}",
   "@queuedInputImageCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "tooltipSteerQueuedMessage": "Steer queued message",
@@ -468,25 +520,33 @@
   "diffLines": "{count} diff lines",
   "@diffLines": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "changedLines": "{count, plural, =1{{count} changed line} other{{count} changed lines}}",
   "@changedLines": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "hunkCount": "{count, plural, =1{{count} hunk} other{{count} hunks}}",
   "@hunkCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "fileCount": "{count, plural, =1{{count} file} other{{count} files}}",
   "@fileCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "tapInterruptHoldStop": "Tap: interrupt, Hold: stop",
@@ -499,7 +559,9 @@
   "rewindConfirmBody": "Mode: {mode}\n\nThis action cannot be undone. Proceed?",
   "@rewindConfirmBody": {
     "placeholders": {
-      "mode": { "type": "String" }
+      "mode": {
+        "type": "String"
+      }
     }
   },
   "rewindCannotRewindFiles": "Cannot rewind files",
@@ -514,14 +576,20 @@
   "diffSummaryAddedRemoved": "+{added}/-{removed} lines",
   "@diffSummaryAddedRemoved": {
     "placeholders": {
-      "added": { "type": "int" },
-      "removed": { "type": "int" }
+      "added": {
+        "type": "int"
+      },
+      "removed": {
+        "type": "int"
+      }
     }
   },
   "lineCountSummary": "{count} lines",
   "@lineCountSummary": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "toolResult": "Tool Result",
@@ -529,14 +597,18 @@
   "agentIsAsking": "{agent} is asking",
   "@agentIsAsking": {
     "placeholders": {
-      "agent": { "type": "Object" }
+      "agent": {
+        "type": "Object"
+      }
     }
   },
   "submitAllAnswers": "Submit All Answers",
   "submitWithCount": "Submit ({count} selected)",
   "@submitWithCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "selectOptionsToSubmit": "Select options to submit",
@@ -550,7 +622,9 @@
   "allWithCount": "All ({count})",
   "@allWithCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "noImages": "No images",
@@ -663,32 +737,44 @@
   "promptHistoryLatestSync": "Last sync: {time}",
   "@promptHistoryLatestSync": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "promptHistorySyncedBridges": "Synced Bridges: {count}",
   "@promptHistorySyncedBridges": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "promptHistorySyncSummaryWithFailures": "{synced} synced, {failed} failed",
   "@promptHistorySyncSummaryWithFailures": {
     "placeholders": {
-      "synced": { "type": "int" },
-      "failed": { "type": "int" }
+      "synced": {
+        "type": "int"
+      },
+      "failed": {
+        "type": "int"
+      }
     }
   },
   "promptHistoryBridgeId": "Bridge ID: {id}",
   "@promptHistoryBridgeId": {
     "placeholders": {
-      "id": { "type": "String" }
+      "id": {
+        "type": "String"
+      }
     }
   },
   "promptHistoryOtherBridgeRegistrations": "Other registrations: {registrations}",
   "@promptHistoryOtherBridgeRegistrations": {
     "placeholders": {
-      "registrations": { "type": "String" }
+      "registrations": {
+        "type": "String"
+      }
     }
   },
   "promptHistoryNoSyncTime": "No sync time",
@@ -703,13 +789,17 @@
   "itemsProcessed": "{count} items processed",
   "@itemsProcessed": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "bestStreak": "Best streak: {count}",
   "@bestStreak": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "tryAgain": "Try Again",
@@ -756,7 +846,9 @@
   "appIconSettingsSubtitle": "Change the icon on your {device} Home Screen.",
   "@appIconSettingsSubtitle": {
     "placeholders": {
-      "device": { "type": "String" }
+      "device": {
+        "type": "String"
+      }
     }
   },
   "appIconSupporterDialogTitle": "Monthly Supporter Perk",
@@ -805,14 +897,18 @@
   "usagePaceExpected": "Expected {percent}% used",
   "@usagePaceExpected": {
     "placeholders": {
-      "percent": { "type": "int" }
+      "percent": {
+        "type": "int"
+      }
     }
   },
   "usagePaceWillLast": "On track to last until reset",
   "usagePaceRunsOutIn": "Projected to reach the limit in about {duration}",
   "@usagePaceRunsOutIn": {
     "placeholders": {
-      "duration": { "type": "String" }
+      "duration": {
+        "type": "String"
+      }
     }
   },
   "usagePaceAtLimit": "Limit reached",
@@ -836,14 +932,18 @@
   "usageResetAt": "Reset: {time}",
   "@usageResetAt": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "usageAlreadyReset": "Already reset",
   "attachedImages": "Attached Images ({count})",
   "@attachedImages": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "attachedImagesNoCount": "Attached Images",
@@ -852,7 +952,9 @@
   "failedToFetchImagesWithError": "Failed to fetch images: {error}",
   "@failedToFetchImagesWithError": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "retry": "Retry",
@@ -869,8 +971,12 @@
   "generatedImagePositionLabel": "Generated image {current} of {total}",
   "@generatedImagePositionLabel": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "noImageInClipboard": "No image in clipboard",
@@ -878,14 +984,20 @@
   "imageLimitReached": "Maximum {max} images allowed",
   "@imageLimitReached": {
     "placeholders": {
-      "max": { "type": "int" }
+      "max": {
+        "type": "int"
+      }
     }
   },
   "imageLimitTruncated": "Only first {max} images attached ({dropped} dropped)",
   "@imageLimitTruncated": {
     "placeholders": {
-      "max": { "type": "int" },
-      "dropped": { "type": "int" }
+      "max": {
+        "type": "int"
+      },
+      "dropped": {
+        "type": "int"
+      }
     }
   },
   "selectFromGallery": "Select from Gallery",
@@ -904,7 +1016,9 @@
   "archiveFailedWithError": "Failed to archive session: {error}",
   "@archiveFailedWithError": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "noRecentSessions": "No recent sessions",
@@ -961,10 +1075,12 @@
   "spreadAppealMessage": "CC Pocket still has a small user base, and continued development is hard without more users. If you like it, a quick store rating or sharing it with someone would really help.",
   "shareApp": "Share with Friends",
   "shareAppSubtitle": "Tell your friends & colleagues",
-  "shareText": "CC Pocket: Claude & Codex\nControl your coding agent from your phone \ud83d\udcf1\n#ccpocket\n{url}",
+  "shareText": "CC Pocket: Claude & Codex\nControl your coding agent from your phone 📱\n#ccpocket\n{url}",
   "@shareText": {
     "placeholders": {
-      "url": { "type": "String" }
+      "url": {
+        "type": "String"
+      }
     }
   },
   "starOnGithub": "Star on GitHub",
@@ -987,7 +1103,9 @@
   "supportEntryActiveSubtitle": "Thank you. You’ve been supporting CC Pocket since {date}.",
   "@supportEntryActiveSubtitle": {
     "placeholders": {
-      "date": { "type": "String" }
+      "date": {
+        "type": "String"
+      }
     }
   },
   "supporterMonthlyDescription": "Ongoing support to keep the app improving.",
@@ -1007,44 +1125,58 @@
   "supporterSummarySinceChip": "Since {date}",
   "@supporterSummarySinceChip": {
     "placeholders": {
-      "date": { "type": "String" }
+      "date": {
+        "type": "String"
+      }
     }
   },
   "supporterSummaryStreakChip": "Streak: {duration}",
   "@supporterSummaryStreakChip": {
     "placeholders": {
-      "duration": { "type": "String" }
+      "duration": {
+        "type": "String"
+      }
     }
   },
   "supporterSummaryOneTimeCount": "One-time ×{count}",
   "@supporterSummaryOneTimeCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "supporterSummarySnackCount": "Snacks ×{count}",
   "@supporterSummarySnackCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "supporterSummaryCoffeeCount": "Drinks ×{count}",
   "@supporterSummaryCoffeeCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "supporterSummaryLunchCount": "Lunch ×{count}",
   "@supporterSummaryLunchCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "supporterSummaryLessThanMonth": "<1 month",
   "supporterSummaryDurationMonths": "{count, plural, =1{1 month} other{{count} months}}",
   "@supporterSummaryDurationMonths": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "supporterSummarySinceLabel": "Started",
@@ -1077,14 +1209,18 @@
   "supporterPurchaseFailed": "Purchase failed: {message}",
   "@supporterPurchaseFailed": {
     "placeholders": {
-      "message": { "type": "String" }
+      "message": {
+        "type": "String"
+      }
     }
   },
   "supporterRestoreSuccess": "Purchases restored.",
   "supporterRestoreFailed": "Restore failed: {message}",
   "@supporterRestoreFailed": {
     "placeholders": {
-      "message": { "type": "String" }
+      "message": {
+        "type": "String"
+      }
     }
   },
   "gitDiscardAllChangesTitle": "Discard all changes?",
@@ -1099,19 +1235,23 @@
   "renderErrorFallback": "This content couldn't be displayed.",
   "confirm": "Confirm",
   "piEngineTitle": "Pi engine",
-  "piEngineSettingsSubtitle": "System prompts, launch flags, models",
+  "piEngineSettingsSubtitle": "Core settings.json options (opaque JSON fallback)",
   "piEngineManage": "Pi engine",
   "piEngineNote": "Note",
   "piEngineNoteBody": "Pi Host: {url}",
   "@piEngineNoteBody": {
     "placeholders": {
-      "url": { "type": "String" }
+      "url": {
+        "type": "String"
+      }
     }
   },
   "piEngineConnected": "Pi {version} connected",
   "@piEngineConnected": {
     "placeholders": {
-      "version": { "type": "String" }
+      "version": {
+        "type": "String"
+      }
     }
   },
   "piEngineConnecting": "Connecting to Pi engine…",
@@ -1120,7 +1260,9 @@
   "piEngineError": "Pi engine error: {error}",
   "@piEngineError": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "piEngineNotConnected": "Pi engine is not connected. Start the Pi Host server first.",
@@ -1171,7 +1313,9 @@
   "piEngineProviderDeleteConfirm": "Delete provider \"{id}\"? Its models will be removed too.",
   "@piEngineProviderDeleteConfirm": {
     "placeholders": {
-      "id": { "type": "String" }
+      "id": {
+        "type": "String"
+      }
     }
   },
   "piEngineProviderId": "Provider ID",
@@ -1187,8 +1331,12 @@
   "piEngineModelImportDone": "Imported {count} model(s) into {provider}.",
   "@piEngineModelImportDone": {
     "placeholders": {
-      "count": { "type": "int" },
-      "provider": { "type": "String" }
+      "count": {
+        "type": "int"
+      },
+      "provider": {
+        "type": "String"
+      }
     }
   },
   "piEngineModelsImportJson": "Import JSON",
@@ -1197,7 +1345,9 @@
   "piEngineModelsImportJsonDone": "Imported {count} provider(s).",
   "@piEngineModelsImportJsonDone": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEngineModelsImportJsonInvalid": "That doesn't look like a valid providers JSON object.",
@@ -1216,7 +1366,9 @@
   "piEngineCommandsCopied": "Copied /{name}. Paste it into the input to use it.",
   "@piEngineCommandsCopied": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "piEnginePrompts": "Prompt templates",
@@ -1225,7 +1377,9 @@
   "piEnginePromptsCount": "{count} templates",
   "@piEnginePromptsCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEnginePromptsGroupGlobal": "Global",
@@ -1240,19 +1394,25 @@
   "piEnginePromptsDeleteConfirm": "Delete template {name}?",
   "@piEnginePromptsDeleteConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "piEnginePromptsSaved": "Saved {name}",
   "@piEnginePromptsSaved": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "piEnginePromptsCopied": "Copied /{name}. Paste it into the chat input.",
   "@piEnginePromptsCopied": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "piEnginePromptsHint": "Prompts are .md files exposed as slash commands in the chat input. Edits apply immediately, no restart needed.",
@@ -1268,7 +1428,9 @@
   "piEnginePackagesCount": "{count} packages",
   "@piEnginePackagesCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEnginePackagesGroupGlobal": "Global",
@@ -1284,7 +1446,9 @@
   "piEnginePackagesRemoveConfirm": "Remove package {source}?",
   "@piEnginePackagesRemoveConfirm": {
     "placeholders": {
-      "source": { "type": "String" }
+      "source": {
+        "type": "String"
+      }
     }
   },
   "piEnginePackagesRemoveConfirmBody": "This uninstalls the artifacts and drops the entry from settings.json.",
@@ -1293,31 +1457,38 @@
   "piEnginePackagesUpdated": "Updated {count} packages",
   "@piEnginePackagesUpdated": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEnginePackagesRemoved": "Removed {source}",
   "@piEnginePackagesRemoved": {
     "placeholders": {
-      "source": { "type": "String" }
+      "source": {
+        "type": "String"
+      }
     }
   },
   "piEnginePackagesInstalling": "Installing {source}…",
   "@piEnginePackagesInstalling": {
     "placeholders": {
-      "source": { "type": "String" }
+      "source": {
+        "type": "String"
+      }
     }
   },
   "piEnginePackagesUpdating": "Updating packages…",
   "piEnginePackagesRemoving": "Removing {source}…",
   "@piEnginePackagesRemoving": {
     "placeholders": {
-      "source": { "type": "String" }
+      "source": {
+        "type": "String"
+      }
     }
   },
   "piEnginePackagesRestartHint": "Configured sources are re-read when the engine resolves resources; npm/git artifact changes usually apply after a restart (or /reload).",
   "piEngineSettingsCore": "Settings",
-  "piEngineSettingsSubtitle": "Core settings.json options (opaque JSON fallback)",
   "piEngineSettingsSectionGeneral": "General",
   "piEngineSettingsSectionBehavior": "Behavior",
   "piEngineSettingsDefaultProvider": "Default provider",
@@ -1389,7 +1560,9 @@
   "piEngineThemesRemoveConfirm": "Remove theme \"{name}\"? The file will be deleted.",
   "@piEngineThemesRemoveConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "piEngineThemesEmpty": "No themes yet. Import one to get started.",
@@ -1399,25 +1572,33 @@
   "piEngineContextFilesProject": "Project file: {path}",
   "@piEngineContextFilesProject": {
     "placeholders": {
-      "path": { "type": "String" }
+      "path": {
+        "type": "String"
+      }
     }
   },
   "piEngineContextFilesParent": "Parent copy: {path} · merged above",
   "@piEngineContextFilesParent": {
     "placeholders": {
-      "path": { "type": "String" }
+      "path": {
+        "type": "String"
+      }
     }
   },
   "piEngineContextFilesNew": "Will be created at {path}",
   "@piEngineContextFilesNew": {
     "placeholders": {
-      "path": { "type": "String" }
+      "path": {
+        "type": "String"
+      }
     }
   },
   "piEngineContextFilesEdit": "Edit {name}",
   "@piEngineContextFilesEdit": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "piEngineExtensions": "Extensions",
@@ -1427,7 +1608,9 @@
   "piEngineExtensionsCount": "{count} extensions",
   "@piEngineExtensionsCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEngineExtensionsGroupGlobal": "Global",
@@ -1441,7 +1624,9 @@
   "piEngineSkillsCount": "{count} skills",
   "@piEngineSkillsCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEngineSkillsGroupProject": "Project",
@@ -1474,43 +1659,66 @@
   "piEngineRuntimeInstallConfirm": "Download {route} and switch to it? This downloads a package and may take a while.",
   "@piEngineRuntimeInstallConfirm": {
     "placeholders": {
-      "route": { "type": "String" }
+      "route": {
+        "type": "String"
+      }
     }
   },
   "piEngineRuntimeInstalling": "Installing {route}…",
   "@piEngineRuntimeInstalling": {
     "placeholders": {
-      "route": { "type": "String" }
+      "route": {
+        "type": "String"
+      }
     }
   },
   "piEngineRuntimeSwitchAction": "Switch",
   "piEngineRuntimeSwitch": "Switch to {route}?",
   "@piEngineRuntimeSwitch": {
     "placeholders": {
-      "route": { "type": "String" }
+      "route": {
+        "type": "String"
+      }
     }
   },
   "piEngineRuntimeSwitchConfirmA": "Return to the built-in environment? The proot distribution stays installed and can be re-selected anytime.",
   "piEngineRuntimeSwitchConfirmB": "Switch to {route}? It is slower and uses more space. You can switch back anytime.",
   "@piEngineRuntimeSwitchConfirmB": {
     "placeholders": {
-      "route": { "type": "String" }
+      "route": {
+        "type": "String"
+      }
     }
   },
   "piEngineRuntimeSwitched": "Switched to {route}.",
   "@piEngineRuntimeSwitched": {
     "placeholders": {
-      "route": { "type": "String" }
+      "route": {
+        "type": "String"
+      }
     }
   },
   "piEngineRuntimePackagesTitle": "Installed packages",
   "piEngineRuntimePackages": "{count} packages",
   "@piEngineRuntimePackages": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEngineRuntimeRestartHint": "Switching routes restarts the engine so the new runtime takes effect immediately.",
   "clear": "Clear",
-  "selectAll": "Select all"
+  "selectAll": "Select all",
+  "piEngineModel": "Model",
+  "piEngineModelSwitchTitle": "Switch model",
+  "piEngineModelSwitchEmpty": "No models available. Add one under Model settings.",
+  "piEngineModelSwitched": "Switched to {model}",
+  "@piEngineModelSwitched": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  }
 }

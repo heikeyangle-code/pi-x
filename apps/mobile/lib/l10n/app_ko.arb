@@ -22,7 +22,9 @@
   "removeProjectConfirm": "최근 프로젝트에서 \"{name}\"을 제거할까요?",
   "@removeProjectConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "rename": "이름 변경",
@@ -41,22 +43,34 @@
   "protocolRangeDetails": "앱 프로토콜 {appMin}–{appMax}, Bridge 프로토콜 {bridgeMin}–{bridgeMax}",
   "@protocolRangeDetails": {
     "placeholders": {
-      "appMin": { "type": "int" },
-      "appMax": { "type": "int" },
-      "bridgeMin": { "type": "int" },
-      "bridgeMax": { "type": "int" }
+      "appMin": {
+        "type": "int"
+      },
+      "appMax": {
+        "type": "int"
+      },
+      "bridgeMin": {
+        "type": "int"
+      },
+      "bridgeMax": {
+        "type": "int"
+      }
     }
   },
   "toolSuggestionTitle": "Codex에 {toolName}을(를) 추가할까요?",
   "@toolSuggestionTitle": {
     "placeholders": {
-      "toolName": { "type": "String" }
+      "toolName": {
+        "type": "String"
+      }
     }
   },
   "toolSuggestionInstall": "{toolName} 설치",
   "@toolSuggestionInstall": {
     "placeholders": {
-      "toolName": { "type": "String" }
+      "toolName": {
+        "type": "String"
+      }
     }
   },
   "toolSuggestionInstalling": "설치 중…",
@@ -65,7 +79,9 @@
   "toolSuggestionConnect": "{appName} 연결",
   "@toolSuggestionConnect": {
     "placeholders": {
-      "appName": { "type": "String" }
+      "appName": {
+        "type": "String"
+      }
     }
   },
   "toolSuggestionComplete": "연결을 완료했습니다",
@@ -141,7 +157,9 @@
   "galleryWithCount": "갤러리 ({count})",
   "@galleryWithCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "disconnect": "연결 해제",
@@ -173,7 +191,9 @@
   "sshPasswordPrompt": "{machineName}의 SSH 비밀번호 입력",
   "@sshPasswordPrompt": {
     "placeholders": {
-      "machineName": { "type": "String" }
+      "machineName": {
+        "type": "String"
+      }
     }
   },
   "password": "비밀번호",
@@ -187,7 +207,9 @@
   "deleteMachineConfirm": "\"{displayName}\"을 삭제할까요? 저장된 인증 정보가 모두 제거됩니다.",
   "@deleteMachineConfirm": {
     "placeholders": {
-      "displayName": { "type": "String" }
+      "displayName": {
+        "type": "String"
+      }
     }
   },
   "connectToBridgeServer": "Bridge 서버에 연결",
@@ -219,19 +241,25 @@
   "minutesAgo": "{minutes}분 전",
   "@minutesAgo": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "hoursAgo": "{hours}시간 전",
   "@hoursAgo": {
     "placeholders": {
-      "hours": { "type": "int" }
+      "hours": {
+        "type": "int"
+      }
     }
   },
   "daysAgo": "{days}일 전",
   "@daysAgo": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "unfavorite": "즐겨찾기 해제",
@@ -243,15 +271,23 @@
   "bridgeVersionCurrentExpected": "현재 v{current}, 권장 v{expected}+",
   "@bridgeVersionCurrentExpected": {
     "placeholders": {
-      "current": { "type": "String" },
-      "expected": { "type": "String" }
+      "current": {
+        "type": "String"
+      },
+      "expected": {
+        "type": "String"
+      }
     }
   },
   "bridgeVersionCurrentLatest": "현재 v{current}, 최신 v{latest}",
   "@bridgeVersionCurrentLatest": {
     "placeholders": {
-      "current": { "type": "String" },
-      "latest": { "type": "String" }
+      "current": {
+        "type": "String"
+      },
+      "latest": {
+        "type": "String"
+      }
     }
   },
   "bridgeLatestVersionChecking": "최신 Bridge 버전 확인 중...",
@@ -263,7 +299,9 @@
   "appUpdateAvailable": "v{version} 사용 가능",
   "@appUpdateAvailable": {
     "placeholders": {
-      "version": { "type": "String" }
+      "version": {
+        "type": "String"
+      }
     }
   },
   "openGitHubReleases": "GitHub Releases 열기",
@@ -316,7 +354,9 @@
   "worktreeExisting": "기존 ({count})",
   "@worktreeExisting": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "branchOptional": "브랜치(선택 사항)",
@@ -383,21 +423,27 @@
   "changePermissionModeBody": "{mode}(으)로 전환하면 세션이 재시작됩니다. 대화는 유지됩니다.",
   "@changePermissionModeBody": {
     "placeholders": {
-      "mode": { "type": "String" }
+      "mode": {
+        "type": "String"
+      }
     }
   },
   "changeExecutionModeTitle": "실행 모드 변경",
   "changeExecutionModeBody": "{mode}(으)로 전환하면 세션이 재시작됩니다. 대화는 유지됩니다.",
   "@changeExecutionModeBody": {
     "placeholders": {
-      "mode": { "type": "String" }
+      "mode": {
+        "type": "String"
+      }
     }
   },
   "changeApprovalPolicyTitle": "승인 정책 변경",
   "changeApprovalPolicyBody": "{mode}(으)로 전환하면 세션이 재시작됩니다. 대화는 유지됩니다.",
   "@changeApprovalPolicyBody": {
     "placeholders": {
-      "mode": { "type": "String" }
+      "mode": {
+        "type": "String"
+      }
     }
   },
   "codexApprovalUntrustedDescription": "신뢰할 수 있는 명령만 자동 실행하고 나머지는 확인",
@@ -416,7 +462,9 @@
   "guardianApprovalAuthorization": "승인 수준: {authorization}",
   "@guardianApprovalAuthorization": {
     "placeholders": {
-      "authorization": { "type": "String" }
+      "authorization": {
+        "type": "String"
+      }
     }
   },
   "enablePlanModeTitle": "Plan Mode 활성화",
@@ -427,7 +475,9 @@
   "changeSandboxModeBody": "{mode}(으)로 전환하면 세션이 재시작됩니다. 대화는 유지됩니다.",
   "@changeSandboxModeBody": {
     "placeholders": {
-      "mode": { "type": "String" }
+      "mode": {
+        "type": "String"
+      }
     }
   },
   "messagePlaceholder": "Claude에게 메시지...",
@@ -439,7 +489,9 @@
   "queuedInputImageCount": "{count, plural, other{이미지 {count}개}}",
   "@queuedInputImageCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "tooltipSteerQueuedMessage": "대기 중인 메시지를 지시로 보내기",
@@ -468,25 +520,33 @@
   "diffLines": "diff {count}줄",
   "@diffLines": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "changedLines": "{count, plural, =1{변경된 줄 {count}개} other{변경된 줄 {count}개}}",
   "@changedLines": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "hunkCount": "{count, plural, =1{변경 블록 {count}개} other{변경 블록 {count}개}}",
   "@hunkCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "fileCount": "{count, plural, =1{파일 {count}개} other{파일 {count}개}}",
   "@fileCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "tapInterruptHoldStop": "탭: 중단, 길게 누르기: 정지",
@@ -499,7 +559,9 @@
   "rewindConfirmBody": "모드: {mode}\n\n이 작업은 취소할 수 없습니다. 계속할까요?",
   "@rewindConfirmBody": {
     "placeholders": {
-      "mode": { "type": "String" }
+      "mode": {
+        "type": "String"
+      }
     }
   },
   "rewindCannotRewindFiles": "파일을 되돌릴 수 없습니다",
@@ -514,14 +576,20 @@
   "diffSummaryAddedRemoved": "+{added}/-{removed}줄",
   "@diffSummaryAddedRemoved": {
     "placeholders": {
-      "added": { "type": "int" },
-      "removed": { "type": "int" }
+      "added": {
+        "type": "int"
+      },
+      "removed": {
+        "type": "int"
+      }
     }
   },
   "lineCountSummary": "{count}줄",
   "@lineCountSummary": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "toolResult": "도구 결과",
@@ -529,14 +597,18 @@
   "agentIsAsking": "{agent} 질문 중",
   "@agentIsAsking": {
     "placeholders": {
-      "agent": { "type": "Object" }
+      "agent": {
+        "type": "Object"
+      }
     }
   },
   "submitAllAnswers": "모든 답변 제출",
   "submitWithCount": "제출({count}개 선택)",
   "@submitWithCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "selectOptionsToSubmit": "제출할 옵션 선택",
@@ -550,7 +622,9 @@
   "allWithCount": "전체 ({count})",
   "@allWithCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "noImages": "이미지 없음",
@@ -663,32 +737,44 @@
   "promptHistoryLatestSync": "마지막 동기화: {time}",
   "@promptHistoryLatestSync": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "promptHistorySyncedBridges": "{count}개 Bridge 동기화됨",
   "@promptHistorySyncedBridges": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "promptHistorySyncSummaryWithFailures": "{synced}개 동기화, {failed}개 실패",
   "@promptHistorySyncSummaryWithFailures": {
     "placeholders": {
-      "synced": { "type": "int" },
-      "failed": { "type": "int" }
+      "synced": {
+        "type": "int"
+      },
+      "failed": {
+        "type": "int"
+      }
     }
   },
   "promptHistoryBridgeId": "Bridge ID: {id}",
   "@promptHistoryBridgeId": {
     "placeholders": {
-      "id": { "type": "String" }
+      "id": {
+        "type": "String"
+      }
     }
   },
   "promptHistoryOtherBridgeRegistrations": "다른 등록: {registrations}",
   "@promptHistoryOtherBridgeRegistrations": {
     "placeholders": {
-      "registrations": { "type": "String" }
+      "registrations": {
+        "type": "String"
+      }
     }
   },
   "promptHistoryNoSyncTime": "동기화 시간 없음",
@@ -703,13 +789,17 @@
   "itemsProcessed": "{count}개 처리됨",
   "@itemsProcessed": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "bestStreak": "최고 연속 기록: {count}",
   "@bestStreak": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "tryAgain": "다시 시도",
@@ -756,7 +846,9 @@
   "appIconSettingsSubtitle": "{device} 홈 화면에 표시되는 아이콘을 변경할 수 있습니다.",
   "@appIconSettingsSubtitle": {
     "placeholders": {
-      "device": { "type": "String" }
+      "device": {
+        "type": "String"
+      }
     }
   },
   "appIconSupporterDialogTitle": "월간 Supporter 혜택",
@@ -805,14 +897,18 @@
   "usagePaceExpected": "예상 사용량 {percent}%",
   "@usagePaceExpected": {
     "placeholders": {
-      "percent": { "type": "int" }
+      "percent": {
+        "type": "int"
+      }
     }
   },
   "usagePaceWillLast": "현재 속도라면 초기화까지 유지될 전망",
   "usagePaceRunsOutIn": "현재 속도라면 약 {duration} 후 한도 도달 예상",
   "@usagePaceRunsOutIn": {
     "placeholders": {
-      "duration": { "type": "String" }
+      "duration": {
+        "type": "String"
+      }
     }
   },
   "usagePaceAtLimit": "한도에 도달했습니다",
@@ -836,14 +932,18 @@
   "usageResetAt": "초기화: {time}",
   "@usageResetAt": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "usageAlreadyReset": "이미 초기화됨",
   "attachedImages": "첨부 이미지 ({count})",
   "@attachedImages": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "attachedImagesNoCount": "첨부 이미지",
@@ -852,7 +952,9 @@
   "failedToFetchImagesWithError": "이미지 가져오기 실패: {error}",
   "@failedToFetchImagesWithError": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "retry": "재시도",
@@ -869,8 +971,12 @@
   "generatedImagePositionLabel": "생성된 이미지 {current} / {total}",
   "@generatedImagePositionLabel": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "noImageInClipboard": "클립보드에 이미지가 없습니다",
@@ -878,14 +984,20 @@
   "imageLimitReached": "최대 {max}개 이미지까지 허용됩니다",
   "@imageLimitReached": {
     "placeholders": {
-      "max": { "type": "int" }
+      "max": {
+        "type": "int"
+      }
     }
   },
   "imageLimitTruncated": "처음 {max}개 이미지만 첨부됨({dropped}개 제외)",
   "@imageLimitTruncated": {
     "placeholders": {
-      "max": { "type": "int" },
-      "dropped": { "type": "int" }
+      "max": {
+        "type": "int"
+      },
+      "dropped": {
+        "type": "int"
+      }
     }
   },
   "selectFromGallery": "갤러리에서 선택",
@@ -904,7 +1016,9 @@
   "archiveFailedWithError": "세션 보관 실패: {error}",
   "@archiveFailedWithError": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "noRecentSessions": "최근 세션 없음",
@@ -964,7 +1078,9 @@
   "shareText": "CC Pocket: Claude & Codex\n휴대폰에서 코딩 에이전트를 제어하세요 📱\n#ccpocket\n{url}",
   "@shareText": {
     "placeholders": {
-      "url": { "type": "String" }
+      "url": {
+        "type": "String"
+      }
     }
   },
   "starOnGithub": "GitHub에서 Star",
@@ -987,7 +1103,9 @@
   "supportEntryActiveSubtitle": "{date}부터 CC Pocket을 후원 중입니다.",
   "@supportEntryActiveSubtitle": {
     "placeholders": {
-      "date": { "type": "String" }
+      "date": {
+        "type": "String"
+      }
     }
   },
   "supporterMonthlyDescription": "앱을 계속 개선하기 위한 정기 후원입니다.",
@@ -1007,44 +1125,58 @@
   "supporterSummarySinceChip": "{date}부터",
   "@supporterSummarySinceChip": {
     "placeholders": {
-      "date": { "type": "String" }
+      "date": {
+        "type": "String"
+      }
     }
   },
   "supporterSummaryStreakChip": "연속: {duration}",
   "@supporterSummaryStreakChip": {
     "placeholders": {
-      "duration": { "type": "String" }
+      "duration": {
+        "type": "String"
+      }
     }
   },
   "supporterSummaryOneTimeCount": "일회성 ×{count}",
   "@supporterSummaryOneTimeCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "supporterSummarySnackCount": "간식 ×{count}",
   "@supporterSummarySnackCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "supporterSummaryCoffeeCount": "음료 ×{count}",
   "@supporterSummaryCoffeeCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "supporterSummaryLunchCount": "점심 ×{count}",
   "@supporterSummaryLunchCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "supporterSummaryLessThanMonth": "1개월 미만",
   "supporterSummaryDurationMonths": "{count, plural, =1{1개월} other{{count}개월}}",
   "@supporterSummaryDurationMonths": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "supporterSummarySinceLabel": "시작",
@@ -1077,14 +1209,18 @@
   "supporterPurchaseFailed": "구매 실패: {message}",
   "@supporterPurchaseFailed": {
     "placeholders": {
-      "message": { "type": "String" }
+      "message": {
+        "type": "String"
+      }
     }
   },
   "supporterRestoreSuccess": "구매 정보를 복원했습니다.",
   "supporterRestoreFailed": "복원 실패: {message}",
   "@supporterRestoreFailed": {
     "placeholders": {
-      "message": { "type": "String" }
+      "message": {
+        "type": "String"
+      }
     }
   },
   "gitDiscardAllChangesTitle": "모든 변경 사항을 버릴까요?",
@@ -1099,19 +1235,23 @@
   "renderErrorFallback": "이 콘텐츠를 표시할 수 없습니다.",
   "confirm": "확인",
   "piEngineTitle": "Pi 엔진",
-  "piEngineSettingsSubtitle": "시스템 프롬프트, 시작 플래그, 모델",
+  "piEngineSettingsSubtitle": "settings.json 핵심 옵션(JSON 폴백 편집기 포함)",
   "piEngineManage": "Pi 엔진",
   "piEngineNote": "참고",
   "piEngineNoteBody": "Pi Host: {url}",
   "@piEngineNoteBody": {
     "placeholders": {
-      "url": { "type": "String" }
+      "url": {
+        "type": "String"
+      }
     }
   },
   "piEngineConnected": "Pi {version} 연결됨",
   "@piEngineConnected": {
     "placeholders": {
-      "version": { "type": "String" }
+      "version": {
+        "type": "String"
+      }
     }
   },
   "piEngineConnecting": "Pi 엔진 연결 중…",
@@ -1120,7 +1260,9 @@
   "piEngineError": "Pi 엔진 오류: {error}",
   "@piEngineError": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "piEngineNotConnected": "Pi 엔진이 연결되지 않았습니다. 먼저 Pi Host 서버를 시작하세요.",
@@ -1171,7 +1313,9 @@
   "piEngineProviderDeleteConfirm": "공급자 \"{id}\"을(를) 삭제할까요? 모델도 함께 제거됩니다.",
   "@piEngineProviderDeleteConfirm": {
     "placeholders": {
-      "id": { "type": "String" }
+      "id": {
+        "type": "String"
+      }
     }
   },
   "piEngineProviderId": "공급자 ID",
@@ -1187,8 +1331,12 @@
   "piEngineModelImportDone": "{provider}에 모델 {count}개를 가져왔습니다.",
   "@piEngineModelImportDone": {
     "placeholders": {
-      "count": { "type": "int" },
-      "provider": { "type": "String" }
+      "count": {
+        "type": "int"
+      },
+      "provider": {
+        "type": "String"
+      }
     }
   },
   "piEngineModelsImportJson": "JSON 가져오기",
@@ -1197,7 +1345,9 @@
   "piEngineModelsImportJsonDone": "프로바이더 {count}개를 가져왔습니다.",
   "@piEngineModelsImportJsonDone": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEngineModelsImportJsonInvalid": "유효한 providers JSON 객체가 아닙니다.",
@@ -1216,7 +1366,9 @@
   "piEngineCommandsCopied": "/{name} 을(를) 복사했습니다. 입력란에 붙여넣어 사용하세요.",
   "@piEngineCommandsCopied": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "piEnginePrompts": "프롬프트 템플릿",
@@ -1225,7 +1377,9 @@
   "piEnginePromptsCount": "템플릿 {count}개",
   "@piEnginePromptsCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEnginePromptsGroupGlobal": "전역",
@@ -1240,19 +1394,25 @@
   "piEnginePromptsDeleteConfirm": "템플릿 {name} 을(를) 삭제할까요?",
   "@piEnginePromptsDeleteConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "piEnginePromptsSaved": "{name} 저장됨",
   "@piEnginePromptsSaved": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "piEnginePromptsCopied": "/{name} 을(를) 복사했습니다. 입력란에 붙여넣어 사용하세요.",
   "@piEnginePromptsCopied": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "piEnginePromptsHint": "프롬프트는 슬래시 명령으로 노출되는 .md 파일입니다. 편집은 즉시 적용되며 재시작이 필요 없습니다.",
@@ -1268,7 +1428,9 @@
   "piEnginePackagesCount": "패키지 {count}개",
   "@piEnginePackagesCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEnginePackagesGroupGlobal": "전역",
@@ -1284,7 +1446,9 @@
   "piEnginePackagesRemoveConfirm": "패키지 {source}를 제거할까요?",
   "@piEnginePackagesRemoveConfirm": {
     "placeholders": {
-      "source": { "type": "String" }
+      "source": {
+        "type": "String"
+      }
     }
   },
   "piEnginePackagesRemoveConfirmBody": "산출물을 제거하고 settings.json에서 항목을 삭제합니다.",
@@ -1293,31 +1457,38 @@
   "piEnginePackagesUpdated": "패키지 {count}개를 업데이트했습니다",
   "@piEnginePackagesUpdated": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEnginePackagesRemoved": "{source}를 제거했습니다",
   "@piEnginePackagesRemoved": {
     "placeholders": {
-      "source": { "type": "String" }
+      "source": {
+        "type": "String"
+      }
     }
   },
   "piEnginePackagesInstalling": "{source} 설치 중…",
   "@piEnginePackagesInstalling": {
     "placeholders": {
-      "source": { "type": "String" }
+      "source": {
+        "type": "String"
+      }
     }
   },
   "piEnginePackagesUpdating": "패키지 업데이트 중…",
   "piEnginePackagesRemoving": "{source} 제거 중…",
   "@piEnginePackagesRemoving": {
     "placeholders": {
-      "source": { "type": "String" }
+      "source": {
+        "type": "String"
+      }
     }
   },
   "piEnginePackagesRestartHint": "엔진은 리소스를 해석할 때 구성된 소스를 다시 읽습니다. npm/git 산출물 변경은 보통 재시작(또는 /reload) 후에 적용됩니다.",
   "piEngineSettingsCore": "설정",
-  "piEngineSettingsSubtitle": "settings.json 핵심 옵션(JSON 폴백 편집기 포함)",
   "piEngineSettingsSectionGeneral": "일반",
   "piEngineSettingsSectionBehavior": "동작",
   "piEngineSettingsDefaultProvider": "기본 제공자",
@@ -1389,7 +1560,9 @@
   "piEngineThemesRemoveConfirm": "테마 \"{name}\" 을 삭제할까요? 파일이 삭제됩니다.",
   "@piEngineThemesRemoveConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "piEngineThemesEmpty": "아직 테마가 없습니다. 가져와서 시작하세요.",
@@ -1399,25 +1572,33 @@
   "piEngineContextFilesProject": "프로젝트 파일: {path}",
   "@piEngineContextFilesProject": {
     "placeholders": {
-      "path": { "type": "String" }
+      "path": {
+        "type": "String"
+      }
     }
   },
   "piEngineContextFilesParent": "상위 복사본: {path} · 위에서 병합",
   "@piEngineContextFilesParent": {
     "placeholders": {
-      "path": { "type": "String" }
+      "path": {
+        "type": "String"
+      }
     }
   },
   "piEngineContextFilesNew": "{path} 에 생성됩니다",
   "@piEngineContextFilesNew": {
     "placeholders": {
-      "path": { "type": "String" }
+      "path": {
+        "type": "String"
+      }
     }
   },
   "piEngineContextFilesEdit": "{name} 편집",
   "@piEngineContextFilesEdit": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "piEngineExtensions": "확장 기능",
@@ -1427,7 +1608,9 @@
   "piEngineExtensionsCount": "확장 {count}개",
   "@piEngineExtensionsCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEngineExtensionsGroupGlobal": "전역",
@@ -1441,7 +1624,9 @@
   "piEngineSkillsCount": "스킬 {count}개",
   "@piEngineSkillsCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEngineSkillsGroupProject": "프로젝트",
@@ -1474,43 +1659,66 @@
   "piEngineRuntimeInstallConfirm": "{route}를 다운로드하고 전환할까요? 패키지를 다운로드하며 시간이 걸릴 수 있습니다.",
   "@piEngineRuntimeInstallConfirm": {
     "placeholders": {
-      "route": { "type": "String" }
+      "route": {
+        "type": "String"
+      }
     }
   },
   "piEngineRuntimeInstalling": "{route} 설치 중…",
   "@piEngineRuntimeInstalling": {
     "placeholders": {
-      "route": { "type": "String" }
+      "route": {
+        "type": "String"
+      }
     }
   },
   "piEngineRuntimeSwitchAction": "전환",
   "piEngineRuntimeSwitch": "{route}(으)로 전환할까요?",
   "@piEngineRuntimeSwitch": {
     "placeholders": {
-      "route": { "type": "String" }
+      "route": {
+        "type": "String"
+      }
     }
   },
   "piEngineRuntimeSwitchConfirmA": "내장 환경으로 돌아갈까요? proot 배포판은 유지되며 언제든 다시 선택할 수 있습니다.",
   "piEngineRuntimeSwitchConfirmB": "{route}(으)로 전환할까요? 더 느리고 공간을 더 차지하지만 언제든 되돌릴 수 있습니다.",
   "@piEngineRuntimeSwitchConfirmB": {
     "placeholders": {
-      "route": { "type": "String" }
+      "route": {
+        "type": "String"
+      }
     }
   },
   "piEngineRuntimeSwitched": "{route}(으)로 전환했습니다.",
   "@piEngineRuntimeSwitched": {
     "placeholders": {
-      "route": { "type": "String" }
+      "route": {
+        "type": "String"
+      }
     }
   },
   "piEngineRuntimePackagesTitle": "설치된 패키지",
   "piEngineRuntimePackages": "패키지 {count}개",
   "@piEngineRuntimePackages": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEngineRuntimeRestartHint": "경로를 전환하면 엔진이 다시 시작되어 새 런타임이 즉시 적용됩니다.",
   "clear": "선택 해제",
-  "selectAll": "모두 선택"
+  "selectAll": "모두 선택",
+  "piEngineModel": "모델",
+  "piEngineModelSwitchTitle": "모델 전환",
+  "piEngineModelSwitchEmpty": "사용 가능한 모델이 없습니다. '모델 관리'에서 추가하세요.",
+  "piEngineModelSwitched": "{model}(으)로 전환됨",
+  "@piEngineModelSwitched": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  }
 }

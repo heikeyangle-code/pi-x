@@ -22,7 +22,9 @@
   "removeProjectConfirm": "「{name}」を最近のプロジェクトから削除しますか？",
   "@removeProjectConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "rename": "名前を変更",
@@ -41,22 +43,34 @@
   "protocolRangeDetails": "App プロトコル {appMin}–{appMax}、Bridge プロトコル {bridgeMin}–{bridgeMax}",
   "@protocolRangeDetails": {
     "placeholders": {
-      "appMin": { "type": "int" },
-      "appMax": { "type": "int" },
-      "bridgeMin": { "type": "int" },
-      "bridgeMax": { "type": "int" }
+      "appMin": {
+        "type": "int"
+      },
+      "appMax": {
+        "type": "int"
+      },
+      "bridgeMin": {
+        "type": "int"
+      },
+      "bridgeMax": {
+        "type": "int"
+      }
     }
   },
   "toolSuggestionTitle": "Codex に {toolName} を追加しますか？",
   "@toolSuggestionTitle": {
     "placeholders": {
-      "toolName": { "type": "String" }
+      "toolName": {
+        "type": "String"
+      }
     }
   },
   "toolSuggestionInstall": "{toolName} をインストール",
   "@toolSuggestionInstall": {
     "placeholders": {
-      "toolName": { "type": "String" }
+      "toolName": {
+        "type": "String"
+      }
     }
   },
   "toolSuggestionInstalling": "インストール中…",
@@ -65,7 +79,9 @@
   "toolSuggestionConnect": "{appName} を接続",
   "@toolSuggestionConnect": {
     "placeholders": {
-      "appName": { "type": "String" }
+      "appName": {
+        "type": "String"
+      }
     }
   },
   "toolSuggestionComplete": "接続が完了しました",
@@ -141,7 +157,9 @@
   "galleryWithCount": "ギャラリー ({count})",
   "@galleryWithCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "disconnect": "切断",
@@ -173,7 +191,9 @@
   "sshPasswordPrompt": "{machineName} の SSH パスワードを入力",
   "@sshPasswordPrompt": {
     "placeholders": {
-      "machineName": { "type": "String" }
+      "machineName": {
+        "type": "String"
+      }
     }
   },
   "password": "パスワード",
@@ -187,7 +207,9 @@
   "deleteMachineConfirm": "\"{displayName}\" を削除しますか？保存された認証情報もすべて削除されます。",
   "@deleteMachineConfirm": {
     "placeholders": {
-      "displayName": { "type": "String" }
+      "displayName": {
+        "type": "String"
+      }
     }
   },
   "connectToBridgeServer": "Bridge Server に接続",
@@ -219,19 +241,25 @@
   "minutesAgo": "{minutes}分前",
   "@minutesAgo": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "hoursAgo": "{hours}時間前",
   "@hoursAgo": {
     "placeholders": {
-      "hours": { "type": "int" }
+      "hours": {
+        "type": "int"
+      }
     }
   },
   "daysAgo": "{days}日前",
   "@daysAgo": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "unfavorite": "お気に入り解除",
@@ -243,15 +271,23 @@
   "bridgeVersionCurrentExpected": "現在 v{current}、推奨 v{expected}以上",
   "@bridgeVersionCurrentExpected": {
     "placeholders": {
-      "current": { "type": "String" },
-      "expected": { "type": "String" }
+      "current": {
+        "type": "String"
+      },
+      "expected": {
+        "type": "String"
+      }
     }
   },
   "bridgeVersionCurrentLatest": "現在 v{current}、最新版 v{latest}",
   "@bridgeVersionCurrentLatest": {
     "placeholders": {
-      "current": { "type": "String" },
-      "latest": { "type": "String" }
+      "current": {
+        "type": "String"
+      },
+      "latest": {
+        "type": "String"
+      }
     }
   },
   "bridgeLatestVersionChecking": "Bridge の最新版を確認中...",
@@ -263,7 +299,9 @@
   "appUpdateAvailable": "v{version} が利用可能です",
   "@appUpdateAvailable": {
     "placeholders": {
-      "version": { "type": "String" }
+      "version": {
+        "type": "String"
+      }
     }
   },
   "openGitHubReleases": "GitHub Releases を開く",
@@ -316,7 +354,9 @@
   "worktreeExisting": "既存 ({count})",
   "@worktreeExisting": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "branchOptional": "ブランチ（任意）",
@@ -383,21 +423,27 @@
   "changePermissionModeBody": "{mode} に切り替えるとセッションが再起動します。会話は保持されます。",
   "@changePermissionModeBody": {
     "placeholders": {
-      "mode": { "type": "String" }
+      "mode": {
+        "type": "String"
+      }
     }
   },
   "changeExecutionModeTitle": "Execution Mode を変更",
   "changeExecutionModeBody": "{mode} に切り替えるとセッションが再起動します。会話は保持されます。",
   "@changeExecutionModeBody": {
     "placeholders": {
-      "mode": { "type": "String" }
+      "mode": {
+        "type": "String"
+      }
     }
   },
   "changeApprovalPolicyTitle": "Approval Policy を変更",
   "changeApprovalPolicyBody": "{mode} に切り替えるとセッションが再起動します。会話は保持されます。",
   "@changeApprovalPolicyBody": {
     "placeholders": {
-      "mode": { "type": "String" }
+      "mode": {
+        "type": "String"
+      }
     }
   },
   "codexApprovalUntrustedDescription": "trusted コマンドだけ自動実行し、それ以外は確認します",
@@ -416,7 +462,9 @@
   "guardianApprovalAuthorization": "承認レベル: {authorization}",
   "@guardianApprovalAuthorization": {
     "placeholders": {
-      "authorization": { "type": "String" }
+      "authorization": {
+        "type": "String"
+      }
     }
   },
   "enablePlanModeTitle": "Plan Mode を有効化",
@@ -427,7 +475,9 @@
   "changeSandboxModeBody": "{mode} に切り替えるとセッションが再起動します。会話は保持されます。",
   "@changeSandboxModeBody": {
     "placeholders": {
-      "mode": { "type": "String" }
+      "mode": {
+        "type": "String"
+      }
     }
   },
   "messagePlaceholder": "Claude にメッセージ...",
@@ -439,7 +489,9 @@
   "queuedInputImageCount": "{count, plural, other{画像{count}枚}}",
   "@queuedInputImageCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "tooltipSteerQueuedMessage": "キュー中のメッセージを指示として送信",
@@ -468,25 +520,33 @@
   "diffLines": "{count} 行の diff",
   "@diffLines": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "changedLines": "変更{count}行",
   "@changedLines": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "hunkCount": "{count}ハンク",
   "@hunkCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "fileCount": "{count}ファイル",
   "@fileCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "tapInterruptHoldStop": "タップ: 中断, 長押し: 停止",
@@ -499,7 +559,9 @@
   "rewindConfirmBody": "モード: {mode}\n\nこの操作は元に戻せません。実行しますか？",
   "@rewindConfirmBody": {
     "placeholders": {
-      "mode": { "type": "String" }
+      "mode": {
+        "type": "String"
+      }
     }
   },
   "rewindCannotRewindFiles": "ファイルを巻き戻せません",
@@ -514,14 +576,20 @@
   "diffSummaryAddedRemoved": "+{added}/-{removed} 行",
   "@diffSummaryAddedRemoved": {
     "placeholders": {
-      "added": { "type": "int" },
-      "removed": { "type": "int" }
+      "added": {
+        "type": "int"
+      },
+      "removed": {
+        "type": "int"
+      }
     }
   },
   "lineCountSummary": "{count} 行",
   "@lineCountSummary": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "toolResult": "ツール結果",
@@ -529,14 +597,18 @@
   "agentIsAsking": "{agent} が質問しています",
   "@agentIsAsking": {
     "placeholders": {
-      "agent": { "type": "Object" }
+      "agent": {
+        "type": "Object"
+      }
     }
   },
   "submitAllAnswers": "すべての回答を送信",
   "submitWithCount": "送信 ({count} 件選択)",
   "@submitWithCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "selectOptionsToSubmit": "オプションを選択してください",
@@ -550,7 +622,9 @@
   "allWithCount": "すべて ({count})",
   "@allWithCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "noImages": "画像がありません",
@@ -663,32 +737,44 @@
   "promptHistoryLatestSync": "最終同期: {time}",
   "@promptHistoryLatestSync": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "promptHistorySyncedBridges": "{count}件のBridgeを同期済み",
   "@promptHistorySyncedBridges": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "promptHistorySyncSummaryWithFailures": "{synced}件同期、{failed}件失敗",
   "@promptHistorySyncSummaryWithFailures": {
     "placeholders": {
-      "synced": { "type": "int" },
-      "failed": { "type": "int" }
+      "synced": {
+        "type": "int"
+      },
+      "failed": {
+        "type": "int"
+      }
     }
   },
   "promptHistoryBridgeId": "Bridge ID: {id}",
   "@promptHistoryBridgeId": {
     "placeholders": {
-      "id": { "type": "String" }
+      "id": {
+        "type": "String"
+      }
     }
   },
   "promptHistoryOtherBridgeRegistrations": "他の登録: {registrations}",
   "@promptHistoryOtherBridgeRegistrations": {
     "placeholders": {
-      "registrations": { "type": "String" }
+      "registrations": {
+        "type": "String"
+      }
     }
   },
   "promptHistoryNoSyncTime": "同期時刻なし",
@@ -703,13 +789,17 @@
   "itemsProcessed": "{count} 件処理しました",
   "@itemsProcessed": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "bestStreak": "最高連続: {count}",
   "@bestStreak": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "tryAgain": "もう一度",
@@ -756,7 +846,9 @@
   "appIconSettingsSubtitle": "{device}のホーム画面に表示されるアイコンを変更できます。",
   "@appIconSettingsSubtitle": {
     "placeholders": {
-      "device": { "type": "String" }
+      "device": {
+        "type": "String"
+      }
     }
   },
   "appIconSupporterDialogTitle": "月額サポーター特典",
@@ -805,14 +897,18 @@
   "usagePaceExpected": "目安 {percent}% 使用",
   "@usagePaceExpected": {
     "placeholders": {
-      "percent": { "type": "int" }
+      "percent": {
+        "type": "int"
+      }
     }
   },
   "usagePaceWillLast": "このペースならリセットまで持つ見込み",
   "usagePaceRunsOutIn": "このペースだと約 {duration} で上限の見込み",
   "@usagePaceRunsOutIn": {
     "placeholders": {
-      "duration": { "type": "String" }
+      "duration": {
+        "type": "String"
+      }
     }
   },
   "usagePaceAtLimit": "上限に到達しています",
@@ -836,14 +932,18 @@
   "usageResetAt": "リセット: {time}",
   "@usageResetAt": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "usageAlreadyReset": "リセット済み",
   "attachedImages": "添付画像 ({count})",
   "@attachedImages": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "attachedImagesNoCount": "添付画像",
@@ -852,7 +952,9 @@
   "failedToFetchImagesWithError": "画像の取得に失敗しました: {error}",
   "@failedToFetchImagesWithError": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "retry": "リトライ",
@@ -869,8 +971,12 @@
   "generatedImagePositionLabel": "生成画像 {current} / {total}",
   "@generatedImagePositionLabel": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "noImageInClipboard": "クリップボードに画像がありません",
@@ -878,14 +984,20 @@
   "imageLimitReached": "画像は最大{max}枚までです",
   "@imageLimitReached": {
     "placeholders": {
-      "max": { "type": "int" }
+      "max": {
+        "type": "int"
+      }
     }
   },
   "imageLimitTruncated": "最初の{max}枚のみ添付しました（{dropped}枚を除外）",
   "@imageLimitTruncated": {
     "placeholders": {
-      "max": { "type": "int" },
-      "dropped": { "type": "int" }
+      "max": {
+        "type": "int"
+      },
+      "dropped": {
+        "type": "int"
+      }
     }
   },
   "selectFromGallery": "ギャラリーから選択",
@@ -904,7 +1016,9 @@
   "archiveFailedWithError": "セッションのアーカイブに失敗しました: {error}",
   "@archiveFailedWithError": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "noRecentSessions": "最近のセッションはありません",
@@ -961,10 +1075,12 @@
   "spreadAppealMessage": "CC Pocket はまだ利用者が少なく、このままだと開発を続けるのが難しい状況です。気に入っていたら、ストア評価（星だけでOK）や知り合いへの紹介で応援してください。",
   "shareApp": "SNSでシェア",
   "shareAppSubtitle": "同僚や友人に紹介する",
-  "shareText": "CC Pocket: Claude & Codex\nスマホからコーディングエージェントを操作できるアプリ \ud83d\udcf1\n#ccpocket\n{url}",
+  "shareText": "CC Pocket: Claude & Codex\nスマホからコーディングエージェントを操作できるアプリ 📱\n#ccpocket\n{url}",
   "@shareText": {
     "placeholders": {
-      "url": { "type": "String" }
+      "url": {
+        "type": "String"
+      }
     }
   },
   "starOnGithub": "GitHub にスターする",
@@ -987,7 +1103,9 @@
   "supportEntryActiveSubtitle": "いつもありがとうございます。{date}から応援中です。",
   "@supportEntryActiveSubtitle": {
     "placeholders": {
-      "date": { "type": "String" }
+      "date": {
+        "type": "String"
+      }
     }
   },
   "supporterMonthlyDescription": "継続的な開発を後押し",
@@ -1007,44 +1125,58 @@
   "supporterSummarySinceChip": "{date}から応援中",
   "@supporterSummarySinceChip": {
     "placeholders": {
-      "date": { "type": "String" }
+      "date": {
+        "type": "String"
+      }
     }
   },
   "supporterSummaryStreakChip": "継続 {duration}",
   "@supporterSummaryStreakChip": {
     "placeholders": {
-      "duration": { "type": "String" }
+      "duration": {
+        "type": "String"
+      }
     }
   },
   "supporterSummaryOneTimeCount": "単発 ×{count}",
   "@supporterSummaryOneTimeCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "supporterSummarySnackCount": "おやつ ×{count}",
   "@supporterSummarySnackCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "supporterSummaryCoffeeCount": "ドリンク ×{count}",
   "@supporterSummaryCoffeeCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "supporterSummaryLunchCount": "ランチ ×{count}",
   "@supporterSummaryLunchCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "supporterSummaryLessThanMonth": "1か月未満",
   "supporterSummaryDurationMonths": "{count}か月",
   "@supporterSummaryDurationMonths": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "supporterSummarySinceLabel": "応援開始",
@@ -1077,14 +1209,18 @@
   "supporterPurchaseFailed": "購入に失敗しました: {message}",
   "@supporterPurchaseFailed": {
     "placeholders": {
-      "message": { "type": "String" }
+      "message": {
+        "type": "String"
+      }
     }
   },
   "supporterRestoreSuccess": "購入情報を復元しました。",
   "supporterRestoreFailed": "復元に失敗しました: {message}",
   "@supporterRestoreFailed": {
     "placeholders": {
-      "message": { "type": "String" }
+      "message": {
+        "type": "String"
+      }
     }
   },
   "gitDiscardAllChangesTitle": "すべての変更を破棄しますか",
@@ -1099,19 +1235,23 @@
   "renderErrorFallback": "このコンテンツを表示できませんでした",
   "confirm": "確認",
   "piEngineTitle": "Pi エンジン",
-  "piEngineSettingsSubtitle": "システムプロンプト、起動フラグ、モデル",
+  "piEngineSettingsSubtitle": "settings.json の主要オプション（JSON フォールバックエディタ付き）",
   "piEngineManage": "Pi エンジン",
   "piEngineNote": "メモ",
   "piEngineNoteBody": "Pi Host: {url}",
   "@piEngineNoteBody": {
     "placeholders": {
-      "url": { "type": "String" }
+      "url": {
+        "type": "String"
+      }
     }
   },
   "piEngineConnected": "Pi {version} に接続済み",
   "@piEngineConnected": {
     "placeholders": {
-      "version": { "type": "String" }
+      "version": {
+        "type": "String"
+      }
     }
   },
   "piEngineConnecting": "Pi エンジンに接続中…",
@@ -1120,7 +1260,9 @@
   "piEngineError": "Pi エンジンエラー: {error}",
   "@piEngineError": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "piEngineNotConnected": "Pi エンジンに接続されていません。先に Pi Host サーバーを起動してください。",
@@ -1171,7 +1313,9 @@
   "piEngineProviderDeleteConfirm": "プロバイダー \"{id}\" を削除しますか？モデルも一緒に削除されます。",
   "@piEngineProviderDeleteConfirm": {
     "placeholders": {
-      "id": { "type": "String" }
+      "id": {
+        "type": "String"
+      }
     }
   },
   "piEngineProviderId": "プロバイダー ID",
@@ -1187,8 +1331,12 @@
   "piEngineModelImportDone": "{count} 個のモデルを {provider} にインポートしました。",
   "@piEngineModelImportDone": {
     "placeholders": {
-      "count": { "type": "int" },
-      "provider": { "type": "String" }
+      "count": {
+        "type": "int"
+      },
+      "provider": {
+        "type": "String"
+      }
     }
   },
   "piEngineModelsImportJson": "JSON をインポート",
@@ -1197,7 +1345,9 @@
   "piEngineModelsImportJsonDone": "{count} 個のプロバイダーをインポートしました。",
   "@piEngineModelsImportJsonDone": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEngineModelsImportJsonInvalid": "有効な providers JSON オブジェクトではありません。",
@@ -1216,7 +1366,9 @@
   "piEngineCommandsCopied": "「/{name}」をコピーしました。入力欄に貼り付けて使用してください。",
   "@piEngineCommandsCopied": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "piEnginePrompts": "プロンプトテンプレート",
@@ -1225,7 +1377,9 @@
   "piEnginePromptsCount": "{count} 個のテンプレート",
   "@piEnginePromptsCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEnginePromptsGroupGlobal": "グローバル",
@@ -1240,19 +1394,25 @@
   "piEnginePromptsDeleteConfirm": "テンプレート {name} を削除しますか？",
   "@piEnginePromptsDeleteConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "piEnginePromptsSaved": "{name} を保存しました",
   "@piEnginePromptsSaved": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "piEnginePromptsCopied": "「/{name}」をコピーしました。入力欄に貼り付けて使用してください。",
   "@piEnginePromptsCopied": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "piEnginePromptsHint": "プロンプトはスラッシュコマンドとして公開される .md ファイルです。編集はすぐに反映され、再起動は不要です。",
@@ -1268,7 +1428,9 @@
   "piEnginePackagesCount": "{count} 個のパッケージ",
   "@piEnginePackagesCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEnginePackagesGroupGlobal": "グローバル",
@@ -1284,7 +1446,9 @@
   "piEnginePackagesRemoveConfirm": "パッケージ {source} を削除しますか？",
   "@piEnginePackagesRemoveConfirm": {
     "placeholders": {
-      "source": { "type": "String" }
+      "source": {
+        "type": "String"
+      }
     }
   },
   "piEnginePackagesRemoveConfirmBody": "成果物をアンインストールし、settings.json からエントリを削除します。",
@@ -1293,31 +1457,38 @@
   "piEnginePackagesUpdated": "{count} 個のパッケージを更新しました",
   "@piEnginePackagesUpdated": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEnginePackagesRemoved": "{source} を削除しました",
   "@piEnginePackagesRemoved": {
     "placeholders": {
-      "source": { "type": "String" }
+      "source": {
+        "type": "String"
+      }
     }
   },
   "piEnginePackagesInstalling": "{source} をインストール中…",
   "@piEnginePackagesInstalling": {
     "placeholders": {
-      "source": { "type": "String" }
+      "source": {
+        "type": "String"
+      }
     }
   },
   "piEnginePackagesUpdating": "パッケージを更新中…",
   "piEnginePackagesRemoving": "{source} を削除中…",
   "@piEnginePackagesRemoving": {
     "placeholders": {
-      "source": { "type": "String" }
+      "source": {
+        "type": "String"
+      }
     }
   },
   "piEnginePackagesRestartHint": "エンジンはリソース解決時に設定済みソースを再読み込みします。npm/git の成果物変更は通常、再起動（または /reload）後に反映されます。",
   "piEngineSettingsCore": "設定",
-  "piEngineSettingsSubtitle": "settings.json の主要オプション（JSON フォールバックエディタ付き）",
   "piEngineSettingsSectionGeneral": "一般",
   "piEngineSettingsSectionBehavior": "動作",
   "piEngineSettingsDefaultProvider": "既定プロバイダー",
@@ -1389,7 +1560,9 @@
   "piEngineThemesRemoveConfirm": "テーマ \"{name}\" を削除しますか？ファイルは削除されます。",
   "@piEngineThemesRemoveConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "piEngineThemesEmpty": "テーマはまだありません。インポートしてください。",
@@ -1399,25 +1572,33 @@
   "piEngineContextFilesProject": "プロジェクトファイル: {path}",
   "@piEngineContextFilesProject": {
     "placeholders": {
-      "path": { "type": "String" }
+      "path": {
+        "type": "String"
+      }
     }
   },
   "piEngineContextFilesParent": "上位コピー: {path} · 上でマージ",
   "@piEngineContextFilesParent": {
     "placeholders": {
-      "path": { "type": "String" }
+      "path": {
+        "type": "String"
+      }
     }
   },
   "piEngineContextFilesNew": "{path} に作成されます",
   "@piEngineContextFilesNew": {
     "placeholders": {
-      "path": { "type": "String" }
+      "path": {
+        "type": "String"
+      }
     }
   },
   "piEngineContextFilesEdit": "{name} を編集",
   "@piEngineContextFilesEdit": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "piEngineExtensions": "拡張機能",
@@ -1427,7 +1608,9 @@
   "piEngineExtensionsCount": "{count} 個の拡張",
   "@piEngineExtensionsCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEngineExtensionsGroupGlobal": "グローバル",
@@ -1441,7 +1624,9 @@
   "piEngineSkillsCount": "{count} 個のスキル",
   "@piEngineSkillsCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEngineSkillsGroupProject": "プロジェクト",
@@ -1474,43 +1659,66 @@
   "piEngineRuntimeInstallConfirm": "{route} をダウンロードして切り替えますか？パッケージのダウンロードに時間がかかることがあります。",
   "@piEngineRuntimeInstallConfirm": {
     "placeholders": {
-      "route": { "type": "String" }
+      "route": {
+        "type": "String"
+      }
     }
   },
   "piEngineRuntimeInstalling": "{route} をインストール中…",
   "@piEngineRuntimeInstalling": {
     "placeholders": {
-      "route": { "type": "String" }
+      "route": {
+        "type": "String"
+      }
     }
   },
   "piEngineRuntimeSwitchAction": "切り替える",
   "piEngineRuntimeSwitch": "{route} に切り替えますか？",
   "@piEngineRuntimeSwitch": {
     "placeholders": {
-      "route": { "type": "String" }
+      "route": {
+        "type": "String"
+      }
     }
   },
   "piEngineRuntimeSwitchConfirmA": "内蔵環境に戻しますか？proot ディストリビューションは保持され、いつでも再選択できます。",
   "piEngineRuntimeSwitchConfirmB": "{route} に切り替えますか？遅くなり、容量も使います。いつでも戻せます。",
   "@piEngineRuntimeSwitchConfirmB": {
     "placeholders": {
-      "route": { "type": "String" }
+      "route": {
+        "type": "String"
+      }
     }
   },
   "piEngineRuntimeSwitched": "{route} に切り替えました。",
   "@piEngineRuntimeSwitched": {
     "placeholders": {
-      "route": { "type": "String" }
+      "route": {
+        "type": "String"
+      }
     }
   },
   "piEngineRuntimePackagesTitle": "インストール済みパッケージ",
   "piEngineRuntimePackages": "{count} 個のパッケージ",
   "@piEngineRuntimePackages": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEngineRuntimeRestartHint": "路線を切り替えるとエンジンが再起動し、新しい実行環境がすぐに反映されます。",
   "clear": "クリア",
-  "selectAll": "すべて選択"
+  "selectAll": "すべて選択",
+  "piEngineModel": "モデル",
+  "piEngineModelSwitchTitle": "モデルを切り替え",
+  "piEngineModelSwitchEmpty": "利用可能なモデルがありません。「モデル管理」で追加してください。",
+  "piEngineModelSwitched": "{model} に切り替えました",
+  "@piEngineModelSwitched": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -1,9 +1,18 @@
 import { spawnSync } from "node:child_process";
 import { createRequire } from "node:module";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 const require = createRequire(import.meta.url);
 const tsxCli = require.resolve("tsx/cli");
+
+// The CLI is spawned from the package root so the "src/cli.ts" entry is
+// resolved regardless of the directory vitest was started from.
+const cliCwd = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "..",
+);
 
 function runCli(args: string[], bridgePort?: string) {
   const env = { ...process.env };
@@ -13,7 +22,7 @@ function runCli(args: string[], bridgePort?: string) {
     env.BRIDGE_PORT = bridgePort;
   }
   return spawnSync(process.execPath, [tsxCli, "src/cli.ts", ...args], {
-    cwd: process.cwd(),
+    cwd: cliCwd,
     encoding: "utf8",
     env,
   });

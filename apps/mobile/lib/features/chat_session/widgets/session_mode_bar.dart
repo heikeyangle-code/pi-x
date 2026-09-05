@@ -6,8 +6,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../models/messages.dart';
+import '../../../services/pi_host_service.dart';
 import '../../../theme/app_theme.dart';
 import '../../../widgets/codex_effort_slider.dart';
+import '../../pi_engine/pi_model_switch.dart';
 import '../state/chat_session_state.dart';
 import '../state/chat_session_cubit.dart';
 import 'codex_settings_sheet.dart';
@@ -36,13 +38,6 @@ class SessionModeBar extends StatelessWidget {
     final sandboxMode = chatCubit.state.sandboxMode;
     final permissionMode = chatCubit.state.permissionMode;
     final isCodex = chatCubit.provider == Provider.codex;
-    final codexModel = isCodex ? _currentCodexModel(chatCubit) : null;
-    final codexReasoningEffort = codexModel == null
-        ? null
-        : _effectiveCodexReasoningEffort(
-            chatCubit.state.codexModelReasoningEffort,
-            _codexReasoningEffortsForModel(context, codexModel),
-          );
 
     final cs = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -68,15 +63,8 @@ class SessionModeBar extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (isCodex) ...[
-                  CodexModelChip(
-                    model: codexModel!,
-                    reasoningEffort: codexReasoningEffort,
-                    speed: chatCubit.state.codexSpeed,
-                    onTap: () => showCodexModelMenu(
-                      context,
-                      chatCubit,
-                      showExtendedEfforts: showExtendedCodexEfforts,
-                    ),
+                  PiModelChip(
+                    service: context.read<PiHostService>(),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),

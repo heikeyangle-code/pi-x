@@ -8,9 +8,9 @@
 | # | 引擎能力 | pi 机制（文件/命令） | App 层 UI | 优先级 |
 |---|---|---|---|---|
 | 1 | **Provider 列表/登录** | 内置 provider（订阅 OAuth 设备码 + API key）；`/login` | Provider 管理页：选择器、订阅登录（WebView 设备码/回调）、API key 输入（安全存储）、登出 | **M1** |
-| 2 | **模型选择/切换** | 内置目录 + 自定义；`get_available_models`/`set_model`（RPC 已有） | 模型选择 bottom sheet（绑 pi 目录，含 thinking 层级显示）；会话内快捷切换 | **M1** |
-| 3 | **添加自定义模型** | `~/.pi/agent/models.json`：`providers{id:{baseUrl,api(4种),apiKey,models[]}}`；4 种 API：openai-completions/openai-responses/anthropic-messages/google-generative-ai | "模型管理"页：新增/编辑 provider（Ollama/OpenRouter/自定义 baseUrl）+ 模型列表 + JSON 预览/导入导出 | **M1** |
-| 4 | **模型目录刷新** | `pi update --models` | 设置内"刷新模型目录"按钮 + 上次刷新时间 | M2 |
+| 2 | **模型选择/切换** | 内置目录 + 自定义；`get_available_models`/`set_model`（RPC 已有） | ✅ 会话内快捷切换（`pi_model_switch.dart`：模式条模型 chip 读 `get_state` 当前模型，点击弹按 provider 分组的切换面板）；模型管理页已落地（`models_screen.dart`） | **M1** |
+| 3 | **添加自定义模型** | `~/.pi/agent/models.json`：`providers{id:{baseUrl,api(4种),apiKey,models[]}}`；4 种 API：openai-completions/openai-responses/anthropic-messages/google-generative-ai | ✅ "模型管理"页（`models_screen.dart`）：新增/编辑 provider（Ollama/OpenRouter/自定义 baseUrl）+ 模型列表 + 从 OpenAI 兼容服务器导入 + JSON 片段导入 | **M1** |
+| 4 | **模型目录刷新** | `pi update --models` | ✅ 模型管理页"刷新目录"按钮（`update_models` 算子，130s 超时 + 联网提示） | M2 |
 | 5 | **Settings** | `~/.pi/agent/settings.json`（+ 项目 `.pi/settings.json`）；RPC `get_state` | 设置页：核心项（defaultProjectTrust/offline/telemetry/…）+ 完整 JSON 编辑器双模 | M2 |
 | 6 | **项目信任** | `trust.json` + `defaultProjectTrust`；启动/切项目询问 | 首次打开工作区弹信任对话框（ask/always/never + 记住） | **M1** |
 | 7 | **Skills（需要吗？→ 需要）** | 标准：`~/.pi/agent/skills/`、项目 `.pi/skills/`、包 `pi.skills`、settings `skills[]`、`--skill`；Agent Skills 标准；按需加载 | 技能管理页：列表/查看 SKILL.md 已落地（`skills_screen.dart`，全局+项目分组 + 安全提示）；启用停用/删除/从文件夹或包添加 M2 | M2 |
@@ -60,7 +60,7 @@ pi 的资源**全部是进程内按目录发现 + settings 记录**，没有编�
 
 结论：**架构把 UI 与 pi 版本解耦**——日常 pi 更新只换引擎包（热更新），UI 不需要跟随改动；个别大版本如 RPC 消息变化，改 Pi Host 翻译层（独立版本），App 依旧不动。
 
-## 6. 调整选项全清单 × pi-x 现状（pi 0.85.x 全面盘点，2026-09-04）
+## 6. 调整选项全清单 × pi-x 现状（pi 0.85.x 全面盘点，2026-09-05）
 
 三组来源：**文件资源**（引擎启动/会话时发现）、**settings.json**（运行时可改，RPC get_settings/update_settings 已通）、**CLI 启动参数**（引擎进程启动时固定，改后重启引擎生效）。
 现状标注：✅ 后端+UI 已有；🔶 后端有、UI 待补；❌ 皆无。
@@ -69,6 +69,7 @@ pi 的资源**全部是进程内按目录发现 + settings 记录**，没有编�
 
 | 资源 | 路径（全局/项目） | 作用 | 现状 |
 |---|---|---|---|
+| `models.json` | `~/.pi/agent/` | 自定义 provider/模型（按 id upsert） | ✅ 模型管理页（`models_screen.dart`：provider 增删改 + 模型列表 + 从 OpenAI 兼容服务器导入 + models.json 片段导入 + `pi update --models` 目录刷新；后端 `surfaces.ts` importModels/importProvidersJson 与 docs/models.md 语义 1:1） |
 | `SYSTEM.md` | `~/.pi/agent/` + `.pi/`（项目需信任） | 整段替换默认系统提示 | ✅ 设置页"系统提示词"（`system_prompt_screen.dart`，全局/项目双作用域 + 保存后重启提示） |
 | `APPEND_SYSTEM.md` | `~/.pi/agent/` + `.pi/`（项目需信任） | 追加默认系统提示 | ✅ 同上（同屏编辑） |
 | `AGENTS.md`/`CLAUDE.md` | 工作区目录向上合并 | 项目约定/命令/安全规则 | ✅ 上下文文件快捷编辑页（`context_files_screen.dart`：列表 + 向上合并检测 + 读写目标文件） |
@@ -82,7 +83,7 @@ pi 的资源**全部是进程内按目录发现 + settings 记录**，没有编�
 
 | 组 | 键 | 现状建议 |
 |---|---|---|
-| Model & Thinking | `defaultProvider`/`defaultModel`/`defaultThinkingLevel`/`modelThinkingLevels`/`hideThinkingBlock`/`showCacheMissNotices`/`thinkingBudgets` | ✅ 模型选择 UI 有 + 核心表单（`settings_core_screen.dart`） |
+| Model & Thinking | `defaultProvider`/`defaultModel`/`defaultThinkingLevel`/`modelThinkingLevels`/`hideThinkingBlock`/`showCacheMissNotices`/`thinkingBudgets` | ✅ 模型管理页（provider/模型增删改 + 导入）+ 核心表单（`settings_core_screen.dart`） |
 | UI & Display | `theme`/`quietStartup`/`defaultProjectTrust`/`doubleEscapeAction`/`treeFilterMode`（TUI 专属项 App 忽略） | ✅ `defaultProjectTrust`→信任对话框 M1 + 核心表单 |
 | Compaction | `compaction.enabled`/`reserveTokens`/`keepRecentTokens` | ✅ 核心表单 |
 | Retry | `retry.enabled`/`maxRetries`/`baseDelayMs`/`provider.timeoutMs`/`provider.maxRetries`/`provider.maxRetryDelayMs` | ✅ 核心表单 |

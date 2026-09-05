@@ -4,8 +4,17 @@ All notable changes to `@ccpocket/bridge` will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+- Model import operators: `import_models` (upsert a batch of models into a provider by id), `import_models_json` (merge a `models.json` `providers` fragment, rejecting malformed input without touching the file), and `update_models` (run `pi update --models` to refresh built-in provider catalogs, with `PI_OFFLINE` cleared and a generous timeout).
+- Package management (`packages.ts`): list/install/update/remove for npm, git, and local sources with pi-compatible npm-root, project-scope (`<project>/.pi/npm`), and git-clone semantics.
+- Prompt template surface ops (`list_prompts`/`read_prompt`/`write_prompt`/`delete_prompt`), theme ops (`list_themes`/`set_theme`/`import_theme`/`remove_theme`), and context-file ops (`get_context_files`/`read_context_file`/`write_context_file`) mirroring the pi file model.
+- 1:1 engine event mapping in `cc-adapter.ts` (compaction errors, auto-retry, tool execution via `toolCallId`, `extension_error`, agent end with `willRetry`, etc.) plus session filtering (`limit`/`searchQuery`/`namedOnly`/`provider`) and registry improvements (multi-session per project, engine-exit cleanup).
+
 ### Changed
+- Rebuild all four ARB locales (en/zh/ja/ko) from corrupted recovery state: key/value lines were intact, placeholder types were taken from generated signatures, missing metadata blocks (`toolSuggestion*`, `rewindConfirmBody`, `removeProjectConfirm`) restored, `clear`/`selectAll` and ja/zh `approveAlwaysSub`/`approveSessionSub` re-added.
 - Restore session auto-rename through a pi-native headless invocation (`pi --print --no-tools --no-session`) after removing the legacy Codex/Claude rename helper; the generated name is persisted via `set_session_name` and failures degrade silently to the engine's first-message fallback.
+- Fix `scripts/cc-adapter-check.mjs` assertions that lagged behind the 1:1 event mapping (`stream_delta.text`, `permission_request.toolUseId`, `status.status`).
+- Make `cli.test.ts` spawn the bridge CLI from the package root (`cliCwd` derived from `import.meta.url`) so the suite passes regardless of the vitest working directory.
 
 ## [1.81.1] - 2026-09-01
 

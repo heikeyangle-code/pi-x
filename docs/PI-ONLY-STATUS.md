@@ -32,12 +32,17 @@ Firebase 推送中继已删除；codex/claude 的 provider 源码、运行时耦
 | 移除 Firebase 推送中继 | 删除 `firebase-auth.ts`、`push-relay.ts`、`push-i18n.ts` 及测试；`index.ts` 不再初始化 Firebase Anonymous Auth；`websocket.ts` 删除 `push_register`/`push_unregister` 处理与全部推送通知路径；App 侧 `push_registration_result` 协议仍保留解析（bridge 不再发送） | 推送移除提交 |
 | 阶段 3：物理删除 | 删除 23 个 codex/claude 源码与测试文件（`sdk-process`、`claude-provider`、`codex-*`、`session`、`sessions-index`、`resume-metrics` 等；`auto-rename` 随后以 pi 原生方式恢复，见上）；`websocket.ts` 移除 29 个 legacy 消息 handler；`cli-args`/`cli` 移除 codex flags；`setup-launchd`/`setup-systemd` 移除 codex/claude 环境变量；`package.json` 移除 `@anthropic-ai/claude-agent-sdk`；README 重写为 pi-only | 本次 |
 | 单元测试 | `pi-sessions.test.ts`（历史转换/JSONL 解析/扫描/注册表）；`pi-adapter.test.ts` 覆盖 `session_created` 与状态流、auto-rename 首条输入触发；`auto-rename.test.ts`（提示词构建/清洗/生成）；`git-assist.test.ts` 覆盖 `pi --print` 集成；`websocket.test.ts` 重写为 pi 兼容 | 本次 |
-| 验证 | `tsc --noEmit` 0 错误；bridge 全量 vitest 43 文件 712 用例通过 | 本次 |
+| 验证 | `tsc --noEmit` 0 错误；bridge 全量 vitest 44 文件 764 用例通过（含事件映射/会话过滤/管理算子/模型导入新增用例） | 本次 |
+| 管理面全落地 | 引擎事件映射 1:1（`cc-adapter.ts`）、会话过滤与 registry 改进；prompts/packages/settings 核心表单/themes/context-files 管理页 + 模型导入三算子（`import_models`/`import_models_json`/`update_models`）与 UI；4 语言 ARB 重建（`flutter gen-l10n` 通过）；flutter analyze 无 error/warning、flutter test 1672 用例通过 | `fbd14af` |
 
 ## 未完成
 
 ### 阶段 4：可选的后续收尾
 
+- ~~**会话内模型快捷切换**~~ ✅ 已落地（`pi_model_switch.dart`：`PiModelChip` 替换 legacy
+  `CodexModelChip`，数据走 `get_state`/`get_available_models`/`set_model`，按 provider 分组面板）。
+- **低优先 settings 表单**：httpProxy/shellPath/npmCommand/defaultTools/enabledModels 等键暂无专门
+  表单，但 settings 核心表单的 opaque JSON 编辑器已兜底（未知键可改可存）。
 - **双入口收敛**：`index.ts`（piAdapter 注入式）与 `pi-host-entry.ts`（独立 `startPiHostServer`）
   两条启动路径仍并存，可按需合并为单一入口。
 - **协议层 Codex 字段归档**：`parser.ts` 仍解析客户端发送的 `codexPermissionsMode`、`set_codex_model`、

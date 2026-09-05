@@ -90,6 +90,36 @@
   随后以 pi 原生方式恢复会话自动命名：`pi --print --no-tools --no-session` 一次性生成 + `set_session_name`
   持久化（`auto-rename.ts` + `PiAdapter` 首条输入触发，失败静默降级）。验证：tsc 0 错误；vitest 43 文件
   712 用例通过；真实 pi 引擎 e2e 冒烟通过（详见 PI-ONLY-STATUS）。
+- **引擎事件映射 1:1 补齐 + 会话表面打磨（2026-09-05）**：`cc-adapter.ts` 逐条对齐 pi RPC 官方事件
+  （message_update 的 text/thinking/toolcall 各 delta、extension_ui_request、agent_*、compaction、
+  auto-retry、bash_execution_update、tool_execution_*、extension_error 等），修复 tool 事件用
+  `toolCallId` 而非 `id` 解析、compaction 错误走专用 error 消息、agent end + willRetry 不置 idle 等；
+  `scanPiRecentSessions` 过滤参数（limit/searchQuery/namedOnly/provider）与 pi 目录扫描对齐；
+  `PiSessionRegistry` 支持每项目多会话映射 + 引擎退出清理陈旧会话。验证：bridge 全量 vitest 通过。
+- **Pi 引擎管理 UI 全量落地（Flutter，2026-09-05）**：设置页 "Pi 引擎" 管理入口下的管理页补齐，
+  全部走 PiHost 控制面命令、尽量复用现有组件：
+  - 模板管理（`prompts_screen.dart` + `pi_engine_prompts.dart`）：全局/项目分组 + 新建/编辑/删除
+    纯 markdown（`list_prompts`/`read_prompt`/`write_prompt`/`delete_prompt`，官方模板语义 1:1）；
+  - 包管理（`packages_screen.dart` + `pi_engine_packages.dart` + bridge `packages.ts`）：npm/git/本地
+    三类源安装、更新/全部更新/卸载，npm root/git clone 路径语义与 pi 一致，项目级装到 `.pi/npm`；
+  - 设置核心表单（`settings_core_screen.dart` + `pi_engine_settings.dart`）：defaultProvider/
+    defaultThinkingLevel/compaction/retry/branchSummary/offline 等核心项 + **opaque JSON 编辑器兜底**
+    （未知键永不丢失），已挂入设置中心；
+  - 主题管理（`themes_screen.dart` + `pi_engine_themes.dart`）：引擎主题列表 + 选择 + JSON 导入 +
+    删除（`list_themes`/`set_theme`/`import_theme`/`remove_theme`，`--use-theme` 可配）；
+  - 上下文文件（`context_files_screen.dart`）：AGENTS.md/CLAUDE.md 全局+项目列表、向上合并检测、
+    读写目标文件（`get_context_files`/`read_context_file`/`write_context_file`）；
+  - 本地化：新增键全部补齐 en/zh/ja/ko 四个 arb；4 个 ARB 因恢复脚本损坏（@metadata 错位）后
+    以"键值行 + 生成 dart 签名类型"重建为合法 JSON（含全部占位符元数据），重新 `flutter gen-l10n`。
+    验证：flutter analyze 无 error/warning；flutter test 1672 用例通过；bridge vitest 44 文件
+    764 用例通过（新增 import_models/import_models_json/update_models/packages/context-files 算子测试）。
+- **模型导入（bridge + Flutter，2026-09-05）**：`pi-gateway.ts` 新增三算子——`import_models`
+  （一批模型按 id upsert 进 provider）、`import_models_json`（粘贴 models.json providers 片段合并，
+  非法输入拒绝不污染文件）、`update_models`（清 PI_OFFLINE 跑 `pi update --models`，130s 超时）；
+  `models_screen.dart` 每个 provider 卡片新增"从服务器导入"（填 baseUrl/API key → 请求
+  `/v1/models`（回落 `/models`，兼容 Anthropic `display_name`）→ 勾选列表默认全选 → 按 id 合并）、
+  AppBar 新增 JSON 导入与目录刷新入口；`pi_engine_models.dart` 新增 `DiscoveredModel` 解析。端到端
+  单测覆盖三算子（含 models.json 片段合并与 `pi update --models` 命令拼装断言）。
 
 ## 已知问题（open）
 
@@ -130,7 +160,13 @@
    + PiHost control op `restart_engine(projectId)`（engine-pool stop + getOrStart 拉起）~~ ✅ 全部落地
    （`system_prompt_screen.dart`/`engine_flags_screen.dart` + `confirmRestartEngine`），剩余盘点见
    ENGINE-UI-SURFACES §6：skills 管理 UI（列表+查看 SKILL.md）已落地 `skills_screen.dart`；
-   prompts/themes/packages 管理 UI 为 M2
+   prompts/themes/packages/settings 核心表单/上下文文件管理 UI 已全部落地（2026-09-05）
+7. ~~**会话内模型快捷切换**~~ ✅ 已落地（2026-09-05）：`pi_model_switch.dart` 的 `PiModelChip`
+   替换模式条里的 legacy `CodexModelChip`（视觉同款，数据走 `get_state`/`get_available_models`/`set_model`），
+   点击弹出按 provider 分组的切换面板；测试见 `pi_model_switch_test.dart`
+8. 低优先表单兜底项（ENGINE-UI-SURFACES §6.2 标 ❌ 的键：httpProxy/shellPath/npmCommand/
+   defaultTools/enabledModels/markdown/telemetry 等）——settings 核心表单已有 opaque JSON 编辑器兜底，
+   无 UI 也能改
 
 ## 已锁定决策（规划层，详见 DECISIONS）
 - 终端：**内置 runBash 命令卡片流（必需）**；真终端（xterm.dart + 原生 PTY）**远期可选**

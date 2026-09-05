@@ -3617,4 +3617,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectAll => 'Select all';
+
+  @override
+  String get piEngineModel => 'Model';
+
+  @override
+  String get piEngineModelSwitchTitle => 'Switch model';
+
+  @override
+  String get piEngineModelSwitchEmpty =>
+      'No models available. Add one under Model settings.';
+
+  @override
+  String piEngineModelSwitched(String model) {
+    return 'Switched to $model';
+  }
 }

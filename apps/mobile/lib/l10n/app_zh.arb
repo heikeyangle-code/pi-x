@@ -22,7 +22,9 @@
   "removeProjectConfirm": "要从最近项目中移除“{name}”吗？",
   "@removeProjectConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "rename": "重命名",
@@ -41,22 +43,34 @@
   "protocolRangeDetails": "App 协议 {appMin}–{appMax}；Bridge 协议 {bridgeMin}–{bridgeMax}",
   "@protocolRangeDetails": {
     "placeholders": {
-      "appMin": { "type": "int" },
-      "appMax": { "type": "int" },
-      "bridgeMin": { "type": "int" },
-      "bridgeMax": { "type": "int" }
+      "appMin": {
+        "type": "int"
+      },
+      "appMax": {
+        "type": "int"
+      },
+      "bridgeMin": {
+        "type": "int"
+      },
+      "bridgeMax": {
+        "type": "int"
+      }
     }
   },
   "toolSuggestionTitle": "将 {toolName} 添加到 Codex？",
   "@toolSuggestionTitle": {
     "placeholders": {
-      "toolName": { "type": "String" }
+      "toolName": {
+        "type": "String"
+      }
     }
   },
   "toolSuggestionInstall": "安装 {toolName}",
   "@toolSuggestionInstall": {
     "placeholders": {
-      "toolName": { "type": "String" }
+      "toolName": {
+        "type": "String"
+      }
     }
   },
   "toolSuggestionInstalling": "正在安装…",
@@ -65,7 +79,9 @@
   "toolSuggestionConnect": "连接 {appName}",
   "@toolSuggestionConnect": {
     "placeholders": {
-      "appName": { "type": "String" }
+      "appName": {
+        "type": "String"
+      }
     }
   },
   "toolSuggestionComplete": "连接已完成",
@@ -141,7 +157,9 @@
   "galleryWithCount": "图库 ({count})",
   "@galleryWithCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "disconnect": "断开连接",
@@ -170,7 +188,9 @@
   "sshPasswordPrompt": "请输入 {machineName} 的 SSH 密码",
   "@sshPasswordPrompt": {
     "placeholders": {
-      "machineName": { "type": "String" }
+      "machineName": {
+        "type": "String"
+      }
     }
   },
   "password": "密码",
@@ -184,7 +204,9 @@
   "deleteMachineConfirm": "要删除“{displayName}”吗？这会移除所有已保存的凭据。",
   "@deleteMachineConfirm": {
     "placeholders": {
-      "displayName": { "type": "String" }
+      "displayName": {
+        "type": "String"
+      }
     }
   },
   "connectToBridgeServer": "连接到 Bridge 服务",
@@ -219,19 +241,25 @@
   "minutesAgo": "{minutes} 分钟前",
   "@minutesAgo": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "hoursAgo": "{hours} 小时前",
   "@hoursAgo": {
     "placeholders": {
-      "hours": { "type": "int" }
+      "hours": {
+        "type": "int"
+      }
     }
   },
   "daysAgo": "{days} 天前",
   "@daysAgo": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "unfavorite": "取消收藏",
@@ -243,15 +271,23 @@
   "bridgeVersionCurrentExpected": "当前 v{current}，推荐 v{expected} 以上",
   "@bridgeVersionCurrentExpected": {
     "placeholders": {
-      "current": { "type": "String" },
-      "expected": { "type": "String" }
+      "current": {
+        "type": "String"
+      },
+      "expected": {
+        "type": "String"
+      }
     }
   },
   "bridgeVersionCurrentLatest": "当前 v{current}，最新版 v{latest}",
   "@bridgeVersionCurrentLatest": {
     "placeholders": {
-      "current": { "type": "String" },
-      "latest": { "type": "String" }
+      "current": {
+        "type": "String"
+      },
+      "latest": {
+        "type": "String"
+      }
     }
   },
   "bridgeLatestVersionChecking": "正在检查 Bridge 最新版本...",
@@ -263,7 +299,9 @@
   "appUpdateAvailable": "v{version} 可用",
   "@appUpdateAvailable": {
     "placeholders": {
-      "version": { "type": "String" }
+      "version": {
+        "type": "String"
+      }
     }
   },
   "openGitHubReleases": "打开 GitHub Releases",
@@ -300,21 +338,27 @@
   "changePermissionModeBody": "切换到 {mode} 会重启当前会话。你的对话会被保留。",
   "@changePermissionModeBody": {
     "placeholders": {
-      "mode": { "type": "String" }
+      "mode": {
+        "type": "String"
+      }
     }
   },
   "changeExecutionModeTitle": "更改执行模式",
   "changeExecutionModeBody": "切换到 {mode} 会重启当前会话。你的对话会被保留。",
   "@changeExecutionModeBody": {
     "placeholders": {
-      "mode": { "type": "String" }
+      "mode": {
+        "type": "String"
+      }
     }
   },
   "changeApprovalPolicyTitle": "更改 Approval Policy",
   "changeApprovalPolicyBody": "切换到 {mode} 会重启当前会话。你的对话会被保留。",
   "@changeApprovalPolicyBody": {
     "placeholders": {
-      "mode": { "type": "String" }
+      "mode": {
+        "type": "String"
+      }
     }
   },
   "permissionChipAcceptEdits": "编辑",
@@ -338,7 +382,9 @@
   "guardianApprovalAuthorization": "授权级别：{authorization}",
   "@guardianApprovalAuthorization": {
     "placeholders": {
-      "authorization": { "type": "String" }
+      "authorization": {
+        "type": "String"
+      }
     }
   },
   "codexPlanModeDescription": "先起草计划，再等待批准后执行",
@@ -392,7 +438,9 @@
   "changeSandboxModeBody": "切换到 {mode} 会重启当前会话。你的对话会被保留。",
   "@changeSandboxModeBody": {
     "placeholders": {
-      "mode": { "type": "String" }
+      "mode": {
+        "type": "String"
+      }
     }
   },
   "sandboxChipOff": "无沙箱",
@@ -415,7 +463,9 @@
   "worktreeExisting": "已有 ({count})",
   "@worktreeExisting": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "branchOptional": "分支（可选）",
@@ -447,7 +497,6 @@
   "approveAlwaysSub": "允许",
   "approveSessionMain": "本次会话允许",
   "approveSessionSub": "允许",
-  "restart": "重启",
   "messagePlaceholder": "给 Claude 发消息...",
   "codexMessagePlaceholder": "给 Codex 发消息...",
   "queuedInputForReconnect": "已加入重连队列",
@@ -457,7 +506,9 @@
   "queuedInputImageCount": "{count, plural, other{{count} 张图片}}",
   "@queuedInputImageCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "tooltipSteerQueuedMessage": "将排队消息作为指令发送",
@@ -485,31 +536,41 @@
   "messageProviderPlaceholder": "给 {provider} 发消息...",
   "@messageProviderPlaceholder": {
     "placeholders": {
-      "provider": { "type": "String" }
+      "provider": {
+        "type": "String"
+      }
     }
   },
   "diffLines": "{count} 行 diff",
   "@diffLines": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "changedLines": "{count} 行变更",
   "@changedLines": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "hunkCount": "{count} 个 hunk",
   "@hunkCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "fileCount": "{count} 个文件",
   "@fileCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "tapInterruptHoldStop": "点按：中断，长按：停止",
@@ -522,7 +583,9 @@
   "rewindConfirmBody": "模式：{mode}\n\n此操作无法撤销。要继续吗？",
   "@rewindConfirmBody": {
     "placeholders": {
-      "mode": { "type": "String" }
+      "mode": {
+        "type": "String"
+      }
     }
   },
   "rewindCannotRewindFiles": "无法回退文件",
@@ -537,14 +600,20 @@
   "diffSummaryAddedRemoved": "+{added}/-{removed} 行",
   "@diffSummaryAddedRemoved": {
     "placeholders": {
-      "added": { "type": "int" },
-      "removed": { "type": "int" }
+      "added": {
+        "type": "int"
+      },
+      "removed": {
+        "type": "int"
+      }
     }
   },
   "lineCountSummary": "{count} 行",
   "@lineCountSummary": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "toolResult": "工具结果",
@@ -552,7 +621,9 @@
   "agentIsAsking": "{agent} 正在提问",
   "@agentIsAsking": {
     "placeholders": {
-      "agent": { "type": "Object" }
+      "agent": {
+        "type": "Object"
+      }
     }
   },
   "codexIsAsking": "Codex 正在提问",
@@ -566,7 +637,9 @@
   "submitWithCount": "提交（已选择 {count} 项）",
   "@submitWithCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "selectOptionsToSubmit": "请选择要提交的选项",
@@ -580,7 +653,9 @@
   "allWithCount": "全部 ({count})",
   "@allWithCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "noImages": "没有图片",
@@ -659,7 +734,9 @@
   "startWithProvider": "用 {provider} 开始",
   "@startWithProvider": {
     "placeholders": {
-      "provider": { "type": "String" }
+      "provider": {
+        "type": "String"
+      }
     }
   },
   "copyForAgent": "复制给 Agent",
@@ -706,32 +783,44 @@
   "promptHistoryLatestSync": "上次同步：{time}",
   "@promptHistoryLatestSync": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "promptHistorySyncedBridges": "已同步 {count} 个 Bridge",
   "@promptHistorySyncedBridges": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "promptHistorySyncSummaryWithFailures": "已同步 {synced} 个，失败 {failed} 个",
   "@promptHistorySyncSummaryWithFailures": {
     "placeholders": {
-      "synced": { "type": "int" },
-      "failed": { "type": "int" }
+      "synced": {
+        "type": "int"
+      },
+      "failed": {
+        "type": "int"
+      }
     }
   },
   "promptHistoryBridgeId": "Bridge ID: {id}",
   "@promptHistoryBridgeId": {
     "placeholders": {
-      "id": { "type": "String" }
+      "id": {
+        "type": "String"
+      }
     }
   },
   "promptHistoryOtherBridgeRegistrations": "其他注册: {registrations}",
   "@promptHistoryOtherBridgeRegistrations": {
     "placeholders": {
-      "registrations": { "type": "String" }
+      "registrations": {
+        "type": "String"
+      }
     }
   },
   "promptHistoryNoSyncTime": "没有同步时间",
@@ -746,13 +835,17 @@
   "itemsProcessed": "已处理 {count} 项",
   "@itemsProcessed": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "bestStreak": "最佳连击：{count}",
   "@bestStreak": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "tryAgain": "再试一次",
@@ -761,7 +854,6 @@
   "backToSessions": "返回会话列表",
   "working": "进行中...",
   "runningSessions": "进行中",
-  "recentSessions": "最近会话",
   "displayFirst": "首条",
   "displayLast": "末条",
   "displaySummary": "摘要",
@@ -783,7 +875,9 @@
   "statusApproveTool": "批准 {toolName}",
   "@statusApproveTool": {
     "placeholders": {
-      "toolName": { "type": "String" }
+      "toolName": {
+        "type": "String"
+      }
     }
   },
   "waitingForApprovalRequests": "正在等待 Agent 发来的审批请求。",
@@ -825,7 +919,9 @@
   "appIconSettingsSubtitle": "可以更改 {device} 主屏幕上显示的图标。",
   "@appIconSettingsSubtitle": {
     "placeholders": {
-      "device": { "type": "String" }
+      "device": {
+        "type": "String"
+      }
     }
   },
   "appIconSupporterDialogTitle": "月度 Supporter 特典",
@@ -896,14 +992,18 @@
   "usagePaceExpected": "预计已用 {percent}%",
   "@usagePaceExpected": {
     "placeholders": {
-      "percent": { "type": "int" }
+      "percent": {
+        "type": "int"
+      }
     }
   },
   "usagePaceWillLast": "按当前速度预计可用到重置",
   "usagePaceRunsOutIn": "按当前速度预计约 {duration} 后达到上限",
   "@usagePaceRunsOutIn": {
     "placeholders": {
-      "duration": { "type": "String" }
+      "duration": {
+        "type": "String"
+      }
     }
   },
   "usagePaceAtLimit": "已达到上限",
@@ -927,14 +1027,18 @@
   "usageResetAt": "重置时间：{time}",
   "@usageResetAt": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "usageAlreadyReset": "已重置",
   "attachedImages": "已附加图片 ({count})",
   "@attachedImages": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "attachedImagesNoCount": "已附加图片",
@@ -943,7 +1047,9 @@
   "failedToFetchImagesWithError": "获取图片失败：{error}",
   "@failedToFetchImagesWithError": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "retry": "重试",
@@ -960,8 +1066,12 @@
   "generatedImagePositionLabel": "生成的图片 {current} / {total}",
   "@generatedImagePositionLabel": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "noImageInClipboard": "剪贴板中没有图片",
@@ -969,14 +1079,20 @@
   "imageLimitReached": "最多允许 {max} 张图片",
   "@imageLimitReached": {
     "placeholders": {
-      "max": { "type": "int" }
+      "max": {
+        "type": "int"
+      }
     }
   },
   "imageLimitTruncated": "仅附加前 {max} 张图片（忽略了 {dropped} 张）",
   "@imageLimitTruncated": {
     "placeholders": {
-      "max": { "type": "int" },
-      "dropped": { "type": "int" }
+      "max": {
+        "type": "int"
+      },
+      "dropped": {
+        "type": "int"
+      }
     }
   },
   "selectFromGallery": "从图库选择",
@@ -995,7 +1111,9 @@
   "archiveFailedWithError": "归档会话失败：{error}",
   "@archiveFailedWithError": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "noRecentSessions": "没有最近会话",
@@ -1021,7 +1139,9 @@
   "messageHistoryCount": "{count} 条消息",
   "@messageHistoryCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "noMessagesYet": "还没有消息",
@@ -1031,13 +1151,17 @@
   "sessionStarted": "会话已开始（{model}）",
   "@sessionStarted": {
     "placeholders": {
-      "model": { "type": "String" }
+      "model": {
+        "type": "String"
+      }
     }
   },
   "systemSubtypeLabel": "系统：{subtype}",
   "@systemSubtypeLabel": {
     "placeholders": {
-      "subtype": { "type": "String" }
+      "subtype": {
+        "type": "String"
+      }
     }
   },
   "authErrorTitle": "需要重新登录 Claude",
@@ -1072,10 +1196,12 @@
   "spreadAppealMessage": "CC Pocket 的用户还不多，继续开发需要更多人支持。如果你喜欢它，给商店评分（只点星也可以）或推荐给朋友都会很有帮助。",
   "shareApp": "分享给朋友",
   "shareAppSubtitle": "告诉你的朋友和同事",
-  "shareText": "CC Pocket: Claude & Codex\n用手机控制你的编程 Agent \ud83d\udcf1\n#ccpocket\n{url}",
+  "shareText": "CC Pocket: Claude & Codex\n用手机控制你的编程 Agent 📱\n#ccpocket\n{url}",
   "@shareText": {
     "placeholders": {
-      "url": { "type": "String" }
+      "url": {
+        "type": "String"
+      }
     }
   },
   "starOnGithub": "在 GitHub 点星",
@@ -1098,7 +1224,9 @@
   "supportEntryActiveSubtitle": "感谢支持。你从 {date} 开始支持 CC Pocket。",
   "@supportEntryActiveSubtitle": {
     "placeholders": {
-      "date": { "type": "String" }
+      "date": {
+        "type": "String"
+      }
     }
   },
   "supporterMonthlyDescription": "如果你愿意持续支持，帮助这个应用继续改进，我会很开心。",
@@ -1118,44 +1246,58 @@
   "supporterSummarySinceChip": "自 {date} 起支持",
   "@supporterSummarySinceChip": {
     "placeholders": {
-      "date": { "type": "String" }
+      "date": {
+        "type": "String"
+      }
     }
   },
   "supporterSummaryStreakChip": "已持续 {duration}",
   "@supporterSummaryStreakChip": {
     "placeholders": {
-      "duration": { "type": "String" }
+      "duration": {
+        "type": "String"
+      }
     }
   },
   "supporterSummaryOneTimeCount": "单次 ×{count}",
   "@supporterSummaryOneTimeCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "supporterSummarySnackCount": "零食 ×{count}",
   "@supporterSummarySnackCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "supporterSummaryCoffeeCount": "饮料 ×{count}",
   "@supporterSummaryCoffeeCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "supporterSummaryLunchCount": "午餐 ×{count}",
   "@supporterSummaryLunchCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "supporterSummaryLessThanMonth": "不足 1 个月",
   "supporterSummaryDurationMonths": "{count} 个月",
   "@supporterSummaryDurationMonths": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "supporterSummarySinceLabel": "开始支持",
@@ -1188,14 +1330,18 @@
   "supporterPurchaseFailed": "购买失败：{message}",
   "@supporterPurchaseFailed": {
     "placeholders": {
-      "message": { "type": "String" }
+      "message": {
+        "type": "String"
+      }
     }
   },
   "supporterRestoreSuccess": "已恢复购买记录。",
   "supporterRestoreFailed": "恢复失败：{message}",
   "@supporterRestoreFailed": {
     "placeholders": {
-      "message": { "type": "String" }
+      "message": {
+        "type": "String"
+      }
     }
   },
   "gitDiscardAllChangesTitle": "要放弃所有更改吗？",
@@ -1210,19 +1356,23 @@
   "renderErrorFallback": "无法显示此内容。",
   "confirm": "确认",
   "piEngineTitle": "Pi 引擎",
-  "piEngineSettingsSubtitle": "系统提示词、启动参数、模型",
+  "piEngineSettingsSubtitle": "settings.json 核心选项（含 JSON 兜底编辑器）",
   "piEngineManage": "Pi 引擎",
   "piEngineNote": "说明",
   "piEngineNoteBody": "Pi Host：{url}",
   "@piEngineNoteBody": {
     "placeholders": {
-      "url": { "type": "String" }
+      "url": {
+        "type": "String"
+      }
     }
   },
   "piEngineConnected": "Pi {version} 已连接",
   "@piEngineConnected": {
     "placeholders": {
-      "version": { "type": "String" }
+      "version": {
+        "type": "String"
+      }
     }
   },
   "piEngineConnecting": "正在连接 Pi 引擎…",
@@ -1231,7 +1381,9 @@
   "piEngineError": "Pi 引擎错误：{error}",
   "@piEngineError": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "piEngineNotConnected": "Pi 引擎未连接，请先启动 Pi Host 服务。",
@@ -1282,7 +1434,9 @@
   "piEngineProviderDeleteConfirm": "删除 Provider \"{id}\"？其模型也会一并移除。",
   "@piEngineProviderDeleteConfirm": {
     "placeholders": {
-      "id": { "type": "String" }
+      "id": {
+        "type": "String"
+      }
     }
   },
   "piEngineProviderId": "Provider ID",
@@ -1298,8 +1452,12 @@
   "piEngineModelImportDone": "已导入 {count} 个模型到 {provider}。",
   "@piEngineModelImportDone": {
     "placeholders": {
-      "count": { "type": "int" },
-      "provider": { "type": "String" }
+      "count": {
+        "type": "int"
+      },
+      "provider": {
+        "type": "String"
+      }
     }
   },
   "piEngineModelsImportJson": "导入 JSON",
@@ -1308,7 +1466,9 @@
   "piEngineModelsImportJsonDone": "已导入 {count} 个 provider。",
   "@piEngineModelsImportJsonDone": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEngineModelsImportJsonInvalid": "这不是合法的 providers JSON 对象。",
@@ -1327,7 +1487,9 @@
   "piEngineCommandsCopied": "已复制 /{name}，粘贴到输入框使用。",
   "@piEngineCommandsCopied": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "piEnginePrompts": "提示词模板",
@@ -1336,7 +1498,9 @@
   "piEnginePromptsCount": "{count} 个模板",
   "@piEnginePromptsCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEnginePromptsGroupGlobal": "全局",
@@ -1351,19 +1515,25 @@
   "piEnginePromptsDeleteConfirm": "删除模板 {name}？",
   "@piEnginePromptsDeleteConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "piEnginePromptsSaved": "已保存 {name}",
   "@piEnginePromptsSaved": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "piEnginePromptsCopied": "已复制 /{name}，粘贴到输入框使用。",
   "@piEnginePromptsCopied": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "piEnginePromptsHint": "Prompt 是作为斜杠命令暴露的 .md 文件，编辑后立即生效，无需重启。",
@@ -1379,7 +1549,9 @@
   "piEnginePackagesCount": "{count} 个软件包",
   "@piEnginePackagesCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEnginePackagesGroupGlobal": "全局",
@@ -1395,7 +1567,9 @@
   "piEnginePackagesRemoveConfirm": "移除软件包 {source}？",
   "@piEnginePackagesRemoveConfirm": {
     "placeholders": {
-      "source": { "type": "String" }
+      "source": {
+        "type": "String"
+      }
     }
   },
   "piEnginePackagesRemoveConfirmBody": "会卸载产物并从 settings.json 中删除该条目。",
@@ -1404,31 +1578,38 @@
   "piEnginePackagesUpdated": "已更新 {count} 个软件包",
   "@piEnginePackagesUpdated": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEnginePackagesRemoved": "已移除 {source}",
   "@piEnginePackagesRemoved": {
     "placeholders": {
-      "source": { "type": "String" }
+      "source": {
+        "type": "String"
+      }
     }
   },
   "piEnginePackagesInstalling": "正在安装 {source}…",
   "@piEnginePackagesInstalling": {
     "placeholders": {
-      "source": { "type": "String" }
+      "source": {
+        "type": "String"
+      }
     }
   },
   "piEnginePackagesUpdating": "正在更新软件包…",
   "piEnginePackagesRemoving": "正在移除 {source}…",
   "@piEnginePackagesRemoving": {
     "placeholders": {
-      "source": { "type": "String" }
+      "source": {
+        "type": "String"
+      }
     }
   },
   "piEnginePackagesRestartHint": "引擎在解析资源时会重新读取已配置的来源；npm/git 产物的变更通常需要重启（或 /reload）后生效。",
   "piEngineSettingsCore": "设置",
-  "piEngineSettingsSubtitle": "settings.json 核心选项（含 JSON 兜底编辑器）",
   "piEngineSettingsSectionGeneral": "常规",
   "piEngineSettingsSectionBehavior": "行为",
   "piEngineSettingsDefaultProvider": "默认提供商",
@@ -1500,7 +1681,9 @@
   "piEngineThemesRemoveConfirm": "删除主题 \"{name}\"？文件将被删除。",
   "@piEngineThemesRemoveConfirm": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "piEngineThemesEmpty": "还没有主题，导入一个试试。",
@@ -1510,25 +1693,33 @@
   "piEngineContextFilesProject": "项目文件：{path}",
   "@piEngineContextFilesProject": {
     "placeholders": {
-      "path": { "type": "String" }
+      "path": {
+        "type": "String"
+      }
     }
   },
   "piEngineContextFilesParent": "上层副本：{path} · 合并在上方",
   "@piEngineContextFilesParent": {
     "placeholders": {
-      "path": { "type": "String" }
+      "path": {
+        "type": "String"
+      }
     }
   },
   "piEngineContextFilesNew": "将在 {path} 创建",
   "@piEngineContextFilesNew": {
     "placeholders": {
-      "path": { "type": "String" }
+      "path": {
+        "type": "String"
+      }
     }
   },
   "piEngineContextFilesEdit": "编辑 {name}",
   "@piEngineContextFilesEdit": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "piEngineExtensions": "扩展",
@@ -1538,7 +1729,9 @@
   "piEngineExtensionsCount": "{count} 个扩展",
   "@piEngineExtensionsCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEngineExtensionsGroupGlobal": "全局",
@@ -1552,7 +1745,9 @@
   "piEngineSkillsCount": "{count} 个技能",
   "@piEngineSkillsCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEngineSkillsGroupProject": "项目",
@@ -1585,43 +1780,66 @@
   "piEngineRuntimeInstallConfirm": "下载 {route} 并切换到它？需要下载安装包，可能需要一些时间。",
   "@piEngineRuntimeInstallConfirm": {
     "placeholders": {
-      "route": { "type": "String" }
+      "route": {
+        "type": "String"
+      }
     }
   },
   "piEngineRuntimeInstalling": "正在安装 {route}…",
   "@piEngineRuntimeInstalling": {
     "placeholders": {
-      "route": { "type": "String" }
+      "route": {
+        "type": "String"
+      }
     }
   },
   "piEngineRuntimeSwitchAction": "切换",
   "piEngineRuntimeSwitch": "切换到 {route}？",
   "@piEngineRuntimeSwitch": {
     "placeholders": {
-      "route": { "type": "String" }
+      "route": {
+        "type": "String"
+      }
     }
   },
   "piEngineRuntimeSwitchConfirmA": "返回内置环境？proot 发行版会保留，随时可以再切换。",
   "piEngineRuntimeSwitchConfirmB": "切换到 {route}？速度会变慢、占用更多空间，但可以随时切回。",
   "@piEngineRuntimeSwitchConfirmB": {
     "placeholders": {
-      "route": { "type": "String" }
+      "route": {
+        "type": "String"
+      }
     }
   },
   "piEngineRuntimeSwitched": "已切换到 {route}。",
   "@piEngineRuntimeSwitched": {
     "placeholders": {
-      "route": { "type": "String" }
+      "route": {
+        "type": "String"
+      }
     }
   },
   "piEngineRuntimePackagesTitle": "已安装的软件包",
   "piEngineRuntimePackages": "{count} 个软件包",
   "@piEngineRuntimePackages": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "piEngineRuntimeRestartHint": "切换路线会重启引擎，新的运行时立即生效。",
   "clear": "清空",
-  "selectAll": "全选"
+  "selectAll": "全选",
+  "piEngineModel": "模型",
+  "piEngineModelSwitchTitle": "切换模型",
+  "piEngineModelSwitchEmpty": "没有可用模型，请到「模型管理」添加。",
+  "piEngineModelSwitched": "已切换到 {model}",
+  "@piEngineModelSwitched": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  }
 }

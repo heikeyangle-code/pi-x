@@ -3504,4 +3504,18 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get selectAll => '모두 선택';
+
+  @override
+  String get piEngineModel => '모델';
+
+  @override
+  String get piEngineModelSwitchTitle => '모델 전환';
+
+  @override
+  String get piEngineModelSwitchEmpty => '사용 가능한 모델이 없습니다. \'모델 관리\'에서 추가하세요.';
+
+  @override
+  String piEngineModelSwitched(String model) {
+    return '$model(으)로 전환됨';
+  }
 }

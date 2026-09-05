@@ -3480,4 +3480,18 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get selectAll => 'すべて選択';
+
+  @override
+  String get piEngineModel => 'モデル';
+
+  @override
+  String get piEngineModelSwitchTitle => 'モデルを切り替え';
+
+  @override
+  String get piEngineModelSwitchEmpty => '利用可能なモデルがありません。「モデル管理」で追加してください。';
+
+  @override
+  String piEngineModelSwitched(String model) {
+    return '$model に切り替えました';
+  }
 }

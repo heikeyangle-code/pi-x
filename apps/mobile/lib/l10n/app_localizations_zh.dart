@@ -3428,4 +3428,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get selectAll => '全选';
+
+  @override
+  String get piEngineModel => '模型';
+
+  @override
+  String get piEngineModelSwitchTitle => '切换模型';
+
+  @override
+  String get piEngineModelSwitchEmpty => '没有可用模型，请到「模型管理」添加。';
+
+  @override
+  String piEngineModelSwitched(String model) {
+    return '已切换到 $model';
+  }
 }

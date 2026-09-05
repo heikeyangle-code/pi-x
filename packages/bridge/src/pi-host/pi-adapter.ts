@@ -28,6 +28,7 @@ import {
   inboundToActions,
   piFrameToServerMessages,
 } from "./cc-adapter.js";
+import { PiSessionRegistry } from "./pi-sessions.js";
 
 /**
  * Minimal gateway surface the adapter needs. Structural so tests can inject a
@@ -39,6 +40,8 @@ export interface PiGatewayLike {
   handleControl(msg: ClientControlMessage): Promise<unknown>;
   respondUi(requestId: string, value: unknown): boolean;
   stopAll(): Promise<void>;
+  /** pi home root (~); used for session scans (~/.pi/agent/sessions). */
+  readonly piHome: string;
 }
 
 export interface PiAdapterOptions {
@@ -67,21 +70,49 @@ export class PiAdapter {
    */
   deliver?: (ws: WebSocket, message: unknown) => void;
 
-  private readonly gateway: PiGatewayLike;
+  /** Active pi sessions (CC sessionId -> project); fed by `start` + events. */
+  readonly registry = new PiSessionRegistry();
+
+  /**
+   * Status transition callback (projectId, status). The bridge uses it to
+   * keep its session list in sync (broadcast session_list on idle->running).
+   */
+  onStatus?: (projectId: string, status: string) => void;
+
+  private readonly gatewayImpl: PiGatewayLike;
   /** projectId -> sockets subscribed to that project's engine events. */
   private readonly subscribed = new Map<string, Set<WebSocket>>();
   private readonly wsProject = new WeakMap<WebSocket, string>();
 
   constructor(opts: PiAdapterOptions) {
-    this.gateway = opts.gateway;
+    this.gatewayImpl = opts.gateway;
     // PiGateway is transport-agnostic: on construction it installs its event
     // sink so we can forward engine frames to subscribed sockets.
-    this.gateway.send = (envelope) => this.dispatch(envelope);
+    this.gatewayImpl.send = (envelope) => this.dispatch(envelope);
+  }
+
+  /** Gateway handle for the session surface (history/list scans). */
+  get gateway(): PiGatewayLike {
+    return this.gatewayImpl;
   }
 
   /** Whether this CC client message should be handled by the pi engine. */
   accepts(msg: ClientMessage): boolean {
     return PI_CHAT_OPS.has(msg.type);
+  }
+
+  /**
+   * Warm the engine for a project and fold its state (model/name) into the
+   * session registry. Resolves with the engine get_state response (or
+   * undefined when the engine could not be reached). Used by `start` and the
+   * bridge's pi resume path.
+   */
+  async warm(projectId: string): Promise<unknown> {
+    const state = await this.gatewayImpl
+      .handleControl({ type: "control", op: "get_state", projectId })
+      .catch(() => undefined);
+    this.applyStateToRegistry(projectId, state);
+    return state;
   }
 
   /** Pin a socket to a project so engine events are delivered to it. */
@@ -111,10 +142,29 @@ export class PiAdapter {
     // applied immediately. The socket then idles until the first `input`.
     if (msg.type === "start") {
       this.bind(ws, projectId);
-      await this.gateway
-        .handleControl({ type: "control", op: "get_state", projectId })
-        .catch(() => undefined);
-      this.deliver?.(ws, { type: "status", status: "idle" });
+      const raw = msg as Record<string, unknown>;
+      // The app opens a session without a bridge-side id on new sessions; the
+      // bridge generates one and returns it in `session_created` so the app can
+      // correlate get_history/input against the same id afterwards.
+      let sessionId =
+        typeof raw.sessionId === "string" ? String(raw.sessionId) : "";
+      if (sessionId === "") {
+        sessionId = generateSessionId();
+      }
+      this.registry.register(sessionId, projectId, "idle");
+      this.registry.touch(sessionId);
+      await this.warm(projectId);
+      const entry = this.registry.get(sessionId);
+      this.deliver?.(ws, {
+        type: "system",
+        subtype: "session_created",
+        sessionId,
+        provider: "pi",
+        projectPath: projectId,
+        status: "idle",
+        ...(entry?.model ? { model: entry.model } : {}),
+      });
+      this.deliver?.(ws, { type: "status", status: "idle", sessionId });
       return true;
     }
 
@@ -143,6 +193,9 @@ export class PiAdapter {
             projectId,
           });
         }
+        // Record the engine model (from get_state/cycle_model etc.) into the
+        // session registry so session_list shows the active model.
+        this.applyStateToRegistry(projectId, result);
       } else if (action.kind === "ui_response") {
         this.gateway.respondUi(String(action.uiRequestId ?? ""), action.value);
       }
@@ -156,7 +209,8 @@ export class PiAdapter {
    * The CC Pocket client sends the workspace path as `projectPath` on `start`
    * (parser.ts); the pi gateway treats a project id as its cwd, so the path
    * and the id are the same string. We therefore accept both `projectId` and
-   * `projectPath`, then fall back to the binding established by `start`.
+   * `projectPath`, fall back to the session registry (app messages carry
+   * `sessionId` after `start`), then to the binding established by `start`.
    */
   private projectFor(ws: WebSocket, msg: ClientMessage): string {
     const raw = msg as Record<string, unknown>;
@@ -164,7 +218,40 @@ export class PiAdapter {
     if (id !== "") return id;
     const path = typeof raw.projectPath === "string" ? raw.projectPath : "";
     if (path !== "") return path;
+    const sessionId =
+      typeof raw.sessionId === "string" ? String(raw.sessionId) : "";
+    if (sessionId !== "") {
+      const entry = this.registry.get(sessionId);
+      if (entry !== undefined) return entry.projectId;
+    }
     return this.wsProject.get(ws) ?? "";
+  }
+
+  /** Extract model/sessionName from a get_state/cycle_model engine response. */
+  private applyStateToRegistry(projectId: string, result: unknown): void {
+    if (result === null || typeof result !== "object") return;
+    const r = result as Record<string, unknown>;
+    if (r.success === false) return;
+    const stateData =
+      r["data"] !== null && typeof r["data"] === "object"
+        ? (r["data"] as Record<string, unknown>)
+        : undefined;
+    if (stateData === undefined) return;
+    const model = stateData["model"] as Record<string, unknown> | undefined;
+    if (model !== null && typeof model === "object") {
+      const modelId = String(model["id"] ?? model["model"] ?? "");
+      if (modelId !== "") this.registry.setModel(projectId, modelId);
+    }
+    const sessionName =
+      typeof stateData["sessionName"] === "string"
+        ? String(stateData["sessionName"])
+        : undefined;
+    if (sessionName !== undefined && sessionName !== "") {
+      const entry = this.registry.getByProject(projectId);
+      if (entry !== undefined) {
+        this.registry.rename(entry.sessionId, sessionName);
+      }
+    }
   }
 
   /** Forward an engine frame envelope to sockets subscribed to its project. */
@@ -177,6 +264,10 @@ export class PiAdapter {
     if (messages.length === 0) return;
     for (const ws of [...sockets]) {
       for (const message of messages) {
+        if (message.type === "status" && typeof message.status === "string") {
+          this.registry.setStatus(projectId, message.status as "idle" | "running");
+          this.onStatus?.(projectId, message.status as string);
+        }
         this.deliver?.(ws, message);
       }
     }
@@ -204,4 +295,11 @@ export function isFailedEngineResponse(
   if (result === null || typeof result !== "object") return false;
   const r = result as Record<string, unknown>;
   return r.success === false && typeof r.error === "string" && r.error !== "";
+}
+
+let sessionIdCounter = 0;
+/** Bridge-side session id for a pi session opened without an app-provided id. */
+export function generateSessionId(): string {
+  sessionIdCounter += 1;
+  return `pi-${Date.now().toString(36)}-${sessionIdCounter.toString(36)}`;
 }

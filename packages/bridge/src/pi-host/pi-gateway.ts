@@ -103,7 +103,8 @@ export class PiGateway {
   private readonly pool: EnginePool;
   private readonly opts: PiGatewayOptions;
   private readonly protocolVersion: number;
-  private readonly piHome: string;
+  /** pi home root (~); sessions/settings live under ~/.pi/agent. */
+  readonly piHome: string;
 
   constructor(opts: PiGatewayOptions) {
     this.opts = opts;

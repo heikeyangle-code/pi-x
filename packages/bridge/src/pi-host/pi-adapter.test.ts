@@ -72,7 +72,53 @@ describe("PiAdapter", () => {
     expect(handled).toBe(true);
     expect(controls[0]?.op).toBe("get_state");
     expect(controls[0]?.projectId).toBe("/proj");
-    expect(delivered).toEqual([{ type: "status", status: "idle" }]);
+    // The app navigates on session_created and correlates history by the
+    // returned sessionId; a status follows so the chat is ready.
+    expect(delivered).toHaveLength(2);
+    const created = delivered[0];
+    expect(created?.type).toBe("system");
+    expect(created?.subtype).toBe("session_created");
+    expect(created?.provider).toBe("pi");
+    expect(created?.projectPath).toBe("/proj");
+    expect(typeof created?.sessionId).toBe("string");
+    expect(created?.sessionId).not.toBe("");
+    expect(delivered[1]).toEqual({
+      type: "status",
+      status: "idle",
+      sessionId: created?.sessionId,
+    });
+  });
+
+  it("start keeps an app-provided sessionId (resume/new flows)", async () => {
+    const { adapter, delivered } = makeAdapter();
+    const { ws } = fakeSocket();
+    await adapter.handle(ws as never, {
+      type: "start",
+      projectPath: "/proj",
+      sessionId: "app-session-1",
+    } as never);
+    const created = delivered[0] as Record<string, unknown>;
+    expect(created?.sessionId).toBe("app-session-1");
+  });
+
+  it("projectFor falls back to the session registry for sessionId-only messages", async () => {
+    const { adapter, controls } = makeAdapter();
+    const { ws } = fakeSocket();
+    await adapter.handle(ws as never, {
+      type: "start",
+      projectPath: "/proj",
+      sessionId: "s1",
+    } as never);
+    // Simulate a fresh socket (no binding): sessionId -> project resolution
+    // must still route the prompt to /proj.
+    const { ws: ws2 } = fakeSocket();
+    await adapter.handle(ws2 as never, {
+      type: "input",
+      text: "hi",
+      sessionId: "s1",
+    } as never);
+    const prompt = controls.find((c) => c.op === "prompt");
+    expect(prompt?.projectId).toBe("/proj");
   });
 
   it("input routes to prompt control (project bound via start's projectPath)", async () => {

@@ -1,5 +1,5 @@
 import type { Server as HttpServer } from "node:http";
-import { createHash, randomUUID } from "node:crypto";
+import { randomUUID } from "node:crypto";
 import { execFile, execFileSync } from "node:child_process";
 import { readFileSync, existsSync } from "node:fs";
 import { lstat, readFile, readlink, realpath, stat, unlink } from "node:fs/promises";
@@ -112,9 +112,6 @@ import { generateCommitMessage } from "./git-assist.js";
 import { listWindows, takeScreenshot } from "./screenshot.js";
 import { DebugTraceStore } from "./debug-trace-store.js";
 import { RecordingStore } from "./recording-store.js";
-import { PushRelayClient } from "./push-relay.js";
-import type { FirebaseAuthClient } from "./firebase-auth.js";
-import { type PushLocale, normalizePushLocale, t } from "./push-i18n.js";
 import { fetchAllUsage } from "./usage.js";
 import type { PromptHistoryBackupStore } from "./prompt-history-backup.js";
 import type { PromptHistoryStore } from "./prompt-history-store.js";
@@ -135,8 +132,17 @@ import {
 } from "./codex-permissions.js";
 import {
   PiAdapter,
+  isFailedEngineResponse,
   toServerMessage,
 } from "./pi-host/pi-adapter.js";
+import {
+  scanPiRecentSessions,
+  piMessagesToHistoryMessages,
+  piSessionFileToHistoryMessages,
+  type PiHistoryMessage,
+  type PiSessionEntry,
+  type PiSessionMeta,
+} from "./pi-host/pi-sessions.js";
 
 type SystemServerMessage = Extract<ServerMessage, { type: "system" }>;
 type InputClientMessage = Extract<ClientMessage, { type: "input" }>;
@@ -256,7 +262,6 @@ const OPT_IN_SERVER_MESSAGES = new Set<string>([
   "guardian_approval",
   "prompt_history_status",
   "projects",
-  "push_registration_result",
 ]);
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -756,7 +761,6 @@ export interface BridgeServerOptions {
   workspaceStore?: WorkspaceStore;
   debugTraceStore?: DebugTraceStore;
   recordingStore?: RecordingStore;
-  firebaseAuth?: FirebaseAuthClient;
   promptHistoryBackup?: PromptHistoryBackupStore;
   promptHistoryStore?: PromptHistoryStore;
   /**
@@ -817,7 +821,6 @@ export class BridgeWebSocketServer {
   private debugTraceStore: DebugTraceStore;
   private recordingStore: RecordingStore | null;
   private worktreeStore: WorktreeStore;
-  private pushRelay: PushRelayClient;
   private promptHistoryBackup: PromptHistoryBackupStore | null;
   private promptHistoryStore: PromptHistoryStore | null;
 
@@ -827,7 +830,6 @@ export class BridgeWebSocketServer {
     Promise<{ sessions: unknown[]; hasMore: boolean }>
   >();
   private debugEvents = new Map<string, DebugTraceEvent[]>();
-  private notifiedPermissionToolUses = new Map<string, Set<string>>();
   private archiveStore: ArchiveStore;
   private codexProfiles: string[] = [];
   private defaultCodexProfile: string | undefined;
@@ -854,12 +856,6 @@ export class BridgeWebSocketServer {
       fallbackCodexServiceTiers(model),
     ]),
   );
-  /** FCM token → push notification locale */
-  private tokenLocales = new Map<string, PushLocale>();
-  private tokenPrivacyMode = new Map<string, boolean>();
-  private pushTokenGeneration = new Map<string, number>();
-  private pushTokenOperations = new Map<string, Promise<void>>();
-  private nextPushTokenGeneration = 0;
   private failSetPermissionMode = envFlagEnabled(
     "BRIDGE_FAIL_SET_PERMISSION_MODE",
   );
@@ -894,7 +890,6 @@ export class BridgeWebSocketServer {
       workspaceStore,
       debugTraceStore,
       recordingStore,
-      firebaseAuth,
       promptHistoryBackup,
       promptHistoryStore,
       platform,
@@ -916,7 +911,6 @@ export class BridgeWebSocketServer {
     this.debugTraceStore = debugTraceStore ?? new DebugTraceStore();
     this.recordingStore = recordingStore ?? null;
     this.worktreeStore = new WorktreeStore();
-    this.pushRelay = new PushRelayClient({ firebaseAuth });
     this.promptHistoryBackup = promptHistoryBackup ?? null;
     this.promptHistoryStore = promptHistoryStore ?? null;
     this.platform = platform ?? process.platform;
@@ -926,6 +920,9 @@ export class BridgeWebSocketServer {
       // send() so protocol/opt-in filtering still applies.
       this.piAdapter.deliver = (ws, message) =>
         this.send(ws, toServerMessage(message));
+      // Keep the session list in sync when a pi session changes status
+      // (idle->running etc.) so the app's active-session UI stays current.
+      this.piAdapter.onStatus = () => this.broadcastPiSessionList();
     }
     this.fileListMaxEntries = normalizePositiveLimit(
       fileListMaxEntries,
@@ -982,11 +979,6 @@ export class BridgeWebSocketServer {
     void this.archiveStore.init().catch((err) => {
       console.error("[ws] Failed to initialize archive store:", err);
     });
-    if (!this.pushRelay.isConfigured) {
-      console.log("[ws] Push relay disabled (Firebase auth not available)");
-    } else {
-      console.log("[ws] Push relay enabled (Firebase Anonymous Auth)");
-    }
 
     this.wss = new WebSocketServer({ server });
 
@@ -2823,6 +2815,13 @@ export class BridgeWebSocketServer {
       if (await this.piAdapter.handle(ws, msg)) return;
     }
 
+    // PI_HOST=1: session surface (list/history/context/recent/rename) is
+    // served from the pi engine + ~/.pi/agent/sessions, not the codex/claude
+    // SessionManager. Returns true when the pi adapter consumed the op.
+    if (this.piAdapter) {
+      if (await this.tryHandlePiSessionOp(ws, msg)) return;
+    }
+
     const incomingSessionId = this.extractSessionIdFromClientMessage(msg);
     const isActiveRuntimeSession =
       incomingSessionId != null &&
@@ -3602,105 +3601,6 @@ export class BridgeWebSocketServer {
           return;
         }
         this.broadcastSessionList();
-        break;
-      }
-
-      case "push_register": {
-        const locale = normalizePushLocale(msg.locale);
-        const privacyMode = msg.privacyMode === true;
-        const supportsRegistrationResult =
-          this.clientSupportedServerMessages
-            .get(ws)
-            ?.has("push_registration_result") ?? false;
-        console.log(
-          `[ws] push_register received (platform: ${msg.platform}, locale: ${locale}, privacy: ${privacyMode}, configured: ${this.pushRelay.isConfigured})`,
-        );
-        const generation = this.beginPushTokenOperation(msg.token);
-        if (!this.pushRelay.isConfigured) {
-          const error = "Push relay is not configured on bridge";
-          this.send(
-            ws,
-            supportsRegistrationResult
-              ? {
-                  type: "push_registration_result",
-                  token: msg.token,
-                  requestId: msg.requestId ?? "",
-                  success: false,
-                  error,
-                }
-              : { type: "error", message: error },
-          );
-          return;
-        }
-        const operation = this.enqueuePushTokenOperation(msg.token, () =>
-          this.pushRelay.registerToken(msg.token, msg.platform, locale),
-        );
-        operation
-          .then(() => {
-            if (!this.isCurrentPushTokenOperation(msg.token, generation)) return;
-            console.log("[ws] push_register: token registered successfully");
-            if (supportsRegistrationResult) {
-              this.send(ws, {
-                type: "push_registration_result",
-                token: msg.token,
-                requestId: msg.requestId ?? "",
-                success: true,
-              });
-            }
-            // Enable delivery only after the acknowledgement has been queued
-            // on the WebSocket, keeping the app on local fallback until then.
-            this.tokenLocales.set(msg.token, locale);
-            this.tokenPrivacyMode.set(msg.token, privacyMode);
-          })
-          .catch((err) => {
-            if (!this.isCurrentPushTokenOperation(msg.token, generation)) return;
-            const detail = err instanceof Error ? err.message : String(err);
-            console.error(`[ws] push_register failed: ${detail}`);
-            const error = `Failed to register push token: ${detail}`;
-            this.send(
-              ws,
-              supportsRegistrationResult
-                ? {
-                    type: "push_registration_result",
-                    token: msg.token,
-                    requestId: msg.requestId ?? "",
-                    success: false,
-                    error,
-                  }
-                : { type: "error", message: error },
-            );
-          });
-        break;
-      }
-
-      case "push_unregister": {
-        console.log("[ws] push_unregister received");
-        const generation = this.beginPushTokenOperation(msg.token);
-        if (!this.pushRelay.isConfigured) {
-          this.send(ws, {
-            type: "error",
-            message: "Push relay is not configured on bridge",
-          });
-          return;
-        }
-        this.enqueuePushTokenOperation(msg.token, () =>
-          this.pushRelay.unregisterToken(msg.token),
-        )
-          .then(() => {
-            if (!this.isCurrentPushTokenOperation(msg.token, generation)) return;
-            console.log(
-              "[ws] push_unregister: token unregistered successfully",
-            );
-          })
-          .catch((err) => {
-            if (!this.isCurrentPushTokenOperation(msg.token, generation)) return;
-            const detail = err instanceof Error ? err.message : String(err);
-            console.error(`[ws] push_unregister failed: ${detail}`);
-            this.send(ws, {
-              type: "error",
-              message: `Failed to unregister push token: ${detail}`,
-            });
-          });
         break;
       }
 
@@ -4873,7 +4773,6 @@ export class BridgeWebSocketServer {
             type: "session_stopped",
           });
           this.debugEvents.delete(msg.sessionId);
-          this.notifiedPermissionToolUses.delete(msg.sessionId);
           this.broadcastSessionList();
         } else {
           this.send(ws, {
@@ -8181,6 +8080,531 @@ export class BridgeWebSocketServer {
     return this.sessionManager.get(sessions[sessions.length - 1].id);
   }
 
+  // -------------------------------------------------------------------------
+  // PI session surface (PI_HOST=1)
+  //
+  // The CC session ops below are served from the pi engine + the pi session
+  // files (~/.pi/agent/sessions) instead of the codex/claude SessionManager:
+  //   list_sessions / list_recent_sessions -> registry + JSONL scan
+  //   resume_session / get_history / get_history_delta / get_session_context
+  //   resolve_session_link / rename_session
+  // -------------------------------------------------------------------------
+
+  /**
+   * PI_HOST=1: handle the CC session surface from the pi engine.
+   * Returns true when the op was consumed by the pi adapter.
+   */
+  private async tryHandlePiSessionOp(
+    ws: WebSocket,
+    msg: ClientMessage,
+  ): Promise<boolean> {
+    const adapter = this.piAdapter;
+    if (!adapter) return false;
+
+    switch (msg.type) {
+      case "list_sessions":
+        this.sendPiSessionList(ws);
+        return true;
+      case "list_recent_sessions": {
+        await this.sendPiRecentSessions(
+          ws,
+          msg as Extract<ClientMessage, { type: "list_recent_sessions" }>,
+        );
+        return true;
+      }
+      case "resume_session":
+        return this.resumePiSession(
+          ws,
+          msg as Extract<ClientMessage, { type: "resume_session" }>,
+        );
+      case "get_history":
+        return this.sendPiHistory(
+          ws,
+          msg as Extract<ClientMessage, { type: "get_history" }>,
+        );
+      case "get_history_delta":
+        return this.sendPiHistorySnapshot(
+          ws,
+          msg as Extract<ClientMessage, { type: "get_history_delta" }>,
+        );
+      case "get_session_context":
+        return this.sendPiSessionContext(
+          ws,
+          msg as Extract<ClientMessage, { type: "get_session_context" }>,
+        );
+      case "resolve_session_link":
+        await this.resolvePiSessionLink(
+          ws,
+          msg as Extract<ClientMessage, { type: "resolve_session_link" }>,
+        );
+        return true;
+      case "rename_session":
+        return this.renamePiSession(
+          ws,
+          msg as Extract<ClientMessage, { type: "rename_session" }>,
+        );
+      default:
+        return false;
+    }
+  }
+
+  /** CC SessionInfo JSON for a pi registry entry. */
+  private piSessionInfoJson(
+    entry: PiSessionEntry,
+    workspace?: ResolvedWorkspace,
+  ): Record<string, unknown> {
+    return {
+      id: entry.sessionId,
+      provider: "pi",
+      projectPath: entry.projectId,
+      ...(entry.name ? { name: entry.name } : {}),
+      status: entry.status,
+      createdAt: new Date(entry.createdAt).toISOString(),
+      lastActivityAt: new Date(entry.updatedAt).toISOString(),
+      ...(entry.model ? { model: entry.model } : {}),
+      ...(workspace ? { workspace } : {}),
+    };
+  }
+
+  /** Session_list for the requesting client (pi runtime sessions). */
+  private sendPiSessionList(ws: WebSocket): void {
+    const adapter = this.piAdapter;
+    if (!adapter) return;
+    const sessions = adapter.registry.list().map((entry) => {
+      const workspace = this.workspaceForPiProject(entry.projectId);
+      return this.piSessionInfoJson(entry, workspace);
+    });
+    this.send(ws, {
+      type: "session_list",
+      sessions,
+      allowedDirs: this.allowedDirs,
+      bridgeVersion: getPackageVersion(),
+      protocolVersion: BRIDGE_PROTOCOL_MAX_VERSION,
+      minimumProtocolVersion: BRIDGE_PROTOCOL_MIN_VERSION,
+      protocolCapabilities: [
+        "project_request_correlation_v1",
+        "session_context_v1",
+      ],
+    });
+  }
+
+  /** Broadcast session_list to all connected clients (pi runtime sessions). */
+  private broadcastPiSessionList(): void {
+    const adapter = this.piAdapter;
+    if (!adapter) return;
+    const sessions = adapter.registry.list().map((entry) => {
+      const workspace = this.workspaceForPiProject(entry.projectId);
+      return this.piSessionInfoJson(entry, workspace);
+    });
+    this.broadcast({
+      type: "session_list",
+      sessions,
+      allowedDirs: this.allowedDirs,
+      bridgeVersion: getPackageVersion(),
+      protocolVersion: BRIDGE_PROTOCOL_MAX_VERSION,
+      minimumProtocolVersion: BRIDGE_PROTOCOL_MIN_VERSION,
+      protocolCapabilities: [
+        "project_request_correlation_v1",
+        "session_context_v1",
+      ],
+    });
+  }
+
+  /** Resolve a ResolvedWorkspace for a pi project path, if a project matches. */
+  private workspaceForPiProject(projectId: string): ResolvedWorkspace | undefined {
+    if (!this.workspaceStore) return undefined;
+    const project = this.workspaceStore.getProject(projectId);
+    if (!project) return undefined;
+    const normalized = this.normalizeWorkspaceRoots(project.rootPaths);
+    if (!normalized.roots) return undefined;
+    return {
+      kind: "project",
+      projectId: project.id,
+      projectName: project.name,
+      rootPaths: normalized.roots,
+    };
+  }
+
+  /** CC RecentSession JSON from a pi session file summary. */
+  private piRecentSessionJson(meta: PiSessionMeta): Record<string, unknown> {
+    return {
+      sessionId: meta.sessionId,
+      provider: "pi",
+      ...(meta.name ? { name: meta.name } : {}),
+      firstPrompt: meta.name ?? "",
+      created: meta.createdAt,
+      modified: meta.lastActivityAt,
+      projectPath: meta.cwd,
+      resumeCwd: meta.cwd,
+      isSidechain: false,
+    };
+  }
+
+  /** list_recent_sessions: recent pi sessions from ~/.pi/agent/sessions. */
+  private async sendPiRecentSessions(
+    ws: WebSocket,
+    msg: Extract<ClientMessage, { type: "list_recent_sessions" }>,
+  ): Promise<void> {
+    const adapter = this.piAdapter;
+    if (!adapter) return;
+    try {
+      const metas = await scanPiRecentSessions(adapter.gateway.piHome);
+      const sessions = metas.map((meta) => this.piRecentSessionJson(meta));
+      this.send(ws, {
+        type: "recent_sessions",
+        sessions,
+        hasMore: false,
+        limit: msg.limit,
+        offset: msg.offset,
+      });
+    } catch (err) {
+      console.error("[ws] Failed to scan pi recent sessions:", err);
+      this.send(ws, {
+        type: "error",
+        requestId: msg.requestId,
+        errorCode: "recent_sessions_failed",
+        message: `Failed to load pi recent sessions: ${err}`,
+      });
+    }
+  }
+
+  /**
+   * resume_session: open a pi session from the home/recent list. The engine
+   * persists its own session per cwd, so resuming is: resolve the cwd, warm
+   * the engine, register the bridge session, then hand the app a
+   * session_created + status so it navigates and replays get_history.
+   */
+  private async resumePiSession(
+    ws: WebSocket,
+    msg: Extract<ClientMessage, { type: "resume_session" }>,
+  ): Promise<boolean> {
+    const adapter = this.piAdapter;
+    if (!adapter) return true;
+    const raw = msg as Record<string, unknown>;
+    const sourceSessionId = String(raw.sessionId ?? "");
+    let projectPath = String(raw.projectPath ?? "");
+    if (projectPath === "") {
+      const metas = await scanPiRecentSessions(adapter.gateway.piHome);
+      const meta = metas.find((m) => m.sessionId === sourceSessionId);
+      if (!meta) {
+        this.sendPiResumeFailed(ws, msg, sourceSessionId);
+        return true;
+      }
+      projectPath = meta.cwd;
+    }
+    projectPath = resolvePlatformPath(projectPath, this.platform);
+    if (!this.isPathAllowed(projectPath)) {
+      this.sendPiResumeFailed(ws, msg, sourceSessionId);
+      this.send(ws, this.buildPathNotAllowedError(projectPath));
+      return true;
+    }
+    // The app correlates get_history/input by sessionId; use the source id
+    // so resume -> history replay round-trips on the same key.
+    const sessionId = sourceSessionId;
+    adapter.registry.register(sessionId, projectPath, "idle");
+    adapter.bind(ws, projectPath);
+    const state = await adapter.warm(projectPath);
+    if (isFailedEngineResponse(state)) {
+      this.sendPiResumeFailed(ws, msg, sourceSessionId);
+      this.send(ws, {
+        type: "error",
+        sessionId,
+        message: state.error,
+      });
+      return true;
+    }
+    const entry = adapter.registry.get(sessionId);
+    this.send(ws, {
+      type: "system",
+      subtype: "session_created",
+      sessionId,
+      provider: "pi",
+      projectPath,
+      status: "idle",
+      ...(entry?.model ? { model: entry.model } : {}),
+    } as Record<string, unknown>);
+    this.send(ws, {
+      type: "status",
+      status: "idle",
+      sessionId,
+    } as Record<string, unknown>);
+    this.broadcastPiSessionList();
+    return true;
+  }
+
+  private sendPiResumeFailed(
+    ws: WebSocket,
+    msg: Extract<ClientMessage, { type: "resume_session" }>,
+    sourceSessionId: string,
+  ): void {
+    this.send(ws, {
+      type: "system",
+      subtype: "session_resume_failed",
+      sourceSessionId,
+      resumeRequestId: msg.resumeRequestId,
+      provider: "pi",
+    } as Record<string, unknown>);
+  }
+
+  /** Resolve the pi project for a session id (registry first, then disk). */
+  private async piProjectForSession(sessionId: string): Promise<string> {
+    const adapter = this.piAdapter;
+    if (!adapter) return "";
+    const entry = adapter.registry.get(sessionId);
+    if (entry !== undefined) return entry.projectId;
+    const metas = await scanPiRecentSessions(adapter.gateway.piHome);
+    const meta = metas.find((m) => m.sessionId === sessionId);
+    return meta?.cwd ?? "";
+  }
+
+  /**
+   * get_history: full conversation from the pi engine (get_messages) converted
+   * to CC history messages, followed by the current engine status.
+   */
+  private async sendPiHistory(
+    ws: WebSocket,
+    msg: Extract<ClientMessage, { type: "get_history" }>,
+  ): Promise<boolean> {
+    const adapter = this.piAdapter;
+    if (!adapter) return true;
+    const sessionId = msg.sessionId;
+    if (!sessionId) return false;
+    const projectId = await this.piProjectForSession(sessionId);
+    if (projectId === "") {
+      this.send(ws, {
+        type: "error",
+        sessionId,
+        errorCode: "session_not_found",
+        message: `Session ${sessionId} not found`,
+      });
+      return true;
+    }
+    const result = await adapter.gateway
+      .handleControl({ type: "control", op: "get_messages", projectId })
+      .catch(() => undefined);
+    if (isFailedEngineResponse(result)) {
+      this.send(ws, {
+        type: "error",
+        sessionId,
+        message: result.error,
+      });
+      return true;
+    }
+    const data = (result as Record<string, unknown> | null)?.["data"] as
+      | Record<string, unknown>
+      | undefined;
+    const rawMessages = Array.isArray(data?.["messages"])
+      ? (data["messages"] as unknown[])
+      : [];
+    // The engine only holds loaded sessions in memory; fall back to the
+    // on-disk JSONL so history works for every session in the list.
+    const messages =
+      rawMessages.length > 0
+        ? piMessagesToHistoryMessages(rawMessages)
+        : await this.loadSessionHistoryFromDisk(projectId, sessionId);
+    this.send(ws, {
+      type: "history",
+      sessionId,
+      messages,
+    } as Record<string, unknown>);
+    const entry = adapter.registry.get(sessionId);
+    this.send(ws, {
+      type: "status",
+      sessionId,
+      status: entry?.status ?? "idle",
+    } as Record<string, unknown>);
+    return true;
+  }
+
+  /**
+   * get_history_delta: pi has no incremental history deltas; the engine
+   * streams its own live events. Serve a full snapshot (the app treats
+   * history_snapshot as a full replacement, which is always correct).
+   */
+  private async sendPiHistorySnapshot(
+    ws: WebSocket,
+    msg: Extract<ClientMessage, { type: "get_history_delta" }>,
+  ): Promise<boolean> {
+    const adapter = this.piAdapter;
+    if (!adapter) return true;
+    const sessionId = msg.sessionId;
+    if (!sessionId) return false;
+    const projectId = await this.piProjectForSession(sessionId);
+    if (projectId === "") {
+      this.send(ws, {
+        type: "error",
+        sessionId,
+        message: `Session ${sessionId} not found`,
+      });
+      return true;
+    }
+    const result = await adapter.gateway
+      .handleControl({ type: "control", op: "get_messages", projectId })
+      .catch(() => undefined);
+    if (isFailedEngineResponse(result)) {
+      this.send(ws, {
+        type: "error",
+        sessionId,
+        message: result.error,
+      });
+      return true;
+    }
+    const data = (result as Record<string, unknown> | null)?.["data"] as
+      | Record<string, unknown>
+      | undefined;
+    const rawMessages = Array.isArray(data?.["messages"])
+      ? (data["messages"] as unknown[])
+      : [];
+    const messages =
+      rawMessages.length > 0
+        ? piMessagesToHistoryMessages(rawMessages)
+        : await this.loadSessionHistoryFromDisk(projectId, sessionId);
+    const entries = messages.map((message, index) => ({
+      seq: index + 1,
+      message,
+    }));
+    const entry = adapter.registry.get(sessionId);
+    this.send(ws, {
+      type: "history_snapshot",
+      sessionId,
+      fromSeq: 0,
+      toSeq: entries.length,
+      entries,
+      status: entry?.status ?? "idle",
+      reason: "snapshot",
+    } as Record<string, unknown>);
+    return true;
+  }
+
+  /**
+   * Disk fallback for history: locate the pi session JSONL under the pi home
+   * and convert its stored messages, so unloaded (inactive) sessions still
+   * replay their full conversation.
+   */
+  private async loadSessionHistoryFromDisk(
+    projectId: string,
+    sessionId: string,
+  ): Promise<PiHistoryMessage[]> {
+    const adapter = this.piAdapter;
+    if (!adapter) return [];
+    try {
+      const metas = await scanPiRecentSessions(adapter.gateway.piHome);
+      const meta = metas.find(
+        (m) => m.sessionId === sessionId && m.cwd === projectId,
+      );
+      if (!meta) return [];
+      const content = await readFile(meta.filePath, "utf8");
+      return piSessionFileToHistoryMessages(content);
+    } catch (err) {
+      console.error(
+        `[ws] Failed to load session history from disk: ${String(err)}`,
+      );
+      return [];
+    }
+  }
+
+  /** get_session_context: runtime pi session summary from the registry. */
+  private sendPiSessionContext(
+    ws: WebSocket,
+    msg: Extract<ClientMessage, { type: "get_session_context" }>,
+  ): boolean {
+    const adapter = this.piAdapter;
+    if (!adapter) return true;
+    const entry = adapter.registry.get(msg.sessionId);
+    if (!entry) {
+      this.send(ws, {
+        type: "error",
+        sessionId: msg.sessionId,
+        errorCode: "session_not_found",
+        message: `Session ${msg.sessionId} not found`,
+      });
+      return true;
+    }
+    const workspace = this.workspaceForPiProject(entry.projectId);
+    this.send(ws, {
+      type: "session_context",
+      sessionId: msg.sessionId,
+      context: this.piSessionInfoJson(entry, workspace),
+    });
+    return true;
+  }
+
+  /** resolve_session_link: live pi runtime session or a recent pi session. */
+  private async resolvePiSessionLink(
+    ws: WebSocket,
+    msg: Extract<ClientMessage, { type: "resolve_session_link" }>,
+  ): Promise<void> {
+    const adapter = this.piAdapter;
+    if (!adapter) return;
+    const sourceSessionId = msg.sessionId;
+    const live = adapter.registry.get(sourceSessionId);
+    if (live) {
+      this.send(ws, {
+        type: "session_link_resolution",
+        requestId: msg.requestId,
+        sourceSessionId,
+        status: "live",
+        bridgeSessionId: live.sessionId,
+        provider: "pi",
+      } as Record<string, unknown>);
+      return;
+    }
+    try {
+      const metas = await scanPiRecentSessions(adapter.gateway.piHome);
+      const meta = metas.find((m) => m.sessionId === sourceSessionId);
+      this.send(ws, {
+        type: "session_link_resolution",
+        requestId: msg.requestId,
+        sourceSessionId,
+        status: meta ? "recent" : "unavailable",
+        provider: "pi",
+        ...(meta ? { recentSession: this.piRecentSessionJson(meta) } : {}),
+      } as Record<string, unknown>);
+    } catch {
+      this.send(ws, {
+        type: "session_link_resolution",
+        requestId: msg.requestId,
+        sourceSessionId,
+        status: "unavailable",
+        provider: "pi",
+      } as Record<string, unknown>);
+    }
+  }
+
+  /** rename_session: forward to the pi engine (set_session_name). */
+  private async renamePiSession(
+    ws: WebSocket,
+    msg: Extract<ClientMessage, { type: "rename_session" }>,
+  ): Promise<boolean> {
+    const adapter = this.piAdapter;
+    if (!adapter) return true;
+    const sessionId = msg.sessionId;
+    const name = msg.name ?? "";
+    const projectId = await this.piProjectForSession(sessionId);
+    if (projectId === "") {
+      this.send(ws, { type: "rename_result", sessionId, name, success: false });
+      return true;
+    }
+    if (!adapter.registry.get(sessionId)) {
+      adapter.registry.register(sessionId, projectId, "idle");
+    }
+    const result = await adapter.gateway
+      .handleControl({
+        type: "control",
+        op: "set_session_name",
+        projectId,
+        payload: { name },
+      })
+      .catch(() => undefined);
+    const ok = !isFailedEngineResponse(result);
+    if (ok) {
+      adapter.registry.rename(sessionId, name);
+    }
+    this.send(ws, { type: "rename_result", sessionId, name, success: ok });
+    this.broadcastPiSessionList();
+    return true;
+  }
+
   private sendSessionList(ws: WebSocket): void {
     this.pruneDebugEvents();
     const sessions = this.runtimeSessionsWithWorkspaces();
@@ -8421,7 +8845,6 @@ export class BridgeWebSocketServer {
   }
 
   private trackSessionMessage(sessionId: string, msg: ServerMessage): void {
-    this.maybeSendPushNotification(sessionId, msg);
     this.recordDebugEvent(sessionId, {
       direction: "outgoing",
       channel: "session",
@@ -9236,244 +9659,6 @@ export class BridgeWebSocketServer {
     }
   }
 
-  /** Resolve a user-facing Project label, falling back to the cwd basename. */
-  private projectLabel(sessionId: string): string {
-    const session = this.sessionManager.get(sessionId);
-    if (!session?.projectPath) return "";
-    const workspace = this.workspaceForRuntimeSession(session);
-    if (workspace?.projectName) return workspace.projectName;
-    const parts = session.projectPath.replace(/\/+$/, "").split("/");
-    return parts[parts.length - 1] || "";
-  }
-
-  private beginPushTokenOperation(token: string): number {
-    const generation = ++this.nextPushTokenGeneration;
-    this.pushTokenGeneration.set(token, generation);
-    // Local delivery is disabled synchronously while the relay operation is
-    // pending. The app stays on local fallback until a successful ACK.
-    this.tokenLocales.delete(token);
-    this.tokenPrivacyMode.delete(token);
-    return generation;
-  }
-
-  private enqueuePushTokenOperation(
-    token: string,
-    operation: () => Promise<void>,
-  ): Promise<void> {
-    const previous = this.pushTokenOperations.get(token);
-    const pending = (previous?.catch(() => {}) ?? Promise.resolve()).then(
-      operation,
-    );
-    this.pushTokenOperations.set(token, pending);
-    const cleanup = () => {
-      if (this.pushTokenOperations.get(token) === pending) {
-        this.pushTokenOperations.delete(token);
-      }
-    };
-    void pending.then(cleanup, cleanup);
-    return pending;
-  }
-
-  private isCurrentPushTokenOperation(
-    token: string,
-    generation: number,
-  ): boolean {
-    return this.pushTokenGeneration.get(token) === generation;
-  }
-
-  /** Get unique locales from tokens acknowledged by the push relay. */
-  private getRegisteredLocales(): PushLocale[] {
-    const locales = new Set(this.tokenLocales.values());
-    return [...locales];
-  }
-
-  /** Hashes of relay tokens that are currently safe for remote delivery. */
-  private getActivePushTokenHashes(locale: PushLocale): string[] {
-    return [...this.tokenLocales]
-      .filter(([, tokenLocale]) => tokenLocale === locale)
-      .map(([token]) => createHash("sha256").update(token).digest("hex"));
-  }
-
-  /** Whether any registered token has privacy mode enabled (conservative: privacy wins). */
-  private isPrivacyMode(): boolean {
-    for (const privacy of this.tokenPrivacyMode.values()) {
-      if (privacy) return true;
-    }
-    return false;
-  }
-
-  /** Get a display label for push notification title: "name (project)" or just project. */
-  private sessionLabel(sessionId: string): string {
-    const session = this.sessionManager.get(sessionId);
-    const project = this.projectLabel(sessionId);
-    if (session?.name) {
-      return project ? `${session.name} (${project})` : session.name;
-    }
-    return project;
-  }
-
-  private maybeSendPushNotification(
-    sessionId: string,
-    msg: ServerMessage,
-  ): void {
-    if (!this.pushRelay.isConfigured) return;
-    if (this.tokenLocales.size === 0) return;
-
-    const privacy = this.isPrivacyMode();
-    const label = privacy ? "" : this.sessionLabel(sessionId);
-
-    if (msg.type === "permission_request") {
-      const seen =
-        this.notifiedPermissionToolUses.get(sessionId) ?? new Set<string>();
-      if (seen.has(msg.toolUseId)) return;
-      seen.add(msg.toolUseId);
-      this.notifiedPermissionToolUses.set(sessionId, seen);
-
-      const isAskUserQuestion = msg.toolName === "AskUserQuestion";
-      const isExitPlanMode = msg.toolName === "ExitPlanMode";
-      const eventType = isAskUserQuestion
-        ? "ask_user_question"
-        : "approval_required";
-
-      // Extract question text for AskUserQuestion (standard mode only)
-      let questionText: string | undefined;
-      if (!privacy && isAskUserQuestion) {
-        const questions = msg.input?.questions;
-        const firstQuestion =
-          Array.isArray(questions) && questions.length > 0
-            ? (questions[0] as Record<string, unknown>)?.question
-            : undefined;
-        if (typeof firstQuestion === "string" && firstQuestion.length > 0) {
-          questionText = firstQuestion.slice(0, 120);
-        }
-      }
-
-      const data: Record<string, string> = {
-        sessionId,
-        provider: this.sessionManager.get(sessionId)?.provider ?? "claude",
-        toolUseId: msg.toolUseId,
-        toolName: msg.toolName,
-      };
-
-      for (const locale of this.getRegisteredLocales()) {
-        let title: string;
-        let body: string;
-
-        if (isExitPlanMode) {
-          const titleKey = "plan_ready_title";
-          title = label
-            ? `${t(locale, titleKey)} - ${label}`
-            : t(locale, titleKey);
-          body = t(locale, "plan_ready_body");
-        } else if (isAskUserQuestion) {
-          const titleKey = "ask_title";
-          title = label
-            ? `${t(locale, titleKey)} - ${label}`
-            : t(locale, titleKey);
-          body = privacy
-            ? t(locale, "ask_body_private")
-            : (questionText ?? t(locale, "ask_default_body"));
-        } else {
-          const titleKey = "approval_title";
-          title = label
-            ? `${t(locale, titleKey)} - ${label}`
-            : t(locale, titleKey);
-          body = privacy
-            ? t(locale, "approval_body_private")
-            : t(locale, "approval_body", { toolName: msg.toolName });
-        }
-
-        void this.pushRelay
-          .notify({
-            eventType,
-            title,
-            body,
-            locale,
-            tokenHashes: this.getActivePushTokenHashes(locale),
-            data,
-          })
-          .catch((err) => {
-            const detail = err instanceof Error ? err.message : String(err);
-            console.warn(
-              `[ws] Failed to send push notification (${eventType}, ${locale}): ${detail}`,
-            );
-          });
-      }
-      return;
-    }
-
-    if (msg.type !== "result") return;
-    if (msg.subtype === "stopped") return;
-    if (msg.subtype !== "success" && msg.subtype !== "error") return;
-
-    const isSuccess = msg.subtype === "success";
-    const eventType = isSuccess ? "session_completed" : "session_failed";
-
-    const pieces: string[] = [];
-    if (isSuccess) {
-      if (msg.duration != null) pieces.push(`${msg.duration.toFixed(1)}s`);
-      if (msg.cost != null) pieces.push(`$${msg.cost.toFixed(4)}`);
-    }
-    const stats = pieces.length > 0 ? ` (${pieces.join(", ")})` : "";
-
-    const data: Record<string, string> = {
-      sessionId,
-      provider: this.sessionManager.get(sessionId)?.provider ?? "claude",
-      subtype: msg.subtype,
-    };
-    if (msg.stopReason) data.stopReason = msg.stopReason;
-    if (msg.sessionId) data.providerSessionId = msg.sessionId;
-
-    for (const locale of this.getRegisteredLocales()) {
-      let title: string;
-      if (privacy) {
-        title = isSuccess
-          ? t(locale, "task_completed")
-          : t(locale, "error_occurred");
-      } else {
-        title = label
-          ? isSuccess
-            ? `✅ ${label}`
-            : `❌ ${label}`
-          : isSuccess
-            ? t(locale, "task_completed")
-            : t(locale, "error_occurred");
-      }
-
-      let body: string;
-      if (privacy) {
-        const privateBody = isSuccess
-          ? t(locale, "result_success_body_private")
-          : t(locale, "result_error_body_private");
-        body = isSuccess ? `${privateBody}${stats}` : privateBody;
-      } else if (isSuccess) {
-        body = msg.result
-          ? `${msg.result.slice(0, 120)}${stats}`
-          : `${t(locale, "session_completed")}${stats}`;
-      } else {
-        body = msg.error
-          ? msg.error.slice(0, 120)
-          : t(locale, "session_failed");
-      }
-
-      void this.pushRelay
-        .notify({
-          eventType,
-          title,
-          body,
-          locale,
-          tokenHashes: this.getActivePushTokenHashes(locale),
-          data,
-        })
-        .catch((err) => {
-          const detail = err instanceof Error ? err.message : String(err);
-          console.warn(
-            `[ws] Failed to send push notification (${eventType}, ${locale}): ${detail}`,
-          );
-        });
-    }
-  }
-
   private broadcast(msg: Record<string, unknown>): void {
     for (const client of this.wss.clients) {
       if (client.readyState === WebSocket.OPEN) {
@@ -10092,10 +10277,6 @@ export class BridgeWebSocketServer {
         const hasImage = msg.imageBase64 != null || msg.imageId != null;
         return `text=\"${textPreview}\" image=${hasImage} skills=${msg.skills?.length ?? (msg.skill ? 1 : 0)} mentions=${msg.mentions?.length ?? 0}`;
       }
-      case "push_register":
-        return `platform=${msg.platform} token=${msg.token.slice(0, 8)}...`;
-      case "push_unregister":
-        return `token=${msg.token.slice(0, 8)}...`;
       case "approve":
       case "approve_always":
       case "reject":
@@ -10170,11 +10351,6 @@ export class BridgeWebSocketServer {
     for (const sessionId of this.debugEvents.keys()) {
       if (!active.has(sessionId)) {
         this.debugEvents.delete(sessionId);
-      }
-    }
-    for (const sessionId of this.notifiedPermissionToolUses.keys()) {
-      if (!active.has(sessionId)) {
-        this.notifiedPermissionToolUses.delete(sessionId);
       }
     }
   }

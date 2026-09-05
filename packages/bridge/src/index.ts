@@ -17,7 +17,6 @@ import { fetchAllUsage } from "./usage.js";
 import { runDoctor } from "./doctor.js";
 import { DebugTraceStore } from "./debug-trace-store.js";
 import { RecordingStore } from "./recording-store.js";
-import { FirebaseAuthClient } from "./firebase-auth.js";
 import { PromptHistoryBackupStore } from "./prompt-history-backup.js";
 import {
   promptHistoryStoreFileForPort,
@@ -106,16 +105,9 @@ export async function startServer() {
     }`,
   );
 
-  // Initialize Firebase Anonymous Auth for push notifications
-  let firebaseAuth: FirebaseAuthClient | undefined;
-  try {
-    firebaseAuth = new FirebaseAuthClient();
-    await firebaseAuth.initialize();
-    console.log("[bridge] Push relay enabled (Firebase Anonymous Auth)");
-  } catch (err) {
-    console.warn("[bridge] Push relay disabled: Firebase auth failed:", err);
-    firebaseAuth = undefined;
-  }
+  // Local-only bridge: no Firebase Anonymous Auth, no remote push relay.
+  // The mobile app connects to this bridge over the local network (or
+  // localhost) and receives all events over the WebSocket in real time.
 
   const imageStore = new ImageStore();
   const mediaStore = new MediaStore();
@@ -315,7 +307,6 @@ export async function startServer() {
     workspaceStore,
     debugTraceStore,
     recordingStore,
-    firebaseAuth,
     promptHistoryBackup,
     promptHistoryStore,
     piAdapter,

@@ -1,15 +1,15 @@
 # PI-ONLY-STATUS — “只连本地 pi、去掉 codex/claude”实施进度
 
 > 目标：CC Pocket（bridge）只连**本地的 pi 引擎**，codex/claude 不再作为对话引擎被拉起，
-> 所有 CC 功能（对话、文件、工作区、git、历史、用量、上传下载）都落在本地 pi 上。
+> 所有 CC 功能（对话、文件、工作区、git、历史、用量、上传下载、会话列表）都落在本地 pi 上。
 > 本文记录已做、未做，作为后续阶段执行的依据。配合 `docs/M2-WIRING.md`、
 > `docs/ENGINE-INTEGRATION.md`、`docs/ENGINE-BUNDLE.md` 阅读。
 
 ## 一句话现状
 
-**对话已走本地 pi、文件/工作区/git/上传下载本就是本地直连；入口已强制 pi-only，codex/claude
-不再能作为对话引擎被拉起。** 但 codex/claude 的 provider 源码与依赖尚未物理删除，
-会话历史/用量/会话列表的数据源仍是 claude/codex 磁盘，尚未切到 pi。
+**对话、会话列表、会话历史、最近会话、会话改名全部走本地 pi；文件/工作区/git/上传下载本就是本地直连；
+入口已强制 pi-only，Firebase 推送中继已删除。** 剩余 codex/claude provider 源码与依赖尚未物理删除，
+但运行时路径已全部绕开（PI_HOST=1 下不再实例化任何 codex/claude 引擎）。
 
 ## 已完成（带提交与验证）
 
@@ -18,22 +18,18 @@
 | 对话引擎切 pi | 同一个 `BridgeWebSocketServer` 内注入 `PiAdapter`，`start/input/approve/reject/answer/stop_session` 路由到 pi（`PiGateway` + `engine-pool`）；文件/工作区/git/上传下载原样走原实现 | 先前 pi 接入提交 |
 | 消息契约对齐 App | 重写 `cc-adapter` 出站映射，产出与 App `ServerMessage.fromJson` 严格兼容的规范字段（`status.status`、`stream_delta/thinking_delta.text`、`assistant.message.content`、`tool_result.toolUseId/content`、`permission_request.toolUseId/toolName/input`）；`PiAdapter.start` 兼容真实 wire 的 `projectPath` | `000068e` |
 | 入口强制 pi-only | `index.ts` 去掉 `PI_HOST` 开关：无条件构造 `PiAdapter`，缺 `PI_ENGINE_ENTRY` 直接拒启，codex/claude 不再可作为对话引擎启动 | `0486160` |
-| 验证 | `tsc --noEmit` 0 错误；bridge 全量 vitest 1214 通过；`main` 与远端一致 | `0486160` |
-| 文档 | `M2-WIRING.md`（规范消息映射 + pi-only 说明）、`ENGINE-INTEGRATION.md`（pi-only 状态）已同步 | `0486160` |
+| 会话表面切 pi | 新增 `pi-host/pi-sessions.ts`：pi `AgentMessage[]` → CC 历史消息转换、`~/.pi/agent/sessions` JSONL 解析与最近会话扫描、运行时 `PiSessionRegistry`；`websocket.ts` 的 `list_sessions` / `list_recent_sessions` / `get_history` / `get_history_delta` / `get_session_context` / `resume_session` / `resolve_session_link` / `rename_session` 全部改由 pi 引擎 + pi 会话目录供给 | 本次 |
+| 会话回放兼容 App | `get_history` 返回 `user_input/assistant/tool_result` 严格字段；`resume_session` 复用同一 sessionId 供 `get_history`/`input` 关联；`session_created` + `status` 让 App 正确导航与就绪 | 本次 |
+| 历史磁盘回退 | 引擎内存未加载会话时（`get_messages` 为空），`get_history`/`get_history_delta` 直接解析 `~/.pi/agent/sessions/<proj>.jsonl` 回放（`piSessionFileToHistoryMessages`），列表里每个会话都能完整回放 | 本次 |
+| 引擎失败反馈 | `isFailedEngineResponse` 把引擎失败（如无 provider）转成 CC `error` 消息，App 不再无响应挂起 | 本次 |
+| 健康检查 pi-only | `doctor.ts` 只查 pi 引擎（`PI_ENGINE_ENTRY` + 凭据），去掉 claude/codex CLI、Tailscale、Firebase、Keychain 检查 | 先前 |
+| 用量 pi-only | `usage.ts` 去掉 codex 磁盘扫描，改为报告本地 pi 引擎 | 先前 |
+| mDNS 关闭 | `mdns.ts` 默认不再广播 LAN 服务 | 先前 |
+| 移除 Firebase 推送中继 | 删除 `firebase-auth.ts`、`push-relay.ts`、`push-i18n.ts` 及测试；`index.ts` 不再初始化 Firebase Anonymous Auth；`websocket.ts` 删除 `push_register`/`push_unregister` 处理与全部推送通知路径；App 侧 `push_registration_result` 协议仍保留解析（bridge 不再发送） | 本次 |
+| 单元测试 | `pi-sessions.test.ts` 21 个用例（历史转换/JSONL 解析/扫描/注册表）；`pi-adapter.test.ts` 覆盖 `session_created` 与状态流 | 本次 |
+| 验证 | `tsc --noEmit` 0 错误；bridge 全量 vitest 53 文件 1197 通过 | 本次 |
 
 ## 未完成
-
-### 阶段 2：会话索引 / 历史 / 用量 仍在读 claude/codex 磁盘
-
-以下功能的数据源还是 codex/claude 本地 JSONL，尚未换成 pi 会话：
-
-- `sessions-index.ts`：读 `~/.claude` / `~/.codex` 的会话 JSONL，供给 `list_sessions` / 历史索引。
-- `usage.ts`：读 codex 会话与 claude 用量，供给 `get_usage` 与 HTTP `/usage`。
-- `websocket.ts`：`list_sessions`、`get_history`、`get_usage` 走 `SessionManager`（内部挂 claude/codex）。
-- `/doctor`：`runDoctor` 仍检查 codex/claude 状态。
-
-需要先确认/搭建 pi 侧的会话索引与用量/成本后端（pi RPC 的 `get_tree`/`get_messages`/`get_session_stats`，
-或 `~/.pi/agent/sessions` 的 JSONL），再改数据源。
 
 ### 阶段 3：codex/claude 的 provider 源码与依赖尚未删除
 
@@ -51,7 +47,8 @@
 
 ## 关键风险与依赖
 
-- **删除 provider 前必须先做完阶段 2 的运行时切换**：`session.ts` 的 SessionManager 是 CC 运行时，
-  直接删 codex/claude 会编译失败并丢失历史/并行会话/resume，与“所有功能都能用”矛盾。
-- 阶段 2+3 是数千行重构，按“每步 tsc + 全量 vitest 守绿、逐次提交”推进，不一次莽删。
+- **删除 provider 前必须确认运行时已全部绕开**：会话表面已切 pi，但 `session.ts` 的 SessionManager
+  仍被非会话功能（工作区持久化、debug 事件、录音）引用，直接删 codex/claude 需先拆解这些引用，
+  否则编译失败。
+- 阶段 3 是数千行重构，按“每步 tsc + 全量 vitest 守绿、逐次提交”推进，不一次莽删。
 - 部分验证依赖 Flutter App（`apps/mobile`）端到端运行，当前主要靠单测与协议契约保证。

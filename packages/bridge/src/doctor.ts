@@ -163,6 +163,7 @@ export async function checkPiEngine(): Promise<
     name: "Pi engine",
     status: authenticated ? "pass" : "warn",
     message: version ?? "installed",
+    ...(remediation ? { remediation } : {}),
     providers,
   };
 }

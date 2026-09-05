@@ -218,6 +218,30 @@ describe("PiAdapter", () => {
     expect(delivered[1]).toEqual({ type: "status", status: "idle" });
   });
 
+  it("clears the session registry for a project on engine_exit", async () => {
+    const { adapter, gateway, delivered } = makeAdapter();
+    const s = fakeSocket();
+    await adapter.handle(s.ws as never, {
+      type: "start",
+      projectPath: "/p",
+    } as never);
+    // Two sessions share the project (fork/sidechain), mirroring multi-session.
+    adapter.registry.register("fork-1", "/p", "idle");
+    expect(adapter.registry.listByProject("/p")).toHaveLength(2);
+    delivered.length = 0;
+    gateway.send?.({
+      kind: "pi",
+      engineVersion: "dev",
+      protocolVersion: 1,
+      frame: { projectId: "/p", type: "engine_exit", code: 0, signal: null },
+    });
+    // The engine exit is still surfaced as an idle status to the app...
+    expect(delivered).toEqual([{ type: "status", status: "idle" }]);
+    // ...but the runtime sessions are dropped so session_list is not stale.
+    expect(adapter.registry.list()).toHaveLength(0);
+    expect(adapter.registry.getByProject("/p")).toBeUndefined();
+  });
+
   it("unsubscribes a socket on close and stops delivering to it", () => {
     const { adapter, gateway, delivered } = makeAdapter();
     const s = fakeSocket();

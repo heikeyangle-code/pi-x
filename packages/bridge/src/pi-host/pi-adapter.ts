@@ -324,6 +324,13 @@ export class PiAdapter {
   private dispatch(envelope: PiFrameEnvelope): void {
     const frame = (envelope.frame as Record<string, unknown>) ?? {};
     const projectId = String(frame["projectId"] ?? "");
+    // Engine exit ends the runtime sessions of that project: drop them from
+    // the registry so session_list no longer shows stale active entries.
+    // On-disk sessions are untouched and re-warm on the next start/resume.
+    if (frame["type"] === "engine_exit") {
+      const cleared = this.registry.clearProject(projectId);
+      if (cleared > 0) this.onStatus?.(projectId, "idle");
+    }
     const sockets = projectId ? this.subscribed.get(projectId) : undefined;
     if (!sockets || sockets.size === 0) return;
     const messages = piFrameToServerMessages(frame as never);

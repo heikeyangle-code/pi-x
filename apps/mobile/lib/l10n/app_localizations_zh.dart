@@ -67,7 +67,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get removeProjectTitle => '移除项目';
 
   @override
-  String removeProjectConfirm(Object name) {
+  String removeProjectConfirm(String name) {
     return '要从最近项目中移除“$name”吗？';
   }
 
@@ -122,12 +122,12 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String toolSuggestionTitle(Object toolName) {
+  String toolSuggestionTitle(String toolName) {
     return '将 $toolName 添加到 Codex？';
   }
 
   @override
-  String toolSuggestionInstall(Object toolName) {
+  String toolSuggestionInstall(String toolName) {
     return '安装 $toolName';
   }
 
@@ -141,7 +141,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get toolSuggestionAuthDescription => '连接所需的应用，完成后请确认。';
 
   @override
-  String toolSuggestionConnect(Object appName) {
+  String toolSuggestionConnect(String appName) {
     return '连接 $appName';
   }
 
@@ -848,13 +848,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get approveAlways => '始终允许';
 
   @override
-  String get approveAlwaysSub => '';
+  String get approveAlwaysSub => '允许';
 
   @override
   String get approveSessionMain => '本次会话允许';
 
   @override
-  String get approveSessionSub => '';
+  String get approveSessionSub => '允许';
 
   @override
   String get permissionDefaultDescription => '标准权限提示';
@@ -1176,7 +1176,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get rewindConfirmTitle => '确认回退';
 
   @override
-  String rewindConfirmBody(Object mode) {
+  String rewindConfirmBody(String mode) {
     return '模式：$mode\n\n此操作无法撤销。要继续吗？';
   }
 
@@ -2562,7 +2562,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get piEngineTitle => 'Pi 引擎';
 
   @override
-  String get piEngineSettingsSubtitle => '系统提示词、启动参数、模型';
+  String get piEngineSettingsSubtitle => 'settings.json 核心选项（含 JSON 兜底编辑器）';
 
   @override
   String get piEngineManage => 'Pi 引擎';
@@ -2747,6 +2747,64 @@ class AppLocalizationsZh extends AppLocalizations {
   String get piEngineProviderApiKey => 'API 密钥';
 
   @override
+  String get piEngineModelImport => '从服务器导入';
+
+  @override
+  String get piEngineModelImportDesc => '从 OpenAI 兼容端点拉取模型 ID，合并进该 provider。';
+
+  @override
+  String get piEngineModelImportFetch => '获取模型';
+
+  @override
+  String get piEngineModelImportFetching => '正在获取模型…';
+
+  @override
+  String get piEngineModelImportSelect => '勾选要导入的模型；已存在的 ID 会被就地更新。';
+
+  @override
+  String get piEngineModelImportNone => '该端点没有返回任何模型。';
+
+  @override
+  String piEngineModelImportDone(int count, String provider) {
+    return '已导入 $count 个模型到 $provider。';
+  }
+
+  @override
+  String get piEngineModelsImportJson => '导入 JSON';
+
+  @override
+  String get piEngineModelsImportJsonDesc =>
+      '粘贴 models.json 的 \"providers\" 片段合并进文件。';
+
+  @override
+  String get piEngineModelsImportJsonHint =>
+      '{\n  \"providers\": {\n    \"ollama\": {\n      \"baseUrl\": \"http://127.0.0.1:11434/v1\",\n      \"api\": \"openai-completions\",\n      \"apiKey\": \"ollama\",\n      \"models\": [{\"id\": \"qwen2.5-coder:7b\"}]\n    }\n  }\n}';
+
+  @override
+  String piEngineModelsImportJsonDone(int count) {
+    return '已导入 $count 个 provider。';
+  }
+
+  @override
+  String get piEngineModelsImportJsonInvalid => '这不是合法的 providers JSON 对象。';
+
+  @override
+  String get piEngineRefreshCatalog => '刷新模型目录';
+
+  @override
+  String get piEngineRefreshCatalogDesc =>
+      '执行 pi update --models 刷新内置 provider 目录（需联网）。';
+
+  @override
+  String get piEngineRefreshCatalogConfirm => '立即刷新内置模型目录？会下载最新的 provider 目录。';
+
+  @override
+  String get piEngineRefreshCatalogRunning => '正在刷新模型目录…';
+
+  @override
+  String get piEngineRefreshCatalogDone => '模型目录已刷新。';
+
+  @override
   String get piEngineCommands => '命令面板';
 
   @override
@@ -2827,6 +2885,364 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String piEnginePromptsCopied(String name) {
     return '已复制 /$name，粘贴到输入框使用。';
+  }
+
+  @override
+  String get piEnginePromptsHint => 'Prompt 是作为斜杠命令暴露的 .md 文件，编辑后立即生效，无需重启。';
+
+  @override
+  String get piEnginePromptsScope => '作用域';
+
+  @override
+  String get piEnginePromptsScopeGlobal => '全局';
+
+  @override
+  String get piEnginePromptsScopeProject => '项目';
+
+  @override
+  String get piEnginePromptsContent => '内容';
+
+  @override
+  String get piEnginePromptsCopy => '复制';
+
+  @override
+  String get piEnginePackages => '软件包';
+
+  @override
+  String get piEnginePackagesSubtitle => 'npm / git / 本地软件包（pi install）';
+
+  @override
+  String get piEnginePackagesHint =>
+      '软件包是配置在 settings.json 的 packages[] 中的 npm、git 或本地源。引擎在启动或重新加载时从中解析扩展、技能、提示词模板和主题。';
+
+  @override
+  String get piEnginePackagesEmpty => '还没有配置软件包。点右上角 + 安装一个。';
+
+  @override
+  String piEnginePackagesCount(int count) {
+    return '$count 个软件包';
+  }
+
+  @override
+  String get piEnginePackagesGroupGlobal => '全局';
+
+  @override
+  String get piEnginePackagesGroupProject => '项目';
+
+  @override
+  String get piEnginePackagesInstall => '安装软件包';
+
+  @override
+  String get piEnginePackagesSourceLabel => '来源';
+
+  @override
+  String get piEnginePackagesSourceHint =>
+      'npm:lodash · https://github.com/user/repo · ./local-ext';
+
+  @override
+  String get piEnginePackagesInstallLocal => '安装到当前项目';
+
+  @override
+  String get piEnginePackagesInstallLocalDesc =>
+      '安装到 .pi/ 并把来源写入项目 settings.json';
+
+  @override
+  String get piEnginePackagesUpdate => '更新';
+
+  @override
+  String get piEnginePackagesUpdateAll => '全部更新';
+
+  @override
+  String get piEnginePackagesRemove => '移除';
+
+  @override
+  String piEnginePackagesRemoveConfirm(String source) {
+    return '移除软件包 $source？';
+  }
+
+  @override
+  String get piEnginePackagesRemoveConfirmBody =>
+      '会卸载产物并从 settings.json 中删除该条目。';
+
+  @override
+  String get piEnginePackagesNotInstalled => '未安装';
+
+  @override
+  String get piEnginePackagesInstalled => '已安装';
+
+  @override
+  String piEnginePackagesUpdated(int count) {
+    return '已更新 $count 个软件包';
+  }
+
+  @override
+  String piEnginePackagesRemoved(String source) {
+    return '已移除 $source';
+  }
+
+  @override
+  String piEnginePackagesInstalling(String source) {
+    return '正在安装 $source…';
+  }
+
+  @override
+  String get piEnginePackagesUpdating => '正在更新软件包…';
+
+  @override
+  String piEnginePackagesRemoving(String source) {
+    return '正在移除 $source…';
+  }
+
+  @override
+  String get piEnginePackagesRestartHint =>
+      '引擎在解析资源时会重新读取已配置的来源；npm/git 产物的变更通常需要重启（或 /reload）后生效。';
+
+  @override
+  String get piEngineSettingsCore => '设置';
+
+  @override
+  String get piEngineSettingsSectionGeneral => '常规';
+
+  @override
+  String get piEngineSettingsSectionBehavior => '行为';
+
+  @override
+  String get piEngineSettingsDefaultProvider => '默认提供商';
+
+  @override
+  String get piEngineSettingsDefaultProviderDesc => '未选择时使用的提供商。';
+
+  @override
+  String get piEngineSettingsDefaultModel => '默认模型';
+
+  @override
+  String get piEngineSettingsDefaultModelDesc => '未选择时使用的模型。';
+
+  @override
+  String get piEngineSettingsThinkingLevel => '默认思考等级';
+
+  @override
+  String get piEngineSettingsThinkingLevelDesc => '模型未覆盖时应用。';
+
+  @override
+  String get piEngineSettingsTransport => '传输方式';
+
+  @override
+  String get piEngineSettingsTransportDesc => '提供商调用的 API 传输方式。';
+
+  @override
+  String get piEngineSettingsSteering => '引导模式';
+
+  @override
+  String get piEngineSettingsSteeringDesc => '工具确认如何分组。';
+
+  @override
+  String get piEngineSettingsFollowUp => '追问模式';
+
+  @override
+  String get piEngineSettingsFollowUpDesc => '追问如何处理。';
+
+  @override
+  String get piEngineSettingsTrust => '默认项目信任';
+
+  @override
+  String get piEngineSettingsTrustDesc => '除非在此设置（仅全局），否则每个项目都会询问。';
+
+  @override
+  String get piEngineSettingsShellPath => 'Shell 路径';
+
+  @override
+  String get piEngineSettingsShellPathDesc => 'bash 工具使用的自定义 shell（如 Cygwin）。';
+
+  @override
+  String get piEngineSettingsExternalEditor => '外部编辑器';
+
+  @override
+  String get piEngineSettingsExternalEditorDesc => '外部编辑器的命令。';
+
+  @override
+  String get piEngineSettingsHttpProxy => 'HTTP 代理';
+
+  @override
+  String get piEngineSettingsHttpProxyDesc => '应用于 Pi 管理的 HTTP 客户端的代理。';
+
+  @override
+  String get piEngineSettingsHideThinking => '隐藏思考';
+
+  @override
+  String get piEngineSettingsHideThinkingDesc => '默认折叠思考块。';
+
+  @override
+  String get piEngineSettingsCacheNotices => '缓存未命中提示';
+
+  @override
+  String get piEngineSettingsCacheNoticesDesc => '显示缓存成本与提供商恢复提示。';
+
+  @override
+  String get piEngineSettingsQuietStartup => '静默启动';
+
+  @override
+  String get piEngineSettingsQuietStartupDesc => '跳过启动横幅。';
+
+  @override
+  String get piEngineSettingsSkillCommands => '技能命令';
+
+  @override
+  String get piEngineSettingsSkillCommandsDesc => '将技能注册为 /skill:name 命令。';
+
+  @override
+  String get piEngineSettingsInstallTelemetry => '安装遥测';
+
+  @override
+  String get piEngineSettingsInstallTelemetryDesc => '匿名版本/更新探测。';
+
+  @override
+  String get piEngineSettingsAnalytics => '分析';
+
+  @override
+  String get piEngineSettingsAnalyticsDesc => '选择加入的使用分析。';
+
+  @override
+  String get piEngineSettingsCollapseChangelog => '折叠更新日志';
+
+  @override
+  String get piEngineSettingsCollapseChangelogDesc => '更新后显示精简版更新日志。';
+
+  @override
+  String get piEngineSettingsCompaction => '压缩';
+
+  @override
+  String get piEngineSettingsCompactionEnabled => '自动压缩长会话';
+
+  @override
+  String get piEngineSettingsCompactionReserve => '预留 token';
+
+  @override
+  String get piEngineSettingsCompactionKeep => '保留的近期 token';
+
+  @override
+  String get piEngineSettingsRetry => '重试';
+
+  @override
+  String get piEngineSettingsRetryEnabled => '自动重试瞬时故障';
+
+  @override
+  String get piEngineSettingsRetryMax => '最大重试次数';
+
+  @override
+  String get piEngineSettingsRetryBase => '基础延迟（毫秒）';
+
+  @override
+  String get piEngineSettingsImages => '图片';
+
+  @override
+  String get piEngineSettingsImagesAutoResize => '自动调整图片大小';
+
+  @override
+  String get piEngineSettingsImagesBlock => '阻止图片';
+
+  @override
+  String get piEngineSettingsTerminal => '终端';
+
+  @override
+  String get piEngineSettingsTerminalShowImages => '在终端中显示图片';
+
+  @override
+  String get piEngineSettingsRawJson => '原始 JSON';
+
+  @override
+  String get piEngineSettingsRawJsonDesc => '编辑任意 settings.json 键（兜底）。';
+
+  @override
+  String get piEngineSettingsRawSave => '应用 JSON';
+
+  @override
+  String get piEngineSettingsJsonInvalid => 'JSON 无效，请修正语法后重试。';
+
+  @override
+  String get piEngineSettingsJsonObject => '根值必须是 JSON 对象。';
+
+  @override
+  String get piEngineSettingsHint =>
+      '大多数更改在引擎启动时生效，可重启引擎立即应用。表单未覆盖的键可在“原始 JSON”一节编辑。';
+
+  @override
+  String get piEngineThemes => '主题';
+
+  @override
+  String get piEngineThemesSubtitle => '引擎内置与自定义主题';
+
+  @override
+  String get piEngineThemesBuiltin => '内置';
+
+  @override
+  String get piEngineThemesCustom => '自定义';
+
+  @override
+  String get piEngineThemesActive => '当前';
+
+  @override
+  String get piEngineThemesUseDefault => '使用默认主题';
+
+  @override
+  String get piEngineThemesUseDefaultDesc => '清除 settings.theme，让引擎使用默认配色。';
+
+  @override
+  String get piEngineThemesImport => '导入主题';
+
+  @override
+  String get piEngineThemesImportDesc =>
+      '粘贴主题 JSON。必须声明 \"name\" 字符串与 \"colors\" 对象，文件写入 ~/.pi/agent/themes/。';
+
+  @override
+  String get piEngineThemesImportJson => '主题 JSON';
+
+  @override
+  String get piEngineThemesImportInvalid =>
+      '主题必须是声明了 \"name\" 字符串与 \"colors\" 对象的 JSON 对象。';
+
+  @override
+  String get piEngineThemesImportInvalidJson => 'JSON 无效，请修正语法后重试。';
+
+  @override
+  String get piEngineThemesRemove => '删除主题';
+
+  @override
+  String piEngineThemesRemoveConfirm(String name) {
+    return '删除主题 \"$name\"？文件将被删除。';
+  }
+
+  @override
+  String get piEngineThemesEmpty => '还没有主题，导入一个试试。';
+
+  @override
+  String get piEngineContextFiles => '上下文文件';
+
+  @override
+  String get piEngineContextFilesSubtitle => 'AGENTS.md / CLAUDE.md 快捷编辑';
+
+  @override
+  String get piEngineContextFilesHint =>
+      '引擎从项目根目录向上合并 AGENTS.md / CLAUDE.md。快捷编辑始终针对项目本地文件；若上层存在副本，仍会继续提供给引擎。';
+
+  @override
+  String piEngineContextFilesProject(String path) {
+    return '项目文件：$path';
+  }
+
+  @override
+  String piEngineContextFilesParent(String path) {
+    return '上层副本：$path · 合并在上方';
+  }
+
+  @override
+  String piEngineContextFilesNew(String path) {
+    return '将在 $path 创建';
+  }
+
+  @override
+  String piEngineContextFilesEdit(String name) {
+    return '编辑 $name';
   }
 
   @override
@@ -3006,4 +3422,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get piEngineRuntimeRestartHint => '切换路线会重启引擎，新的运行时立即生效。';
+
+  @override
+  String get clear => '清空';
+
+  @override
+  String get selectAll => '全选';
 }

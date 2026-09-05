@@ -1,8 +1,6 @@
 {
   "@@locale": "zh",
-
   "appTitle": "CC Pocket",
-
   "projects": "项目",
   "manageProjects": "管理",
   "createProject": "创建项目",
@@ -16,7 +14,6 @@
   "removeWorkspaceProject": "移除项目",
   "noProjectsYet": "还没有项目",
   "unavailable": "不可用",
-
   "cancel": "取消",
   "save": "保存",
   "delete": "删除",
@@ -25,9 +22,7 @@
   "removeProjectConfirm": "要从最近项目中移除“{name}”吗？",
   "@removeProjectConfirm": {
     "placeholders": {
-      "name": {
-        "type": "Object"
-      }
+      "name": { "type": "String" }
     }
   },
   "rename": "重命名",
@@ -53,11 +48,26 @@
     }
   },
   "toolSuggestionTitle": "将 {toolName} 添加到 Codex？",
+  "@toolSuggestionTitle": {
+    "placeholders": {
+      "toolName": { "type": "String" }
+    }
+  },
   "toolSuggestionInstall": "安装 {toolName}",
+  "@toolSuggestionInstall": {
+    "placeholders": {
+      "toolName": { "type": "String" }
+    }
+  },
   "toolSuggestionInstalling": "正在安装…",
   "toolSuggestionNotNow": "暂不安装",
   "toolSuggestionAuthDescription": "连接所需的应用，完成后请确认。",
   "toolSuggestionConnect": "连接 {appName}",
+  "@toolSuggestionConnect": {
+    "placeholders": {
+      "appName": { "type": "String" }
+    }
+  },
   "toolSuggestionComplete": "连接已完成",
   "toolSuggestionFailed": "安装失败",
   "toolSuggestionOpenFailed": "无法打开连接页面。",
@@ -129,6 +139,11 @@
   "gitUnavailableHint": "此项目无法使用 Git 功能",
   "autoModeFallbackDefaultTip": "当前环境不支持 Auto mode，已切换为 Default mode",
   "galleryWithCount": "图库 ({count})",
+  "@galleryWithCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "disconnect": "断开连接",
   "back": "返回",
   "next": "下一步",
@@ -139,15 +154,11 @@
   "all": "全部",
   "none": "无",
   "dismissKeyboard": "收起键盘",
-
   "connectAnyway": "仍然连接",
-
   "stopSession": "停止会话",
   "stopSessionConfirm": "要停止此会话吗？Claude 进程将被终止。",
-
   "startNewWithSameSettings": "使用相同设置新建",
   "editSettingsThenStart": "先修改设置再开始",
-
   "bridgeServerUpdated": "Bridge 服务已更新",
   "bridgeUpdateStarted": "正在更新 Bridge。将关闭此连接并返回机器列表。",
   "bridgeUpdateReconnectHint": "Bridge 服务已更新。请从机器列表重新连接。",
@@ -156,8 +167,12 @@
   "failedToStartServer": "启动服务器失败",
   "bridgeServerStopped": "Bridge 服务已停止",
   "failedToStopServer": "停止服务器失败",
-
   "sshPasswordPrompt": "请输入 {machineName} 的 SSH 密码",
+  "@sshPasswordPrompt": {
+    "placeholders": {
+      "machineName": { "type": "String" }
+    }
+  },
   "password": "密码",
   "machineEditAddTitle": "添加机器",
   "machineEditApiKey": "API Key",
@@ -165,10 +180,13 @@
   "machineAutomaticWsApiKeyWarningBody": "此 Bridge 通过未加密的 WS 找到。API 密钥将在没有传输加密的情况下发送。请仅在可信的本地网络或 VPN 中继续。",
   "machineAutomaticWsApiKeyWarningConnect": "使用 WS 连接",
   "machineEditAddAndConnect": "添加并连接",
-
   "deleteMachine": "删除机器",
   "deleteMachineConfirm": "要删除“{displayName}”吗？这会移除所有已保存的凭据。",
-
+  "@deleteMachineConfirm": {
+    "placeholders": {
+      "displayName": { "type": "String" }
+    }
+  },
   "connectToBridgeServer": "连接到 Bridge 服务",
   "apiKeyOptional": "API 密钥（可选）",
   "apiKeyHint": "如果没有认证可留空",
@@ -191,18 +209,31 @@
   "machines": "机器",
   "refreshStatus": "刷新状态",
   "add": "添加",
-
   "readyToStart": "准备就绪",
   "readyToStartDescription": "点击 + 按钮创建新会话，并开始用 Claude 编码。",
   "newSession": "新建会话",
   "copyResumeCommand": "复制恢复命令",
   "copyResumeCommandSubtitle": "交接到 macOS / Linux",
   "resumeCommandCopied": "恢复命令已复制",
-
   "justNow": "刚刚",
   "minutesAgo": "{minutes} 分钟前",
+  "@minutesAgo": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
   "hoursAgo": "{hours} 小时前",
+  "@hoursAgo": {
+    "placeholders": {
+      "hours": { "type": "int" }
+    }
+  },
   "daysAgo": "{days} 天前",
+  "@daysAgo": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
   "unfavorite": "取消收藏",
   "favorite": "收藏",
   "updateBridge": "更新 Bridge",
@@ -244,7 +275,6 @@
   "reconnecting": "Bridge 连接暂时中断。正在自动重新连接...",
   "unreachable": "不可达",
   "checking": "检查中...",
-
   "recentProjects": "最近项目",
   "orEnterPath": "或输入路径",
   "projectPath": "项目路径",
@@ -270,27 +300,21 @@
   "changePermissionModeBody": "切换到 {mode} 会重启当前会话。你的对话会被保留。",
   "@changePermissionModeBody": {
     "placeholders": {
-      "mode": {
-        "type": "String"
-      }
+      "mode": { "type": "String" }
     }
   },
   "changeExecutionModeTitle": "更改执行模式",
   "changeExecutionModeBody": "切换到 {mode} 会重启当前会话。你的对话会被保留。",
   "@changeExecutionModeBody": {
     "placeholders": {
-      "mode": {
-        "type": "String"
-      }
+      "mode": { "type": "String" }
     }
   },
   "changeApprovalPolicyTitle": "更改 Approval Policy",
   "changeApprovalPolicyBody": "切换到 {mode} 会重启当前会话。你的对话会被保留。",
   "@changeApprovalPolicyBody": {
     "placeholders": {
-      "mode": {
-        "type": "String"
-      }
+      "mode": { "type": "String" }
     }
   },
   "permissionChipAcceptEdits": "编辑",
@@ -312,6 +336,11 @@
   "guardianApprovalDetails": "详细信息",
   "guardianApprovalHideDetails": "收起详细信息",
   "guardianApprovalAuthorization": "授权级别：{authorization}",
+  "@guardianApprovalAuthorization": {
+    "placeholders": {
+      "authorization": { "type": "String" }
+    }
+  },
   "codexPlanModeDescription": "先起草计划，再等待批准后执行",
   "enablePlanModeTitle": "启用 Plan Mode",
   "disablePlanModeTitle": "关闭 Plan Mode",
@@ -340,19 +369,16 @@
   "sandboxRestrictedDescription": "在受限环境中运行命令",
   "sandboxNativeDescription": "在原生环境中运行命令",
   "sandboxNativeCautionDescription": "在原生环境中运行命令（谨慎）",
-
   "sheetSubtitleApproval": "控制哪些操作需要你的审批",
   "sheetSubtitleSandboxCodex": "Codex 默认启用沙箱以确保安全。禁用后将允许完全访问系统。",
   "sheetSubtitleSandboxClaude": "Claude 默认在原生环境运行。启用沙箱将限制系统访问。",
   "sheetSubtitleModel": "不同模型在速度、能力和成本上各有差异。",
   "sheetSubtitleEffort": "更高的 Effort 会进行更深入的分析，但需要更多时间和成本。",
-
   "claudeEffortLowDesc": "更快响应，分析较少",
   "claudeEffortMediumDesc": "速度与质量的平衡",
   "claudeEffortHighDesc": "更深入的分析",
   "claudeEffortXHighDesc": "复杂工作的扩展推理",
   "claudeEffortMaxDesc": "最深入，最慢",
-
   "reasoningEffortNoneDesc": "无推理",
   "reasoningEffortMinimalDesc": "最快，分析最少",
   "reasoningEffortLowDesc": "更快响应，分析较少",
@@ -362,14 +388,11 @@
   "reasoningEffortMaxDesc": "针对最难问题的最大推理深度",
   "reasoningEffortUltraDesc": "最大推理并自动委派任务",
   "reasoningEffortModelSpecificDesc": "模型特定的推理级别",
-
   "changeSandboxModeTitle": "更改沙箱模式",
   "changeSandboxModeBody": "切换到 {mode} 会重启当前会话。你的对话会被保留。",
   "@changeSandboxModeBody": {
     "placeholders": {
-      "mode": {
-        "type": "String"
-      }
+      "mode": { "type": "String" }
     }
   },
   "sandboxChipOff": "无沙箱",
@@ -390,10 +413,14 @@
   "directoryBrowserBridgeUpdateRequired": "此功能需要较新版本的 Bridge Server。请更新 Bridge 后重试。",
   "worktreeNew": "新建",
   "worktreeExisting": "已有 ({count})",
+  "@worktreeExisting": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "branchOptional": "分支（可选）",
   "branchHint": "feature/...",
   "noExistingWorktrees": "没有现有 worktree",
-
   "planApprovalSummary": "请查看上方计划，并选择批准或继续规划",
   "planApprovalSummaryCard": "请查看计划，并选择批准或继续规划",
   "toolApprovalSummary": "执行工具需要批准",
@@ -417,11 +444,10 @@
   "approveOnce": "仅此一次",
   "approveForSession": "本次会话期间允许",
   "approveAlways": "始终允许",
-  "approveAlwaysSub": "",
+  "approveAlwaysSub": "允许",
   "approveSessionMain": "本次会话允许",
-  "approveSessionSub": "",
+  "approveSessionSub": "允许",
   "restart": "重启",
-
   "messagePlaceholder": "给 Claude 发消息...",
   "codexMessagePlaceholder": "给 Codex 发消息...",
   "queuedInputForReconnect": "已加入重连队列",
@@ -459,38 +485,34 @@
   "messageProviderPlaceholder": "给 {provider} 发消息...",
   "@messageProviderPlaceholder": {
     "placeholders": {
-      "provider": {
-        "type": "String"
-      }
+      "provider": { "type": "String" }
     }
   },
   "diffLines": "{count} 行 diff",
+  "@diffLines": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "changedLines": "{count} 行变更",
   "@changedLines": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "count": { "type": "int" }
     }
   },
   "hunkCount": "{count} 个 hunk",
   "@hunkCount": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "count": { "type": "int" }
     }
   },
   "fileCount": "{count} 个文件",
   "@fileCount": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "count": { "type": "int" }
     }
   },
   "tapInterruptHoldStop": "点按：中断，长按：停止",
-
   "rewind": "回退",
   "rewindToHere": "回退到这里",
   "rewindModeConversationAndCode": "恢复对话和代码",
@@ -498,6 +520,11 @@
   "rewindModeCodeOnly": "仅恢复代码",
   "rewindConfirmTitle": "确认回退",
   "rewindConfirmBody": "模式：{mode}\n\n此操作无法撤销。要继续吗？",
+  "@rewindConfirmBody": {
+    "placeholders": {
+      "mode": { "type": "String" }
+    }
+  },
   "rewindCannotRewindFiles": "无法回退文件",
   "codexRewindConfirmTitle": "回退对话？",
   "codexRewindConfirmBody": "将聊天恢复到此消息之前，并把该消息放回输入框。文件更改会保留。",
@@ -507,16 +534,25 @@
   "forkConversationBody": "从此回复创建一个新的 Codex 会话。当前会话不会改变。",
   "forkTargetNotFound": "找不到可用于分叉的用户消息",
   "tapToRetry": "点按重试",
-
   "diffSummaryAddedRemoved": "+{added}/-{removed} 行",
+  "@diffSummaryAddedRemoved": {
+    "placeholders": {
+      "added": { "type": "int" },
+      "removed": { "type": "int" }
+    }
+  },
   "lineCountSummary": "{count} 行",
+  "@lineCountSummary": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "toolResult": "工具结果",
-
   "answered": "已回答",
   "agentIsAsking": "{agent} 正在提问",
   "@agentIsAsking": {
     "placeholders": {
-      "agent": {}
+      "agent": { "type": "Object" }
     }
   },
   "codexIsAsking": "Codex 正在提问",
@@ -528,23 +564,31 @@
   "codexSessionDone": "Codex 会话已结束",
   "submitAllAnswers": "提交全部答案",
   "submitWithCount": "提交（已选择 {count} 项）",
+  "@submitWithCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "selectOptionsToSubmit": "请选择要提交的选项",
   "typeYourAnswer": "输入你的回答...",
   "orTypeCustomAnswer": "或输入自定义回答...",
   "otherAnswer": "其他回答...",
   "selectAllThatApply": "选择所有适用项",
-
   "noScreenshotsYet": "还没有截图",
   "screenshotButtonHint": "使用聊天工具栏中的截图按钮来捕获截图。",
   "screenshotsWillAppearHere": "Claude 会话中的截图会显示在这里。",
   "allWithCount": "全部 ({count})",
+  "@allWithCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "noImages": "没有图片",
   "failedToDeleteImage": "删除图片失败",
   "failedToDownloadImage": "下载图片失败",
   "failedToShareImage": "分享图片失败",
   "deleteScreenshot": "要删除截图吗？",
   "cannotBeUndone": "此操作无法撤销。",
-
   "changes": "变更",
   "refresh": "刷新",
   "diffCompareSideBySide": "并排",
@@ -558,9 +602,7 @@
   "diffNoImage": "没有图片",
   "noChanges": "没有变更",
   "showAll": "显示全部",
-
   "setupGuideTitle": "设置指南",
-
   "guideAboutTitle": "什么是 CC Pocket？",
   "guideAboutDescription": "一款可让你通过 Bridge 服务在智能手机上使用 Codex 和 Claude 的移动客户端。",
   "guideAboutSdkNoteTitle": "关于 Claude Agent SDK",
@@ -570,7 +612,6 @@
   "guideAboutDiagramBridge": "Bridge 服务",
   "guideAboutDiagramClaude": "Codex CLI\n/ Claude Agent SDK",
   "guideAboutDiagramCaption": "电脑上的 Bridge 服务会连接到 Codex CLI 和 Claude Agent SDK，\n然后你的手机再连接到 Bridge。",
-
   "guideBridgeTitle": "Bridge 服务\n设置",
   "guideBridgeDescription": "先在你的电脑上启动 Bridge 服务。Claude 需要 API 密钥，或明确启用订阅认证。",
   "guideBridgePrerequisites": "前置条件",
@@ -582,7 +623,6 @@
   "guideBridgeStep2": "或全局安装",
   "guideBridgeStep2Command": "npm install -g @ccpocket/bridge\nccpocket-bridge",
   "guideBridgeQrNote": "启动后，终端中会显示二维码",
-
   "guideConnectionTitle": "连接方式",
   "guideConnectionDescription": "如果处于同一个 Wi-Fi 网络下，你可以立即连接。",
   "guideConnectionQr": "扫描二维码",
@@ -592,7 +632,6 @@
   "guideConnectionManual": "手动输入",
   "guideConnectionManualDescription": "直接输入 `ws://<IP 地址>:8765` 格式的地址。",
   "guideConnectionRecommended": "推荐",
-
   "guideTailscaleTitle": "远程访问",
   "guideTailscaleDescription": "如果要在家外使用，Tailscale（VPN）可以帮助你安全地远程连接。",
   "guideTailscaleStep1": "在 Mac 和 iPhone 上都安装 Tailscale",
@@ -600,7 +639,6 @@
   "guideTailscaleStep3": "在 Bridge URL 中使用 Tailscale IP\n（例如：ws://100.x.x.x:8765）",
   "guideTailscaleWebsite": "Tailscale 官网",
   "guideTailscaleWebsiteHint": "访问官网获取更详细的设置说明。",
-
   "guideLaunchdTitle": "自动启动设置",
   "guideLaunchdDescription": "如果每次手动启动 Bridge 服务太麻烦，你可以将它配置为设备开机时自动启动。",
   "guideLaunchdCommand": "设置命令",
@@ -608,12 +646,10 @@
   "guideLaunchdRecommendation": "建议先通过手动启动验证一切正常，再在稳定后注册为服务。",
   "guideAutostartMacDescription": "使用 launchd 注册。Shell 环境（nvm、Homebrew 等）会自动继承。",
   "guideAutostartLinuxDescription": "创建 systemd 用户服务。适用于 Raspberry Pi 及其他 Linux 主机。",
-
   "guideReadyTitle": "全部就绪！",
   "guideReadyDescription": "启动 Bridge 服务并\n扫描二维码，\n马上开始。",
   "guideReadyStart": "开始使用",
   "guideReadyHint": "你也可以随时在设置中重新打开本指南",
-
   "creatingSession": "正在创建会话...",
   "resolvingLinkedSession": "正在查找会话...",
   "resumingLinkedSession": "正在恢复会话...",
@@ -623,9 +659,7 @@
   "startWithProvider": "用 {provider} 开始",
   "@startWithProvider": {
     "placeholders": {
-      "provider": {
-        "type": "String"
-      }
+      "provider": { "type": "String" }
     }
   },
   "copyForAgent": "复制给 Agent",
@@ -637,7 +671,6 @@
   "fullScreen": "全屏",
   "captureEntireDesktop": "截取整个桌面",
   "noWindowsFound": "未找到窗口",
-
   "debug": "调试",
   "logs": "日志",
   "viewApplicationLogs": "查看应用日志",
@@ -648,7 +681,6 @@
   "updateTrackStable": "稳定版",
   "updateTrackStaging": "预发布版",
   "updateDownloaded": "更新已下载。请重启应用以生效。",
-
   "promptHistory": "提示词历史",
   "frequent": "常用",
   "recent": "最近",
@@ -703,7 +735,6 @@
     }
   },
   "promptHistoryNoSyncTime": "没有同步时间",
-
   "approvalQueue": "审批队列",
   "resetQueue": "重置队列",
   "swipeSkip": "跳过",
@@ -713,7 +744,17 @@
   "swipeReject": "拒绝",
   "allClear": "全部处理完！",
   "itemsProcessed": "已处理 {count} 项",
+  "@itemsProcessed": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "bestStreak": "最佳连击：{count}",
+  "@bestStreak": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "tryAgain": "再试一次",
   "waitingForTasks": "正在等待任务",
   "agentReadyForPrompt": "Agent 已准备好接收你的下一个提示。",
@@ -742,15 +783,12 @@
   "statusApproveTool": "批准 {toolName}",
   "@statusApproveTool": {
     "placeholders": {
-      "toolName": {
-        "type": "String"
-      }
+      "toolName": { "type": "String" }
     }
   },
   "waitingForApprovalRequests": "正在等待 Agent 发来的审批请求。",
   "noActiveSessions": "没有活动中的会话",
   "startSessionToBegin": "启动一个会话后，即可开始接收审批请求。",
-
   "settingsTitle": "设置",
   "sectionGeneral": "通用",
   "sectionConnectionAccounts": "连接与账户",
@@ -787,7 +825,7 @@
   "appIconSettingsSubtitle": "可以更改 {device} 主屏幕上显示的图标。",
   "@appIconSettingsSubtitle": {
     "placeholders": {
-      "device": {"type": "String"}
+      "device": { "type": "String" }
     }
   },
   "appIconSupporterDialogTitle": "月度 Supporter 特典",
@@ -835,14 +873,10 @@
   "changelogTitle": "更新日志",
   "showAllMain": "显示全部（main）",
   "changelogFetchError": "加载更新日志失败",
-
   "updateNotificationLanguage": "更新通知语言",
   "notificationLanguageUpdated": "通知语言已更新",
-
   "defaultNotRecommended": "默认（不推荐）",
-
   "imageAttached": "图片已附加",
-
   "usageConnectToView": "连接到 Bridge 后查看用量",
   "usageFetchFailed": "获取失败",
   "usageFiveHour": "5 小时",
@@ -862,14 +896,14 @@
   "usagePaceExpected": "预计已用 {percent}%",
   "@usagePaceExpected": {
     "placeholders": {
-      "percent": {"type": "int"}
+      "percent": { "type": "int" }
     }
   },
   "usagePaceWillLast": "按当前速度预计可用到重置",
   "usagePaceRunsOutIn": "按当前速度预计约 {duration} 后达到上限",
   "@usagePaceRunsOutIn": {
     "placeholders": {
-      "duration": {"type": "String"}
+      "duration": { "type": "String" }
     }
   },
   "usagePaceAtLimit": "已达到上限",
@@ -893,19 +927,14 @@
   "usageResetAt": "重置时间：{time}",
   "@usageResetAt": {
     "placeholders": {
-      "time": {
-        "type": "String"
-      }
+      "time": { "type": "String" }
     }
   },
   "usageAlreadyReset": "已重置",
-
   "attachedImages": "已附加图片 ({count})",
   "@attachedImages": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "count": { "type": "int" }
     }
   },
   "attachedImagesNoCount": "已附加图片",
@@ -914,14 +943,11 @@
   "failedToFetchImagesWithError": "获取图片失败：{error}",
   "@failedToFetchImagesWithError": {
     "placeholders": {
-      "error": {
-        "type": "String"
-      }
+      "error": { "type": "String" }
     }
   },
   "retry": "重试",
   "codexWriterConflictGuidance": "请关闭 Codex Desktop 或 Codex App，然后重试。",
-
   "clipboardNotAvailable": "无法访问剪贴板",
   "failedToLoadImage": "加载图片失败",
   "generatedImagePromptLabel": "提示词",
@@ -934,8 +960,8 @@
   "generatedImagePositionLabel": "生成的图片 {current} / {total}",
   "@generatedImagePositionLabel": {
     "placeholders": {
-      "current": {"type": "int"},
-      "total": {"type": "int"}
+      "current": { "type": "int" },
+      "total": { "type": "int" }
     }
   },
   "noImageInClipboard": "剪贴板中没有图片",
@@ -943,32 +969,24 @@
   "imageLimitReached": "最多允许 {max} 张图片",
   "@imageLimitReached": {
     "placeholders": {
-      "max": {
-        "type": "int"
-      }
+      "max": { "type": "int" }
     }
   },
   "imageLimitTruncated": "仅附加前 {max} 张图片（忽略了 {dropped} 张）",
   "@imageLimitTruncated": {
     "placeholders": {
-      "max": {
-        "type": "int"
-      },
-      "dropped": {
-        "type": "int"
-      }
+      "max": { "type": "int" },
+      "dropped": { "type": "int" }
     }
   },
   "selectFromGallery": "从图库选择",
   "pasteFromClipboard": "从剪贴板粘贴",
   "pasteImage": "粘贴图片",
-
   "voiceInputLanguage": "语音输入语言",
   "hideVoiceInput": "隐藏语音输入按钮",
   "hideVoiceInputSubtitle": "当你使用第三方语音输入键盘时很有帮助",
   "openGalleryDirectly": "点击图片按钮直接打开图库",
   "openGalleryDirectlySubtitle": "跳过附件菜单，立即开始选择图片",
-
   "archive": "归档",
   "archiveConfirm": "要归档此会话吗？",
   "archiveConfirmMessage": "此会话会从列表中隐藏，但你仍然可以在 Claude Code 中访问它。",
@@ -977,15 +995,12 @@
   "archiveFailedWithError": "归档会话失败：{error}",
   "@archiveFailedWithError": {
     "placeholders": {
-      "error": {
-        "type": "String"
-      }
+      "error": { "type": "String" }
     }
   },
   "noRecentSessions": "没有最近会话",
   "noSessionsMatchFilters": "没有会话匹配当前筛选条件",
   "adjustFiltersAndSearch": "试试修改筛选条件或搜索词",
-
   "tooltipDisplayMode": "切换卡片上显示的消息",
   "tooltipProviderFilter": "按 AI 工具筛选",
   "tooltipProjectFilter": "按项目筛选",
@@ -1006,33 +1021,25 @@
   "messageHistoryCount": "{count} 条消息",
   "@messageHistoryCount": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "count": { "type": "int" }
     }
   },
   "noMessagesYet": "还没有消息",
   "messagesAppearAfterProcessing": "消息会在代理处理后显示在这里",
-
   "showMore": "显示更多",
   "showLess": "显示更少",
   "sessionStarted": "会话已开始（{model}）",
   "@sessionStarted": {
     "placeholders": {
-      "model": {
-        "type": "String"
-      }
+      "model": { "type": "String" }
     }
   },
   "systemSubtypeLabel": "系统：{subtype}",
   "@systemSubtypeLabel": {
     "placeholders": {
-      "subtype": {
-        "type": "String"
-      }
+      "subtype": { "type": "String" }
     }
   },
-
   "authErrorTitle": "需要重新登录 Claude",
   "authErrorBody": "Bridge 机器上的 Claude 需要重新登录。",
   "authErrorPrimaryCommandLabel": "步骤 1",
@@ -1048,7 +1055,6 @@
   "authHelpLanguageEn": "English",
   "authHelpLanguageZhHans": "简体中文",
   "authHelpLanguageKo": "한국어",
-
   "terminalApp": "终端应用",
   "terminalAppSubtitle": "在外部终端应用中打开项目",
   "terminalAppNone": "未配置",
@@ -1062,7 +1068,6 @@
   "terminalAppNotInstalled": "无法打开终端应用",
   "terminalAppExperimental": "实验性",
   "terminalAppExperimentalNote": "此功能仍为实验性功能。预设不一定适用于所有应用或配置。欢迎在 GitHub 上贡献新的预设！",
-
   "sectionSpread": "喜欢 CC POCKET 吗？",
   "spreadAppealMessage": "CC Pocket 的用户还不多，继续开发需要更多人支持。如果你喜欢它，给商店评分（只点星也可以）或推荐给朋友都会很有帮助。",
   "shareApp": "分享给朋友",
@@ -1070,9 +1075,7 @@
   "shareText": "CC Pocket: Claude & Codex\n用手机控制你的编程 Agent \ud83d\udcf1\n#ccpocket\n{url}",
   "@shareText": {
     "placeholders": {
-      "url": {
-        "type": "String"
-      }
+      "url": { "type": "String" }
     }
   },
   "starOnGithub": "在 GitHub 点星",
@@ -1205,7 +1208,6 @@
   "approvalRequiredNotificationTitle": "等待审批 - ccpocket",
   "exitPlanModeNotificationBody": "生成的计划需要你确认",
   "renderErrorFallback": "无法显示此内容。",
-
   "confirm": "确认",
   "piEngineTitle": "Pi 引擎",
   "piEngineSettingsSubtitle": "系统提示词、启动参数、模型",
@@ -1287,6 +1289,34 @@
   "piEngineProviderBaseUrl": "基础地址",
   "piEngineProviderApi": "API",
   "piEngineProviderApiKey": "API 密钥",
+  "piEngineModelImport": "从服务器导入",
+  "piEngineModelImportDesc": "从 OpenAI 兼容端点拉取模型 ID，合并进该 provider。",
+  "piEngineModelImportFetch": "获取模型",
+  "piEngineModelImportFetching": "正在获取模型…",
+  "piEngineModelImportSelect": "勾选要导入的模型；已存在的 ID 会被就地更新。",
+  "piEngineModelImportNone": "该端点没有返回任何模型。",
+  "piEngineModelImportDone": "已导入 {count} 个模型到 {provider}。",
+  "@piEngineModelImportDone": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "provider": { "type": "String" }
+    }
+  },
+  "piEngineModelsImportJson": "导入 JSON",
+  "piEngineModelsImportJsonDesc": "粘贴 models.json 的 \"providers\" 片段合并进文件。",
+  "piEngineModelsImportJsonHint": "{\n  \"providers\": {\n    \"ollama\": {\n      \"baseUrl\": \"http://127.0.0.1:11434/v1\",\n      \"api\": \"openai-completions\",\n      \"apiKey\": \"ollama\",\n      \"models\": [{\"id\": \"qwen2.5-coder:7b\"}]\n    }\n  }\n}",
+  "piEngineModelsImportJsonDone": "已导入 {count} 个 provider。",
+  "@piEngineModelsImportJsonDone": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "piEngineModelsImportJsonInvalid": "这不是合法的 providers JSON 对象。",
+  "piEngineRefreshCatalog": "刷新模型目录",
+  "piEngineRefreshCatalogDesc": "执行 pi update --models 刷新内置 provider 目录（需联网）。",
+  "piEngineRefreshCatalogConfirm": "立即刷新内置模型目录？会下载最新的 provider 目录。",
+  "piEngineRefreshCatalogRunning": "正在刷新模型目录…",
+  "piEngineRefreshCatalogDone": "模型目录已刷新。",
   "piEngineCommands": "命令面板",
   "piEngineCommandsSubtitle": "斜杠命令、模板与技能（get_commands）",
   "piEngineCommandsHint": "命令由引擎展开。点击复制 /name，粘贴到聊天输入框即可使用。",
@@ -1336,6 +1366,171 @@
       "name": { "type": "String" }
     }
   },
+  "piEnginePromptsHint": "Prompt 是作为斜杠命令暴露的 .md 文件，编辑后立即生效，无需重启。",
+  "piEnginePromptsScope": "作用域",
+  "piEnginePromptsScopeGlobal": "全局",
+  "piEnginePromptsScopeProject": "项目",
+  "piEnginePromptsContent": "内容",
+  "piEnginePromptsCopy": "复制",
+  "piEnginePackages": "软件包",
+  "piEnginePackagesSubtitle": "npm / git / 本地软件包（pi install）",
+  "piEnginePackagesHint": "软件包是配置在 settings.json 的 packages[] 中的 npm、git 或本地源。引擎在启动或重新加载时从中解析扩展、技能、提示词模板和主题。",
+  "piEnginePackagesEmpty": "还没有配置软件包。点右上角 + 安装一个。",
+  "piEnginePackagesCount": "{count} 个软件包",
+  "@piEnginePackagesCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "piEnginePackagesGroupGlobal": "全局",
+  "piEnginePackagesGroupProject": "项目",
+  "piEnginePackagesInstall": "安装软件包",
+  "piEnginePackagesSourceLabel": "来源",
+  "piEnginePackagesSourceHint": "npm:lodash · https://github.com/user/repo · ./local-ext",
+  "piEnginePackagesInstallLocal": "安装到当前项目",
+  "piEnginePackagesInstallLocalDesc": "安装到 .pi/ 并把来源写入项目 settings.json",
+  "piEnginePackagesUpdate": "更新",
+  "piEnginePackagesUpdateAll": "全部更新",
+  "piEnginePackagesRemove": "移除",
+  "piEnginePackagesRemoveConfirm": "移除软件包 {source}？",
+  "@piEnginePackagesRemoveConfirm": {
+    "placeholders": {
+      "source": { "type": "String" }
+    }
+  },
+  "piEnginePackagesRemoveConfirmBody": "会卸载产物并从 settings.json 中删除该条目。",
+  "piEnginePackagesNotInstalled": "未安装",
+  "piEnginePackagesInstalled": "已安装",
+  "piEnginePackagesUpdated": "已更新 {count} 个软件包",
+  "@piEnginePackagesUpdated": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "piEnginePackagesRemoved": "已移除 {source}",
+  "@piEnginePackagesRemoved": {
+    "placeholders": {
+      "source": { "type": "String" }
+    }
+  },
+  "piEnginePackagesInstalling": "正在安装 {source}…",
+  "@piEnginePackagesInstalling": {
+    "placeholders": {
+      "source": { "type": "String" }
+    }
+  },
+  "piEnginePackagesUpdating": "正在更新软件包…",
+  "piEnginePackagesRemoving": "正在移除 {source}…",
+  "@piEnginePackagesRemoving": {
+    "placeholders": {
+      "source": { "type": "String" }
+    }
+  },
+  "piEnginePackagesRestartHint": "引擎在解析资源时会重新读取已配置的来源；npm/git 产物的变更通常需要重启（或 /reload）后生效。",
+  "piEngineSettingsCore": "设置",
+  "piEngineSettingsSubtitle": "settings.json 核心选项（含 JSON 兜底编辑器）",
+  "piEngineSettingsSectionGeneral": "常规",
+  "piEngineSettingsSectionBehavior": "行为",
+  "piEngineSettingsDefaultProvider": "默认提供商",
+  "piEngineSettingsDefaultProviderDesc": "未选择时使用的提供商。",
+  "piEngineSettingsDefaultModel": "默认模型",
+  "piEngineSettingsDefaultModelDesc": "未选择时使用的模型。",
+  "piEngineSettingsThinkingLevel": "默认思考等级",
+  "piEngineSettingsThinkingLevelDesc": "模型未覆盖时应用。",
+  "piEngineSettingsTransport": "传输方式",
+  "piEngineSettingsTransportDesc": "提供商调用的 API 传输方式。",
+  "piEngineSettingsSteering": "引导模式",
+  "piEngineSettingsSteeringDesc": "工具确认如何分组。",
+  "piEngineSettingsFollowUp": "追问模式",
+  "piEngineSettingsFollowUpDesc": "追问如何处理。",
+  "piEngineSettingsTrust": "默认项目信任",
+  "piEngineSettingsTrustDesc": "除非在此设置（仅全局），否则每个项目都会询问。",
+  "piEngineSettingsShellPath": "Shell 路径",
+  "piEngineSettingsShellPathDesc": "bash 工具使用的自定义 shell（如 Cygwin）。",
+  "piEngineSettingsExternalEditor": "外部编辑器",
+  "piEngineSettingsExternalEditorDesc": "外部编辑器的命令。",
+  "piEngineSettingsHttpProxy": "HTTP 代理",
+  "piEngineSettingsHttpProxyDesc": "应用于 Pi 管理的 HTTP 客户端的代理。",
+  "piEngineSettingsHideThinking": "隐藏思考",
+  "piEngineSettingsHideThinkingDesc": "默认折叠思考块。",
+  "piEngineSettingsCacheNotices": "缓存未命中提示",
+  "piEngineSettingsCacheNoticesDesc": "显示缓存成本与提供商恢复提示。",
+  "piEngineSettingsQuietStartup": "静默启动",
+  "piEngineSettingsQuietStartupDesc": "跳过启动横幅。",
+  "piEngineSettingsSkillCommands": "技能命令",
+  "piEngineSettingsSkillCommandsDesc": "将技能注册为 /skill:name 命令。",
+  "piEngineSettingsInstallTelemetry": "安装遥测",
+  "piEngineSettingsInstallTelemetryDesc": "匿名版本/更新探测。",
+  "piEngineSettingsAnalytics": "分析",
+  "piEngineSettingsAnalyticsDesc": "选择加入的使用分析。",
+  "piEngineSettingsCollapseChangelog": "折叠更新日志",
+  "piEngineSettingsCollapseChangelogDesc": "更新后显示精简版更新日志。",
+  "piEngineSettingsCompaction": "压缩",
+  "piEngineSettingsCompactionEnabled": "自动压缩长会话",
+  "piEngineSettingsCompactionReserve": "预留 token",
+  "piEngineSettingsCompactionKeep": "保留的近期 token",
+  "piEngineSettingsRetry": "重试",
+  "piEngineSettingsRetryEnabled": "自动重试瞬时故障",
+  "piEngineSettingsRetryMax": "最大重试次数",
+  "piEngineSettingsRetryBase": "基础延迟（毫秒）",
+  "piEngineSettingsImages": "图片",
+  "piEngineSettingsImagesAutoResize": "自动调整图片大小",
+  "piEngineSettingsImagesBlock": "阻止图片",
+  "piEngineSettingsTerminal": "终端",
+  "piEngineSettingsTerminalShowImages": "在终端中显示图片",
+  "piEngineSettingsRawJson": "原始 JSON",
+  "piEngineSettingsRawJsonDesc": "编辑任意 settings.json 键（兜底）。",
+  "piEngineSettingsRawSave": "应用 JSON",
+  "piEngineSettingsJsonInvalid": "JSON 无效，请修正语法后重试。",
+  "piEngineSettingsJsonObject": "根值必须是 JSON 对象。",
+  "piEngineSettingsHint": "大多数更改在引擎启动时生效，可重启引擎立即应用。表单未覆盖的键可在“原始 JSON”一节编辑。",
+  "piEngineThemes": "主题",
+  "piEngineThemesSubtitle": "引擎内置与自定义主题",
+  "piEngineThemesBuiltin": "内置",
+  "piEngineThemesCustom": "自定义",
+  "piEngineThemesActive": "当前",
+  "piEngineThemesUseDefault": "使用默认主题",
+  "piEngineThemesUseDefaultDesc": "清除 settings.theme，让引擎使用默认配色。",
+  "piEngineThemesImport": "导入主题",
+  "piEngineThemesImportDesc": "粘贴主题 JSON。必须声明 \"name\" 字符串与 \"colors\" 对象，文件写入 ~/.pi/agent/themes/。",
+  "piEngineThemesImportJson": "主题 JSON",
+  "piEngineThemesImportInvalid": "主题必须是声明了 \"name\" 字符串与 \"colors\" 对象的 JSON 对象。",
+  "piEngineThemesImportInvalidJson": "JSON 无效，请修正语法后重试。",
+  "piEngineThemesRemove": "删除主题",
+  "piEngineThemesRemoveConfirm": "删除主题 \"{name}\"？文件将被删除。",
+  "@piEngineThemesRemoveConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "piEngineThemesEmpty": "还没有主题，导入一个试试。",
+  "piEngineContextFiles": "上下文文件",
+  "piEngineContextFilesSubtitle": "AGENTS.md / CLAUDE.md 快捷编辑",
+  "piEngineContextFilesHint": "引擎从项目根目录向上合并 AGENTS.md / CLAUDE.md。快捷编辑始终针对项目本地文件；若上层存在副本，仍会继续提供给引擎。",
+  "piEngineContextFilesProject": "项目文件：{path}",
+  "@piEngineContextFilesProject": {
+    "placeholders": {
+      "path": { "type": "String" }
+    }
+  },
+  "piEngineContextFilesParent": "上层副本：{path} · 合并在上方",
+  "@piEngineContextFilesParent": {
+    "placeholders": {
+      "path": { "type": "String" }
+    }
+  },
+  "piEngineContextFilesNew": "将在 {path} 创建",
+  "@piEngineContextFilesNew": {
+    "placeholders": {
+      "path": { "type": "String" }
+    }
+  },
+  "piEngineContextFilesEdit": "编辑 {name}",
+  "@piEngineContextFilesEdit": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
   "piEngineExtensions": "扩展",
   "piEngineExtensionsSubtitle": "已发现的扩展与信任警告",
   "piEngineExtensionsTrustWarning": "扩展是可执行代码，可访问你的文件和网络。请只安装可信来源的扩展。",
@@ -1364,7 +1559,6 @@
   "piEngineSkillsApply": "生效",
   "piEngineSkillsRestartHint": "技能在引擎启动时扫描，新增或修改的技能需重启引擎后生效。",
   "piEngineSkillMissing": "该技能没有 SKILL.md。",
-
   "piEngineRuntime": "运行时",
   "piEngineRuntimeSubtitle": "执行环境（bionic / Proroot / proot-distro）",
   "piEngineRuntimeBadgeA": "内置（bionic）",
@@ -1427,5 +1621,7 @@
       "count": { "type": "int" }
     }
   },
-  "piEngineRuntimeRestartHint": "切换路线会重启引擎，新的运行时立即生效。"
+  "piEngineRuntimeRestartHint": "切换路线会重启引擎，新的运行时立即生效。",
+  "clear": "清空",
+  "selectAll": "全选"
 }

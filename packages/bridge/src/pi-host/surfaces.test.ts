@@ -11,6 +11,12 @@ import {
   templateNameFromFile,
   writePromptTemplate,
   deletePromptTemplate,
+  listThemes,
+  writeCustomTheme,
+  deleteCustomTheme,
+  sanitizeContextFileName,
+  findNearestContextFile,
+  findContextFiles,
 } from "./surfaces.js";
 
 function makeHome(): string {
@@ -162,5 +168,140 @@ describe("writePromptTemplate / deletePromptTemplate", () => {
     await expect(
       writePromptTemplate("/p", "/h", "global", "../evil", "x"),
     ).rejects.toThrow("invalid_template_name");
+  });
+});
+
+describe("listThemes (pi theme.ts getAvailableThemesWithPaths)", () => {
+  it("lists built-in dark/light plus custom themes with selection", async () => {
+    const root = makeHome();
+    try {
+      const piHome = join(root, "home");
+      const themesDir = join(piHome, ".pi", "agent", "themes");
+      mkdirSync(themesDir, { recursive: true });
+      writeFileSync(
+        join(themesDir, "ocean.json"),
+        JSON.stringify({ name: "ocean", colors: { text: "#fff" } }),
+      );
+      writeFileSync(join(themesDir, "broken.json"), "{ not json");
+      const themes = await listThemes(piHome, "ocean");
+      expect(themes).toEqual([
+        { name: "dark", builtin: true, selected: false },
+        { name: "light", builtin: true, selected: false },
+        { name: "ocean", path: join(themesDir, "ocean.json"), builtin: false, selected: true },
+      ]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it("marks selection only on the matching name", async () => {
+    const root = makeHome();
+    try {
+      const piHome = join(root, "home");
+      const themes = await listThemes(piHome, "light");
+      expect(themes.find((t) => t.name === "light")?.selected).toBe(true);
+      expect(themes.find((t) => t.name === "dark")?.selected).toBe(false);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("writeCustomTheme (pi ThemeJsonSchema)", () => {
+  it("writes a valid theme to ~/.pi/agent/themes/<name>.json", async () => {
+    const root = makeHome();
+    try {
+      const piHome = join(root, "home");
+      const file = await writeCustomTheme(piHome, "sunset", {
+        name: "sunset",
+        colors: { accent: "#ff8800" },
+      });
+      expect(file).toBe(join(piHome, ".pi", "agent", "themes", "sunset.json"));
+      const stored = JSON.parse(readFileSync(file, "utf8"));
+      expect(stored.name).toBe("sunset");
+      expect(stored.colors.accent).toBe("#ff8800");
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects missing name / colors and non-object JSON", async () => {
+    const root = makeHome();
+    try {
+      const piHome = join(root, "home");
+      await expect(writeCustomTheme(piHome, "t", { colors: {} })).rejects.toThrow(
+        /"name"/,
+      );
+      await expect(writeCustomTheme(piHome, "t", { name: "t" })).rejects.toThrow(
+        /"colors"/,
+      );
+      await expect(writeCustomTheme(piHome, "t", [1, 2])).rejects.toThrow(
+        /object/,
+      );
+      await expect(writeCustomTheme(piHome, "../evil", { name: "x", colors: {} })).rejects.toThrow(
+        /Invalid theme name/,
+      );
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it("deleteCustomTheme removes only custom files", async () => {
+    const root = makeHome();
+    try {
+      const piHome = join(root, "home");
+      await writeCustomTheme(piHome, "ocean", { name: "ocean", colors: {} });
+      expect(await deleteCustomTheme(piHome, "ocean")).toBe(true);
+      expect(existsSync(join(piHome, ".pi", "agent", "themes", "ocean.json"))).toBe(false);
+      expect(await deleteCustomTheme(piHome, "ocean")).toBe(false);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("context files (AGENTS.md / CLAUDE.md quick edit)", () => {
+  it("sanitizeContextFileName canonicalizes case-insensitively", () => {
+    expect(sanitizeContextFileName("AGENTS.md")).toBe("AGENTS.md");
+    expect(sanitizeContextFileName("agents.md")).toBe("AGENTS.md");
+    expect(sanitizeContextFileName("CLAUDE.md")).toBe("CLAUDE.md");
+    expect(sanitizeContextFileName("README.md")).toBeNull();
+    expect(sanitizeContextFileName("")).toBeNull();
+    expect(sanitizeContextFileName(null)).toBeNull();
+  });
+
+  it("findNearestContextFile walks up from cwd to the filesystem root", async () => {
+    const root = makeHome();
+    try {
+      mkdirSync(join(root, "a", "b", "c"), { recursive: true });
+      writeFileSync(join(root, "a", "AGENTS.md"), "top");
+      expect(await findNearestContextFile(join(root, "a", "b", "c"), "AGENTS.md")).toBe(
+        join(root, "a", "AGENTS.md"),
+      );
+      // deepest copy wins
+      writeFileSync(join(root, "a", "b", "AGENTS.md"), "mid");
+      expect(await findNearestContextFile(join(root, "a", "b", "c"), "AGENTS.md")).toBe(
+        join(root, "a", "b", "AGENTS.md"),
+      );
+      expect(await findNearestContextFile(join(root, "a", "b", "c"), "CLAUDE.md")).toBeNull();
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it("findContextFiles reports per-file path and project-local target", async () => {
+    const root = makeHome();
+    try {
+      const cwd = join(root, "proj");
+      mkdirSync(cwd, { recursive: true });
+      writeFileSync(join(cwd, "CLAUDE.md"), "hi");
+      const files = await findContextFiles(cwd);
+      expect(files).toEqual([
+        { name: "AGENTS.md", path: null, targetPath: join(cwd, "AGENTS.md") },
+        { name: "CLAUDE.md", path: join(cwd, "CLAUDE.md"), targetPath: join(cwd, "CLAUDE.md") },
+      ]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
   });
 });

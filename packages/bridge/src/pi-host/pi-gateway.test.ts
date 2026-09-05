@@ -505,4 +505,243 @@ describe("PiGateway", () => {
     expect(resp).toMatchObject({ success: false, error: "runtime_install_unavailable" });
     await gateway.stopAll();
   }, slow);
+
+  it("context files: get/read/write AGENTS.md & CLAUDE.md against the project cwd", async () => {
+    const cwd = workDir("gw-context");
+    const gateway = new PiGateway({
+      piEntry: fakeEnginePath(),
+      engineVersion: "0.0.0-test",
+      piHome: workDir("gw-pihome-context"),
+      resolveCwd: () => cwd,
+    });
+    gateway.send = () => undefined;
+    const ctl = (op: string, payload: Record<string, unknown> = {}) =>
+      gateway.handleControl({ id: "cX", type: "control", op, projectId: "proj", payload });
+
+    // empty project: both files reported absent with project-local targets
+    const listed0 = await ctl("get_context_files");
+    expect(listed0).toMatchObject({ success: true });
+    const files0 = (listed0 as { data: { cwd: string; files: Array<Record<string, unknown>> } }).data;
+    expect(files0.cwd).toBe(cwd);
+    expect(files0.files).toEqual([
+      { name: "AGENTS.md", path: null, targetPath: join(cwd, "AGENTS.md") },
+      { name: "CLAUDE.md", path: null, targetPath: join(cwd, "CLAUDE.md") },
+    ]);
+
+    // reading a missing file returns an empty new file at the project root
+    const read0 = await ctl("read_context_file", { name: "AGENTS.md" });
+    expect(read0).toMatchObject({
+      success: true,
+      data: { path: join(cwd, "AGENTS.md"), content: "", created: true },
+    });
+
+    // write creates the project-local file; re-read sees it
+    const written = await ctl("write_context_file", {
+      name: "agents.md",
+      content: "# Project rules\nAlways run tests.\n",
+    });
+    expect(written).toMatchObject({ success: true, data: { path: join(cwd, "AGENTS.md") } });
+    const read1 = await ctl("read_context_file", { name: "AGENTS.md" });
+    expect(read1).toMatchObject({
+      success: true,
+      data: { path: join(cwd, "AGENTS.md"), content: "# Project rules\nAlways run tests.\n", created: false },
+    });
+
+    // a parent copy is found walking up (pi upward merge)
+    await ctl("write_context_file", { name: "CLAUDE.md", content: "# Claude rules\n" });
+    await mkdir(join(cwd, "src", "deep"), { recursive: true });
+    const gatewayDeep = new PiGateway({
+      piEntry: fakeEnginePath(),
+      engineVersion: "0.0.0-test",
+      piHome: workDir("gw-pihome-context2"),
+      resolveCwd: () => join(cwd, "src", "deep"),
+    });
+    gatewayDeep.send = () => undefined;
+    const deepRead = await gatewayDeep.handleControl({
+      id: "cX",
+      type: "control",
+      op: "read_context_file",
+      projectId: "proj",
+      payload: { name: "CLAUDE.md" },
+    });
+    expect(deepRead).toMatchObject({ success: true });
+    expect((deepRead as { data: { path: string; content: string } }).data).toMatchObject({
+      path: join(cwd, "CLAUDE.md"),
+      content: "# Claude rules\n",
+      created: false,
+    });
+    await gatewayDeep.stopAll();
+
+    // invalid names rejected on both read and write
+    const badRead = await ctl("read_context_file", { name: "README.md" });
+    expect(badRead).toMatchObject({ success: false });
+    const badWrite = await ctl("write_context_file", { name: "../evil", content: "x" });
+    expect(badWrite).toMatchObject({ success: false });
+    await gateway.stopAll();
+  }, slow);
+
+  it("imports discovered models into a provider with id upsert semantics", async () => {
+    const cwd = workDir("gw-import");
+    const gateway = new PiGateway({
+      piEntry: fakeEnginePath(),
+      engineVersion: "0.0.0-test",
+      piHome: workDir("gw-pihome-import"),
+      resolveCwd: () => cwd,
+    });
+    gateway.send = () => undefined;
+    const ctl = (op: string, payload: Record<string, unknown> = {}) =>
+      gateway.handleControl({ id: "cX", type: "control", op, projectId: "proj", payload });
+
+    // seed one provider with an existing model (keeps extra fields)
+    const seeded = await ctl("upsert_model", {
+      providerId: "ollama",
+      spec: {
+        api: "openai-completions",
+        baseUrl: "http://127.0.0.1:11434/v1",
+        apiKey: "ollama",
+        models: [
+          { id: "llama3.1:8b", name: "Llama 3.1 8B", reasoning: false, input: ["text"], contextWindow: 128000 },
+        ],
+      },
+    });
+    expect(seeded.success).toBe(true);
+
+    // import merges: same id replaced (drops nothing), new ids appended
+    const imported = await ctl("import_models", {
+      providerId: "ollama",
+      models: [
+        { id: "llama3.1:8b", name: "Llama 3.1 8B (Updated)" },
+        { id: "qwen2.5-coder:7b", name: "Qwen 2.5 Coder 7B" },
+        { id: "garbage" }, // no name is fine
+        { id: "" }, // skipped
+        42, // skipped
+      ],
+    });
+    expect(imported).toMatchObject({ success: true });
+    const providers = (imported as { data: Record<string, unknown> }).data;
+    const models = ((providers["ollama"] as Record<string, unknown>)["models"] as Array<Record<string, unknown>>);
+    expect(models.map((m) => m["id"])).toEqual(["llama3.1:8b", "qwen2.5-coder:7b", "garbage"]);
+    // same-id model was replaced but provider-level fields survive
+    expect(models[0]).toMatchObject({ id: "llama3.1:8b", name: "Llama 3.1 8B (Updated)" });
+    expect(providers["ollama"]).toMatchObject({ baseUrl: "http://127.0.0.1:11434/v1", apiKey: "ollama" });
+    // re-import of the same id keeps the file stable (idempotent)
+    const again = await ctl("import_models", { providerId: "ollama", models: [{ id: "qwen2.5-coder:7b" }] });
+    const againModels = ((again as { data: Record<string, unknown> }).data["ollama"] as Record<string, unknown>)["models"] as Array<Record<string, unknown>>;
+    expect(againModels.map((m) => m["id"])).toEqual(["llama3.1:8b", "qwen2.5-coder:7b", "garbage"]);
+
+    // missing provider id / invalid models rejected
+    expect((await ctl("import_models", { providerId: "", models: [{ id: "x" }] }))).toMatchObject({ success: false });
+    expect((await ctl("import_models", { providerId: "ollama", models: [] }))).toMatchObject({ success: false });
+    expect((await ctl("import_models", { providerId: "ollama", models: [{ id: "" }] }))).toMatchObject({ success: false });
+    await gateway.stopAll();
+  }, slow);
+
+  it("imports a models.json providers fragment via import_models_json", async () => {
+    const cwd = workDir("gw-import-json");
+    const gateway = new PiGateway({
+      piEntry: fakeEnginePath(),
+      engineVersion: "0.0.0-test",
+      piHome: workDir("gw-pihome-import-json"),
+      resolveCwd: () => cwd,
+    });
+    gateway.send = () => undefined;
+    const ctl = (op: string, payload: Record<string, unknown> = {}) =>
+      gateway.handleControl({ id: "cX", type: "control", op, projectId: "proj", payload });
+
+    await ctl("upsert_model", {
+      providerId: "anthropic",
+      spec: { baseUrl: "https://my-proxy.example.com/v1", models: [{ id: "claude-sonnet-4", name: "Claude Sonnet 4" }] },
+    });
+
+    // full providers wrapper: provider fields overwrite, models upsert by id
+    const full = await ctl("import_models_json", {
+      json: JSON.stringify({
+        providers: {
+          anthropic: {
+            baseUrl: "https://proxy2.example.com/v1",
+            models: [
+              { id: "claude-sonnet-4", name: "Claude Sonnet 4 (Proxy)" },
+              { id: "claude-opus-4", name: "Claude Opus 4" },
+            ],
+          },
+          "local-llm": {
+            api: "openai-completions",
+            baseUrl: "http://localhost:8080/v1",
+            apiKey: "$MY_KEY",
+            models: [{ id: "gpt-oss:20b", reasoning: true }],
+          },
+        },
+      }),
+    });
+    expect(full).toMatchObject({ success: true });
+    expect((full as { data: { touched: string[] } }).data.touched).toEqual(["anthropic", "local-llm"]);
+    const providers1 = (full as { data: { providers: Record<string, Record<string, unknown>> } }).data.providers;
+    const anthropicModels = providers1["anthropic"]["models"] as Array<Record<string, unknown>>;
+    expect(anthropicModels.map((m) => m["id"])).toEqual(["claude-sonnet-4", "claude-opus-4"]);
+    expect(anthropicModels[0]).toMatchObject({ id: "claude-sonnet-4", name: "Claude Sonnet 4 (Proxy)" });
+    expect(providers1["anthropic"]).toMatchObject({ baseUrl: "https://proxy2.example.com/v1" });
+
+    // bare single-provider object also accepted
+    const bare = await ctl("import_models_json", {
+      json: JSON.stringify({ "local-llm": { baseUrl: "http://localhost:9090/v1", models: [{ id: "m2" }] } }),
+    });
+    expect(bare.success).toBe(true);
+    const providers2 = (bare as { data: { providers: Record<string, Record<string, unknown>> } }).data.providers;
+    expect((providers2["local-llm"] as Record<string, unknown>)["baseUrl"]).toBe("http://localhost:9090/v1");
+
+    // malformed JSON / wrong shapes rejected without touching the file
+    expect((await ctl("import_models_json", { json: "{nope" }))).toMatchObject({ success: false });
+    expect((await ctl("import_models_json", { json: "[1,2,3]" }))).toMatchObject({ success: false });
+    expect((await ctl("import_models_json", { json: '{"providers": 42}' }))).toMatchObject({ success: false });
+    const after = await ctl("get_models");
+    expect((after as { data: Record<string, unknown> }).data).toHaveProperty("local-llm");
+    expect(((after as { data: Record<string, unknown> }).data["local-llm"] as Record<string, unknown>)["baseUrl"]).toBe(
+      "http://localhost:9090/v1",
+    );
+    await gateway.stopAll();
+  }, slow);
+
+  it("runs pi update --models through the configured runner", async () => {
+    const cwd = workDir("gw-update-models");
+    const calls: Array<{ cmd: string; args: string[] }> = [];
+    const gateway = new PiGateway({
+      piEntry: "/fake/pi/dist/bundle/cli.js",
+      engineVersion: "0.0.0-test",
+      piHome: workDir("gw-pihome-update"),
+      resolveCwd: () => cwd,
+      runCommand: async (cmd, args) => {
+        calls.push({ cmd, args });
+        return "Model catalogs refreshed";
+      },
+    });
+    gateway.send = () => undefined;
+    const ok = await gateway.handleControl({ id: "c1", type: "control", op: "update_models", projectId: "proj" });
+    expect(ok).toMatchObject({ success: true, data: { output: "Model catalogs refreshed" } });
+    expect(calls).toHaveLength(1);
+    // node entry spawns `node <entry> update --models`
+    expect(calls[0].cmd).toEqual(expect.any(String));
+    expect(calls[0].args).toEqual([
+      expect.any(String), // process.execPath
+      expect.stringMatching(/cli\.js$/), // entry
+      "update",
+      "--models",
+    ]);
+
+    // non-zero exit surfaces the error message from the runner
+    const failing = new PiGateway({
+      piEntry: "/fake/pi/dist/bundle/cli.js",
+      engineVersion: "0.0.0-test",
+      piHome: workDir("gw-pihome-update-fail"),
+      resolveCwd: () => cwd,
+      runCommand: async () => {
+        throw new Error("command_failed:node ... (exit 1): network error");
+      },
+    });
+    failing.send = () => undefined;
+    const bad = await failing.handleControl({ id: "c2", type: "control", op: "update_models", projectId: "proj" });
+    expect(bad).toMatchObject({ success: false });
+    expect((bad as { error: string }).error).toContain("network error");
+    await gateway.stopAll();
+    await failing.stopAll();
+  }, slow);
 });

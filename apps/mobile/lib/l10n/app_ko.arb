@@ -1,7 +1,6 @@
 {
   "@@locale": "ko",
   "appTitle": "CC Pocket",
-
   "projects": "프로젝트",
   "manageProjects": "관리",
   "createProject": "프로젝트 만들기",
@@ -23,9 +22,7 @@
   "removeProjectConfirm": "최근 프로젝트에서 \"{name}\"을 제거할까요?",
   "@removeProjectConfirm": {
     "placeholders": {
-      "name": {
-        "type": "Object"
-      }
+      "name": { "type": "String" }
     }
   },
   "rename": "이름 변경",
@@ -51,11 +48,26 @@
     }
   },
   "toolSuggestionTitle": "Codex에 {toolName}을(를) 추가할까요?",
+  "@toolSuggestionTitle": {
+    "placeholders": {
+      "toolName": { "type": "String" }
+    }
+  },
   "toolSuggestionInstall": "{toolName} 설치",
+  "@toolSuggestionInstall": {
+    "placeholders": {
+      "toolName": { "type": "String" }
+    }
+  },
   "toolSuggestionInstalling": "설치 중…",
   "toolSuggestionNotNow": "나중에",
   "toolSuggestionAuthDescription": "필요한 앱을 연결한 후 완료되면 확인해 주세요.",
   "toolSuggestionConnect": "{appName} 연결",
+  "@toolSuggestionConnect": {
+    "placeholders": {
+      "appName": { "type": "String" }
+    }
+  },
   "toolSuggestionComplete": "연결을 완료했습니다",
   "toolSuggestionFailed": "설치하지 못했습니다",
   "toolSuggestionOpenFailed": "연결 페이지를 열 수 없습니다.",
@@ -127,6 +139,11 @@
   "gitUnavailableHint": "이 프로젝트에서는 Git 기능을 사용할 수 없습니다",
   "autoModeFallbackDefaultTip": "이 환경에서는 Auto mode를 사용할 수 없어 Default mode로 전환했습니다",
   "galleryWithCount": "갤러리 ({count})",
+  "@galleryWithCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "disconnect": "연결 해제",
   "back": "뒤로",
   "next": "다음",
@@ -154,6 +171,11 @@
   "bridgeServerStopped": "Bridge 서버가 중지됨",
   "failedToStopServer": "서버 중지 실패",
   "sshPasswordPrompt": "{machineName}의 SSH 비밀번호 입력",
+  "@sshPasswordPrompt": {
+    "placeholders": {
+      "machineName": { "type": "String" }
+    }
+  },
   "password": "비밀번호",
   "machineEditAddTitle": "컴퓨터 추가",
   "machineEditApiKey": "API Key",
@@ -163,6 +185,11 @@
   "machineEditAddAndConnect": "추가하고 연결",
   "deleteMachine": "컴퓨터 삭제",
   "deleteMachineConfirm": "\"{displayName}\"을 삭제할까요? 저장된 인증 정보가 모두 제거됩니다.",
+  "@deleteMachineConfirm": {
+    "placeholders": {
+      "displayName": { "type": "String" }
+    }
+  },
   "connectToBridgeServer": "Bridge 서버에 연결",
   "apiKeyOptional": "API 키(선택 사항)",
   "apiKeyHint": "인증이 없으면 비워 두세요",
@@ -190,8 +217,23 @@
   "newSession": "새 세션",
   "justNow": "방금",
   "minutesAgo": "{minutes}분 전",
+  "@minutesAgo": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
   "hoursAgo": "{hours}시간 전",
+  "@hoursAgo": {
+    "placeholders": {
+      "hours": { "type": "int" }
+    }
+  },
   "daysAgo": "{days}일 전",
+  "@daysAgo": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
   "unfavorite": "즐겨찾기 해제",
   "favorite": "즐겨찾기",
   "updateBridge": "Bridge 업데이트",
@@ -201,23 +243,15 @@
   "bridgeVersionCurrentExpected": "현재 v{current}, 권장 v{expected}+",
   "@bridgeVersionCurrentExpected": {
     "placeholders": {
-      "current": {
-        "type": "String"
-      },
-      "expected": {
-        "type": "String"
-      }
+      "current": { "type": "String" },
+      "expected": { "type": "String" }
     }
   },
   "bridgeVersionCurrentLatest": "현재 v{current}, 최신 v{latest}",
   "@bridgeVersionCurrentLatest": {
     "placeholders": {
-      "current": {
-        "type": "String"
-      },
-      "latest": {
-        "type": "String"
-      }
+      "current": { "type": "String" },
+      "latest": { "type": "String" }
     }
   },
   "bridgeLatestVersionChecking": "최신 Bridge 버전 확인 중...",
@@ -229,9 +263,7 @@
   "appUpdateAvailable": "v{version} 사용 가능",
   "@appUpdateAvailable": {
     "placeholders": {
-      "version": {
-        "type": "String"
-      }
+      "version": { "type": "String" }
     }
   },
   "openGitHubReleases": "GitHub Releases 열기",
@@ -282,6 +314,11 @@
   "directoryBrowserBridgeUpdateRequired": "이 기능을 사용하려면 최신 Bridge Server가 필요합니다. Bridge를 업데이트한 후 다시 시도해 주세요.",
   "worktreeNew": "새로 만들기",
   "worktreeExisting": "기존 ({count})",
+  "@worktreeExisting": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "branchOptional": "브랜치(선택 사항)",
   "branchHint": "feature/...",
   "noExistingWorktrees": "기존 worktree 없음",
@@ -346,27 +383,21 @@
   "changePermissionModeBody": "{mode}(으)로 전환하면 세션이 재시작됩니다. 대화는 유지됩니다.",
   "@changePermissionModeBody": {
     "placeholders": {
-      "mode": {
-        "type": "String"
-      }
+      "mode": { "type": "String" }
     }
   },
   "changeExecutionModeTitle": "실행 모드 변경",
   "changeExecutionModeBody": "{mode}(으)로 전환하면 세션이 재시작됩니다. 대화는 유지됩니다.",
   "@changeExecutionModeBody": {
     "placeholders": {
-      "mode": {
-        "type": "String"
-      }
+      "mode": { "type": "String" }
     }
   },
   "changeApprovalPolicyTitle": "승인 정책 변경",
   "changeApprovalPolicyBody": "{mode}(으)로 전환하면 세션이 재시작됩니다. 대화는 유지됩니다.",
   "@changeApprovalPolicyBody": {
     "placeholders": {
-      "mode": {
-        "type": "String"
-      }
+      "mode": { "type": "String" }
     }
   },
   "codexApprovalUntrustedDescription": "신뢰할 수 있는 명령만 자동 실행하고 나머지는 확인",
@@ -383,6 +414,11 @@
   "guardianApprovalDetails": "세부 정보",
   "guardianApprovalHideDetails": "세부 정보 숨기기",
   "guardianApprovalAuthorization": "승인 수준: {authorization}",
+  "@guardianApprovalAuthorization": {
+    "placeholders": {
+      "authorization": { "type": "String" }
+    }
+  },
   "enablePlanModeTitle": "Plan Mode 활성화",
   "disablePlanModeTitle": "Plan Mode 비활성화",
   "enablePlanModeBody": "Plan Mode를 활성화하면 세션이 재시작됩니다. 대화는 유지됩니다.",
@@ -391,9 +427,7 @@
   "changeSandboxModeBody": "{mode}(으)로 전환하면 세션이 재시작됩니다. 대화는 유지됩니다.",
   "@changeSandboxModeBody": {
     "placeholders": {
-      "mode": {
-        "type": "String"
-      }
+      "mode": { "type": "String" }
     }
   },
   "messagePlaceholder": "Claude에게 메시지...",
@@ -432,28 +466,27 @@
   "offlinePendingNewSessionTitle": "새 세션 대기 중",
   "offlinePendingResumeTitle": "재개 대기 중",
   "diffLines": "diff {count}줄",
+  "@diffLines": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "changedLines": "{count, plural, =1{변경된 줄 {count}개} other{변경된 줄 {count}개}}",
   "@changedLines": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "count": { "type": "int" }
     }
   },
   "hunkCount": "{count, plural, =1{변경 블록 {count}개} other{변경 블록 {count}개}}",
   "@hunkCount": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "count": { "type": "int" }
     }
   },
   "fileCount": "{count, plural, =1{파일 {count}개} other{파일 {count}개}}",
   "@fileCount": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "count": { "type": "int" }
     }
   },
   "tapInterruptHoldStop": "탭: 중단, 길게 누르기: 정지",
@@ -464,6 +497,11 @@
   "rewindModeCodeOnly": "코드만 복원",
   "rewindConfirmTitle": "되돌리기 확인",
   "rewindConfirmBody": "모드: {mode}\n\n이 작업은 취소할 수 없습니다. 계속할까요?",
+  "@rewindConfirmBody": {
+    "placeholders": {
+      "mode": { "type": "String" }
+    }
+  },
   "rewindCannotRewindFiles": "파일을 되돌릴 수 없습니다",
   "codexRewindConfirmTitle": "대화를 되돌릴까요?",
   "codexRewindConfirmBody": "채팅을 이 메시지 직전으로 복원하고, 메시지를 입력창에 다시 넣습니다. 파일 변경 사항은 그대로 유지됩니다.",
@@ -474,17 +512,33 @@
   "forkTargetNotFound": "분기할 사용자 메시지를 찾을 수 없습니다",
   "tapToRetry": "탭하여 재시도",
   "diffSummaryAddedRemoved": "+{added}/-{removed}줄",
+  "@diffSummaryAddedRemoved": {
+    "placeholders": {
+      "added": { "type": "int" },
+      "removed": { "type": "int" }
+    }
+  },
   "lineCountSummary": "{count}줄",
+  "@lineCountSummary": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "toolResult": "도구 결과",
   "answered": "응답 완료",
   "agentIsAsking": "{agent} 질문 중",
   "@agentIsAsking": {
     "placeholders": {
-      "agent": {}
+      "agent": { "type": "Object" }
     }
   },
   "submitAllAnswers": "모든 답변 제출",
   "submitWithCount": "제출({count}개 선택)",
+  "@submitWithCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "selectOptionsToSubmit": "제출할 옵션 선택",
   "typeYourAnswer": "답변을 입력하세요...",
   "orTypeCustomAnswer": "또는 직접 답변 입력...",
@@ -494,6 +548,11 @@
   "screenshotButtonHint": "채팅 도구 모음의 스크린샷 버튼으로 캡처하세요.",
   "screenshotsWillAppearHere": "Claude 세션의 스크린샷이 여기에 표시됩니다.",
   "allWithCount": "전체 ({count})",
+  "@allWithCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "noImages": "이미지 없음",
   "failedToDeleteImage": "이미지 삭제 실패",
   "failedToDownloadImage": "이미지 다운로드 실패",
@@ -642,7 +701,17 @@
   "swipeReject": "거부",
   "allClear": "모두 완료!",
   "itemsProcessed": "{count}개 처리됨",
+  "@itemsProcessed": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "bestStreak": "최고 연속 기록: {count}",
+  "@bestStreak": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "tryAgain": "다시 시도",
   "waitingForTasks": "작업 대기 중",
   "agentReadyForPrompt": "에이전트가 다음 프롬프트를 기다리고 있습니다.",
@@ -687,7 +756,7 @@
   "appIconSettingsSubtitle": "{device} 홈 화면에 표시되는 아이콘을 변경할 수 있습니다.",
   "@appIconSettingsSubtitle": {
     "placeholders": {
-      "device": {"type": "String"}
+      "device": { "type": "String" }
     }
   },
   "appIconSupporterDialogTitle": "월간 Supporter 혜택",
@@ -736,14 +805,14 @@
   "usagePaceExpected": "예상 사용량 {percent}%",
   "@usagePaceExpected": {
     "placeholders": {
-      "percent": {"type": "int"}
+      "percent": { "type": "int" }
     }
   },
   "usagePaceWillLast": "현재 속도라면 초기화까지 유지될 전망",
   "usagePaceRunsOutIn": "현재 속도라면 약 {duration} 후 한도 도달 예상",
   "@usagePaceRunsOutIn": {
     "placeholders": {
-      "duration": {"type": "String"}
+      "duration": { "type": "String" }
     }
   },
   "usagePaceAtLimit": "한도에 도달했습니다",
@@ -767,18 +836,14 @@
   "usageResetAt": "초기화: {time}",
   "@usageResetAt": {
     "placeholders": {
-      "time": {
-        "type": "String"
-      }
+      "time": { "type": "String" }
     }
   },
   "usageAlreadyReset": "이미 초기화됨",
   "attachedImages": "첨부 이미지 ({count})",
   "@attachedImages": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "count": { "type": "int" }
     }
   },
   "attachedImagesNoCount": "첨부 이미지",
@@ -787,9 +852,7 @@
   "failedToFetchImagesWithError": "이미지 가져오기 실패: {error}",
   "@failedToFetchImagesWithError": {
     "placeholders": {
-      "error": {
-        "type": "String"
-      }
+      "error": { "type": "String" }
     }
   },
   "retry": "재시도",
@@ -806,8 +869,8 @@
   "generatedImagePositionLabel": "생성된 이미지 {current} / {total}",
   "@generatedImagePositionLabel": {
     "placeholders": {
-      "current": {"type": "int"},
-      "total": {"type": "int"}
+      "current": { "type": "int" },
+      "total": { "type": "int" }
     }
   },
   "noImageInClipboard": "클립보드에 이미지가 없습니다",
@@ -815,20 +878,14 @@
   "imageLimitReached": "최대 {max}개 이미지까지 허용됩니다",
   "@imageLimitReached": {
     "placeholders": {
-      "max": {
-        "type": "int"
-      }
+      "max": { "type": "int" }
     }
   },
   "imageLimitTruncated": "처음 {max}개 이미지만 첨부됨({dropped}개 제외)",
   "@imageLimitTruncated": {
     "placeholders": {
-      "max": {
-        "type": "int"
-      },
-      "dropped": {
-        "type": "int"
-      }
+      "max": { "type": "int" },
+      "dropped": { "type": "int" }
     }
   },
   "selectFromGallery": "갤러리에서 선택",
@@ -847,9 +904,7 @@
   "archiveFailedWithError": "세션 보관 실패: {error}",
   "@archiveFailedWithError": {
     "placeholders": {
-      "error": {
-        "type": "String"
-      }
+      "error": { "type": "String" }
     }
   },
   "noRecentSessions": "최근 세션 없음",
@@ -909,9 +964,7 @@
   "shareText": "CC Pocket: Claude & Codex\n휴대폰에서 코딩 에이전트를 제어하세요 📱\n#ccpocket\n{url}",
   "@shareText": {
     "placeholders": {
-      "url": {
-        "type": "String"
-      }
+      "url": { "type": "String" }
     }
   },
   "starOnGithub": "GitHub에서 Star",
@@ -934,9 +987,7 @@
   "supportEntryActiveSubtitle": "{date}부터 CC Pocket을 후원 중입니다.",
   "@supportEntryActiveSubtitle": {
     "placeholders": {
-      "date": {
-        "type": "String"
-      }
+      "date": { "type": "String" }
     }
   },
   "supporterMonthlyDescription": "앱을 계속 개선하기 위한 정기 후원입니다.",
@@ -956,58 +1007,44 @@
   "supporterSummarySinceChip": "{date}부터",
   "@supporterSummarySinceChip": {
     "placeholders": {
-      "date": {
-        "type": "String"
-      }
+      "date": { "type": "String" }
     }
   },
   "supporterSummaryStreakChip": "연속: {duration}",
   "@supporterSummaryStreakChip": {
     "placeholders": {
-      "duration": {
-        "type": "String"
-      }
+      "duration": { "type": "String" }
     }
   },
   "supporterSummaryOneTimeCount": "일회성 ×{count}",
   "@supporterSummaryOneTimeCount": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "count": { "type": "int" }
     }
   },
   "supporterSummarySnackCount": "간식 ×{count}",
   "@supporterSummarySnackCount": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "count": { "type": "int" }
     }
   },
   "supporterSummaryCoffeeCount": "음료 ×{count}",
   "@supporterSummaryCoffeeCount": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "count": { "type": "int" }
     }
   },
   "supporterSummaryLunchCount": "점심 ×{count}",
   "@supporterSummaryLunchCount": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "count": { "type": "int" }
     }
   },
   "supporterSummaryLessThanMonth": "1개월 미만",
   "supporterSummaryDurationMonths": "{count, plural, =1{1개월} other{{count}개월}}",
   "@supporterSummaryDurationMonths": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "count": { "type": "int" }
     }
   },
   "supporterSummarySinceLabel": "시작",
@@ -1040,18 +1077,14 @@
   "supporterPurchaseFailed": "구매 실패: {message}",
   "@supporterPurchaseFailed": {
     "placeholders": {
-      "message": {
-        "type": "String"
-      }
+      "message": { "type": "String" }
     }
   },
   "supporterRestoreSuccess": "구매 정보를 복원했습니다.",
   "supporterRestoreFailed": "복원 실패: {message}",
   "@supporterRestoreFailed": {
     "placeholders": {
-      "message": {
-        "type": "String"
-      }
+      "message": { "type": "String" }
     }
   },
   "gitDiscardAllChangesTitle": "모든 변경 사항을 버릴까요?",
@@ -1064,7 +1097,6 @@
   "approvalRequiredNotificationTitle": "승인 대기 중 - ccpocket",
   "exitPlanModeNotificationBody": "작성된 계획을 확인해야 합니다",
   "renderErrorFallback": "이 콘텐츠를 표시할 수 없습니다.",
-
   "confirm": "확인",
   "piEngineTitle": "Pi 엔진",
   "piEngineSettingsSubtitle": "시스템 프롬프트, 시작 플래그, 모델",
@@ -1146,6 +1178,34 @@
   "piEngineProviderBaseUrl": "기본 URL",
   "piEngineProviderApi": "API",
   "piEngineProviderApiKey": "API 키",
+  "piEngineModelImport": "서버에서 가져오기",
+  "piEngineModelImportDesc": "OpenAI 호환 엔드포인트에서 모델 ID를 가져와 이 프로바이더에 병합합니다.",
+  "piEngineModelImportFetch": "모델 가져오기",
+  "piEngineModelImportFetching": "모델을 가져오는 중…",
+  "piEngineModelImportSelect": "가져올 모델을 선택하세요. 이미 있는 ID는 그 자리에서 갱신됩니다.",
+  "piEngineModelImportNone": "이 엔드포인트에 모델이 없습니다.",
+  "piEngineModelImportDone": "{provider}에 모델 {count}개를 가져왔습니다.",
+  "@piEngineModelImportDone": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "provider": { "type": "String" }
+    }
+  },
+  "piEngineModelsImportJson": "JSON 가져오기",
+  "piEngineModelsImportJsonDesc": "models.json의 \"providers\" 조각을 붙여넣어 파일에 병합합니다.",
+  "piEngineModelsImportJsonHint": "{\n  \"providers\": {\n    \"ollama\": {\n      \"baseUrl\": \"http://127.0.0.1:11434/v1\",\n      \"api\": \"openai-completions\",\n      \"apiKey\": \"ollama\",\n      \"models\": [{\"id\": \"qwen2.5-coder:7b\"}]\n    }\n  }\n}",
+  "piEngineModelsImportJsonDone": "프로바이더 {count}개를 가져왔습니다.",
+  "@piEngineModelsImportJsonDone": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "piEngineModelsImportJsonInvalid": "유효한 providers JSON 객체가 아닙니다.",
+  "piEngineRefreshCatalog": "모델 카탈로그 새로고침",
+  "piEngineRefreshCatalogDesc": "pi update --models 를 실행해 내장 프로바이더 카탈로그를 새로고침합니다 (네트워크 필요).",
+  "piEngineRefreshCatalogConfirm": "지금 내장 모델 카탈로그를 새로고침할까요? 최신 프로바이더 카탈로그를 다운로드합니다.",
+  "piEngineRefreshCatalogRunning": "모델 카탈로그를 새로고침하는 중…",
+  "piEngineRefreshCatalogDone": "모델 카탈로그를 새로고침했습니다.",
   "piEngineCommands": "명령 팔레트",
   "piEngineCommandsSubtitle": "슬래시 명령·템플릿·스킬 (get_commands)",
   "piEngineCommandsHint": "명령은 엔진에서 확장됩니다. 탭하여 /name 을 복사한 뒤 채팅 입력란에 붙여넣으세요.",
@@ -1195,6 +1255,171 @@
       "name": { "type": "String" }
     }
   },
+  "piEnginePromptsHint": "프롬프트는 슬래시 명령으로 노출되는 .md 파일입니다. 편집은 즉시 적용되며 재시작이 필요 없습니다.",
+  "piEnginePromptsScope": "범위",
+  "piEnginePromptsScopeGlobal": "전역",
+  "piEnginePromptsScopeProject": "프로젝트",
+  "piEnginePromptsContent": "내용",
+  "piEnginePromptsCopy": "복사",
+  "piEnginePackages": "패키지",
+  "piEnginePackagesSubtitle": "npm / git / 로컬 패키지（pi install）",
+  "piEnginePackagesHint": "패키지는 settings.json의 packages[]에 구성된 npm·git·로컬 소스입니다. 엔진은 시작하거나 다시 로드할 때 확장, 스킬, 프롬프트, 테마를 여기서 해석합니다.",
+  "piEnginePackagesEmpty": "구성된 패키지가 없습니다. 오른쪽 위 + 로 설치하세요.",
+  "piEnginePackagesCount": "패키지 {count}개",
+  "@piEnginePackagesCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "piEnginePackagesGroupGlobal": "전역",
+  "piEnginePackagesGroupProject": "프로젝트",
+  "piEnginePackagesInstall": "패키지 설치",
+  "piEnginePackagesSourceLabel": "소스",
+  "piEnginePackagesSourceHint": "npm:lodash · https://github.com/user/repo · ./local-ext",
+  "piEnginePackagesInstallLocal": "이 프로젝트에 설치",
+  "piEnginePackagesInstallLocalDesc": ".pi/에 설치하고 소스를 프로젝트 settings.json에 기록합니다",
+  "piEnginePackagesUpdate": "업데이트",
+  "piEnginePackagesUpdateAll": "모두 업데이트",
+  "piEnginePackagesRemove": "제거",
+  "piEnginePackagesRemoveConfirm": "패키지 {source}를 제거할까요?",
+  "@piEnginePackagesRemoveConfirm": {
+    "placeholders": {
+      "source": { "type": "String" }
+    }
+  },
+  "piEnginePackagesRemoveConfirmBody": "산출물을 제거하고 settings.json에서 항목을 삭제합니다.",
+  "piEnginePackagesNotInstalled": "미설치",
+  "piEnginePackagesInstalled": "설치됨",
+  "piEnginePackagesUpdated": "패키지 {count}개를 업데이트했습니다",
+  "@piEnginePackagesUpdated": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "piEnginePackagesRemoved": "{source}를 제거했습니다",
+  "@piEnginePackagesRemoved": {
+    "placeholders": {
+      "source": { "type": "String" }
+    }
+  },
+  "piEnginePackagesInstalling": "{source} 설치 중…",
+  "@piEnginePackagesInstalling": {
+    "placeholders": {
+      "source": { "type": "String" }
+    }
+  },
+  "piEnginePackagesUpdating": "패키지 업데이트 중…",
+  "piEnginePackagesRemoving": "{source} 제거 중…",
+  "@piEnginePackagesRemoving": {
+    "placeholders": {
+      "source": { "type": "String" }
+    }
+  },
+  "piEnginePackagesRestartHint": "엔진은 리소스를 해석할 때 구성된 소스를 다시 읽습니다. npm/git 산출물 변경은 보통 재시작(또는 /reload) 후에 적용됩니다.",
+  "piEngineSettingsCore": "설정",
+  "piEngineSettingsSubtitle": "settings.json 핵심 옵션(JSON 폴백 편집기 포함)",
+  "piEngineSettingsSectionGeneral": "일반",
+  "piEngineSettingsSectionBehavior": "동작",
+  "piEngineSettingsDefaultProvider": "기본 제공자",
+  "piEngineSettingsDefaultProviderDesc": "선택이 없을 때 사용할 제공자.",
+  "piEngineSettingsDefaultModel": "기본 모델",
+  "piEngineSettingsDefaultModelDesc": "선택이 없을 때 사용할 모델.",
+  "piEngineSettingsThinkingLevel": "기본 사고 수준",
+  "piEngineSettingsThinkingLevelDesc": "모델이 재정의하지 않을 때 적용됩니다.",
+  "piEngineSettingsTransport": "전송 방식",
+  "piEngineSettingsTransportDesc": "제공자 호출의 API 전송 방식.",
+  "piEngineSettingsSteering": "스티어링 모드",
+  "piEngineSettingsSteeringDesc": "도구 확인을 그룹화하는 방식.",
+  "piEngineSettingsFollowUp": "후속 질문 모드",
+  "piEngineSettingsFollowUpDesc": "후속 질문 처리 방식.",
+  "piEngineSettingsTrust": "기본 프로젝트 신뢰",
+  "piEngineSettingsTrustDesc": "여기서 설정하지 않으면 프로젝트마다 확인됩니다(전역만).",
+  "piEngineSettingsShellPath": "셸 경로",
+  "piEngineSettingsShellPathDesc": "bash 도구에 사용하는 사용자 지정 셸(예: Cygwin).",
+  "piEngineSettingsExternalEditor": "외부 편집기",
+  "piEngineSettingsExternalEditorDesc": "외부 편집기 명령.",
+  "piEngineSettingsHttpProxy": "HTTP 프록시",
+  "piEngineSettingsHttpProxyDesc": "Pi 관리 HTTP 클라이언트에 적용되는 프록시.",
+  "piEngineSettingsHideThinking": "사고 숨기기",
+  "piEngineSettingsHideThinkingDesc": "사고 블록을 기본적으로 접습니다.",
+  "piEngineSettingsCacheNotices": "캐시 미스 알림",
+  "piEngineSettingsCacheNoticesDesc": "캐시 비용과 제공자 복구 알림을 표시합니다.",
+  "piEngineSettingsQuietStartup": "조용한 시작",
+  "piEngineSettingsQuietStartupDesc": "시작 배너를 건너뜁니다.",
+  "piEngineSettingsSkillCommands": "스킬 명령",
+  "piEngineSettingsSkillCommandsDesc": "스킬을 /skill:name 명령으로 등록합니다.",
+  "piEngineSettingsInstallTelemetry": "설치 원격 측정",
+  "piEngineSettingsInstallTelemetryDesc": "익명 버전/업데이트 ping.",
+  "piEngineSettingsAnalytics": "분석",
+  "piEngineSettingsAnalyticsDesc": "선택형 사용 분석.",
+  "piEngineSettingsCollapseChangelog": "변경 로그 접기",
+  "piEngineSettingsCollapseChangelogDesc": "업데이트 후 간결한 변경 로그를 표시합니다.",
+  "piEngineSettingsCompaction": "압축",
+  "piEngineSettingsCompactionEnabled": "긴 세션 자동 압축",
+  "piEngineSettingsCompactionReserve": "예약 토큰",
+  "piEngineSettingsCompactionKeep": "유지할 최근 토큰",
+  "piEngineSettingsRetry": "재시도",
+  "piEngineSettingsRetryEnabled": "일시적 오류 자동 재시도",
+  "piEngineSettingsRetryMax": "최대 재시도",
+  "piEngineSettingsRetryBase": "기본 지연(ms)",
+  "piEngineSettingsImages": "이미지",
+  "piEngineSettingsImagesAutoResize": "이미지 자동 크기 조정",
+  "piEngineSettingsImagesBlock": "이미지 차단",
+  "piEngineSettingsTerminal": "터미널",
+  "piEngineSettingsTerminalShowImages": "터미널에 이미지 표시",
+  "piEngineSettingsRawJson": "원시 JSON",
+  "piEngineSettingsRawJsonDesc": "settings.json의 모든 키를 편집(폴백).",
+  "piEngineSettingsRawSave": "JSON 적용",
+  "piEngineSettingsJsonInvalid": "JSON이 유효하지 않습니다. 구문을 수정한 후 다시 시도하세요.",
+  "piEngineSettingsJsonObject": "루트 값은 JSON 객체여야 합니다.",
+  "piEngineSettingsHint": "대부분의 변경은 엔진 시작 시 적용됩니다. 지금 적용하려면 엔진을 다시 시작하세요. 폼에서 다루지 않는 키는 '원시 JSON' 섹션에서 편집할 수 있습니다.",
+  "piEngineThemes": "테마",
+  "piEngineThemesSubtitle": "엔진 내장 및 사용자 테마",
+  "piEngineThemesBuiltin": "내장",
+  "piEngineThemesCustom": "사용자",
+  "piEngineThemesActive": "적용 중",
+  "piEngineThemesUseDefault": "기본 테마 사용",
+  "piEngineThemesUseDefaultDesc": "settings.theme 을 지우고 엔진 기본 색상을 사용합니다.",
+  "piEngineThemesImport": "테마 가져오기",
+  "piEngineThemesImportDesc": "테마 JSON을 붙여넣으세요. \"name\" 문자열과 \"colors\" 객체가 필요하며, 파일은 ~/.pi/agent/themes/ 에 저장됩니다.",
+  "piEngineThemesImportJson": "테마 JSON",
+  "piEngineThemesImportInvalid": "테마는 \"name\" 문자열과 \"colors\" 객체를 가진 JSON 객체여야 합니다.",
+  "piEngineThemesImportInvalidJson": "JSON이 올바르지 않습니다. 구문을 수정하고 다시 시도하세요.",
+  "piEngineThemesRemove": "테마 삭제",
+  "piEngineThemesRemoveConfirm": "테마 \"{name}\" 을 삭제할까요? 파일이 삭제됩니다.",
+  "@piEngineThemesRemoveConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "piEngineThemesEmpty": "아직 테마가 없습니다. 가져와서 시작하세요.",
+  "piEngineContextFiles": "컨텍스트 파일",
+  "piEngineContextFilesSubtitle": "AGENTS.md / CLAUDE.md 빠른 편집",
+  "piEngineContextFilesHint": "엔진은 프로젝트 루트에서 위로 AGENTS.md / CLAUDE.md 를 병합합니다. 빠른 편집은 항상 프로젝트 로컬 파일을 대상으로 하며, 상위에 복사본이 있으면 계속 엔진에 제공됩니다.",
+  "piEngineContextFilesProject": "프로젝트 파일: {path}",
+  "@piEngineContextFilesProject": {
+    "placeholders": {
+      "path": { "type": "String" }
+    }
+  },
+  "piEngineContextFilesParent": "상위 복사본: {path} · 위에서 병합",
+  "@piEngineContextFilesParent": {
+    "placeholders": {
+      "path": { "type": "String" }
+    }
+  },
+  "piEngineContextFilesNew": "{path} 에 생성됩니다",
+  "@piEngineContextFilesNew": {
+    "placeholders": {
+      "path": { "type": "String" }
+    }
+  },
+  "piEngineContextFilesEdit": "{name} 편집",
+  "@piEngineContextFilesEdit": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
   "piEngineExtensions": "확장 기능",
   "piEngineExtensionsSubtitle": "감지된 확장 및 신뢰 경고",
   "piEngineExtensionsTrustWarning": "확장은 파일과 네트워크에 접근할 수 있는 임의 코드를 실행합니다. 신뢰할 수 있는 출처의 확장만 설치하세요.",
@@ -1223,7 +1448,6 @@
   "piEngineSkillsApply": "적용",
   "piEngineSkillsRestartHint": "스킬은 엔진 시작 시 스캔됩니다. 추가하거나 변경한 스킬은 엔진 재시작 후 적용됩니다.",
   "piEngineSkillMissing": "이 스킬에 SKILL.md가 없습니다.",
-
   "piEngineRuntime": "런타임",
   "piEngineRuntimeSubtitle": "실행 환경 (bionic / Proroot / proot-distro)",
   "piEngineRuntimeBadgeA": "내장 (bionic)",
@@ -1286,5 +1510,7 @@
       "count": { "type": "int" }
     }
   },
-  "piEngineRuntimeRestartHint": "경로를 전환하면 엔진이 다시 시작되어 새 런타임이 즉시 적용됩니다."
+  "piEngineRuntimeRestartHint": "경로를 전환하면 엔진이 다시 시작되어 새 런타임이 즉시 적용됩니다.",
+  "clear": "선택 해제",
+  "selectAll": "모두 선택"
 }

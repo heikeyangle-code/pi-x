@@ -242,6 +242,8 @@ export interface PiSessionMeta {
   sessionId: string;
   /** User-assigned name (session_info) or the first user prompt. */
   name?: string;
+  /** True when name came from an explicit session_info entry (not a fallback). */
+  named: boolean;
   /** Absolute project path (header.cwd). */
   cwd: string;
   /** ISO timestamps. */
@@ -347,6 +349,7 @@ export function parsePiSessionJsonl(
   return {
     sessionId: id,
     name: name ?? fallbackName,
+    named: name !== undefined,
     cwd,
     createdAt: new Date(createdMs).toISOString(),
     lastActivityAt: new Date(lastMs).toISOString(),
@@ -360,13 +363,60 @@ export function parsePiSessionJsonl(
 // Recent sessions scan (~/.pi/agent/sessions/--<cwd>--/<file>.jsonl)
 // ---------------------------------------------------------------------------
 
+export interface PiRecentSessionsOptions {
+  /** Maximum number of sessions to return (after offset). */
+  limit?: number;
+  /** Skip the first N matches (after sorting, before limit). */
+  offset?: number;
+  /** Case-insensitive substring match on name / sessionId. */
+  searchQuery?: string;
+  /** Only sessions with an explicit user-assigned name (session_info). */
+  namedOnly?: boolean;
+  /** Only sessions whose model belongs to the given provider family. */
+  provider?: string;
+  /** Only sessions whose project cwd equals this path. */
+  projectPath?: string;
+}
+
+/**
+ * Map a `list_recent_sessions` provider request onto pi's model string.
+ * pi stores `provider/modelId` (e.g. "anthropic/claude-4") in model_change
+ * entries, while the CC Pocket protocol asks for "claude" | "codex".
+ */
+function piModelMatchesProvider(
+  model: string | undefined,
+  provider: string | undefined,
+): boolean {
+  if (provider === undefined) return true;
+  const m = (model ?? "").toLowerCase();
+  if (m === "") return false;
+  switch (provider.toLowerCase()) {
+    case "claude":
+      return m.includes("claude") || m.includes("anthropic");
+    case "codex":
+      return m.includes("codex") || m.includes("openai") || m.includes("gpt");
+    default:
+      return m.includes(provider.toLowerCase());
+  }
+}
+
 /**
  * Scan all pi session files under ~/.pi/agent/sessions, newest activity first.
  * Mirrors pi's own layout (getSessionsDir(): ~/.pi/agent/sessions) so the
  * home screen's "recent sessions" reflects exactly what the engine persists.
+ *
+ * Filtering happens on the parsed metadata (never the raw lines), so the
+ * result set is identical to what parsePiSessionJsonl would produce per file:
+ *   - searchQuery  -> case-insensitive substring on name (explicit or first
+ *                     prompt) and sessionId
+ *   - namedOnly    -> only sessions with an explicit session_info name
+ *   - provider     -> only sessions whose model belongs to the family
+ *   - projectPath  -> only sessions for that cwd
+ * Then results are sorted by lastActivityAt (desc) and offset/limit applied.
  */
 export async function scanPiRecentSessions(
   piHome: string,
+  options: PiRecentSessionsOptions = {},
 ): Promise<PiSessionMeta[]> {
   const sessionsDir = join(piHome, ".pi", "agent", "sessions");
   const out: PiSessionMeta[] = [];
@@ -402,22 +452,51 @@ export async function scanPiRecentSessions(
       }
       const meta = parsePiSessionJsonl(file, content);
       if (meta === null) continue;
-      // File mtime is the last resort for "modified" (empty session files).
+      // File mtime is the last resort for "modified" (empty session files
+      // carry no activity timestamps). Only apply it when parsing found no
+      // activity beyond the header, so conversation timestamps always win
+      // over write times (a recently-touched file must not reorder history).
       try {
         const st = await stat(file);
-        if (st.mtimeMs > Date.parse(meta.lastActivityAt)) {
+        if (
+          Date.parse(meta.lastActivityAt) <= Date.parse(meta.createdAt) &&
+          st.mtimeMs > Date.parse(meta.createdAt)
+        ) {
           meta.lastActivityAt = new Date(st.mtimeMs).toISOString();
         }
       } catch {
         // keep parsed activity time
       }
+      if (!matchesRecentSessionFilters(meta, options)) continue;
       out.push(meta);
     }
   }
   out.sort(
     (a, b) => Date.parse(b.lastActivityAt) - Date.parse(a.lastActivityAt),
   );
-  return out;
+  const offset = options.offset ?? 0;
+  const limit = options.limit ?? out.length;
+  return out.slice(offset, offset + limit);
+}
+
+/** Apply the list_recent_sessions filter options to one parsed session. */
+export function matchesRecentSessionFilters(
+  meta: PiSessionMeta,
+  options: PiRecentSessionsOptions,
+): boolean {
+  if (options.projectPath !== undefined && meta.cwd !== options.projectPath) {
+    return false;
+  }
+  if (options.namedOnly === true && !meta.named) return false;
+  if (!piModelMatchesProvider(meta.model, options.provider)) return false;
+  const q = options.searchQuery;
+  if (q !== undefined && q !== "") {
+    const needle = q.toLowerCase();
+    const name = (meta.name ?? "").toLowerCase();
+    const id = meta.sessionId.toLowerCase();
+    if (!name.includes(needle) && !id.includes(needle)) return false;
+  }
+  return true;
 }
 
 // ---------------------------------------------------------------------------
@@ -436,10 +515,16 @@ export interface PiSessionEntry {
   model?: string;
 }
 
-/** Tracks pi sessions known to the bridge (one per opened project). */
+/**
+ * Tracks pi sessions known to the bridge. pi keeps one engine per project
+ * (cwd) and may hold several sessions for it (forks/sidechains), so the
+ * registry maps a project to an ordered list of session ids. Engine state
+ * (model/status) is project-wide and therefore applied to every session of
+ * the project; names are per-session.
+ */
 export class PiSessionRegistry {
   private readonly sessions = new Map<string, PiSessionEntry>();
-  private readonly byProject = new Map<string, string>();
+  private readonly byProject = new Map<string, string[]>();
 
   register(
     sessionId: string,
@@ -457,25 +542,52 @@ export class PiSessionRegistry {
       name: existing?.name,
       model: existing?.model,
     });
-    this.byProject.set(projectId, sessionId);
+    const list = this.byProject.get(projectId);
+    if (list === undefined) {
+      this.byProject.set(projectId, [sessionId]);
+    } else if (!list.includes(sessionId)) {
+      list.push(sessionId);
+    }
   }
 
   unregister(sessionId: string): void {
     const entry = this.sessions.get(sessionId);
     if (entry === undefined) return;
-    if (this.byProject.get(entry.projectId) === sessionId) {
-      this.byProject.delete(entry.projectId);
+    const list = this.byProject.get(entry.projectId);
+    if (list !== undefined) {
+      const idx = list.indexOf(sessionId);
+      if (idx >= 0) list.splice(idx, 1);
+      if (list.length === 0) this.byProject.delete(entry.projectId);
     }
     this.sessions.delete(sessionId);
+  }
+
+  /** Unregister every session that belongs to a project (engine exit). */
+  clearProject(projectId: string): number {
+    const list = this.byProject.get(projectId) ?? [];
+    for (const sessionId of list) this.sessions.delete(sessionId);
+    this.byProject.delete(projectId);
+    return list.length;
   }
 
   get(sessionId: string): PiSessionEntry | undefined {
     return this.sessions.get(sessionId);
   }
 
+  /** Most recently registered session of a project (the active one). */
   getByProject(projectId: string): PiSessionEntry | undefined {
-    const id = this.byProject.get(projectId);
-    return id === undefined ? undefined : this.sessions.get(id);
+    const list = this.byProject.get(projectId);
+    if (list === undefined || list.length === 0) return undefined;
+    const id = list[list.length - 1]!;
+    return this.sessions.get(id);
+  }
+
+  /** All sessions of a project, most recent last. */
+  listByProject(projectId: string): PiSessionEntry[] {
+    const list = this.byProject.get(projectId) ?? [];
+    return list
+      .map((id) => this.sessions.get(id))
+      .filter((entry): entry is PiSessionEntry => entry !== undefined);
   }
 
   list(): PiSessionEntry[] {
@@ -483,16 +595,30 @@ export class PiSessionRegistry {
   }
 
   setStatus(projectId: string, status: PiSessionEntry["status"]): void {
-    const entry = this.getByProject(projectId);
-    if (entry === undefined) return;
-    entry.status = status;
-    entry.updatedAt = Date.now();
+    // Engine status is project-wide: every session of the project reflects
+    // the same engine lifecycle.
+    let touched = false;
+    for (const entry of this.listByProject(projectId)) {
+      entry.status = status;
+      entry.updatedAt = Date.now();
+      touched = true;
+    }
+    if (!touched) this.byProject.delete(projectId);
   }
 
   touch(sessionId: string): void {
     const entry = this.sessions.get(sessionId);
     if (entry === undefined) return;
     entry.updatedAt = Date.now();
+    // Re-append so getByProject keeps returning the most recently touched.
+    const list = this.byProject.get(entry.projectId);
+    if (list !== undefined) {
+      const idx = list.indexOf(sessionId);
+      if (idx >= 0) {
+        list.splice(idx, 1);
+        list.push(sessionId);
+      }
+    }
   }
 
   rename(sessionId: string, name: string): boolean {
@@ -504,8 +630,8 @@ export class PiSessionRegistry {
   }
 
   setModel(projectId: string, model: string): void {
-    const entry = this.getByProject(projectId);
-    if (entry === undefined) return;
-    entry.model = model;
+    for (const entry of this.listByProject(projectId)) {
+      entry.model = model;
+    }
   }
 }

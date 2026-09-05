@@ -1,8 +1,6 @@
 {
   "@@locale": "ja",
-
   "appTitle": "CC Pocket",
-
   "projects": "プロジェクト",
   "manageProjects": "管理",
   "createProject": "プロジェクトを作成",
@@ -16,13 +14,17 @@
   "removeWorkspaceProject": "プロジェクトを削除",
   "noProjectsYet": "プロジェクトはまだありません",
   "unavailable": "利用できません",
-
   "cancel": "キャンセル",
   "save": "保存",
   "delete": "削除",
   "remove": "削除",
   "removeProjectTitle": "プロジェクトを削除",
   "removeProjectConfirm": "「{name}」を最近のプロジェクトから削除しますか？",
+  "@removeProjectConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
   "rename": "名前を変更",
   "renameSession": "セッション名を変更",
   "pin": "セッションをピン留め",
@@ -46,11 +48,26 @@
     }
   },
   "toolSuggestionTitle": "Codex に {toolName} を追加しますか？",
+  "@toolSuggestionTitle": {
+    "placeholders": {
+      "toolName": { "type": "String" }
+    }
+  },
   "toolSuggestionInstall": "{toolName} をインストール",
+  "@toolSuggestionInstall": {
+    "placeholders": {
+      "toolName": { "type": "String" }
+    }
+  },
   "toolSuggestionInstalling": "インストール中…",
   "toolSuggestionNotNow": "今回はしない",
   "toolSuggestionAuthDescription": "必要なアプリを接続し、完了したら確認してください。",
   "toolSuggestionConnect": "{appName} を接続",
+  "@toolSuggestionConnect": {
+    "placeholders": {
+      "appName": { "type": "String" }
+    }
+  },
   "toolSuggestionComplete": "接続が完了しました",
   "toolSuggestionFailed": "インストールに失敗しました",
   "toolSuggestionOpenFailed": "接続ページを開けませんでした。",
@@ -137,18 +154,14 @@
   "all": "すべて",
   "none": "なし",
   "dismissKeyboard": "キーボードを閉じる",
-
   "connectAnyway": "接続を続行",
-
   "stopSession": "セッションを停止",
   "stopSessionConfirm": "このセッションを停止しますか？ Claude プロセスが終了します。",
-
   "startNewWithSameSettings": "同じ設定で新規開始",
   "copyResumeCommand": "再開コマンドをコピー",
   "copyResumeCommandSubtitle": "mac / Linuxに引き継ぎ",
   "resumeCommandCopied": "再開コマンドをコピーしました",
   "editSettingsThenStart": "設定を変更して開始",
-
   "bridgeServerUpdated": "Bridge Server を更新しました",
   "bridgeUpdateStarted": "Bridge を更新しています。接続を閉じてマシン一覧に戻ります。",
   "bridgeUpdateReconnectHint": "Bridge Server を更新しました。マシン一覧から再接続してください。",
@@ -157,7 +170,6 @@
   "failedToStartServer": "サーバーの起動に失敗しました",
   "bridgeServerStopped": "Bridge Server を停止しました",
   "failedToStopServer": "サーバーの停止に失敗しました",
-
   "sshPasswordPrompt": "{machineName} の SSH パスワードを入力",
   "@sshPasswordPrompt": {
     "placeholders": {
@@ -171,7 +183,6 @@
   "machineAutomaticWsApiKeyWarningBody": "このBridgeは暗号化されていないWSで見つかりました。APIキーは通信の暗号化なしで送信されます。信頼できるローカルネットワークまたはVPN内の場合のみ続けてください。",
   "machineAutomaticWsApiKeyWarningConnect": "WSで接続",
   "machineEditAddAndConnect": "追加して接続",
-
   "deleteMachine": "マシンを削除",
   "deleteMachineConfirm": "\"{displayName}\" を削除しますか？保存された認証情報もすべて削除されます。",
   "@deleteMachineConfirm": {
@@ -179,7 +190,6 @@
       "displayName": { "type": "String" }
     }
   },
-
   "connectToBridgeServer": "Bridge Server に接続",
   "apiKeyOptional": "API キー（任意）",
   "apiKeyHint": "認証なしの場合は空欄",
@@ -202,11 +212,9 @@
   "machines": "マシン",
   "refreshStatus": "状態を更新",
   "add": "追加",
-
   "readyToStart": "準備完了",
   "readyToStartDescription": "+ ボタンを押してセッションを作成し、Claude でコーディングを始めましょう。",
   "newSession": "新規セッション",
-
   "justNow": "たった今",
   "minutesAgo": "{minutes}分前",
   "@minutesAgo": {
@@ -265,7 +273,6 @@
   "offline": "オフライン",
   "unreachable": "接続不可",
   "checking": "確認中...",
-
   "recentProjects": "最近のプロジェクト",
   "orEnterPath": "またはパスを入力",
   "projectPath": "プロジェクトパス",
@@ -315,7 +322,6 @@
   "branchOptional": "ブランチ（任意）",
   "branchHint": "feature/...",
   "noExistingWorktrees": "既存の worktree はありません",
-
   "planApprovalSummary": "上のプランを確認して、承認するか計画を続けてください",
   "planApprovalSummaryCard": "プランを確認して、承認するか計画を続けてください",
   "toolApprovalSummary": "ツール実行には承認が必要です",
@@ -339,9 +345,9 @@
   "approveOnce": "今回だけ許可",
   "approveForSession": "このセッション中は許可",
   "approveAlways": "常に許可",
-  "approveAlwaysSub": "",
+  "approveAlwaysSub": "許可",
   "approveSessionMain": "セッション中許可",
-  "approveSessionSub": "",
+  "approveSessionSub": "許可",
   "permissionDefaultDescription": "標準の承認フローです",
   "permissionAutoDescription": "Claude が安全チェック付きで承認を自動処理します",
   "permissionAcceptEditsDescription": "ファイル編集を自動で承認します",
@@ -354,19 +360,16 @@
   "sandboxRestrictedDescription": "制限された環境でコマンドを実行します",
   "sandboxNativeDescription": "ネイティブ環境でコマンドを実行します",
   "sandboxNativeCautionDescription": "ネイティブ環境でコマンドを実行します（注意）",
-
   "sheetSubtitleApproval": "どの操作に承認が必要かを制御します",
   "sheetSubtitleSandboxCodex": "Codex は安全のためデフォルトで Sandbox が有効です。無効にするとシステムへのフルアクセスが可能になります。",
   "sheetSubtitleSandboxClaude": "Claude はデフォルトでネイティブ実行です。Sandbox を有効にするとアクセスが制限されます。",
   "sheetSubtitleModel": "モデルによって速度・能力・コストが異なります。",
   "sheetSubtitleEffort": "高い Effort はより丁寧な分析を行いますが、時間とコストが増えます。",
-
   "claudeEffortLowDesc": "高速な応答、分析は少なめ",
   "claudeEffortMediumDesc": "速度と品質のバランス",
   "claudeEffortHighDesc": "より丁寧な分析",
   "claudeEffortXHighDesc": "複雑な作業向けの拡張推論",
   "claudeEffortMaxDesc": "最も丁寧、最も遅い",
-
   "reasoningEffortNoneDesc": "推論なし",
   "reasoningEffortMinimalDesc": "最速、分析は最小限",
   "reasoningEffortLowDesc": "高速な応答、分析は少なめ",
@@ -376,32 +379,25 @@
   "reasoningEffortMaxDesc": "最も難しい問題向けの最大推論",
   "reasoningEffortUltraDesc": "最大推論と自動タスク委譲",
   "reasoningEffortModelSpecificDesc": "モデル固有の推論レベル",
-
   "changePermissionModeTitle": "Permission Mode を変更",
   "changePermissionModeBody": "{mode} に切り替えるとセッションが再起動します。会話は保持されます。",
   "@changePermissionModeBody": {
     "placeholders": {
-      "mode": {
-        "type": "String"
-      }
+      "mode": { "type": "String" }
     }
   },
   "changeExecutionModeTitle": "Execution Mode を変更",
   "changeExecutionModeBody": "{mode} に切り替えるとセッションが再起動します。会話は保持されます。",
   "@changeExecutionModeBody": {
     "placeholders": {
-      "mode": {
-        "type": "String"
-      }
+      "mode": { "type": "String" }
     }
   },
   "changeApprovalPolicyTitle": "Approval Policy を変更",
   "changeApprovalPolicyBody": "{mode} に切り替えるとセッションが再起動します。会話は保持されます。",
   "@changeApprovalPolicyBody": {
     "placeholders": {
-      "mode": {
-        "type": "String"
-      }
+      "mode": { "type": "String" }
     }
   },
   "codexApprovalUntrustedDescription": "trusted コマンドだけ自動実行し、それ以外は確認します",
@@ -420,7 +416,7 @@
   "guardianApprovalAuthorization": "承認レベル: {authorization}",
   "@guardianApprovalAuthorization": {
     "placeholders": {
-      "authorization": {"type": "String"}
+      "authorization": { "type": "String" }
     }
   },
   "enablePlanModeTitle": "Plan Mode を有効化",
@@ -431,12 +427,9 @@
   "changeSandboxModeBody": "{mode} に切り替えるとセッションが再起動します。会話は保持されます。",
   "@changeSandboxModeBody": {
     "placeholders": {
-      "mode": {
-        "type": "String"
-      }
+      "mode": { "type": "String" }
     }
   },
-
   "messagePlaceholder": "Claude にメッセージ...",
   "codexMessagePlaceholder": "Codex にメッセージ...",
   "queuedInputForReconnect": "再接続待ちキュー",
@@ -497,7 +490,6 @@
     }
   },
   "tapInterruptHoldStop": "タップ: 中断, 長押し: 停止",
-
   "rewind": "巻き戻す",
   "rewindToHere": "ここまで巻き戻す",
   "rewindModeConversationAndCode": "会話とコードを復元",
@@ -505,6 +497,11 @@
   "rewindModeCodeOnly": "コードのみ復元",
   "rewindConfirmTitle": "巻き戻しの確認",
   "rewindConfirmBody": "モード: {mode}\n\nこの操作は元に戻せません。実行しますか？",
+  "@rewindConfirmBody": {
+    "placeholders": {
+      "mode": { "type": "String" }
+    }
+  },
   "rewindCannotRewindFiles": "ファイルを巻き戻せません",
   "codexRewindConfirmTitle": "会話を巻き戻しますか？",
   "codexRewindConfirmBody": "このメッセージの直前までチャットを戻し、メッセージを入力欄に戻します。ファイル変更はそのまま残ります。",
@@ -514,7 +511,6 @@
   "forkConversationBody": "この応答時点から新しいCodexセッションを作成します。現在のセッションは変更されません。",
   "forkTargetNotFound": "分岐元のユーザー発言が見つかりません",
   "tapToRetry": "タップしてリトライ",
-
   "diffSummaryAddedRemoved": "+{added}/-{removed} 行",
   "@diffSummaryAddedRemoved": {
     "placeholders": {
@@ -529,12 +525,11 @@
     }
   },
   "toolResult": "ツール結果",
-
   "answered": "回答済み",
   "agentIsAsking": "{agent} が質問しています",
   "@agentIsAsking": {
     "placeholders": {
-      "agent": {}
+      "agent": { "type": "Object" }
     }
   },
   "submitAllAnswers": "すべての回答を送信",
@@ -549,7 +544,6 @@
   "orTypeCustomAnswer": "またはカスタム回答を入力...",
   "otherAnswer": "その他の回答...",
   "selectAllThatApply": "該当するものをすべて選択",
-
   "noScreenshotsYet": "スクリーンショットはまだありません",
   "screenshotButtonHint": "チャットツールバーのスクリーンショットボタンで画面をキャプチャできます。",
   "screenshotsWillAppearHere": "Claude セッションのスクリーンショットがここに表示されます。",
@@ -565,7 +559,6 @@
   "failedToShareImage": "画像の共有に失敗しました",
   "deleteScreenshot": "スクリーンショットを削除しますか？",
   "cannotBeUndone": "この操作は取り消せません。",
-
   "changes": "変更",
   "refresh": "更新",
   "diffCompareSideBySide": "並べて比較",
@@ -579,9 +572,7 @@
   "diffNoImage": "画像なし",
   "noChanges": "変更なし",
   "showAll": "すべて表示",
-
   "setupGuideTitle": "セットアップガイド",
-
   "guideAboutTitle": "CC Pocket とは",
   "guideAboutDescription": "Bridge Server 経由で Codex や Claude をスマートフォンから使えるモバイルクライアントです。",
   "guideAboutSdkNoteTitle": "Claude Agent SDK について",
@@ -591,7 +582,6 @@
   "guideAboutDiagramBridge": "Bridge Server",
   "guideAboutDiagramClaude": "Codex CLI\n/ Claude Agent SDK",
   "guideAboutDiagramCaption": "PC の Bridge Server が Codex CLI や Claude Agent SDK に接続し、\nスマホからその Bridge に接続して使います。",
-
   "guideBridgeTitle": "Bridge Server の\nセットアップ",
   "guideBridgeDescription": "PC で Bridge Server を起動します。Claude にはAPIキー、またはサブスクリプション認証の明示的な有効化が必要です。",
   "guideBridgePrerequisites": "必要なもの",
@@ -603,7 +593,6 @@
   "guideBridgeStep2": "またはグローバルインストール",
   "guideBridgeStep2Command": "npm install -g @ccpocket/bridge\nccpocket-bridge",
   "guideBridgeQrNote": "起動するとターミナルに QR コードが表示されます",
-
   "guideConnectionTitle": "接続方法",
   "guideConnectionDescription": "同じ Wi-Fi ネットワーク内なら、すぐに接続できます。",
   "guideConnectionQr": "QR コードスキャン",
@@ -613,7 +602,6 @@
   "guideConnectionManual": "手動入力",
   "guideConnectionManualDescription": "ws://<IP アドレス>:8765 の形式で直接入力します。",
   "guideConnectionRecommended": "おすすめ",
-
   "guideTailscaleTitle": "外出先からの接続",
   "guideTailscaleDescription": "自宅の外からも使いたい場合は、Tailscale（VPN の一種）を使えば安全にリモート接続できます。",
   "guideTailscaleStep1": "Mac と iPhone の両方に Tailscale をインストール",
@@ -621,7 +609,6 @@
   "guideTailscaleStep3": "Bridge URL に Tailscale IP を使用\n(例: ws://100.x.x.x:8765)",
   "guideTailscaleWebsite": "Tailscale 公式サイト",
   "guideTailscaleWebsiteHint": "詳しいセットアップ方法は公式サイトをご覧ください。",
-
   "guideLaunchdTitle": "常時起動の設定",
   "guideLaunchdDescription": "毎回手動で Bridge Server を起動するのが面倒な場合、マシンの起動時に自動で立ち上がるよう設定できます。",
   "guideLaunchdCommand": "セットアップコマンド",
@@ -629,12 +616,10 @@
   "guideLaunchdRecommendation": "まずは手動起動で動作確認してから、安定したらサービス登録がおすすめです。",
   "guideAutostartMacDescription": "launchd に登録。シェル環境（nvm、Homebrew 等）が自動で引き継がれます。",
   "guideAutostartLinuxDescription": "systemd ユーザーサービスを作成。Raspberry Pi 等の Linux ホストに対応。",
-
   "guideReadyTitle": "準備完了!",
   "guideReadyDescription": "Bridge Server を起動して、\nQR コードをスキャンするところから\n始めましょう。",
   "guideReadyStart": "さっそく始める",
   "guideReadyHint": "このガイドは設定画面からいつでも確認できます",
-
   "creatingSession": "セッション作成中...",
   "resolvingLinkedSession": "リンク先のセッションを検索しています...",
   "resumingLinkedSession": "セッションを再開しています...",
@@ -645,7 +630,6 @@
   "messageHistory": "メッセージ履歴",
   "viewChanges": "変更を確認",
   "screenshot": "スクリーンショット",
-
   "debug": "デバッグ",
   "logs": "ログ",
   "viewApplicationLogs": "アプリケーションログを表示",
@@ -656,7 +640,6 @@
   "updateTrackStable": "Stable（安定版）",
   "updateTrackStaging": "Staging（テスト）",
   "updateDownloaded": "アップデートをダウンロードしました。アプリを再起動すると反映されます。",
-
   "promptHistory": "プロンプト履歴",
   "frequent": "頻度順",
   "recent": "新しい順",
@@ -709,7 +692,6 @@
     }
   },
   "promptHistoryNoSyncTime": "同期時刻なし",
-
   "approvalQueue": "承認キュー",
   "resetQueue": "キューをリセット",
   "swipeSkip": "スキップ",
@@ -738,7 +720,6 @@
   "waitingForApprovalRequests": "エージェントからの承認リクエストを待っています。",
   "noActiveSessions": "実行中のセッションはありません",
   "startSessionToBegin": "セッションを開始して承認リクエストの受信を始めましょう。",
-
   "settingsTitle": "設定",
   "sectionGeneral": "一般",
   "sectionConnectionAccounts": "接続とアカウント",
@@ -775,7 +756,7 @@
   "appIconSettingsSubtitle": "{device}のホーム画面に表示されるアイコンを変更できます。",
   "@appIconSettingsSubtitle": {
     "placeholders": {
-      "device": {"type": "String"}
+      "device": { "type": "String" }
     }
   },
   "appIconSupporterDialogTitle": "月額サポーター特典",
@@ -801,14 +782,10 @@
   "changelogTitle": "変更履歴",
   "showAllMain": "すべて表示 (main)",
   "changelogFetchError": "変更履歴の取得に失敗しました",
-
   "updateNotificationLanguage": "通知言語を更新",
   "notificationLanguageUpdated": "通知言語を更新しました",
-
   "defaultNotRecommended": "Default（非推奨）",
-
   "imageAttached": "画像添付",
-
   "usageConnectToView": "Bridge に接続すると利用量を表示できます",
   "usageFetchFailed": "取得に失敗しました",
   "usageFiveHour": "5時間",
@@ -828,14 +805,14 @@
   "usagePaceExpected": "目安 {percent}% 使用",
   "@usagePaceExpected": {
     "placeholders": {
-      "percent": {"type": "int"}
+      "percent": { "type": "int" }
     }
   },
   "usagePaceWillLast": "このペースならリセットまで持つ見込み",
   "usagePaceRunsOutIn": "このペースだと約 {duration} で上限の見込み",
   "@usagePaceRunsOutIn": {
     "placeholders": {
-      "duration": {"type": "String"}
+      "duration": { "type": "String" }
     }
   },
   "usagePaceAtLimit": "上限に到達しています",
@@ -859,15 +836,14 @@
   "usageResetAt": "リセット: {time}",
   "@usageResetAt": {
     "placeholders": {
-      "time": {"type": "String"}
+      "time": { "type": "String" }
     }
   },
   "usageAlreadyReset": "リセット済み",
-
   "attachedImages": "添付画像 ({count})",
   "@attachedImages": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": { "type": "int" }
     }
   },
   "attachedImagesNoCount": "添付画像",
@@ -876,12 +852,11 @@
   "failedToFetchImagesWithError": "画像の取得に失敗しました: {error}",
   "@failedToFetchImagesWithError": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": { "type": "String" }
     }
   },
   "retry": "リトライ",
   "codexWriterConflictGuidance": "Codex Desktop または Codex App を閉じてから、もう一度お試しください。",
-
   "clipboardNotAvailable": "クリップボードにアクセスできません",
   "failedToLoadImage": "画像の読み込みに失敗しました",
   "generatedImagePromptLabel": "プロンプト",
@@ -894,8 +869,8 @@
   "generatedImagePositionLabel": "生成画像 {current} / {total}",
   "@generatedImagePositionLabel": {
     "placeholders": {
-      "current": {"type": "int"},
-      "total": {"type": "int"}
+      "current": { "type": "int" },
+      "total": { "type": "int" }
     }
   },
   "noImageInClipboard": "クリップボードに画像がありません",
@@ -903,26 +878,24 @@
   "imageLimitReached": "画像は最大{max}枚までです",
   "@imageLimitReached": {
     "placeholders": {
-      "max": {"type": "int"}
+      "max": { "type": "int" }
     }
   },
   "imageLimitTruncated": "最初の{max}枚のみ添付しました（{dropped}枚を除外）",
   "@imageLimitTruncated": {
     "placeholders": {
-      "max": {"type": "int"},
-      "dropped": {"type": "int"}
+      "max": { "type": "int" },
+      "dropped": { "type": "int" }
     }
   },
   "selectFromGallery": "ギャラリーから選択",
   "pasteFromClipboard": "クリップボードから貼付",
   "pasteImage": "画像をペースト",
-
   "voiceInputLanguage": "音声入力の言語",
   "hideVoiceInput": "音声入力ボタンを非表示",
   "hideVoiceInputSubtitle": "サードパーティの音声入力キーボードを利用する場合に便利",
   "openGalleryDirectly": "画像ボタンでギャラリーを直接開く",
   "openGalleryDirectlySubtitle": "添付メニューを表示せず、すぐに画像選択を開始します",
-
   "archive": "アーカイブ",
   "archiveConfirm": "このセッションをアーカイブしますか？",
   "archiveConfirmMessage": "セッションは一覧から非表示になります。Claude Codeからは引き続きアクセスできます。",
@@ -931,13 +904,12 @@
   "archiveFailedWithError": "セッションのアーカイブに失敗しました: {error}",
   "@archiveFailedWithError": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": { "type": "String" }
     }
   },
   "noRecentSessions": "最近のセッションはありません",
   "noSessionsMatchFilters": "現在のフィルター条件に一致するセッションがありません",
   "adjustFiltersAndSearch": "フィルター条件や検索語を変更してください",
-
   "tooltipDisplayMode": "カードに表示するメッセージを切替",
   "tooltipProviderFilter": "AIツールで絞り込み",
   "tooltipProjectFilter": "プロジェクトで絞り込み",
@@ -955,10 +927,8 @@
   "tooltipSendMessage": "メッセージを送信",
   "tooltipRemoveImage": "画像を削除",
   "tooltipClearDiff": "Diff選択を解除",
-
   "showMore": "もっと見る",
   "showLess": "閉じる",
-
   "authErrorTitle": "Claudeの再ログインが必要です",
   "authErrorBody": "BridgeマシンでClaudeに再ログインしてください。",
   "authErrorPrimaryCommandLabel": "手順1",
@@ -967,7 +937,6 @@
   "claudeOAuthOptInTitle": "サブスクリプション認証には明示的な有効化が必要です",
   "claudeOAuthOptInBody": "Anthropicはホストされた未改変のClaude Codeへのユーザー自身のログインを認める一方、Agent SDKガイドでは第三者製品にAPIキーを案内しています。そのためCC Pocketではサブスクリプション認証をデフォルトで無効にしています。",
   "claudeOAuthOptInHint": "詳細を確認し、Bridgeマシンで設定して再起動してください。不確実性を避ける場合はAPIキーを利用できます:",
-
   "authHelpTitle": "認証トラブルシューティング",
   "authHelpFetchError": "トラブルシューティングガイドを読み込めませんでした",
   "authHelpButton": "手順を見る",
@@ -975,7 +944,6 @@
   "authHelpLanguageEn": "English",
   "authHelpLanguageZhHans": "简体中文",
   "authHelpLanguageKo": "한국어",
-
   "terminalApp": "ターミナルアプリ",
   "terminalAppSubtitle": "外部ターミナルアプリでプロジェクトを開く",
   "terminalAppNone": "未設定",
@@ -989,7 +957,6 @@
   "terminalAppNotInstalled": "ターミナルアプリを開けませんでした",
   "terminalAppExperimental": "プレビュー",
   "terminalAppExperimentalNote": "この機能はプレビュー版です。プリセットはアプリや環境によって動作しない場合があります。新しいプリセットの追加は GitHub で歓迎しています！",
-
   "sectionSpread": "CC Pocket を広める",
   "spreadAppealMessage": "CC Pocket はまだ利用者が少なく、このままだと開発を続けるのが難しい状況です。気に入っていたら、ストア評価（星だけでOK）や知り合いへの紹介で応援してください。",
   "shareApp": "SNSでシェア",
@@ -1130,7 +1097,6 @@
   "approvalRequiredNotificationTitle": "承認待ち - ccpocket",
   "exitPlanModeNotificationBody": "作成したプランの確認が必要です",
   "renderErrorFallback": "このコンテンツを表示できませんでした",
-
   "confirm": "確認",
   "piEngineTitle": "Pi エンジン",
   "piEngineSettingsSubtitle": "システムプロンプト、起動フラグ、モデル",
@@ -1212,6 +1178,34 @@
   "piEngineProviderBaseUrl": "ベース URL",
   "piEngineProviderApi": "API",
   "piEngineProviderApiKey": "API キー",
+  "piEngineModelImport": "サーバーからインポート",
+  "piEngineModelImportDesc": "OpenAI 互換エンドポイントからモデル ID を取得し、このプロバイダーにマージします。",
+  "piEngineModelImportFetch": "モデルを取得",
+  "piEngineModelImportFetching": "モデルを取得中…",
+  "piEngineModelImportSelect": "インポートするモデルを選択してください。既存の ID はその場で更新されます。",
+  "piEngineModelImportNone": "このエンドポイントにモデルはありませんでした。",
+  "piEngineModelImportDone": "{count} 個のモデルを {provider} にインポートしました。",
+  "@piEngineModelImportDone": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "provider": { "type": "String" }
+    }
+  },
+  "piEngineModelsImportJson": "JSON をインポート",
+  "piEngineModelsImportJsonDesc": "models.json の \"providers\" フラグメントを貼り付けてファイルにマージします。",
+  "piEngineModelsImportJsonHint": "{\n  \"providers\": {\n    \"ollama\": {\n      \"baseUrl\": \"http://127.0.0.1:11434/v1\",\n      \"api\": \"openai-completions\",\n      \"apiKey\": \"ollama\",\n      \"models\": [{\"id\": \"qwen2.5-coder:7b\"}]\n    }\n  }\n}",
+  "piEngineModelsImportJsonDone": "{count} 個のプロバイダーをインポートしました。",
+  "@piEngineModelsImportJsonDone": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "piEngineModelsImportJsonInvalid": "有効な providers JSON オブジェクトではありません。",
+  "piEngineRefreshCatalog": "モデルカタログを更新",
+  "piEngineRefreshCatalogDesc": "pi update --models を実行して組み込みプロバイダーのカタログを更新します（要ネットワーク）。",
+  "piEngineRefreshCatalogConfirm": "組み込みモデルカタログを今すぐ更新しますか？最新のプロバイダーカタログをダウンロードします。",
+  "piEngineRefreshCatalogRunning": "モデルカタログを更新中…",
+  "piEngineRefreshCatalogDone": "モデルカタログを更新しました。",
   "piEngineCommands": "コマンドパレット",
   "piEngineCommandsSubtitle": "スラッシュコマンド・テンプレート・スキル（get_commands）",
   "piEngineCommandsHint": "コマンドはエンジン側で展開されます。タップして /name をコピーし、チャット入力欄に貼り付けてください。",
@@ -1261,6 +1255,171 @@
       "name": { "type": "String" }
     }
   },
+  "piEnginePromptsHint": "プロンプトはスラッシュコマンドとして公開される .md ファイルです。編集はすぐに反映され、再起動は不要です。",
+  "piEnginePromptsScope": "スコープ",
+  "piEnginePromptsScopeGlobal": "グローバル",
+  "piEnginePromptsScopeProject": "プロジェクト",
+  "piEnginePromptsContent": "内容",
+  "piEnginePromptsCopy": "コピー",
+  "piEnginePackages": "パッケージ",
+  "piEnginePackagesSubtitle": "npm / git / ローカル パッケージ（pi install）",
+  "piEnginePackagesHint": "パッケージは settings.json の packages[] に設定された npm・git・ローカル ソースです。エンジンは起動時または再読み込み時に拡張・スキル・プロンプト・テーマをそこから解決します。",
+  "piEnginePackagesEmpty": "パッケージはまだ設定されていません。右上の + からインストールしてください。",
+  "piEnginePackagesCount": "{count} 個のパッケージ",
+  "@piEnginePackagesCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "piEnginePackagesGroupGlobal": "グローバル",
+  "piEnginePackagesGroupProject": "プロジェクト",
+  "piEnginePackagesInstall": "パッケージをインストール",
+  "piEnginePackagesSourceLabel": "ソース",
+  "piEnginePackagesSourceHint": "npm:lodash · https://github.com/user/repo · ./local-ext",
+  "piEnginePackagesInstallLocal": "このプロジェクトにインストール",
+  "piEnginePackagesInstallLocalDesc": ".pi/ にインストールし、ソースをプロジェクトの settings.json に記録します",
+  "piEnginePackagesUpdate": "更新",
+  "piEnginePackagesUpdateAll": "すべて更新",
+  "piEnginePackagesRemove": "削除",
+  "piEnginePackagesRemoveConfirm": "パッケージ {source} を削除しますか？",
+  "@piEnginePackagesRemoveConfirm": {
+    "placeholders": {
+      "source": { "type": "String" }
+    }
+  },
+  "piEnginePackagesRemoveConfirmBody": "成果物をアンインストールし、settings.json からエントリを削除します。",
+  "piEnginePackagesNotInstalled": "未インストール",
+  "piEnginePackagesInstalled": "インストール済み",
+  "piEnginePackagesUpdated": "{count} 個のパッケージを更新しました",
+  "@piEnginePackagesUpdated": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "piEnginePackagesRemoved": "{source} を削除しました",
+  "@piEnginePackagesRemoved": {
+    "placeholders": {
+      "source": { "type": "String" }
+    }
+  },
+  "piEnginePackagesInstalling": "{source} をインストール中…",
+  "@piEnginePackagesInstalling": {
+    "placeholders": {
+      "source": { "type": "String" }
+    }
+  },
+  "piEnginePackagesUpdating": "パッケージを更新中…",
+  "piEnginePackagesRemoving": "{source} を削除中…",
+  "@piEnginePackagesRemoving": {
+    "placeholders": {
+      "source": { "type": "String" }
+    }
+  },
+  "piEnginePackagesRestartHint": "エンジンはリソース解決時に設定済みソースを再読み込みします。npm/git の成果物変更は通常、再起動（または /reload）後に反映されます。",
+  "piEngineSettingsCore": "設定",
+  "piEngineSettingsSubtitle": "settings.json の主要オプション（JSON フォールバックエディタ付き）",
+  "piEngineSettingsSectionGeneral": "一般",
+  "piEngineSettingsSectionBehavior": "動作",
+  "piEngineSettingsDefaultProvider": "既定プロバイダー",
+  "piEngineSettingsDefaultProviderDesc": "選択がない場合に使用するプロバイダー。",
+  "piEngineSettingsDefaultModel": "既定モデル",
+  "piEngineSettingsDefaultModelDesc": "選択がない場合に使用するモデル。",
+  "piEngineSettingsThinkingLevel": "既定の思考レベル",
+  "piEngineSettingsThinkingLevelDesc": "モデルが上書きしない場合に適用されます。",
+  "piEngineSettingsTransport": "トランスポート",
+  "piEngineSettingsTransportDesc": "プロバイダー呼び出しの API トランスポート。",
+  "piEngineSettingsSteering": "ステアリングモード",
+  "piEngineSettingsSteeringDesc": "ツール確認のグループ化方法。",
+  "piEngineSettingsFollowUp": "フォローアップモード",
+  "piEngineSettingsFollowUpDesc": "フォローアップ質問の処理方法。",
+  "piEngineSettingsTrust": "既定のプロジェクト信頼",
+  "piEngineSettingsTrustDesc": "ここで設定しない限りプロジェクトごとに確認されます（グローバルのみ）。",
+  "piEngineSettingsShellPath": "シェルパス",
+  "piEngineSettingsShellPathDesc": "bash ツールに使うカスタムシェル（Cygwin など）。",
+  "piEngineSettingsExternalEditor": "外部エディタ",
+  "piEngineSettingsExternalEditorDesc": "外部エディタのコマンド。",
+  "piEngineSettingsHttpProxy": "HTTP プロキシ",
+  "piEngineSettingsHttpProxyDesc": "Pi 管理の HTTP クライアントに適用するプロキシ。",
+  "piEngineSettingsHideThinking": "思考を隠す",
+  "piEngineSettingsHideThinkingDesc": "思考ブロックを既定で折りたたみます。",
+  "piEngineSettingsCacheNotices": "キャッシュミス通知",
+  "piEngineSettingsCacheNoticesDesc": "キャッシュコストとプロバイダー復旧の通知を表示します。",
+  "piEngineSettingsQuietStartup": "静かな起動",
+  "piEngineSettingsQuietStartupDesc": "起動バナーをスキップします。",
+  "piEngineSettingsSkillCommands": "スキルコマンド",
+  "piEngineSettingsSkillCommandsDesc": "スキルを /skill:name コマンドとして登録します。",
+  "piEngineSettingsInstallTelemetry": "インストールテレメトリ",
+  "piEngineSettingsInstallTelemetryDesc": "匿名のバージョン/更新 ping。",
+  "piEngineSettingsAnalytics": "アナリティクス",
+  "piEngineSettingsAnalyticsDesc": "オプトインの利用分析。",
+  "piEngineSettingsCollapseChangelog": "変更履歴を折りたたむ",
+  "piEngineSettingsCollapseChangelogDesc": "更新後に簡潔な変更履歴を表示します。",
+  "piEngineSettingsCompaction": "圧縮",
+  "piEngineSettingsCompactionEnabled": "長いセッションを自動圧縮",
+  "piEngineSettingsCompactionReserve": "予約トークン",
+  "piEngineSettingsCompactionKeep": "保持する最近のトークン",
+  "piEngineSettingsRetry": "再試行",
+  "piEngineSettingsRetryEnabled": "一時的な障害を自動再試行",
+  "piEngineSettingsRetryMax": "最大再試行回数",
+  "piEngineSettingsRetryBase": "基本遅延（ミリ秒）",
+  "piEngineSettingsImages": "画像",
+  "piEngineSettingsImagesAutoResize": "画像を自動リサイズ",
+  "piEngineSettingsImagesBlock": "画像をブロック",
+  "piEngineSettingsTerminal": "端末",
+  "piEngineSettingsTerminalShowImages": "端末に画像を表示",
+  "piEngineSettingsRawJson": "生 JSON",
+  "piEngineSettingsRawJsonDesc": "settings.json の任意のキーを編集（フォールバック）。",
+  "piEngineSettingsRawSave": "JSON を適用",
+  "piEngineSettingsJsonInvalid": "JSON が無効です。構文を修正して再試行してください。",
+  "piEngineSettingsJsonObject": "ルートは JSON オブジェクトである必要があります。",
+  "piEngineSettingsHint": "ほとんどの変更はエンジン起動時に反映されます。今すぐ適用するにはエンジンを再起動してください。フォームで扱わないキーは「生 JSON」セクションで編集できます。",
+  "piEngineThemes": "テーマ",
+  "piEngineThemesSubtitle": "エンジン内蔵・カスタムテーマ",
+  "piEngineThemesBuiltin": "内蔵",
+  "piEngineThemesCustom": "カスタム",
+  "piEngineThemesActive": "適用中",
+  "piEngineThemesUseDefault": "デフォルトテーマを使用",
+  "piEngineThemesUseDefaultDesc": "settings.theme をクリアし、エンジンの既定配色を使います。",
+  "piEngineThemesImport": "テーマをインポート",
+  "piEngineThemesImportDesc": "テーマ JSON を貼り付けます。\"name\" 文字列と \"colors\" オブジェクトが必要です。ファイルは ~/.pi/agent/themes/ に書き込まれます。",
+  "piEngineThemesImportJson": "テーマ JSON",
+  "piEngineThemesImportInvalid": "テーマは \"name\" 文字列と \"colors\" オブジェクトを持つ JSON オブジェクトである必要があります。",
+  "piEngineThemesImportInvalidJson": "JSON が無効です。構文を修正して再試行してください。",
+  "piEngineThemesRemove": "テーマを削除",
+  "piEngineThemesRemoveConfirm": "テーマ \"{name}\" を削除しますか？ファイルは削除されます。",
+  "@piEngineThemesRemoveConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "piEngineThemesEmpty": "テーマはまだありません。インポートしてください。",
+  "piEngineContextFiles": "コンテキストファイル",
+  "piEngineContextFilesSubtitle": "AGENTS.md / CLAUDE.md クイック編集",
+  "piEngineContextFilesHint": "エンジンはプロジェクトルートから上方向へ AGENTS.md / CLAUDE.md をマージします。クイック編集は常にプロジェクトローカルのファイルを対象とします。上位のコピーがある場合は引き続きエンジンに取り込まれます。",
+  "piEngineContextFilesProject": "プロジェクトファイル: {path}",
+  "@piEngineContextFilesProject": {
+    "placeholders": {
+      "path": { "type": "String" }
+    }
+  },
+  "piEngineContextFilesParent": "上位コピー: {path} · 上でマージ",
+  "@piEngineContextFilesParent": {
+    "placeholders": {
+      "path": { "type": "String" }
+    }
+  },
+  "piEngineContextFilesNew": "{path} に作成されます",
+  "@piEngineContextFilesNew": {
+    "placeholders": {
+      "path": { "type": "String" }
+    }
+  },
+  "piEngineContextFilesEdit": "{name} を編集",
+  "@piEngineContextFilesEdit": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
   "piEngineExtensions": "拡張機能",
   "piEngineExtensionsSubtitle": "検出された拡張と信頼の警告",
   "piEngineExtensionsTrustWarning": "拡張は任意のコードを実行できます（ファイル・ネットワークへのアクセスを含む）。信頼できる提供元のものだけをインストールしてください。",
@@ -1289,7 +1448,6 @@
   "piEngineSkillsApply": "反映",
   "piEngineSkillsRestartHint": "スキルはエンジン起動時にスキャンされます。追加・変更したスキルはエンジンの再起動後に反映されます。",
   "piEngineSkillMissing": "このスキルに SKILL.md が見つかりません。",
-
   "piEngineRuntime": "実行環境",
   "piEngineRuntimeSubtitle": "実行環境（bionic / Proroot / proot-distro）",
   "piEngineRuntimeBadgeA": "内蔵（bionic）",
@@ -1352,5 +1510,7 @@
       "count": { "type": "int" }
     }
   },
-  "piEngineRuntimeRestartHint": "路線を切り替えるとエンジンが再起動し、新しい実行環境がすぐに反映されます。"
+  "piEngineRuntimeRestartHint": "路線を切り替えるとエンジンが再起動し、新しい実行環境がすぐに反映されます。",
+  "clear": "クリア",
+  "selectAll": "すべて選択"
 }

@@ -1,8 +1,6 @@
 {
   "@@locale": "en",
-
   "appTitle": "CC Pocket",
-
   "projects": "Projects",
   "manageProjects": "Manage",
   "createProject": "Create project",
@@ -16,7 +14,6 @@
   "removeWorkspaceProject": "Remove project",
   "noProjectsYet": "No projects yet",
   "unavailable": "Unavailable",
-
   "cancel": "Cancel",
   "save": "Save",
   "delete": "Delete",
@@ -25,9 +22,7 @@
   "removeProjectConfirm": "Remove \"{name}\" from recent projects?",
   "@removeProjectConfirm": {
     "placeholders": {
-      "name": {
-        "type": "Object"
-      }
+      "name": { "type": "String" }
     }
   },
   "rename": "Rename",
@@ -55,17 +50,13 @@
   "toolSuggestionTitle": "Add {toolName} to Codex?",
   "@toolSuggestionTitle": {
     "placeholders": {
-      "toolName": {
-        "type": "Object"
-      }
+      "toolName": { "type": "String" }
     }
   },
   "toolSuggestionInstall": "Install {toolName}",
   "@toolSuggestionInstall": {
     "placeholders": {
-      "toolName": {
-        "type": "Object"
-      }
+      "toolName": { "type": "String" }
     }
   },
   "toolSuggestionInstalling": "Installing…",
@@ -74,9 +65,7 @@
   "toolSuggestionConnect": "Connect {appName}",
   "@toolSuggestionConnect": {
     "placeholders": {
-      "appName": {
-        "type": "Object"
-      }
+      "appName": { "type": "String" }
     }
   },
   "toolSuggestionComplete": "I've finished connecting",
@@ -150,6 +139,11 @@
   "gitUnavailableHint": "Git features are not available for this project",
   "autoModeFallbackDefaultTip": "Auto mode is not available in this environment, so Default mode was selected",
   "galleryWithCount": "Gallery ({count})",
+  "@galleryWithCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "disconnect": "Disconnect",
   "back": "Back",
   "next": "Next",
@@ -160,18 +154,14 @@
   "all": "All",
   "none": "None",
   "dismissKeyboard": "Dismiss keyboard",
-
   "connectAnyway": "Connect Anyway",
-
   "stopSession": "Stop Session",
   "stopSessionConfirm": "Stop this session? The Claude process will be terminated.",
-
   "startNewWithSameSettings": "Start New with Same Settings",
   "copyResumeCommand": "Copy Resume Command",
   "copyResumeCommandSubtitle": "Hand off to macOS / Linux",
   "resumeCommandCopied": "Resume command copied",
   "editSettingsThenStart": "Edit Settings Then Start",
-
   "bridgeServerUpdated": "Bridge Server updated",
   "bridgeUpdateStarted": "Updating Bridge. Closing this connection and returning to the machine list.",
   "bridgeUpdateReconnectHint": "Bridge Server updated. Reconnect from the machine list.",
@@ -180,8 +170,12 @@
   "failedToStartServer": "Failed to start server",
   "bridgeServerStopped": "Bridge Server stopped",
   "failedToStopServer": "Failed to stop server",
-
   "sshPasswordPrompt": "Enter SSH password for {machineName}",
+  "@sshPasswordPrompt": {
+    "placeholders": {
+      "machineName": { "type": "String" }
+    }
+  },
   "password": "Password",
   "machineEditAddTitle": "Add Machine",
   "machineEditApiKey": "API Key",
@@ -189,10 +183,13 @@
   "machineAutomaticWsApiKeyWarningBody": "This Bridge was found over unencrypted WS. The API key will be sent without transport encryption. Continue only on a trusted local network or VPN.",
   "machineAutomaticWsApiKeyWarningConnect": "Connect with WS",
   "machineEditAddAndConnect": "Add & Connect",
-
   "deleteMachine": "Delete Machine",
   "deleteMachineConfirm": "Delete \"{displayName}\"? This will remove all saved credentials.",
-
+  "@deleteMachineConfirm": {
+    "placeholders": {
+      "displayName": { "type": "String" }
+    }
+  },
   "connectToBridgeServer": "Connect to Bridge Server",
   "apiKeyOptional": "API Key (optional)",
   "apiKeyHint": "Leave empty if no auth",
@@ -215,15 +212,28 @@
   "machines": "Machines",
   "refreshStatus": "Refresh status",
   "add": "Add",
-
   "readyToStart": "Ready to start",
   "readyToStartDescription": "Press the + button to create a new session and start coding with Claude.",
   "newSession": "New Session",
-
   "justNow": "Just now",
   "minutesAgo": "{minutes}m ago",
+  "@minutesAgo": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
   "hoursAgo": "{hours}h ago",
+  "@hoursAgo": {
+    "placeholders": {
+      "hours": { "type": "int" }
+    }
+  },
   "daysAgo": "{days}d ago",
+  "@daysAgo": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
   "unfavorite": "Unfavorite",
   "favorite": "Favorite",
   "updateBridge": "Update Bridge",
@@ -263,7 +273,6 @@
   "offline": "Offline",
   "unreachable": "Unreachable",
   "checking": "Checking...",
-
   "recentProjects": "Recent Projects",
   "orEnterPath": "or enter path",
   "projectPath": "Project Path",
@@ -305,10 +314,14 @@
   "directoryBrowserBridgeUpdateRequired": "This feature requires a newer Bridge server. Update Bridge and try again.",
   "worktreeNew": "New",
   "worktreeExisting": "Existing ({count})",
+  "@worktreeExisting": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "branchOptional": "Branch (optional)",
   "branchHint": "feature/...",
   "noExistingWorktrees": "No existing worktrees",
-
   "planApprovalSummary": "Review the plan above and approve or continue planning",
   "planApprovalSummaryCard": "Review the plan and approve or continue planning",
   "toolApprovalSummary": "Tool execution requires approval",
@@ -347,19 +360,16 @@
   "sandboxRestrictedDescription": "Run commands in restricted environment",
   "sandboxNativeDescription": "Run commands natively",
   "sandboxNativeCautionDescription": "Run commands natively (CAUTION)",
-
   "sheetSubtitleApproval": "Controls which actions require your approval",
   "sheetSubtitleSandboxCodex": "Sandbox is on by default for safety. Disabling allows full system access.",
   "sheetSubtitleSandboxClaude": "Claude runs natively by default. Enabling sandbox restricts access.",
   "sheetSubtitleModel": "Different models vary in speed, capability, and cost.",
   "sheetSubtitleEffort": "Higher effort produces more thorough analysis but takes longer.",
-
   "claudeEffortLowDesc": "Faster responses, less thorough",
   "claudeEffortMediumDesc": "Balanced speed and quality",
   "claudeEffortHighDesc": "More thorough analysis",
   "claudeEffortXHighDesc": "Extended reasoning for complex work",
   "claudeEffortMaxDesc": "Most thorough, slowest",
-
   "reasoningEffortNoneDesc": "No reasoning",
   "reasoningEffortMinimalDesc": "Fastest, least analysis",
   "reasoningEffortLowDesc": "Faster responses, less thorough",
@@ -369,32 +379,25 @@
   "reasoningEffortMaxDesc": "Maximum reasoning for the hardest problems",
   "reasoningEffortUltraDesc": "Maximum reasoning with automatic task delegation",
   "reasoningEffortModelSpecificDesc": "Model-specific reasoning level",
-
   "changePermissionModeTitle": "Change Permission Mode",
   "changePermissionModeBody": "Switching to {mode} will restart the session. Your conversation will be preserved.",
   "@changePermissionModeBody": {
     "placeholders": {
-      "mode": {
-        "type": "String"
-      }
+      "mode": { "type": "String" }
     }
   },
   "changeExecutionModeTitle": "Change Execution Mode",
   "changeExecutionModeBody": "Switching to {mode} will restart the session. Your conversation will be preserved.",
   "@changeExecutionModeBody": {
     "placeholders": {
-      "mode": {
-        "type": "String"
-      }
+      "mode": { "type": "String" }
     }
   },
   "changeApprovalPolicyTitle": "Change Approval Policy",
   "changeApprovalPolicyBody": "Switching to {mode} will restart the session. Your conversation will be preserved.",
   "@changeApprovalPolicyBody": {
     "placeholders": {
-      "mode": {
-        "type": "String"
-      }
+      "mode": { "type": "String" }
     }
   },
   "codexApprovalUntrustedDescription": "Auto-run only trusted commands; ask for everything else",
@@ -413,7 +416,7 @@
   "guardianApprovalAuthorization": "Authorization: {authorization}",
   "@guardianApprovalAuthorization": {
     "placeholders": {
-      "authorization": {"type": "String"}
+      "authorization": { "type": "String" }
     }
   },
   "enablePlanModeTitle": "Enable Plan Mode",
@@ -424,12 +427,9 @@
   "changeSandboxModeBody": "Switching to {mode} will restart the session. Your conversation will be preserved.",
   "@changeSandboxModeBody": {
     "placeholders": {
-      "mode": {
-        "type": "String"
-      }
+      "mode": { "type": "String" }
     }
   },
-
   "messagePlaceholder": "Message Claude...",
   "codexMessagePlaceholder": "Message Codex...",
   "queuedInputForReconnect": "Queued for reconnect",
@@ -439,9 +439,7 @@
   "queuedInputImageCount": "{count, plural, =1{{count} image} other{{count} images}}",
   "@queuedInputImageCount": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "count": { "type": "int" }
     }
   },
   "tooltipSteerQueuedMessage": "Steer queued message",
@@ -468,32 +466,30 @@
   "offlinePendingNewSessionTitle": "New session pending",
   "offlinePendingResumeTitle": "Resume pending",
   "diffLines": "{count} diff lines",
+  "@diffLines": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "changedLines": "{count, plural, =1{{count} changed line} other{{count} changed lines}}",
   "@changedLines": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "count": { "type": "int" }
     }
   },
   "hunkCount": "{count, plural, =1{{count} hunk} other{{count} hunks}}",
   "@hunkCount": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "count": { "type": "int" }
     }
   },
   "fileCount": "{count, plural, =1{{count} file} other{{count} files}}",
   "@fileCount": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "count": { "type": "int" }
     }
   },
   "tapInterruptHoldStop": "Tap: interrupt, Hold: stop",
-
   "rewind": "Rewind",
   "rewindToHere": "Rewind to here",
   "rewindModeConversationAndCode": "Restore conversation & code",
@@ -503,7 +499,7 @@
   "rewindConfirmBody": "Mode: {mode}\n\nThis action cannot be undone. Proceed?",
   "@rewindConfirmBody": {
     "placeholders": {
-      "mode": {}
+      "mode": { "type": "String" }
     }
   },
   "rewindCannotRewindFiles": "Cannot rewind files",
@@ -515,37 +511,54 @@
   "forkConversationBody": "Create a new Codex session from this response. The current session will remain unchanged.",
   "forkTargetNotFound": "Cannot find a user turn to fork from",
   "tapToRetry": "Tap to retry",
-
   "diffSummaryAddedRemoved": "+{added}/-{removed} lines",
+  "@diffSummaryAddedRemoved": {
+    "placeholders": {
+      "added": { "type": "int" },
+      "removed": { "type": "int" }
+    }
+  },
   "lineCountSummary": "{count} lines",
+  "@lineCountSummary": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "toolResult": "Tool Result",
-
   "answered": "Answered",
   "agentIsAsking": "{agent} is asking",
   "@agentIsAsking": {
     "placeholders": {
-      "agent": {}
+      "agent": { "type": "Object" }
     }
   },
   "submitAllAnswers": "Submit All Answers",
   "submitWithCount": "Submit ({count} selected)",
+  "@submitWithCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "selectOptionsToSubmit": "Select options to submit",
   "typeYourAnswer": "Type your answer...",
   "orTypeCustomAnswer": "Or type a custom answer...",
   "otherAnswer": "Other answer...",
   "selectAllThatApply": "Select all that apply",
-
   "noScreenshotsYet": "No screenshots yet",
   "screenshotButtonHint": "Use the screenshot button in the chat toolbar to capture screenshots.",
   "screenshotsWillAppearHere": "Screenshots from Claude sessions will appear here.",
   "allWithCount": "All ({count})",
+  "@allWithCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "noImages": "No images",
   "failedToDeleteImage": "Failed to delete image",
   "failedToDownloadImage": "Failed to download image",
   "failedToShareImage": "Failed to share image",
   "deleteScreenshot": "Delete screenshot?",
   "cannotBeUndone": "This action cannot be undone.",
-
   "changes": "Changes",
   "refresh": "Refresh",
   "diffCompareSideBySide": "Side by Side",
@@ -559,9 +572,7 @@
   "diffNoImage": "No image",
   "noChanges": "No changes",
   "showAll": "Show all",
-
   "setupGuideTitle": "Setup Guide",
-
   "guideAboutTitle": "What is CC Pocket?",
   "guideAboutDescription": "A mobile client that lets you use Codex and Claude from your smartphone through the Bridge Server.",
   "guideAboutSdkNoteTitle": "About Claude Agent SDK",
@@ -571,7 +582,6 @@
   "guideAboutDiagramBridge": "Bridge Server",
   "guideAboutDiagramClaude": "Codex CLI\n/ Claude Agent SDK",
   "guideAboutDiagramCaption": "The Bridge Server on your PC connects to Codex CLI and Claude Agent SDK,\nthen your phone connects to the Bridge.",
-
   "guideBridgeTitle": "Bridge Server\nSetup",
   "guideBridgeDescription": "Start the Bridge Server on your PC. Claude requires an API key, or explicit opt-in for subscription authentication.",
   "guideBridgePrerequisites": "Prerequisites",
@@ -583,7 +593,6 @@
   "guideBridgeStep2": "Or install globally",
   "guideBridgeStep2Command": "npm install -g @ccpocket/bridge\nccpocket-bridge",
   "guideBridgeQrNote": "A QR code will appear in the terminal when started",
-
   "guideConnectionTitle": "Connection Methods",
   "guideConnectionDescription": "If on the same Wi-Fi network, you can connect right away.",
   "guideConnectionQr": "QR Code Scan",
@@ -593,7 +602,6 @@
   "guideConnectionManual": "Manual Entry",
   "guideConnectionManualDescription": "Enter directly in the format ws://<IP address>:8765.",
   "guideConnectionRecommended": "Recommended",
-
   "guideTailscaleTitle": "Remote Access",
   "guideTailscaleDescription": "To use from outside your home, Tailscale (a VPN) enables secure remote connections.",
   "guideTailscaleStep1": "Install Tailscale on both Mac and iPhone",
@@ -601,7 +609,6 @@
   "guideTailscaleStep3": "Use Tailscale IP for Bridge URL\n(e.g. ws://100.x.x.x:8765)",
   "guideTailscaleWebsite": "Tailscale Website",
   "guideTailscaleWebsiteHint": "Visit the official site for detailed setup instructions.",
-
   "guideLaunchdTitle": "Auto-start Setup",
   "guideLaunchdDescription": "If manually starting the Bridge Server is tedious, you can configure it to start automatically when your machine boots.",
   "guideLaunchdCommand": "Setup Command",
@@ -609,12 +616,10 @@
   "guideLaunchdRecommendation": "We recommend verifying with manual startup first, then registering as a service once stable.",
   "guideAutostartMacDescription": "Registers with launchd. Shell environment (nvm, Homebrew, etc.) is inherited automatically.",
   "guideAutostartLinuxDescription": "Creates a systemd user service. Works with Raspberry Pi and other Linux hosts.",
-
   "guideReadyTitle": "All Set!",
   "guideReadyDescription": "Start the Bridge Server and\nscan the QR code to\nget started.",
   "guideReadyStart": "Let's Get Started",
   "guideReadyHint": "You can revisit this guide anytime from Settings",
-
   "creatingSession": "Creating session...",
   "resolvingLinkedSession": "Finding session...",
   "resumingLinkedSession": "Resuming session...",
@@ -625,7 +630,6 @@
   "messageHistory": "Message History",
   "viewChanges": "View Changes",
   "screenshot": "Screenshot",
-
   "debug": "Debug",
   "logs": "Logs",
   "viewApplicationLogs": "View application logs",
@@ -636,7 +640,6 @@
   "updateTrackStable": "Stable",
   "updateTrackStaging": "Staging",
   "updateDownloaded": "Update downloaded. Restart app to apply.",
-
   "promptHistory": "Prompt History",
   "frequent": "Frequent",
   "recent": "Recent",
@@ -689,7 +692,6 @@
     }
   },
   "promptHistoryNoSyncTime": "No sync time",
-
   "approvalQueue": "Approval Queue",
   "resetQueue": "Reset queue",
   "swipeSkip": "SKIP",
@@ -699,7 +701,17 @@
   "swipeReject": "REJECT",
   "allClear": "All Clear!",
   "itemsProcessed": "{count} items processed",
+  "@itemsProcessed": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "bestStreak": "Best streak: {count}",
+  "@bestStreak": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "tryAgain": "Try Again",
   "waitingForTasks": "Waiting for tasks",
   "agentReadyForPrompt": "The agent is ready for your next prompt.",
@@ -708,7 +720,6 @@
   "waitingForApprovalRequests": "Waiting for approval requests from the agent.",
   "noActiveSessions": "No active sessions",
   "startSessionToBegin": "Start a session to begin receiving approval requests.",
-
   "settingsTitle": "Settings",
   "sectionGeneral": "GENERAL",
   "sectionConnectionAccounts": "Connection & Accounts",
@@ -745,7 +756,7 @@
   "appIconSettingsSubtitle": "Change the icon on your {device} Home Screen.",
   "@appIconSettingsSubtitle": {
     "placeholders": {
-      "device": {"type": "String"}
+      "device": { "type": "String" }
     }
   },
   "appIconSupporterDialogTitle": "Monthly Supporter Perk",
@@ -771,14 +782,10 @@
   "changelogTitle": "Changelog",
   "showAllMain": "Show all (main)",
   "changelogFetchError": "Failed to load changelog",
-
   "updateNotificationLanguage": "Update notification language",
   "notificationLanguageUpdated": "Notification language updated",
-
   "defaultNotRecommended": "Default (not recommended)",
-
   "imageAttached": "Image attached",
-
   "usageConnectToView": "Connect to Bridge to view usage",
   "usageFetchFailed": "Failed to fetch",
   "usageFiveHour": "5 hours",
@@ -798,14 +805,14 @@
   "usagePaceExpected": "Expected {percent}% used",
   "@usagePaceExpected": {
     "placeholders": {
-      "percent": {"type": "int"}
+      "percent": { "type": "int" }
     }
   },
   "usagePaceWillLast": "On track to last until reset",
   "usagePaceRunsOutIn": "Projected to reach the limit in about {duration}",
   "@usagePaceRunsOutIn": {
     "placeholders": {
-      "duration": {"type": "String"}
+      "duration": { "type": "String" }
     }
   },
   "usagePaceAtLimit": "Limit reached",
@@ -829,15 +836,14 @@
   "usageResetAt": "Reset: {time}",
   "@usageResetAt": {
     "placeholders": {
-      "time": {"type": "String"}
+      "time": { "type": "String" }
     }
   },
   "usageAlreadyReset": "Already reset",
-
   "attachedImages": "Attached Images ({count})",
   "@attachedImages": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": { "type": "int" }
     }
   },
   "attachedImagesNoCount": "Attached Images",
@@ -846,12 +852,11 @@
   "failedToFetchImagesWithError": "Failed to fetch images: {error}",
   "@failedToFetchImagesWithError": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": { "type": "String" }
     }
   },
   "retry": "Retry",
   "codexWriterConflictGuidance": "Close Codex Desktop or the Codex App, then try again.",
-
   "clipboardNotAvailable": "Cannot access clipboard",
   "failedToLoadImage": "Failed to load image",
   "generatedImagePromptLabel": "Prompt",
@@ -864,8 +869,8 @@
   "generatedImagePositionLabel": "Generated image {current} of {total}",
   "@generatedImagePositionLabel": {
     "placeholders": {
-      "current": {"type": "int"},
-      "total": {"type": "int"}
+      "current": { "type": "int" },
+      "total": { "type": "int" }
     }
   },
   "noImageInClipboard": "No image in clipboard",
@@ -873,26 +878,24 @@
   "imageLimitReached": "Maximum {max} images allowed",
   "@imageLimitReached": {
     "placeholders": {
-      "max": {"type": "int"}
+      "max": { "type": "int" }
     }
   },
   "imageLimitTruncated": "Only first {max} images attached ({dropped} dropped)",
   "@imageLimitTruncated": {
     "placeholders": {
-      "max": {"type": "int"},
-      "dropped": {"type": "int"}
+      "max": { "type": "int" },
+      "dropped": { "type": "int" }
     }
   },
   "selectFromGallery": "Select from Gallery",
   "pasteFromClipboard": "Paste from Clipboard",
   "pasteImage": "Paste Image",
-
   "voiceInputLanguage": "Voice Input Language",
   "hideVoiceInput": "Hide voice input button",
   "hideVoiceInputSubtitle": "Useful when using a third-party voice input keyboard",
   "openGalleryDirectly": "Open gallery directly from image button",
   "openGalleryDirectlySubtitle": "Skip the attachment menu and start selecting images immediately",
-
   "archive": "Archive",
   "archiveConfirm": "Archive this session?",
   "archiveConfirmMessage": "This session will be hidden from the list. You can still access it from Claude Code.",
@@ -901,13 +904,12 @@
   "archiveFailedWithError": "Failed to archive session: {error}",
   "@archiveFailedWithError": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": { "type": "String" }
     }
   },
   "noRecentSessions": "No recent sessions",
   "noSessionsMatchFilters": "No sessions match the current filters",
   "adjustFiltersAndSearch": "Try changing filters or search terms",
-
   "tooltipDisplayMode": "Change which message is shown on cards",
   "tooltipProviderFilter": "Filter by AI tool",
   "tooltipProjectFilter": "Filter by project",
@@ -925,10 +927,8 @@
   "tooltipSendMessage": "Send message",
   "tooltipRemoveImage": "Remove image",
   "tooltipClearDiff": "Clear diff selection",
-
   "showMore": "Show more",
   "showLess": "Show less",
-
   "authErrorTitle": "Claude login required",
   "authErrorBody": "Claude needs to sign in again on the Bridge machine.",
   "authErrorPrimaryCommandLabel": "Step 1",
@@ -937,7 +937,6 @@
   "claudeOAuthOptInTitle": "Subscription authentication requires opt-in",
   "claudeOAuthOptInBody": "Anthropic permits users to sign in to unmodified Claude Code on hosted platforms, but its Agent SDK guide still directs third-party products to API keys. CC Pocket therefore keeps subscription authentication off by default.",
   "claudeOAuthOptInHint": "Review the details, set the option on the Bridge machine, and restart it. To avoid policy uncertainty, use an API key instead:",
-
   "authHelpTitle": "Auth Troubleshooting",
   "authHelpFetchError": "Failed to load the troubleshooting guide",
   "authHelpButton": "View steps",
@@ -945,7 +944,6 @@
   "authHelpLanguageEn": "English",
   "authHelpLanguageZhHans": "Simplified Chinese",
   "authHelpLanguageKo": "한국어",
-
   "terminalApp": "Terminal App",
   "terminalAppSubtitle": "Open projects in an external terminal app",
   "terminalAppNone": "Not configured",
@@ -959,7 +957,6 @@
   "terminalAppNotInstalled": "Could not open terminal app",
   "terminalAppExperimental": "Preview",
   "terminalAppExperimentalNote": "This feature is in preview. Presets may not work with all apps or configurations. Contributions for new presets are welcome on GitHub!",
-
   "sectionSpread": "ENJOYING CC POCKET?",
   "spreadAppealMessage": "CC Pocket still has a small user base, and continued development is hard without more users. If you like it, a quick store rating or sharing it with someone would really help.",
   "shareApp": "Share with Friends",
@@ -1100,7 +1097,6 @@
   "approvalRequiredNotificationTitle": "Approval Required - ccpocket",
   "exitPlanModeNotificationBody": "The generated plan needs your review",
   "renderErrorFallback": "This content couldn't be displayed.",
-
   "confirm": "Confirm",
   "piEngineTitle": "Pi engine",
   "piEngineSettingsSubtitle": "System prompts, launch flags, models",
@@ -1182,6 +1178,34 @@
   "piEngineProviderBaseUrl": "Base URL",
   "piEngineProviderApi": "API",
   "piEngineProviderApiKey": "API key",
+  "piEngineModelImport": "Import from server",
+  "piEngineModelImportDesc": "Fetch model IDs from an OpenAI-compatible endpoint and merge them into this provider.",
+  "piEngineModelImportFetch": "Fetch models",
+  "piEngineModelImportFetching": "Fetching models…",
+  "piEngineModelImportSelect": "Select the models to import. IDs already present are updated in place.",
+  "piEngineModelImportNone": "No models were found at this endpoint.",
+  "piEngineModelImportDone": "Imported {count} model(s) into {provider}.",
+  "@piEngineModelImportDone": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "provider": { "type": "String" }
+    }
+  },
+  "piEngineModelsImportJson": "Import JSON",
+  "piEngineModelsImportJsonDesc": "Paste a models.json \"providers\" fragment to merge into the file.",
+  "piEngineModelsImportJsonHint": "{\n  \"providers\": {\n    \"ollama\": {\n      \"baseUrl\": \"http://127.0.0.1:11434/v1\",\n      \"api\": \"openai-completions\",\n      \"apiKey\": \"ollama\",\n      \"models\": [{\"id\": \"qwen2.5-coder:7b\"}]\n    }\n  }\n}",
+  "piEngineModelsImportJsonDone": "Imported {count} provider(s).",
+  "@piEngineModelsImportJsonDone": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "piEngineModelsImportJsonInvalid": "That doesn't look like a valid providers JSON object.",
+  "piEngineRefreshCatalog": "Refresh model catalog",
+  "piEngineRefreshCatalogDesc": "Run pi update --models to refresh the built-in provider catalogs (needs network).",
+  "piEngineRefreshCatalogConfirm": "Refresh the built-in model catalogs now? This downloads the latest provider catalogs.",
+  "piEngineRefreshCatalogRunning": "Refreshing model catalogs…",
+  "piEngineRefreshCatalogDone": "Model catalogs refreshed.",
   "piEngineCommands": "Command palette",
   "piEngineCommandsSubtitle": "Slash commands, templates & skills (get_commands)",
   "piEngineCommandsHint": "Commands expand engine-side. Tap to copy /name, then paste it into the chat input.",
@@ -1231,6 +1255,171 @@
       "name": { "type": "String" }
     }
   },
+  "piEnginePromptsHint": "Prompts are .md files exposed as slash commands in the chat input. Edits apply immediately, no restart needed.",
+  "piEnginePromptsScope": "Scope",
+  "piEnginePromptsScopeGlobal": "Global",
+  "piEnginePromptsScopeProject": "Project",
+  "piEnginePromptsContent": "Content",
+  "piEnginePromptsCopy": "Copy",
+  "piEnginePackages": "Packages",
+  "piEnginePackagesSubtitle": "npm / git / local packages (pi install)",
+  "piEnginePackagesHint": "Packages are npm, git or local sources configured in settings.json packages[]. The engine resolves extensions, skills, prompts and themes from them when it starts or reloads.",
+  "piEnginePackagesEmpty": "No packages configured yet. Tap + to install one.",
+  "piEnginePackagesCount": "{count} packages",
+  "@piEnginePackagesCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "piEnginePackagesGroupGlobal": "Global",
+  "piEnginePackagesGroupProject": "Project",
+  "piEnginePackagesInstall": "Install package",
+  "piEnginePackagesSourceLabel": "Source",
+  "piEnginePackagesSourceHint": "npm:lodash · https://github.com/user/repo · ./local-ext",
+  "piEnginePackagesInstallLocal": "Install for this project",
+  "piEnginePackagesInstallLocalDesc": "Installs into .pi/ and records the source in the project settings.json",
+  "piEnginePackagesUpdate": "Update",
+  "piEnginePackagesUpdateAll": "Update all",
+  "piEnginePackagesRemove": "Remove",
+  "piEnginePackagesRemoveConfirm": "Remove package {source}?",
+  "@piEnginePackagesRemoveConfirm": {
+    "placeholders": {
+      "source": { "type": "String" }
+    }
+  },
+  "piEnginePackagesRemoveConfirmBody": "This uninstalls the artifacts and drops the entry from settings.json.",
+  "piEnginePackagesNotInstalled": "Not installed",
+  "piEnginePackagesInstalled": "Installed",
+  "piEnginePackagesUpdated": "Updated {count} packages",
+  "@piEnginePackagesUpdated": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "piEnginePackagesRemoved": "Removed {source}",
+  "@piEnginePackagesRemoved": {
+    "placeholders": {
+      "source": { "type": "String" }
+    }
+  },
+  "piEnginePackagesInstalling": "Installing {source}…",
+  "@piEnginePackagesInstalling": {
+    "placeholders": {
+      "source": { "type": "String" }
+    }
+  },
+  "piEnginePackagesUpdating": "Updating packages…",
+  "piEnginePackagesRemoving": "Removing {source}…",
+  "@piEnginePackagesRemoving": {
+    "placeholders": {
+      "source": { "type": "String" }
+    }
+  },
+  "piEnginePackagesRestartHint": "Configured sources are re-read when the engine resolves resources; npm/git artifact changes usually apply after a restart (or /reload).",
+  "piEngineSettingsCore": "Settings",
+  "piEngineSettingsSubtitle": "Core settings.json options (opaque JSON fallback)",
+  "piEngineSettingsSectionGeneral": "General",
+  "piEngineSettingsSectionBehavior": "Behavior",
+  "piEngineSettingsDefaultProvider": "Default provider",
+  "piEngineSettingsDefaultProviderDesc": "Provider used when none is selected.",
+  "piEngineSettingsDefaultModel": "Default model",
+  "piEngineSettingsDefaultModelDesc": "Model used when none is selected.",
+  "piEngineSettingsThinkingLevel": "Default thinking level",
+  "piEngineSettingsThinkingLevelDesc": "Applied when the model does not override it.",
+  "piEngineSettingsTransport": "Transport",
+  "piEngineSettingsTransportDesc": "API transport for provider calls.",
+  "piEngineSettingsSteering": "Steering mode",
+  "piEngineSettingsSteeringDesc": "How tool confirmations are grouped.",
+  "piEngineSettingsFollowUp": "Follow-up mode",
+  "piEngineSettingsFollowUpDesc": "How follow-up questions are handled.",
+  "piEngineSettingsTrust": "Default project trust",
+  "piEngineSettingsTrustDesc": "Asked per project unless set here (global only).",
+  "piEngineSettingsShellPath": "Shell path",
+  "piEngineSettingsShellPathDesc": "Custom shell for the bash tool (e.g. Cygwin).",
+  "piEngineSettingsExternalEditor": "External editor",
+  "piEngineSettingsExternalEditorDesc": "Command for the external editor.",
+  "piEngineSettingsHttpProxy": "HTTP proxy",
+  "piEngineSettingsHttpProxyDesc": "Proxy applied to Pi-managed HTTP clients.",
+  "piEngineSettingsHideThinking": "Hide thinking",
+  "piEngineSettingsHideThinkingDesc": "Collapse thinking blocks by default.",
+  "piEngineSettingsCacheNotices": "Cache miss notices",
+  "piEngineSettingsCacheNoticesDesc": "Show cache cost and provider recovery notices.",
+  "piEngineSettingsQuietStartup": "Quiet startup",
+  "piEngineSettingsQuietStartupDesc": "Skip the startup banner.",
+  "piEngineSettingsSkillCommands": "Skill commands",
+  "piEngineSettingsSkillCommandsDesc": "Register skills as /skill:name commands.",
+  "piEngineSettingsInstallTelemetry": "Install telemetry",
+  "piEngineSettingsInstallTelemetryDesc": "Anonymous version/update ping.",
+  "piEngineSettingsAnalytics": "Analytics",
+  "piEngineSettingsAnalyticsDesc": "Opt-in usage analytics.",
+  "piEngineSettingsCollapseChangelog": "Collapse changelog",
+  "piEngineSettingsCollapseChangelogDesc": "Show condensed changelog after updates.",
+  "piEngineSettingsCompaction": "Compaction",
+  "piEngineSettingsCompactionEnabled": "Auto-compact long sessions",
+  "piEngineSettingsCompactionReserve": "Reserved tokens",
+  "piEngineSettingsCompactionKeep": "Recent tokens kept",
+  "piEngineSettingsRetry": "Retry",
+  "piEngineSettingsRetryEnabled": "Auto-retry transient failures",
+  "piEngineSettingsRetryMax": "Max retries",
+  "piEngineSettingsRetryBase": "Base delay (ms)",
+  "piEngineSettingsImages": "Images",
+  "piEngineSettingsImagesAutoResize": "Auto-resize images",
+  "piEngineSettingsImagesBlock": "Block images",
+  "piEngineSettingsTerminal": "Terminal",
+  "piEngineSettingsTerminalShowImages": "Show images in terminal",
+  "piEngineSettingsRawJson": "Raw JSON",
+  "piEngineSettingsRawJsonDesc": "Edit any settings.json key (opaque fallback).",
+  "piEngineSettingsRawSave": "Apply JSON",
+  "piEngineSettingsJsonInvalid": "Invalid JSON. Fix the syntax and try again.",
+  "piEngineSettingsJsonObject": "The root value must be a JSON object.",
+  "piEngineSettingsHint": "Most changes apply when the engine starts. Restart the engine to apply them now. Keys the form does not cover can be edited in the Raw JSON section.",
+  "piEngineThemes": "Themes",
+  "piEngineThemesSubtitle": "Built-in and custom engine themes",
+  "piEngineThemesBuiltin": "Built-in",
+  "piEngineThemesCustom": "Custom",
+  "piEngineThemesActive": "Active",
+  "piEngineThemesUseDefault": "Use default theme",
+  "piEngineThemesUseDefaultDesc": "Clears settings.theme so the engine uses its default palette.",
+  "piEngineThemesImport": "Import theme",
+  "piEngineThemesImportDesc": "Paste a theme JSON. It must declare a \"name\" string and a \"colors\" object; the file is written under ~/.pi/agent/themes/.",
+  "piEngineThemesImportJson": "Theme JSON",
+  "piEngineThemesImportInvalid": "The theme must be a JSON object declaring a \"name\" string and a \"colors\" object.",
+  "piEngineThemesImportInvalidJson": "Invalid JSON. Fix the syntax and try again.",
+  "piEngineThemesRemove": "Remove theme",
+  "piEngineThemesRemoveConfirm": "Remove theme \"{name}\"? The file will be deleted.",
+  "@piEngineThemesRemoveConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "piEngineThemesEmpty": "No themes yet. Import one to get started.",
+  "piEngineContextFiles": "Context files",
+  "piEngineContextFilesSubtitle": "AGENTS.md / CLAUDE.md quick edit",
+  "piEngineContextFilesHint": "The engine merges AGENTS.md / CLAUDE.md upward from the project root. Quick edit always targets the project-local file; a higher-up copy keeps feeding the engine if present.",
+  "piEngineContextFilesProject": "Project file: {path}",
+  "@piEngineContextFilesProject": {
+    "placeholders": {
+      "path": { "type": "String" }
+    }
+  },
+  "piEngineContextFilesParent": "Parent copy: {path} · merged above",
+  "@piEngineContextFilesParent": {
+    "placeholders": {
+      "path": { "type": "String" }
+    }
+  },
+  "piEngineContextFilesNew": "Will be created at {path}",
+  "@piEngineContextFilesNew": {
+    "placeholders": {
+      "path": { "type": "String" }
+    }
+  },
+  "piEngineContextFilesEdit": "Edit {name}",
+  "@piEngineContextFilesEdit": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
   "piEngineExtensions": "Extensions",
   "piEngineExtensionsSubtitle": "Detected extensions & trust warning",
   "piEngineExtensionsTrustWarning": "Extensions run arbitrary code with access to your files and network. Only install extensions from sources you trust.",
@@ -1259,7 +1448,6 @@
   "piEngineSkillsApply": "Apply",
   "piEngineSkillsRestartHint": "Skills are scanned when the engine starts; new or changed skills take effect after an engine restart.",
   "piEngineSkillMissing": "No SKILL.md found for this skill.",
-
   "piEngineRuntime": "Runtime",
   "piEngineRuntimeSubtitle": "Execution environment (bionic / Proroot / proot-distro)",
   "piEngineRuntimeBadgeA": "Built-in (bionic)",
@@ -1322,5 +1510,7 @@
       "count": { "type": "int" }
     }
   },
-  "piEngineRuntimeRestartHint": "Switching routes restarts the engine so the new runtime takes effect immediately."
+  "piEngineRuntimeRestartHint": "Switching routes restarts the engine so the new runtime takes effect immediately.",
+  "clear": "Clear",
+  "selectAll": "Select all"
 }

@@ -67,7 +67,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get removeProjectTitle => '프로젝트 제거';
 
   @override
-  String removeProjectConfirm(Object name) {
+  String removeProjectConfirm(String name) {
     return '최근 프로젝트에서 \"$name\"을 제거할까요?';
   }
 
@@ -122,12 +122,12 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String toolSuggestionTitle(Object toolName) {
+  String toolSuggestionTitle(String toolName) {
     return 'Codex에 $toolName을(를) 추가할까요?';
   }
 
   @override
-  String toolSuggestionInstall(Object toolName) {
+  String toolSuggestionInstall(String toolName) {
     return '$toolName 설치';
   }
 
@@ -141,7 +141,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get toolSuggestionAuthDescription => '필요한 앱을 연결한 후 완료되면 확인해 주세요.';
 
   @override
-  String toolSuggestionConnect(Object appName) {
+  String toolSuggestionConnect(String appName) {
     return '$appName 연결';
   }
 
@@ -1207,7 +1207,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get rewindConfirmTitle => '되돌리기 확인';
 
   @override
-  String rewindConfirmBody(Object mode) {
+  String rewindConfirmBody(String mode) {
     return '모드: $mode\n\n이 작업은 취소할 수 없습니다. 계속할까요?';
   }
 
@@ -2617,7 +2617,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get piEngineTitle => 'Pi 엔진';
 
   @override
-  String get piEngineSettingsSubtitle => '시스템 프롬프트, 시작 플래그, 모델';
+  String get piEngineSettingsSubtitle => 'settings.json 핵심 옵션(JSON 폴백 편집기 포함)';
 
   @override
   String get piEngineManage => 'Pi 엔진';
@@ -2806,6 +2806,67 @@ class AppLocalizationsKo extends AppLocalizations {
   String get piEngineProviderApiKey => 'API 키';
 
   @override
+  String get piEngineModelImport => '서버에서 가져오기';
+
+  @override
+  String get piEngineModelImportDesc =>
+      'OpenAI 호환 엔드포인트에서 모델 ID를 가져와 이 프로바이더에 병합합니다.';
+
+  @override
+  String get piEngineModelImportFetch => '모델 가져오기';
+
+  @override
+  String get piEngineModelImportFetching => '모델을 가져오는 중…';
+
+  @override
+  String get piEngineModelImportSelect =>
+      '가져올 모델을 선택하세요. 이미 있는 ID는 그 자리에서 갱신됩니다.';
+
+  @override
+  String get piEngineModelImportNone => '이 엔드포인트에 모델이 없습니다.';
+
+  @override
+  String piEngineModelImportDone(int count, String provider) {
+    return '$provider에 모델 $count개를 가져왔습니다.';
+  }
+
+  @override
+  String get piEngineModelsImportJson => 'JSON 가져오기';
+
+  @override
+  String get piEngineModelsImportJsonDesc =>
+      'models.json의 \"providers\" 조각을 붙여넣어 파일에 병합합니다.';
+
+  @override
+  String get piEngineModelsImportJsonHint =>
+      '{\n  \"providers\": {\n    \"ollama\": {\n      \"baseUrl\": \"http://127.0.0.1:11434/v1\",\n      \"api\": \"openai-completions\",\n      \"apiKey\": \"ollama\",\n      \"models\": [{\"id\": \"qwen2.5-coder:7b\"}]\n    }\n  }\n}';
+
+  @override
+  String piEngineModelsImportJsonDone(int count) {
+    return '프로바이더 $count개를 가져왔습니다.';
+  }
+
+  @override
+  String get piEngineModelsImportJsonInvalid => '유효한 providers JSON 객체가 아닙니다.';
+
+  @override
+  String get piEngineRefreshCatalog => '모델 카탈로그 새로고침';
+
+  @override
+  String get piEngineRefreshCatalogDesc =>
+      'pi update --models 를 실행해 내장 프로바이더 카탈로그를 새로고침합니다 (네트워크 필요).';
+
+  @override
+  String get piEngineRefreshCatalogConfirm =>
+      '지금 내장 모델 카탈로그를 새로고침할까요? 최신 프로바이더 카탈로그를 다운로드합니다.';
+
+  @override
+  String get piEngineRefreshCatalogRunning => '모델 카탈로그를 새로고침하는 중…';
+
+  @override
+  String get piEngineRefreshCatalogDone => '모델 카탈로그를 새로고침했습니다.';
+
+  @override
   String get piEngineCommands => '명령 팔레트';
 
   @override
@@ -2887,6 +2948,370 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String piEnginePromptsCopied(String name) {
     return '/$name 을(를) 복사했습니다. 입력란에 붙여넣어 사용하세요.';
+  }
+
+  @override
+  String get piEnginePromptsHint =>
+      '프롬프트는 슬래시 명령으로 노출되는 .md 파일입니다. 편집은 즉시 적용되며 재시작이 필요 없습니다.';
+
+  @override
+  String get piEnginePromptsScope => '범위';
+
+  @override
+  String get piEnginePromptsScopeGlobal => '전역';
+
+  @override
+  String get piEnginePromptsScopeProject => '프로젝트';
+
+  @override
+  String get piEnginePromptsContent => '내용';
+
+  @override
+  String get piEnginePromptsCopy => '복사';
+
+  @override
+  String get piEnginePackages => '패키지';
+
+  @override
+  String get piEnginePackagesSubtitle => 'npm / git / 로컬 패키지（pi install）';
+
+  @override
+  String get piEnginePackagesHint =>
+      '패키지는 settings.json의 packages[]에 구성된 npm·git·로컬 소스입니다. 엔진은 시작하거나 다시 로드할 때 확장, 스킬, 프롬프트, 테마를 여기서 해석합니다.';
+
+  @override
+  String get piEnginePackagesEmpty => '구성된 패키지가 없습니다. 오른쪽 위 + 로 설치하세요.';
+
+  @override
+  String piEnginePackagesCount(int count) {
+    return '패키지 $count개';
+  }
+
+  @override
+  String get piEnginePackagesGroupGlobal => '전역';
+
+  @override
+  String get piEnginePackagesGroupProject => '프로젝트';
+
+  @override
+  String get piEnginePackagesInstall => '패키지 설치';
+
+  @override
+  String get piEnginePackagesSourceLabel => '소스';
+
+  @override
+  String get piEnginePackagesSourceHint =>
+      'npm:lodash · https://github.com/user/repo · ./local-ext';
+
+  @override
+  String get piEnginePackagesInstallLocal => '이 프로젝트에 설치';
+
+  @override
+  String get piEnginePackagesInstallLocalDesc =>
+      '.pi/에 설치하고 소스를 프로젝트 settings.json에 기록합니다';
+
+  @override
+  String get piEnginePackagesUpdate => '업데이트';
+
+  @override
+  String get piEnginePackagesUpdateAll => '모두 업데이트';
+
+  @override
+  String get piEnginePackagesRemove => '제거';
+
+  @override
+  String piEnginePackagesRemoveConfirm(String source) {
+    return '패키지 $source를 제거할까요?';
+  }
+
+  @override
+  String get piEnginePackagesRemoveConfirmBody =>
+      '산출물을 제거하고 settings.json에서 항목을 삭제합니다.';
+
+  @override
+  String get piEnginePackagesNotInstalled => '미설치';
+
+  @override
+  String get piEnginePackagesInstalled => '설치됨';
+
+  @override
+  String piEnginePackagesUpdated(int count) {
+    return '패키지 $count개를 업데이트했습니다';
+  }
+
+  @override
+  String piEnginePackagesRemoved(String source) {
+    return '$source를 제거했습니다';
+  }
+
+  @override
+  String piEnginePackagesInstalling(String source) {
+    return '$source 설치 중…';
+  }
+
+  @override
+  String get piEnginePackagesUpdating => '패키지 업데이트 중…';
+
+  @override
+  String piEnginePackagesRemoving(String source) {
+    return '$source 제거 중…';
+  }
+
+  @override
+  String get piEnginePackagesRestartHint =>
+      '엔진은 리소스를 해석할 때 구성된 소스를 다시 읽습니다. npm/git 산출물 변경은 보통 재시작(또는 /reload) 후에 적용됩니다.';
+
+  @override
+  String get piEngineSettingsCore => '설정';
+
+  @override
+  String get piEngineSettingsSectionGeneral => '일반';
+
+  @override
+  String get piEngineSettingsSectionBehavior => '동작';
+
+  @override
+  String get piEngineSettingsDefaultProvider => '기본 제공자';
+
+  @override
+  String get piEngineSettingsDefaultProviderDesc => '선택이 없을 때 사용할 제공자.';
+
+  @override
+  String get piEngineSettingsDefaultModel => '기본 모델';
+
+  @override
+  String get piEngineSettingsDefaultModelDesc => '선택이 없을 때 사용할 모델.';
+
+  @override
+  String get piEngineSettingsThinkingLevel => '기본 사고 수준';
+
+  @override
+  String get piEngineSettingsThinkingLevelDesc => '모델이 재정의하지 않을 때 적용됩니다.';
+
+  @override
+  String get piEngineSettingsTransport => '전송 방식';
+
+  @override
+  String get piEngineSettingsTransportDesc => '제공자 호출의 API 전송 방식.';
+
+  @override
+  String get piEngineSettingsSteering => '스티어링 모드';
+
+  @override
+  String get piEngineSettingsSteeringDesc => '도구 확인을 그룹화하는 방식.';
+
+  @override
+  String get piEngineSettingsFollowUp => '후속 질문 모드';
+
+  @override
+  String get piEngineSettingsFollowUpDesc => '후속 질문 처리 방식.';
+
+  @override
+  String get piEngineSettingsTrust => '기본 프로젝트 신뢰';
+
+  @override
+  String get piEngineSettingsTrustDesc => '여기서 설정하지 않으면 프로젝트마다 확인됩니다(전역만).';
+
+  @override
+  String get piEngineSettingsShellPath => '셸 경로';
+
+  @override
+  String get piEngineSettingsShellPathDesc =>
+      'bash 도구에 사용하는 사용자 지정 셸(예: Cygwin).';
+
+  @override
+  String get piEngineSettingsExternalEditor => '외부 편집기';
+
+  @override
+  String get piEngineSettingsExternalEditorDesc => '외부 편집기 명령.';
+
+  @override
+  String get piEngineSettingsHttpProxy => 'HTTP 프록시';
+
+  @override
+  String get piEngineSettingsHttpProxyDesc => 'Pi 관리 HTTP 클라이언트에 적용되는 프록시.';
+
+  @override
+  String get piEngineSettingsHideThinking => '사고 숨기기';
+
+  @override
+  String get piEngineSettingsHideThinkingDesc => '사고 블록을 기본적으로 접습니다.';
+
+  @override
+  String get piEngineSettingsCacheNotices => '캐시 미스 알림';
+
+  @override
+  String get piEngineSettingsCacheNoticesDesc => '캐시 비용과 제공자 복구 알림을 표시합니다.';
+
+  @override
+  String get piEngineSettingsQuietStartup => '조용한 시작';
+
+  @override
+  String get piEngineSettingsQuietStartupDesc => '시작 배너를 건너뜁니다.';
+
+  @override
+  String get piEngineSettingsSkillCommands => '스킬 명령';
+
+  @override
+  String get piEngineSettingsSkillCommandsDesc => '스킬을 /skill:name 명령으로 등록합니다.';
+
+  @override
+  String get piEngineSettingsInstallTelemetry => '설치 원격 측정';
+
+  @override
+  String get piEngineSettingsInstallTelemetryDesc => '익명 버전/업데이트 ping.';
+
+  @override
+  String get piEngineSettingsAnalytics => '분석';
+
+  @override
+  String get piEngineSettingsAnalyticsDesc => '선택형 사용 분석.';
+
+  @override
+  String get piEngineSettingsCollapseChangelog => '변경 로그 접기';
+
+  @override
+  String get piEngineSettingsCollapseChangelogDesc =>
+      '업데이트 후 간결한 변경 로그를 표시합니다.';
+
+  @override
+  String get piEngineSettingsCompaction => '압축';
+
+  @override
+  String get piEngineSettingsCompactionEnabled => '긴 세션 자동 압축';
+
+  @override
+  String get piEngineSettingsCompactionReserve => '예약 토큰';
+
+  @override
+  String get piEngineSettingsCompactionKeep => '유지할 최근 토큰';
+
+  @override
+  String get piEngineSettingsRetry => '재시도';
+
+  @override
+  String get piEngineSettingsRetryEnabled => '일시적 오류 자동 재시도';
+
+  @override
+  String get piEngineSettingsRetryMax => '최대 재시도';
+
+  @override
+  String get piEngineSettingsRetryBase => '기본 지연(ms)';
+
+  @override
+  String get piEngineSettingsImages => '이미지';
+
+  @override
+  String get piEngineSettingsImagesAutoResize => '이미지 자동 크기 조정';
+
+  @override
+  String get piEngineSettingsImagesBlock => '이미지 차단';
+
+  @override
+  String get piEngineSettingsTerminal => '터미널';
+
+  @override
+  String get piEngineSettingsTerminalShowImages => '터미널에 이미지 표시';
+
+  @override
+  String get piEngineSettingsRawJson => '원시 JSON';
+
+  @override
+  String get piEngineSettingsRawJsonDesc => 'settings.json의 모든 키를 편집(폴백).';
+
+  @override
+  String get piEngineSettingsRawSave => 'JSON 적용';
+
+  @override
+  String get piEngineSettingsJsonInvalid =>
+      'JSON이 유효하지 않습니다. 구문을 수정한 후 다시 시도하세요.';
+
+  @override
+  String get piEngineSettingsJsonObject => '루트 값은 JSON 객체여야 합니다.';
+
+  @override
+  String get piEngineSettingsHint =>
+      '대부분의 변경은 엔진 시작 시 적용됩니다. 지금 적용하려면 엔진을 다시 시작하세요. 폼에서 다루지 않는 키는 \'원시 JSON\' 섹션에서 편집할 수 있습니다.';
+
+  @override
+  String get piEngineThemes => '테마';
+
+  @override
+  String get piEngineThemesSubtitle => '엔진 내장 및 사용자 테마';
+
+  @override
+  String get piEngineThemesBuiltin => '내장';
+
+  @override
+  String get piEngineThemesCustom => '사용자';
+
+  @override
+  String get piEngineThemesActive => '적용 중';
+
+  @override
+  String get piEngineThemesUseDefault => '기본 테마 사용';
+
+  @override
+  String get piEngineThemesUseDefaultDesc =>
+      'settings.theme 을 지우고 엔진 기본 색상을 사용합니다.';
+
+  @override
+  String get piEngineThemesImport => '테마 가져오기';
+
+  @override
+  String get piEngineThemesImportDesc =>
+      '테마 JSON을 붙여넣으세요. \"name\" 문자열과 \"colors\" 객체가 필요하며, 파일은 ~/.pi/agent/themes/ 에 저장됩니다.';
+
+  @override
+  String get piEngineThemesImportJson => '테마 JSON';
+
+  @override
+  String get piEngineThemesImportInvalid =>
+      '테마는 \"name\" 문자열과 \"colors\" 객체를 가진 JSON 객체여야 합니다.';
+
+  @override
+  String get piEngineThemesImportInvalidJson =>
+      'JSON이 올바르지 않습니다. 구문을 수정하고 다시 시도하세요.';
+
+  @override
+  String get piEngineThemesRemove => '테마 삭제';
+
+  @override
+  String piEngineThemesRemoveConfirm(String name) {
+    return '테마 \"$name\" 을 삭제할까요? 파일이 삭제됩니다.';
+  }
+
+  @override
+  String get piEngineThemesEmpty => '아직 테마가 없습니다. 가져와서 시작하세요.';
+
+  @override
+  String get piEngineContextFiles => '컨텍스트 파일';
+
+  @override
+  String get piEngineContextFilesSubtitle => 'AGENTS.md / CLAUDE.md 빠른 편집';
+
+  @override
+  String get piEngineContextFilesHint =>
+      '엔진은 프로젝트 루트에서 위로 AGENTS.md / CLAUDE.md 를 병합합니다. 빠른 편집은 항상 프로젝트 로컬 파일을 대상으로 하며, 상위에 복사본이 있으면 계속 엔진에 제공됩니다.';
+
+  @override
+  String piEngineContextFilesProject(String path) {
+    return '프로젝트 파일: $path';
+  }
+
+  @override
+  String piEngineContextFilesParent(String path) {
+    return '상위 복사본: $path · 위에서 병합';
+  }
+
+  @override
+  String piEngineContextFilesNew(String path) {
+    return '$path 에 생성됩니다';
+  }
+
+  @override
+  String piEngineContextFilesEdit(String name) {
+    return '$name 편집';
   }
 
   @override
@@ -3073,4 +3498,10 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get piEngineRuntimeRestartHint =>
       '경로를 전환하면 엔진이 다시 시작되어 새 런타임이 즉시 적용됩니다.';
+
+  @override
+  String get clear => '선택 해제';
+
+  @override
+  String get selectAll => '모두 선택';
 }

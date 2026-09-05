@@ -220,7 +220,7 @@ abstract class AppLocalizations {
   ///
   /// In ja, this message translates to:
   /// **'「{name}」を最近のプロジェクトから削除しますか？'**
-  String removeProjectConfirm(Object name);
+  String removeProjectConfirm(String name);
 
   /// No description provided for @rename.
   ///
@@ -315,13 +315,13 @@ abstract class AppLocalizations {
   ///
   /// In ja, this message translates to:
   /// **'Codex に {toolName} を追加しますか？'**
-  String toolSuggestionTitle(Object toolName);
+  String toolSuggestionTitle(String toolName);
 
   /// No description provided for @toolSuggestionInstall.
   ///
   /// In ja, this message translates to:
   /// **'{toolName} をインストール'**
-  String toolSuggestionInstall(Object toolName);
+  String toolSuggestionInstall(String toolName);
 
   /// No description provided for @toolSuggestionInstalling.
   ///
@@ -345,7 +345,7 @@ abstract class AppLocalizations {
   ///
   /// In ja, this message translates to:
   /// **'{appName} を接続'**
-  String toolSuggestionConnect(Object appName);
+  String toolSuggestionConnect(String appName);
 
   /// No description provided for @toolSuggestionComplete.
   ///
@@ -1700,7 +1700,7 @@ abstract class AppLocalizations {
   /// No description provided for @approveAlwaysSub.
   ///
   /// In ja, this message translates to:
-  /// **''**
+  /// **'許可'**
   String get approveAlwaysSub;
 
   /// No description provided for @approveSessionMain.
@@ -1712,7 +1712,7 @@ abstract class AppLocalizations {
   /// No description provided for @approveSessionSub.
   ///
   /// In ja, this message translates to:
-  /// **''**
+  /// **'許可'**
   String get approveSessionSub;
 
   /// No description provided for @permissionDefaultDescription.
@@ -2307,7 +2307,7 @@ abstract class AppLocalizations {
   ///
   /// In ja, this message translates to:
   /// **'モード: {mode}\n\nこの操作は元に戻せません。実行しますか？'**
-  String rewindConfirmBody(Object mode);
+  String rewindConfirmBody(String mode);
 
   /// No description provided for @rewindCannotRewindFiles.
   ///
@@ -4880,7 +4880,7 @@ abstract class AppLocalizations {
   /// No description provided for @piEngineSettingsSubtitle.
   ///
   /// In ja, this message translates to:
-  /// **'システムプロンプト、起動フラグ、モデル'**
+  /// **'settings.json の主要オプション（JSON フォールバックエディタ付き）'**
   String get piEngineSettingsSubtitle;
 
   /// No description provided for @piEngineManage.
@@ -5231,6 +5231,108 @@ abstract class AppLocalizations {
   /// **'API キー'**
   String get piEngineProviderApiKey;
 
+  /// No description provided for @piEngineModelImport.
+  ///
+  /// In ja, this message translates to:
+  /// **'サーバーからインポート'**
+  String get piEngineModelImport;
+
+  /// No description provided for @piEngineModelImportDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'OpenAI 互換エンドポイントからモデル ID を取得し、このプロバイダーにマージします。'**
+  String get piEngineModelImportDesc;
+
+  /// No description provided for @piEngineModelImportFetch.
+  ///
+  /// In ja, this message translates to:
+  /// **'モデルを取得'**
+  String get piEngineModelImportFetch;
+
+  /// No description provided for @piEngineModelImportFetching.
+  ///
+  /// In ja, this message translates to:
+  /// **'モデルを取得中…'**
+  String get piEngineModelImportFetching;
+
+  /// No description provided for @piEngineModelImportSelect.
+  ///
+  /// In ja, this message translates to:
+  /// **'インポートするモデルを選択してください。既存の ID はその場で更新されます。'**
+  String get piEngineModelImportSelect;
+
+  /// No description provided for @piEngineModelImportNone.
+  ///
+  /// In ja, this message translates to:
+  /// **'このエンドポイントにモデルはありませんでした。'**
+  String get piEngineModelImportNone;
+
+  /// No description provided for @piEngineModelImportDone.
+  ///
+  /// In ja, this message translates to:
+  /// **'{count} 個のモデルを {provider} にインポートしました。'**
+  String piEngineModelImportDone(int count, String provider);
+
+  /// No description provided for @piEngineModelsImportJson.
+  ///
+  /// In ja, this message translates to:
+  /// **'JSON をインポート'**
+  String get piEngineModelsImportJson;
+
+  /// No description provided for @piEngineModelsImportJsonDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'models.json の \"providers\" フラグメントを貼り付けてファイルにマージします。'**
+  String get piEngineModelsImportJsonDesc;
+
+  /// No description provided for @piEngineModelsImportJsonHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'{\n  \"providers\": {\n    \"ollama\": {\n      \"baseUrl\": \"http://127.0.0.1:11434/v1\",\n      \"api\": \"openai-completions\",\n      \"apiKey\": \"ollama\",\n      \"models\": [{\"id\": \"qwen2.5-coder:7b\"}]\n    }\n  }\n}'**
+  String get piEngineModelsImportJsonHint;
+
+  /// No description provided for @piEngineModelsImportJsonDone.
+  ///
+  /// In ja, this message translates to:
+  /// **'{count} 個のプロバイダーをインポートしました。'**
+  String piEngineModelsImportJsonDone(int count);
+
+  /// No description provided for @piEngineModelsImportJsonInvalid.
+  ///
+  /// In ja, this message translates to:
+  /// **'有効な providers JSON オブジェクトではありません。'**
+  String get piEngineModelsImportJsonInvalid;
+
+  /// No description provided for @piEngineRefreshCatalog.
+  ///
+  /// In ja, this message translates to:
+  /// **'モデルカタログを更新'**
+  String get piEngineRefreshCatalog;
+
+  /// No description provided for @piEngineRefreshCatalogDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'pi update --models を実行して組み込みプロバイダーのカタログを更新します（要ネットワーク）。'**
+  String get piEngineRefreshCatalogDesc;
+
+  /// No description provided for @piEngineRefreshCatalogConfirm.
+  ///
+  /// In ja, this message translates to:
+  /// **'組み込みモデルカタログを今すぐ更新しますか？最新のプロバイダーカタログをダウンロードします。'**
+  String get piEngineRefreshCatalogConfirm;
+
+  /// No description provided for @piEngineRefreshCatalogRunning.
+  ///
+  /// In ja, this message translates to:
+  /// **'モデルカタログを更新中…'**
+  String get piEngineRefreshCatalogRunning;
+
+  /// No description provided for @piEngineRefreshCatalogDone.
+  ///
+  /// In ja, this message translates to:
+  /// **'モデルカタログを更新しました。'**
+  String get piEngineRefreshCatalogDone;
+
   /// No description provided for @piEngineCommands.
   ///
   /// In ja, this message translates to:
@@ -5374,6 +5476,660 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'「/{name}」をコピーしました。入力欄に貼り付けて使用してください。'**
   String piEnginePromptsCopied(String name);
+
+  /// No description provided for @piEnginePromptsHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'プロンプトはスラッシュコマンドとして公開される .md ファイルです。編集はすぐに反映され、再起動は不要です。'**
+  String get piEnginePromptsHint;
+
+  /// No description provided for @piEnginePromptsScope.
+  ///
+  /// In ja, this message translates to:
+  /// **'スコープ'**
+  String get piEnginePromptsScope;
+
+  /// No description provided for @piEnginePromptsScopeGlobal.
+  ///
+  /// In ja, this message translates to:
+  /// **'グローバル'**
+  String get piEnginePromptsScopeGlobal;
+
+  /// No description provided for @piEnginePromptsScopeProject.
+  ///
+  /// In ja, this message translates to:
+  /// **'プロジェクト'**
+  String get piEnginePromptsScopeProject;
+
+  /// No description provided for @piEnginePromptsContent.
+  ///
+  /// In ja, this message translates to:
+  /// **'内容'**
+  String get piEnginePromptsContent;
+
+  /// No description provided for @piEnginePromptsCopy.
+  ///
+  /// In ja, this message translates to:
+  /// **'コピー'**
+  String get piEnginePromptsCopy;
+
+  /// No description provided for @piEnginePackages.
+  ///
+  /// In ja, this message translates to:
+  /// **'パッケージ'**
+  String get piEnginePackages;
+
+  /// No description provided for @piEnginePackagesSubtitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'npm / git / ローカル パッケージ（pi install）'**
+  String get piEnginePackagesSubtitle;
+
+  /// No description provided for @piEnginePackagesHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'パッケージは settings.json の packages[] に設定された npm・git・ローカル ソースです。エンジンは起動時または再読み込み時に拡張・スキル・プロンプト・テーマをそこから解決します。'**
+  String get piEnginePackagesHint;
+
+  /// No description provided for @piEnginePackagesEmpty.
+  ///
+  /// In ja, this message translates to:
+  /// **'パッケージはまだ設定されていません。右上の + からインストールしてください。'**
+  String get piEnginePackagesEmpty;
+
+  /// No description provided for @piEnginePackagesCount.
+  ///
+  /// In ja, this message translates to:
+  /// **'{count} 個のパッケージ'**
+  String piEnginePackagesCount(int count);
+
+  /// No description provided for @piEnginePackagesGroupGlobal.
+  ///
+  /// In ja, this message translates to:
+  /// **'グローバル'**
+  String get piEnginePackagesGroupGlobal;
+
+  /// No description provided for @piEnginePackagesGroupProject.
+  ///
+  /// In ja, this message translates to:
+  /// **'プロジェクト'**
+  String get piEnginePackagesGroupProject;
+
+  /// No description provided for @piEnginePackagesInstall.
+  ///
+  /// In ja, this message translates to:
+  /// **'パッケージをインストール'**
+  String get piEnginePackagesInstall;
+
+  /// No description provided for @piEnginePackagesSourceLabel.
+  ///
+  /// In ja, this message translates to:
+  /// **'ソース'**
+  String get piEnginePackagesSourceLabel;
+
+  /// No description provided for @piEnginePackagesSourceHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'npm:lodash · https://github.com/user/repo · ./local-ext'**
+  String get piEnginePackagesSourceHint;
+
+  /// No description provided for @piEnginePackagesInstallLocal.
+  ///
+  /// In ja, this message translates to:
+  /// **'このプロジェクトにインストール'**
+  String get piEnginePackagesInstallLocal;
+
+  /// No description provided for @piEnginePackagesInstallLocalDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'.pi/ にインストールし、ソースをプロジェクトの settings.json に記録します'**
+  String get piEnginePackagesInstallLocalDesc;
+
+  /// No description provided for @piEnginePackagesUpdate.
+  ///
+  /// In ja, this message translates to:
+  /// **'更新'**
+  String get piEnginePackagesUpdate;
+
+  /// No description provided for @piEnginePackagesUpdateAll.
+  ///
+  /// In ja, this message translates to:
+  /// **'すべて更新'**
+  String get piEnginePackagesUpdateAll;
+
+  /// No description provided for @piEnginePackagesRemove.
+  ///
+  /// In ja, this message translates to:
+  /// **'削除'**
+  String get piEnginePackagesRemove;
+
+  /// No description provided for @piEnginePackagesRemoveConfirm.
+  ///
+  /// In ja, this message translates to:
+  /// **'パッケージ {source} を削除しますか？'**
+  String piEnginePackagesRemoveConfirm(String source);
+
+  /// No description provided for @piEnginePackagesRemoveConfirmBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'成果物をアンインストールし、settings.json からエントリを削除します。'**
+  String get piEnginePackagesRemoveConfirmBody;
+
+  /// No description provided for @piEnginePackagesNotInstalled.
+  ///
+  /// In ja, this message translates to:
+  /// **'未インストール'**
+  String get piEnginePackagesNotInstalled;
+
+  /// No description provided for @piEnginePackagesInstalled.
+  ///
+  /// In ja, this message translates to:
+  /// **'インストール済み'**
+  String get piEnginePackagesInstalled;
+
+  /// No description provided for @piEnginePackagesUpdated.
+  ///
+  /// In ja, this message translates to:
+  /// **'{count} 個のパッケージを更新しました'**
+  String piEnginePackagesUpdated(int count);
+
+  /// No description provided for @piEnginePackagesRemoved.
+  ///
+  /// In ja, this message translates to:
+  /// **'{source} を削除しました'**
+  String piEnginePackagesRemoved(String source);
+
+  /// No description provided for @piEnginePackagesInstalling.
+  ///
+  /// In ja, this message translates to:
+  /// **'{source} をインストール中…'**
+  String piEnginePackagesInstalling(String source);
+
+  /// No description provided for @piEnginePackagesUpdating.
+  ///
+  /// In ja, this message translates to:
+  /// **'パッケージを更新中…'**
+  String get piEnginePackagesUpdating;
+
+  /// No description provided for @piEnginePackagesRemoving.
+  ///
+  /// In ja, this message translates to:
+  /// **'{source} を削除中…'**
+  String piEnginePackagesRemoving(String source);
+
+  /// No description provided for @piEnginePackagesRestartHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'エンジンはリソース解決時に設定済みソースを再読み込みします。npm/git の成果物変更は通常、再起動（または /reload）後に反映されます。'**
+  String get piEnginePackagesRestartHint;
+
+  /// No description provided for @piEngineSettingsCore.
+  ///
+  /// In ja, this message translates to:
+  /// **'設定'**
+  String get piEngineSettingsCore;
+
+  /// No description provided for @piEngineSettingsSectionGeneral.
+  ///
+  /// In ja, this message translates to:
+  /// **'一般'**
+  String get piEngineSettingsSectionGeneral;
+
+  /// No description provided for @piEngineSettingsSectionBehavior.
+  ///
+  /// In ja, this message translates to:
+  /// **'動作'**
+  String get piEngineSettingsSectionBehavior;
+
+  /// No description provided for @piEngineSettingsDefaultProvider.
+  ///
+  /// In ja, this message translates to:
+  /// **'既定プロバイダー'**
+  String get piEngineSettingsDefaultProvider;
+
+  /// No description provided for @piEngineSettingsDefaultProviderDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'選択がない場合に使用するプロバイダー。'**
+  String get piEngineSettingsDefaultProviderDesc;
+
+  /// No description provided for @piEngineSettingsDefaultModel.
+  ///
+  /// In ja, this message translates to:
+  /// **'既定モデル'**
+  String get piEngineSettingsDefaultModel;
+
+  /// No description provided for @piEngineSettingsDefaultModelDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'選択がない場合に使用するモデル。'**
+  String get piEngineSettingsDefaultModelDesc;
+
+  /// No description provided for @piEngineSettingsThinkingLevel.
+  ///
+  /// In ja, this message translates to:
+  /// **'既定の思考レベル'**
+  String get piEngineSettingsThinkingLevel;
+
+  /// No description provided for @piEngineSettingsThinkingLevelDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'モデルが上書きしない場合に適用されます。'**
+  String get piEngineSettingsThinkingLevelDesc;
+
+  /// No description provided for @piEngineSettingsTransport.
+  ///
+  /// In ja, this message translates to:
+  /// **'トランスポート'**
+  String get piEngineSettingsTransport;
+
+  /// No description provided for @piEngineSettingsTransportDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'プロバイダー呼び出しの API トランスポート。'**
+  String get piEngineSettingsTransportDesc;
+
+  /// No description provided for @piEngineSettingsSteering.
+  ///
+  /// In ja, this message translates to:
+  /// **'ステアリングモード'**
+  String get piEngineSettingsSteering;
+
+  /// No description provided for @piEngineSettingsSteeringDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'ツール確認のグループ化方法。'**
+  String get piEngineSettingsSteeringDesc;
+
+  /// No description provided for @piEngineSettingsFollowUp.
+  ///
+  /// In ja, this message translates to:
+  /// **'フォローアップモード'**
+  String get piEngineSettingsFollowUp;
+
+  /// No description provided for @piEngineSettingsFollowUpDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'フォローアップ質問の処理方法。'**
+  String get piEngineSettingsFollowUpDesc;
+
+  /// No description provided for @piEngineSettingsTrust.
+  ///
+  /// In ja, this message translates to:
+  /// **'既定のプロジェクト信頼'**
+  String get piEngineSettingsTrust;
+
+  /// No description provided for @piEngineSettingsTrustDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'ここで設定しない限りプロジェクトごとに確認されます（グローバルのみ）。'**
+  String get piEngineSettingsTrustDesc;
+
+  /// No description provided for @piEngineSettingsShellPath.
+  ///
+  /// In ja, this message translates to:
+  /// **'シェルパス'**
+  String get piEngineSettingsShellPath;
+
+  /// No description provided for @piEngineSettingsShellPathDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'bash ツールに使うカスタムシェル（Cygwin など）。'**
+  String get piEngineSettingsShellPathDesc;
+
+  /// No description provided for @piEngineSettingsExternalEditor.
+  ///
+  /// In ja, this message translates to:
+  /// **'外部エディタ'**
+  String get piEngineSettingsExternalEditor;
+
+  /// No description provided for @piEngineSettingsExternalEditorDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'外部エディタのコマンド。'**
+  String get piEngineSettingsExternalEditorDesc;
+
+  /// No description provided for @piEngineSettingsHttpProxy.
+  ///
+  /// In ja, this message translates to:
+  /// **'HTTP プロキシ'**
+  String get piEngineSettingsHttpProxy;
+
+  /// No description provided for @piEngineSettingsHttpProxyDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'Pi 管理の HTTP クライアントに適用するプロキシ。'**
+  String get piEngineSettingsHttpProxyDesc;
+
+  /// No description provided for @piEngineSettingsHideThinking.
+  ///
+  /// In ja, this message translates to:
+  /// **'思考を隠す'**
+  String get piEngineSettingsHideThinking;
+
+  /// No description provided for @piEngineSettingsHideThinkingDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'思考ブロックを既定で折りたたみます。'**
+  String get piEngineSettingsHideThinkingDesc;
+
+  /// No description provided for @piEngineSettingsCacheNotices.
+  ///
+  /// In ja, this message translates to:
+  /// **'キャッシュミス通知'**
+  String get piEngineSettingsCacheNotices;
+
+  /// No description provided for @piEngineSettingsCacheNoticesDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'キャッシュコストとプロバイダー復旧の通知を表示します。'**
+  String get piEngineSettingsCacheNoticesDesc;
+
+  /// No description provided for @piEngineSettingsQuietStartup.
+  ///
+  /// In ja, this message translates to:
+  /// **'静かな起動'**
+  String get piEngineSettingsQuietStartup;
+
+  /// No description provided for @piEngineSettingsQuietStartupDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'起動バナーをスキップします。'**
+  String get piEngineSettingsQuietStartupDesc;
+
+  /// No description provided for @piEngineSettingsSkillCommands.
+  ///
+  /// In ja, this message translates to:
+  /// **'スキルコマンド'**
+  String get piEngineSettingsSkillCommands;
+
+  /// No description provided for @piEngineSettingsSkillCommandsDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'スキルを /skill:name コマンドとして登録します。'**
+  String get piEngineSettingsSkillCommandsDesc;
+
+  /// No description provided for @piEngineSettingsInstallTelemetry.
+  ///
+  /// In ja, this message translates to:
+  /// **'インストールテレメトリ'**
+  String get piEngineSettingsInstallTelemetry;
+
+  /// No description provided for @piEngineSettingsInstallTelemetryDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'匿名のバージョン/更新 ping。'**
+  String get piEngineSettingsInstallTelemetryDesc;
+
+  /// No description provided for @piEngineSettingsAnalytics.
+  ///
+  /// In ja, this message translates to:
+  /// **'アナリティクス'**
+  String get piEngineSettingsAnalytics;
+
+  /// No description provided for @piEngineSettingsAnalyticsDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'オプトインの利用分析。'**
+  String get piEngineSettingsAnalyticsDesc;
+
+  /// No description provided for @piEngineSettingsCollapseChangelog.
+  ///
+  /// In ja, this message translates to:
+  /// **'変更履歴を折りたたむ'**
+  String get piEngineSettingsCollapseChangelog;
+
+  /// No description provided for @piEngineSettingsCollapseChangelogDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'更新後に簡潔な変更履歴を表示します。'**
+  String get piEngineSettingsCollapseChangelogDesc;
+
+  /// No description provided for @piEngineSettingsCompaction.
+  ///
+  /// In ja, this message translates to:
+  /// **'圧縮'**
+  String get piEngineSettingsCompaction;
+
+  /// No description provided for @piEngineSettingsCompactionEnabled.
+  ///
+  /// In ja, this message translates to:
+  /// **'長いセッションを自動圧縮'**
+  String get piEngineSettingsCompactionEnabled;
+
+  /// No description provided for @piEngineSettingsCompactionReserve.
+  ///
+  /// In ja, this message translates to:
+  /// **'予約トークン'**
+  String get piEngineSettingsCompactionReserve;
+
+  /// No description provided for @piEngineSettingsCompactionKeep.
+  ///
+  /// In ja, this message translates to:
+  /// **'保持する最近のトークン'**
+  String get piEngineSettingsCompactionKeep;
+
+  /// No description provided for @piEngineSettingsRetry.
+  ///
+  /// In ja, this message translates to:
+  /// **'再試行'**
+  String get piEngineSettingsRetry;
+
+  /// No description provided for @piEngineSettingsRetryEnabled.
+  ///
+  /// In ja, this message translates to:
+  /// **'一時的な障害を自動再試行'**
+  String get piEngineSettingsRetryEnabled;
+
+  /// No description provided for @piEngineSettingsRetryMax.
+  ///
+  /// In ja, this message translates to:
+  /// **'最大再試行回数'**
+  String get piEngineSettingsRetryMax;
+
+  /// No description provided for @piEngineSettingsRetryBase.
+  ///
+  /// In ja, this message translates to:
+  /// **'基本遅延（ミリ秒）'**
+  String get piEngineSettingsRetryBase;
+
+  /// No description provided for @piEngineSettingsImages.
+  ///
+  /// In ja, this message translates to:
+  /// **'画像'**
+  String get piEngineSettingsImages;
+
+  /// No description provided for @piEngineSettingsImagesAutoResize.
+  ///
+  /// In ja, this message translates to:
+  /// **'画像を自動リサイズ'**
+  String get piEngineSettingsImagesAutoResize;
+
+  /// No description provided for @piEngineSettingsImagesBlock.
+  ///
+  /// In ja, this message translates to:
+  /// **'画像をブロック'**
+  String get piEngineSettingsImagesBlock;
+
+  /// No description provided for @piEngineSettingsTerminal.
+  ///
+  /// In ja, this message translates to:
+  /// **'端末'**
+  String get piEngineSettingsTerminal;
+
+  /// No description provided for @piEngineSettingsTerminalShowImages.
+  ///
+  /// In ja, this message translates to:
+  /// **'端末に画像を表示'**
+  String get piEngineSettingsTerminalShowImages;
+
+  /// No description provided for @piEngineSettingsRawJson.
+  ///
+  /// In ja, this message translates to:
+  /// **'生 JSON'**
+  String get piEngineSettingsRawJson;
+
+  /// No description provided for @piEngineSettingsRawJsonDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'settings.json の任意のキーを編集（フォールバック）。'**
+  String get piEngineSettingsRawJsonDesc;
+
+  /// No description provided for @piEngineSettingsRawSave.
+  ///
+  /// In ja, this message translates to:
+  /// **'JSON を適用'**
+  String get piEngineSettingsRawSave;
+
+  /// No description provided for @piEngineSettingsJsonInvalid.
+  ///
+  /// In ja, this message translates to:
+  /// **'JSON が無効です。構文を修正して再試行してください。'**
+  String get piEngineSettingsJsonInvalid;
+
+  /// No description provided for @piEngineSettingsJsonObject.
+  ///
+  /// In ja, this message translates to:
+  /// **'ルートは JSON オブジェクトである必要があります。'**
+  String get piEngineSettingsJsonObject;
+
+  /// No description provided for @piEngineSettingsHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'ほとんどの変更はエンジン起動時に反映されます。今すぐ適用するにはエンジンを再起動してください。フォームで扱わないキーは「生 JSON」セクションで編集できます。'**
+  String get piEngineSettingsHint;
+
+  /// No description provided for @piEngineThemes.
+  ///
+  /// In ja, this message translates to:
+  /// **'テーマ'**
+  String get piEngineThemes;
+
+  /// No description provided for @piEngineThemesSubtitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'エンジン内蔵・カスタムテーマ'**
+  String get piEngineThemesSubtitle;
+
+  /// No description provided for @piEngineThemesBuiltin.
+  ///
+  /// In ja, this message translates to:
+  /// **'内蔵'**
+  String get piEngineThemesBuiltin;
+
+  /// No description provided for @piEngineThemesCustom.
+  ///
+  /// In ja, this message translates to:
+  /// **'カスタム'**
+  String get piEngineThemesCustom;
+
+  /// No description provided for @piEngineThemesActive.
+  ///
+  /// In ja, this message translates to:
+  /// **'適用中'**
+  String get piEngineThemesActive;
+
+  /// No description provided for @piEngineThemesUseDefault.
+  ///
+  /// In ja, this message translates to:
+  /// **'デフォルトテーマを使用'**
+  String get piEngineThemesUseDefault;
+
+  /// No description provided for @piEngineThemesUseDefaultDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'settings.theme をクリアし、エンジンの既定配色を使います。'**
+  String get piEngineThemesUseDefaultDesc;
+
+  /// No description provided for @piEngineThemesImport.
+  ///
+  /// In ja, this message translates to:
+  /// **'テーマをインポート'**
+  String get piEngineThemesImport;
+
+  /// No description provided for @piEngineThemesImportDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'テーマ JSON を貼り付けます。\"name\" 文字列と \"colors\" オブジェクトが必要です。ファイルは ~/.pi/agent/themes/ に書き込まれます。'**
+  String get piEngineThemesImportDesc;
+
+  /// No description provided for @piEngineThemesImportJson.
+  ///
+  /// In ja, this message translates to:
+  /// **'テーマ JSON'**
+  String get piEngineThemesImportJson;
+
+  /// No description provided for @piEngineThemesImportInvalid.
+  ///
+  /// In ja, this message translates to:
+  /// **'テーマは \"name\" 文字列と \"colors\" オブジェクトを持つ JSON オブジェクトである必要があります。'**
+  String get piEngineThemesImportInvalid;
+
+  /// No description provided for @piEngineThemesImportInvalidJson.
+  ///
+  /// In ja, this message translates to:
+  /// **'JSON が無効です。構文を修正して再試行してください。'**
+  String get piEngineThemesImportInvalidJson;
+
+  /// No description provided for @piEngineThemesRemove.
+  ///
+  /// In ja, this message translates to:
+  /// **'テーマを削除'**
+  String get piEngineThemesRemove;
+
+  /// No description provided for @piEngineThemesRemoveConfirm.
+  ///
+  /// In ja, this message translates to:
+  /// **'テーマ \"{name}\" を削除しますか？ファイルは削除されます。'**
+  String piEngineThemesRemoveConfirm(String name);
+
+  /// No description provided for @piEngineThemesEmpty.
+  ///
+  /// In ja, this message translates to:
+  /// **'テーマはまだありません。インポートしてください。'**
+  String get piEngineThemesEmpty;
+
+  /// No description provided for @piEngineContextFiles.
+  ///
+  /// In ja, this message translates to:
+  /// **'コンテキストファイル'**
+  String get piEngineContextFiles;
+
+  /// No description provided for @piEngineContextFilesSubtitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'AGENTS.md / CLAUDE.md クイック編集'**
+  String get piEngineContextFilesSubtitle;
+
+  /// No description provided for @piEngineContextFilesHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'エンジンはプロジェクトルートから上方向へ AGENTS.md / CLAUDE.md をマージします。クイック編集は常にプロジェクトローカルのファイルを対象とします。上位のコピーがある場合は引き続きエンジンに取り込まれます。'**
+  String get piEngineContextFilesHint;
+
+  /// No description provided for @piEngineContextFilesProject.
+  ///
+  /// In ja, this message translates to:
+  /// **'プロジェクトファイル: {path}'**
+  String piEngineContextFilesProject(String path);
+
+  /// No description provided for @piEngineContextFilesParent.
+  ///
+  /// In ja, this message translates to:
+  /// **'上位コピー: {path} · 上でマージ'**
+  String piEngineContextFilesParent(String path);
+
+  /// No description provided for @piEngineContextFilesNew.
+  ///
+  /// In ja, this message translates to:
+  /// **'{path} に作成されます'**
+  String piEngineContextFilesNew(String path);
+
+  /// No description provided for @piEngineContextFilesEdit.
+  ///
+  /// In ja, this message translates to:
+  /// **'{name} を編集'**
+  String piEngineContextFilesEdit(String name);
 
   /// No description provided for @piEngineExtensions.
   ///
@@ -5680,6 +6436,18 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'路線を切り替えるとエンジンが再起動し、新しい実行環境がすぐに反映されます。'**
   String get piEngineRuntimeRestartHint;
+
+  /// No description provided for @clear.
+  ///
+  /// In ja, this message translates to:
+  /// **'クリア'**
+  String get clear;
+
+  /// No description provided for @selectAll.
+  ///
+  /// In ja, this message translates to:
+  /// **'すべて選択'**
+  String get selectAll;
 }
 
 class _AppLocalizationsDelegate

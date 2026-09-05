@@ -67,7 +67,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get removeProjectTitle => 'Remove Project';
 
   @override
-  String removeProjectConfirm(Object name) {
+  String removeProjectConfirm(String name) {
     return 'Remove \"$name\" from recent projects?';
   }
 
@@ -125,12 +125,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String toolSuggestionTitle(Object toolName) {
+  String toolSuggestionTitle(String toolName) {
     return 'Add $toolName to Codex?';
   }
 
   @override
-  String toolSuggestionInstall(Object toolName) {
+  String toolSuggestionInstall(String toolName) {
     return 'Install $toolName';
   }
 
@@ -145,7 +145,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Connect the required app, then confirm when you\'re done.';
 
   @override
-  String toolSuggestionConnect(Object appName) {
+  String toolSuggestionConnect(String appName) {
     return 'Connect $appName';
   }
 
@@ -1258,7 +1258,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rewindConfirmTitle => 'Confirm Rewind';
 
   @override
-  String rewindConfirmBody(Object mode) {
+  String rewindConfirmBody(String mode) {
     return 'Mode: $mode\n\nThis action cannot be undone. Proceed?';
   }
 
@@ -2700,7 +2700,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get piEngineTitle => 'Pi engine';
 
   @override
-  String get piEngineSettingsSubtitle => 'System prompts, launch flags, models';
+  String get piEngineSettingsSubtitle =>
+      'Core settings.json options (opaque JSON fallback)';
 
   @override
   String get piEngineManage => 'Pi engine';
@@ -2896,6 +2897,69 @@ class AppLocalizationsEn extends AppLocalizations {
   String get piEngineProviderApiKey => 'API key';
 
   @override
+  String get piEngineModelImport => 'Import from server';
+
+  @override
+  String get piEngineModelImportDesc =>
+      'Fetch model IDs from an OpenAI-compatible endpoint and merge them into this provider.';
+
+  @override
+  String get piEngineModelImportFetch => 'Fetch models';
+
+  @override
+  String get piEngineModelImportFetching => 'Fetching models…';
+
+  @override
+  String get piEngineModelImportSelect =>
+      'Select the models to import. IDs already present are updated in place.';
+
+  @override
+  String get piEngineModelImportNone =>
+      'No models were found at this endpoint.';
+
+  @override
+  String piEngineModelImportDone(int count, String provider) {
+    return 'Imported $count model(s) into $provider.';
+  }
+
+  @override
+  String get piEngineModelsImportJson => 'Import JSON';
+
+  @override
+  String get piEngineModelsImportJsonDesc =>
+      'Paste a models.json \"providers\" fragment to merge into the file.';
+
+  @override
+  String get piEngineModelsImportJsonHint =>
+      '{\n  \"providers\": {\n    \"ollama\": {\n      \"baseUrl\": \"http://127.0.0.1:11434/v1\",\n      \"api\": \"openai-completions\",\n      \"apiKey\": \"ollama\",\n      \"models\": [{\"id\": \"qwen2.5-coder:7b\"}]\n    }\n  }\n}';
+
+  @override
+  String piEngineModelsImportJsonDone(int count) {
+    return 'Imported $count provider(s).';
+  }
+
+  @override
+  String get piEngineModelsImportJsonInvalid =>
+      'That doesn\'t look like a valid providers JSON object.';
+
+  @override
+  String get piEngineRefreshCatalog => 'Refresh model catalog';
+
+  @override
+  String get piEngineRefreshCatalogDesc =>
+      'Run pi update --models to refresh the built-in provider catalogs (needs network).';
+
+  @override
+  String get piEngineRefreshCatalogConfirm =>
+      'Refresh the built-in model catalogs now? This downloads the latest provider catalogs.';
+
+  @override
+  String get piEngineRefreshCatalogRunning => 'Refreshing model catalogs…';
+
+  @override
+  String get piEngineRefreshCatalogDone => 'Model catalogs refreshed.';
+
+  @override
   String get piEngineCommands => 'Command palette';
 
   @override
@@ -2979,6 +3043,387 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String piEnginePromptsCopied(String name) {
     return 'Copied /$name. Paste it into the chat input.';
+  }
+
+  @override
+  String get piEnginePromptsHint =>
+      'Prompts are .md files exposed as slash commands in the chat input. Edits apply immediately, no restart needed.';
+
+  @override
+  String get piEnginePromptsScope => 'Scope';
+
+  @override
+  String get piEnginePromptsScopeGlobal => 'Global';
+
+  @override
+  String get piEnginePromptsScopeProject => 'Project';
+
+  @override
+  String get piEnginePromptsContent => 'Content';
+
+  @override
+  String get piEnginePromptsCopy => 'Copy';
+
+  @override
+  String get piEnginePackages => 'Packages';
+
+  @override
+  String get piEnginePackagesSubtitle =>
+      'npm / git / local packages (pi install)';
+
+  @override
+  String get piEnginePackagesHint =>
+      'Packages are npm, git or local sources configured in settings.json packages[]. The engine resolves extensions, skills, prompts and themes from them when it starts or reloads.';
+
+  @override
+  String get piEnginePackagesEmpty =>
+      'No packages configured yet. Tap + to install one.';
+
+  @override
+  String piEnginePackagesCount(int count) {
+    return '$count packages';
+  }
+
+  @override
+  String get piEnginePackagesGroupGlobal => 'Global';
+
+  @override
+  String get piEnginePackagesGroupProject => 'Project';
+
+  @override
+  String get piEnginePackagesInstall => 'Install package';
+
+  @override
+  String get piEnginePackagesSourceLabel => 'Source';
+
+  @override
+  String get piEnginePackagesSourceHint =>
+      'npm:lodash · https://github.com/user/repo · ./local-ext';
+
+  @override
+  String get piEnginePackagesInstallLocal => 'Install for this project';
+
+  @override
+  String get piEnginePackagesInstallLocalDesc =>
+      'Installs into .pi/ and records the source in the project settings.json';
+
+  @override
+  String get piEnginePackagesUpdate => 'Update';
+
+  @override
+  String get piEnginePackagesUpdateAll => 'Update all';
+
+  @override
+  String get piEnginePackagesRemove => 'Remove';
+
+  @override
+  String piEnginePackagesRemoveConfirm(String source) {
+    return 'Remove package $source?';
+  }
+
+  @override
+  String get piEnginePackagesRemoveConfirmBody =>
+      'This uninstalls the artifacts and drops the entry from settings.json.';
+
+  @override
+  String get piEnginePackagesNotInstalled => 'Not installed';
+
+  @override
+  String get piEnginePackagesInstalled => 'Installed';
+
+  @override
+  String piEnginePackagesUpdated(int count) {
+    return 'Updated $count packages';
+  }
+
+  @override
+  String piEnginePackagesRemoved(String source) {
+    return 'Removed $source';
+  }
+
+  @override
+  String piEnginePackagesInstalling(String source) {
+    return 'Installing $source…';
+  }
+
+  @override
+  String get piEnginePackagesUpdating => 'Updating packages…';
+
+  @override
+  String piEnginePackagesRemoving(String source) {
+    return 'Removing $source…';
+  }
+
+  @override
+  String get piEnginePackagesRestartHint =>
+      'Configured sources are re-read when the engine resolves resources; npm/git artifact changes usually apply after a restart (or /reload).';
+
+  @override
+  String get piEngineSettingsCore => 'Settings';
+
+  @override
+  String get piEngineSettingsSectionGeneral => 'General';
+
+  @override
+  String get piEngineSettingsSectionBehavior => 'Behavior';
+
+  @override
+  String get piEngineSettingsDefaultProvider => 'Default provider';
+
+  @override
+  String get piEngineSettingsDefaultProviderDesc =>
+      'Provider used when none is selected.';
+
+  @override
+  String get piEngineSettingsDefaultModel => 'Default model';
+
+  @override
+  String get piEngineSettingsDefaultModelDesc =>
+      'Model used when none is selected.';
+
+  @override
+  String get piEngineSettingsThinkingLevel => 'Default thinking level';
+
+  @override
+  String get piEngineSettingsThinkingLevelDesc =>
+      'Applied when the model does not override it.';
+
+  @override
+  String get piEngineSettingsTransport => 'Transport';
+
+  @override
+  String get piEngineSettingsTransportDesc =>
+      'API transport for provider calls.';
+
+  @override
+  String get piEngineSettingsSteering => 'Steering mode';
+
+  @override
+  String get piEngineSettingsSteeringDesc =>
+      'How tool confirmations are grouped.';
+
+  @override
+  String get piEngineSettingsFollowUp => 'Follow-up mode';
+
+  @override
+  String get piEngineSettingsFollowUpDesc =>
+      'How follow-up questions are handled.';
+
+  @override
+  String get piEngineSettingsTrust => 'Default project trust';
+
+  @override
+  String get piEngineSettingsTrustDesc =>
+      'Asked per project unless set here (global only).';
+
+  @override
+  String get piEngineSettingsShellPath => 'Shell path';
+
+  @override
+  String get piEngineSettingsShellPathDesc =>
+      'Custom shell for the bash tool (e.g. Cygwin).';
+
+  @override
+  String get piEngineSettingsExternalEditor => 'External editor';
+
+  @override
+  String get piEngineSettingsExternalEditorDesc =>
+      'Command for the external editor.';
+
+  @override
+  String get piEngineSettingsHttpProxy => 'HTTP proxy';
+
+  @override
+  String get piEngineSettingsHttpProxyDesc =>
+      'Proxy applied to Pi-managed HTTP clients.';
+
+  @override
+  String get piEngineSettingsHideThinking => 'Hide thinking';
+
+  @override
+  String get piEngineSettingsHideThinkingDesc =>
+      'Collapse thinking blocks by default.';
+
+  @override
+  String get piEngineSettingsCacheNotices => 'Cache miss notices';
+
+  @override
+  String get piEngineSettingsCacheNoticesDesc =>
+      'Show cache cost and provider recovery notices.';
+
+  @override
+  String get piEngineSettingsQuietStartup => 'Quiet startup';
+
+  @override
+  String get piEngineSettingsQuietStartupDesc => 'Skip the startup banner.';
+
+  @override
+  String get piEngineSettingsSkillCommands => 'Skill commands';
+
+  @override
+  String get piEngineSettingsSkillCommandsDesc =>
+      'Register skills as /skill:name commands.';
+
+  @override
+  String get piEngineSettingsInstallTelemetry => 'Install telemetry';
+
+  @override
+  String get piEngineSettingsInstallTelemetryDesc =>
+      'Anonymous version/update ping.';
+
+  @override
+  String get piEngineSettingsAnalytics => 'Analytics';
+
+  @override
+  String get piEngineSettingsAnalyticsDesc => 'Opt-in usage analytics.';
+
+  @override
+  String get piEngineSettingsCollapseChangelog => 'Collapse changelog';
+
+  @override
+  String get piEngineSettingsCollapseChangelogDesc =>
+      'Show condensed changelog after updates.';
+
+  @override
+  String get piEngineSettingsCompaction => 'Compaction';
+
+  @override
+  String get piEngineSettingsCompactionEnabled => 'Auto-compact long sessions';
+
+  @override
+  String get piEngineSettingsCompactionReserve => 'Reserved tokens';
+
+  @override
+  String get piEngineSettingsCompactionKeep => 'Recent tokens kept';
+
+  @override
+  String get piEngineSettingsRetry => 'Retry';
+
+  @override
+  String get piEngineSettingsRetryEnabled => 'Auto-retry transient failures';
+
+  @override
+  String get piEngineSettingsRetryMax => 'Max retries';
+
+  @override
+  String get piEngineSettingsRetryBase => 'Base delay (ms)';
+
+  @override
+  String get piEngineSettingsImages => 'Images';
+
+  @override
+  String get piEngineSettingsImagesAutoResize => 'Auto-resize images';
+
+  @override
+  String get piEngineSettingsImagesBlock => 'Block images';
+
+  @override
+  String get piEngineSettingsTerminal => 'Terminal';
+
+  @override
+  String get piEngineSettingsTerminalShowImages => 'Show images in terminal';
+
+  @override
+  String get piEngineSettingsRawJson => 'Raw JSON';
+
+  @override
+  String get piEngineSettingsRawJsonDesc =>
+      'Edit any settings.json key (opaque fallback).';
+
+  @override
+  String get piEngineSettingsRawSave => 'Apply JSON';
+
+  @override
+  String get piEngineSettingsJsonInvalid =>
+      'Invalid JSON. Fix the syntax and try again.';
+
+  @override
+  String get piEngineSettingsJsonObject =>
+      'The root value must be a JSON object.';
+
+  @override
+  String get piEngineSettingsHint =>
+      'Most changes apply when the engine starts. Restart the engine to apply them now. Keys the form does not cover can be edited in the Raw JSON section.';
+
+  @override
+  String get piEngineThemes => 'Themes';
+
+  @override
+  String get piEngineThemesSubtitle => 'Built-in and custom engine themes';
+
+  @override
+  String get piEngineThemesBuiltin => 'Built-in';
+
+  @override
+  String get piEngineThemesCustom => 'Custom';
+
+  @override
+  String get piEngineThemesActive => 'Active';
+
+  @override
+  String get piEngineThemesUseDefault => 'Use default theme';
+
+  @override
+  String get piEngineThemesUseDefaultDesc =>
+      'Clears settings.theme so the engine uses its default palette.';
+
+  @override
+  String get piEngineThemesImport => 'Import theme';
+
+  @override
+  String get piEngineThemesImportDesc =>
+      'Paste a theme JSON. It must declare a \"name\" string and a \"colors\" object; the file is written under ~/.pi/agent/themes/.';
+
+  @override
+  String get piEngineThemesImportJson => 'Theme JSON';
+
+  @override
+  String get piEngineThemesImportInvalid =>
+      'The theme must be a JSON object declaring a \"name\" string and a \"colors\" object.';
+
+  @override
+  String get piEngineThemesImportInvalidJson =>
+      'Invalid JSON. Fix the syntax and try again.';
+
+  @override
+  String get piEngineThemesRemove => 'Remove theme';
+
+  @override
+  String piEngineThemesRemoveConfirm(String name) {
+    return 'Remove theme \"$name\"? The file will be deleted.';
+  }
+
+  @override
+  String get piEngineThemesEmpty => 'No themes yet. Import one to get started.';
+
+  @override
+  String get piEngineContextFiles => 'Context files';
+
+  @override
+  String get piEngineContextFilesSubtitle => 'AGENTS.md / CLAUDE.md quick edit';
+
+  @override
+  String get piEngineContextFilesHint =>
+      'The engine merges AGENTS.md / CLAUDE.md upward from the project root. Quick edit always targets the project-local file; a higher-up copy keeps feeding the engine if present.';
+
+  @override
+  String piEngineContextFilesProject(String path) {
+    return 'Project file: $path';
+  }
+
+  @override
+  String piEngineContextFilesParent(String path) {
+    return 'Parent copy: $path · merged above';
+  }
+
+  @override
+  String piEngineContextFilesNew(String path) {
+    return 'Will be created at $path';
+  }
+
+  @override
+  String piEngineContextFilesEdit(String name) {
+    return 'Edit $name';
   }
 
   @override
@@ -3166,4 +3611,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get piEngineRuntimeRestartHint =>
       'Switching routes restarts the engine so the new runtime takes effect immediately.';
+
+  @override
+  String get clear => 'Clear';
+
+  @override
+  String get selectAll => 'Select all';
 }

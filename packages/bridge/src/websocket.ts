@@ -2715,7 +2715,16 @@ export class BridgeWebSocketServer {
     const adapter = this.piAdapter;
     if (!adapter) return;
     try {
-      const metas = await scanPiRecentSessions(adapter.gateway.piHome);
+      const { limit, offset, searchQuery, namedOnly, provider, projectPath } =
+        msg;
+      const metas = await scanPiRecentSessions(adapter.gateway.piHome, {
+        limit,
+        offset,
+        searchQuery,
+        namedOnly,
+        provider,
+        projectPath,
+      });
       const sessions = metas.map((meta) => this.piRecentSessionJson(meta));
       this.send(ws, {
         type: "recent_sessions",

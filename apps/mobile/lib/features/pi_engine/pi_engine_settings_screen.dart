@@ -6,13 +6,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services/pi_host_service.dart';
 import 'commands_screen.dart';
+import 'context_files_screen.dart';
 import 'engine_flags_screen.dart';
 import 'extensions_screen.dart';
 import 'models_screen.dart';
 import 'pi_engine_widgets.dart';
+import 'packages_screen.dart';
+import 'prompts_screen.dart';
 import 'runtime_screen.dart';
+import 'settings_core_screen.dart';
 import 'skills_screen.dart';
 import 'system_prompt_screen.dart';
+import 'themes_screen.dart';
 
 /// Pi engine management hub: status + entry points for system prompts,
 /// launch flags and provider/model management (docs/ENGINE-UI-SURFACES §6).
@@ -75,6 +80,23 @@ class _PiEngineSettingsScreenState extends State<PiEngineSettingsScreen> {
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute<void>(
                     builder: (_) => SystemPromptScreen(
+                      projectPath: widget.projectPath,
+                    ),
+                  ),
+                ),
+              ),
+              const Divider(height: 1, indent: 56),
+              ListTile(
+                leading: Icon(
+                  Icons.folder_shared_outlined,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                title: Text(l.piEngineContextFiles),
+                subtitle: Text(l.piEngineContextFilesSubtitle),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => ContextFilesScreen(
                       projectPath: widget.projectPath,
                     ),
                   ),
@@ -158,6 +180,55 @@ class _PiEngineSettingsScreenState extends State<PiEngineSettingsScreen> {
               const Divider(height: 1, indent: 56),
               ListTile(
                 leading: Icon(
+                  Icons.notes,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                title: Text(l.piEnginePrompts),
+                subtitle: Text(l.piEnginePromptsSubtitle),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => PromptsScreen(
+                      projectPath: widget.projectPath,
+                    ),
+                  ),
+                ),
+              ),
+              const Divider(height: 1, indent: 56),
+              ListTile(
+                leading: Icon(
+                  Icons.palette_outlined,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                title: Text(l.piEngineThemes),
+                subtitle: Text(l.piEngineThemesSubtitle),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const ThemesScreen(),
+                  ),
+                ),
+              ),
+              const Divider(height: 1, indent: 56),
+              ListTile(
+                leading: Icon(
+                  Icons.inventory_2_outlined,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                title: Text(l.piEnginePackages),
+                subtitle: Text(l.piEnginePackagesSubtitle),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => PackagesScreen(
+                      projectPath: widget.projectPath,
+                    ),
+                  ),
+                ),
+              ),
+              const Divider(height: 1, indent: 56),
+              ListTile(
+                leading: Icon(
                   Icons.model_training,
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
@@ -167,6 +238,21 @@ class _PiEngineSettingsScreenState extends State<PiEngineSettingsScreen> {
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute<void>(
                     builder: (_) => const ModelsScreen(),
+                  ),
+                ),
+              ),
+              const Divider(height: 1, indent: 56),
+              ListTile(
+                leading: Icon(
+                  Icons.settings_outlined,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                title: Text(l.piEngineSettingsCore),
+                subtitle: Text(l.piEngineSettingsSubtitle),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const EngineSettingsCoreScreen(),
                   ),
                 ),
               ),

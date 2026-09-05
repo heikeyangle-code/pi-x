@@ -32,10 +32,23 @@ import {
   readSkillMarkdown,
   looksLikeSkillMarkdown,
   piAgentFiles,
+  listThemes,
+  writeCustomTheme,
+  deleteCustomTheme,
+  findContextFiles,
+  findNearestContextFile,
+  sanitizeContextFileName,
   type CustomProviderSpec,
   type CustomModelSpec,
   type SkillRoot,
 } from "./surfaces.js";
+import {
+  listPiPackages,
+  installPiPackage,
+  removePiPackage,
+  updatePiPackages,
+  defaultRunner,
+} from "./packages.js";
 import type { RuntimeRoute } from "./pix-config.js";
 import type { RuntimeInstallProgress } from "./runtime-manager.js";
 
@@ -97,6 +110,8 @@ export interface PiGatewayOptions {
     route: RuntimeRoute,
     onProgress?: (progress: RuntimeInstallProgress) => void,
   ) => Promise<{ success: boolean; error?: string }>;
+  /** Override the command runner for `update_models` (tests). */
+  runCommand?: typeof defaultRunner;
 }
 
 export class PiGateway {
@@ -160,6 +175,35 @@ export class PiGateway {
     const files = piAgentFiles(this.piHome);
     const cfg = await new PixConfigFile(files.pixConfig).load();
     return cfg.engineArgs;
+  }
+
+  /**
+   * Run `pi update --models` on the host using the same executable/wrapper the
+   * engine pool uses (node entry or route-B prefix). PI_OFFLINE is cleared so
+   * catalog downloads work; the default runner rejects on non-zero exit with
+   * the first 400 stderr chars, which is exactly what the app shows.
+   */
+  private async runUpdateModels(): Promise<string> {
+    const entry = this.opts.piEntry;
+    const prefix =
+      typeof this.opts.commandPrefix === "function"
+        ? await this.opts.commandPrefix(this.piHome)
+        : this.opts.commandPrefix;
+    const env: Record<string, string | undefined> = {
+      ...process.env,
+      ...this.opts.env,
+      PI_SKIP_VERSION_CHECK: "1",
+    };
+    delete env.PI_OFFLINE;
+    const isJsEntry =
+      entry.endsWith(".js") || entry.endsWith(".mjs") || entry.endsWith(".cjs");
+    const wrap = prefix ?? [];
+    const cmd = wrap[0] ?? (isJsEntry ? process.execPath : entry);
+    const argv = isJsEntry
+      ? [...wrap.slice(1), process.execPath, entry, "update", "--models"]
+      : [...wrap.slice(1), entry, "update", "--models"];
+    const runner = this.opts.runCommand ?? defaultRunner;
+    return runner(cmd, argv, { cwd: this.piHome, timeoutMs: 120_000 });
   }
 
   /** Handle one client control message; resolves with the engine response. */
@@ -301,13 +345,141 @@ export class PiGateway {
       case "update_settings": {
         const files = piAgentFiles(this.piHome);
         const settings = new SettingsFile(files.settings);
-        await settings.update((payload.patch as Record<string, unknown>) ?? {});
+        const patch = (payload.patch as Record<string, unknown>) ?? {};
+        // Optional key removal (cleared form fields): delete before merging so
+        // an unset key falls back to the engine default instead of an empty
+        // string / null leaking into the file.
+        const remove = Array.isArray(payload.remove)
+          ? payload.remove.map(String)
+          : [];
+        if (remove.length > 0) {
+          const current = await settings.load();
+          for (const key of remove) delete current[key];
+          await settings.update({ ...current, ...patch });
+        } else {
+          await settings.update(patch);
+        }
         return { success: true, data: await settings.load() };
+      }
+      // ---- themes (pi 1:1: theme.ts getAvailableThemesWithPaths) ----
+      case "list_themes": {
+        const files = piAgentFiles(this.piHome);
+        const settings = await new SettingsFile(files.settings).load();
+        const selected =
+          typeof settings["theme"] === "string" ? settings["theme"] : undefined;
+        return { success: true, data: await listThemes(this.piHome, selected) };
+      }
+      case "select_theme": {
+        const files = piAgentFiles(this.piHome);
+        const name = String(payload.name ?? "").trim();
+        const settings = new SettingsFile(files.settings);
+        if (name === "") {
+          const current = await settings.load();
+          delete current["theme"];
+          await settings.update(current);
+        } else {
+          await settings.update({ theme: name });
+        }
+        return { success: true, data: await settings.load() };
+      }
+      case "import_theme": {
+        try {
+          const file = await writeCustomTheme(
+            this.piHome,
+            String(payload.name ?? ""),
+            payload.theme,
+          );
+          return { success: true, data: { file } };
+        } catch (error) {
+          return {
+            success: false,
+            error: error instanceof Error ? error.message : "invalid_theme",
+          };
+        }
+      }
+      case "remove_theme": {
+        const removed = await deleteCustomTheme(
+          this.piHome,
+          String(payload.name ?? ""),
+        );
+        return { success: true, data: { removed } };
+      }
+      // ---- context files (AGENTS.md / CLAUDE.md quick edit, docs §6.1 #13) ----
+      case "get_context_files": {
+        const cwd = this.opts.resolveCwd(msg.projectId);
+        const files = await findContextFiles(cwd);
+        return { success: true, data: { cwd, files } };
+      }
+      case "read_context_file": {
+        const cwd = this.opts.resolveCwd(msg.projectId);
+        const name = sanitizeContextFileName(payload.name);
+        if (!name) {
+          return { success: false, error: "invalid context file name" };
+        }
+        const nearest = await findNearestContextFile(cwd, name);
+        const path = nearest ?? join(cwd, name);
+        const content = nearest ? await readFile(path, "utf8") : "";
+        return { success: true, data: { path, content, created: nearest === null } };
+      }
+      case "write_context_file": {
+        const cwd = this.opts.resolveCwd(msg.projectId);
+        const name = sanitizeContextFileName(payload.name);
+        if (!name) {
+          return { success: false, error: "invalid context file name" };
+        }
+        const path = join(cwd, name);
+        await writeFile(path, String(payload.content ?? ""), "utf8");
+        return { success: true, data: { path } };
       }
       case "get_models": {
         const files = piAgentFiles(this.piHome);
         const providers = await new ModelsFile(files.models).loadProviders();
         return { success: true, data: providers };
+      }
+      case "import_models": {
+        // Merge a batch of discovered models into one provider (by id).
+        const files = piAgentFiles(this.piHome);
+        const models = new ModelsFile(files.models);
+        const providerId = String(payload.providerId ?? "");
+        if (!providerId) return { success: false, error: "missing_provider" };
+        const rawModels = payload.models;
+        if (!Array.isArray(rawModels)) {
+          return { success: false, error: "invalid_models" };
+        }
+        const specs: CustomModelSpec[] = [];
+        for (const entry of rawModels) {
+          if (entry === null || typeof entry !== "object" || Array.isArray(entry)) {
+            continue;
+          }
+          const record = entry as Record<string, unknown>;
+          const id = String(record["id"] ?? "");
+          if (!id) continue;
+          const spec: CustomModelSpec = { id };
+          if (typeof record["name"] === "string" && record["name"].length > 0) {
+            spec.name = record["name"];
+          }
+          specs.push(spec);
+        }
+        if (specs.length === 0) {
+          return { success: false, error: "no_valid_models" };
+        }
+        await models.importModels(providerId, specs);
+        return { success: true, data: await models.loadProviders() };
+      }
+      case "import_models_json": {
+        // Merge a models.json "providers" fragment (docs/models.md) by id.
+        const files = piAgentFiles(this.piHome);
+        const models = new ModelsFile(files.models);
+        const jsonText = String(payload.json ?? "");
+        try {
+          const touched = await models.importProvidersJson(jsonText);
+          return { success: true, data: { touched, providers: await models.loadProviders() } };
+        } catch (error) {
+          return {
+            success: false,
+            error: error instanceof Error ? error.message : "invalid_json",
+          };
+        }
       }
       case "upsert_model": {
         const files = piAgentFiles(this.piHome);
@@ -418,6 +590,66 @@ export class PiGateway {
           return { success: true, data: { deleted } };
         } catch {
           return { success: false, error: "invalid_template_name" };
+        }
+      }
+      // ---- Pi Packages (pi install/list/remove/update semantics) ----
+      case "list_packages": {
+        return { success: true, data: await listPiPackages(cwd, this.piHome) };
+      }
+      case "install_package": {
+        const source = String(payload.source ?? "");
+        if (!source) return { success: false, error: "missing_source" };
+        try {
+          const result = await installPiPackage(cwd, this.piHome, source, {
+            local: payload.local === true,
+          });
+          return { success: true, data: result };
+        } catch (error) {
+          return {
+            success: false,
+            error: error instanceof Error ? error.message : "install_failed",
+          };
+        }
+      }
+      case "remove_package": {
+        const source = String(payload.source ?? "");
+        if (!source) return { success: false, error: "missing_source" };
+        try {
+          const result = await removePiPackage(cwd, this.piHome, source, {
+            local: payload.local === true,
+          });
+          return { success: true, data: result };
+        } catch (error) {
+          return {
+            success: false,
+            error: error instanceof Error ? error.message : "remove_failed",
+          };
+        }
+      }
+      case "update_packages": {
+        const source = payload.source === undefined ? undefined : String(payload.source);
+        try {
+          const result = await updatePiPackages(cwd, this.piHome, source);
+          return { success: true, data: result };
+        } catch (error) {
+          return {
+            success: false,
+            error: error instanceof Error ? error.message : "update_failed",
+          };
+        }
+      }
+      case "update_models": {
+        // Refresh built-in model catalogs: `pi update --models`. This is a
+        // network op (model catalogs are downloaded), so PI_OFFLINE must be
+        // cleared; give it a generous timeout.
+        try {
+          const output = await this.runUpdateModels();
+          return { success: true, data: { output } };
+        } catch (error) {
+          return {
+            success: false,
+            error: error instanceof Error ? error.message : "update_models_failed",
+          };
         }
       }
       // ---- Pi X config surface (engine launch args + prompt files) ----

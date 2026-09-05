@@ -110,6 +110,93 @@ export class ModelsFile {
     provider.models = [...(provider.models ?? []), model];
     await this.upsertProvider(providerId, provider);
   }
+
+  /**
+   * Merge a batch of models into a provider by id (docs/models.md upsert
+   * semantics: same id replaces, new ids append, untouched models are kept).
+   * Creates the provider when missing; provider-level fields are preserved.
+   */
+  async importModels(providerId: string, models: CustomModelSpec[]): Promise<void> {
+    const providers = await this.loadProviders();
+    const provider = providers[providerId] ?? {};
+    const byId = new Map<string, CustomModelSpec>();
+    for (const existing of provider.models ?? []) {
+      byId.set(existing.id, existing);
+    }
+    for (const incoming of models) {
+      byId.set(incoming.id, incoming);
+    }
+    provider.models = [...byId.values()];
+    await this.upsertProvider(providerId, provider);
+  }
+
+  /**
+   * Merge providers from pasted JSON (the models.json "providers" object or a
+   * single provider object) into the file. Provider-level fields overwrite;
+   * models upsert by id within each provider. Unknown input is rejected.
+   * Returns the provider ids that were touched.
+   */
+  async importProvidersJson(jsonText: string): Promise<string[]> {
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(jsonText);
+    } catch {
+      throw new Error("invalid JSON");
+    }
+    let providers: Record<string, unknown>;
+    if (parsed !== null && typeof parsed === "object" && !Array.isArray(parsed)) {
+      const obj = parsed as Record<string, unknown>;
+      if (obj["providers"] !== undefined) {
+        if (obj["providers"] === null || typeof obj["providers"] !== "object" || Array.isArray(obj["providers"])) {
+          throw new Error("invalid providers object");
+        }
+        providers = obj["providers"] as Record<string, unknown>;
+      } else {
+        // Bare single-provider object, e.g. {"ollama": {...}}.
+        providers = obj;
+      }
+    } else {
+      throw new Error("expected a providers object");
+    }
+    const root = (await readJsonObject(this.file)) ?? {};
+    const current = (root["providers"] as Record<string, unknown> | undefined) ?? {};
+    const touched: string[] = [];
+    for (const [id, incomingValue] of Object.entries(providers)) {
+      if (incomingValue === null || typeof incomingValue !== "object" || Array.isArray(incomingValue)) {
+        continue; // skip malformed entries instead of corrupting the file
+      }
+      const incoming = incomingValue as Record<string, unknown>;
+      const existing = (current[id] ?? {}) as Record<string, unknown>;
+      const merged: Record<string, unknown> = { ...existing };
+      for (const [key, value] of Object.entries(incoming)) {
+        if (key === "models" && Array.isArray(value)) {
+          const byId = new Map<string, unknown>();
+          if (Array.isArray(existing["models"])) {
+            for (const model of existing["models"]) {
+              if (model !== null && typeof model === "object" && !Array.isArray(model)) {
+                byId.set((model as Record<string, unknown>)["id"] as string, model);
+              }
+            }
+          }
+          for (const model of value) {
+            if (model !== null && typeof model === "object" && !Array.isArray(model)) {
+              const record = model as Record<string, unknown>;
+              if (typeof record["id"] === "string" && record["id"].length > 0) {
+                byId.set(record["id"], model);
+              }
+            }
+          }
+          merged["models"] = [...byId.values()];
+        } else {
+          merged[key] = value;
+        }
+      }
+      current[id] = merged;
+      touched.push(id);
+    }
+    await writeJsonObject(this.file, { ...root, providers: current });
+    return touched;
+  }
 }
 
 /** Directory-style resource discovery (extensions/skills/prompt templates). */
@@ -130,6 +217,27 @@ export async function listResourceDirs(root: string): Promise<string[]> {
     }
   }
   return dirs.sort();
+}
+
+/** Enumerate `*.json` files under `root` (themes etc.); missing dir = empty. */
+export async function listJsonFiles(root: string): Promise<string[]> {
+  let entries: string[];
+  try {
+    entries = await readdir(root);
+  } catch {
+    return [];
+  }
+  const files: string[] = [];
+  for (const name of entries) {
+    if (!name.toLowerCase().endsWith(".json")) continue;
+    const full = join(root, name);
+    try {
+      if ((await stat(full)).isFile()) files.push(full);
+    } catch {
+      // ignore unreadable entries
+    }
+  }
+  return files.sort();
 }
 
 /** Whether a markdown file looks like an Agent-skills skill (frontmatter + description). */
@@ -374,6 +482,8 @@ export function piAgentFiles(piHome: string): {
   skillsDir: string;
   /** Official prompt template dir (~/.pi/agent/prompts, prompt-templates.ts). */
   agentPromptsDir: string;
+  /** Custom themes dir (~/.pi/agent/themes, theme.ts getCustomThemesDir). */
+  themesDir: string;
   npmDir: string;
   gitDir: string;
   /** Pi X app-controlled engine launch options (~/.pi/agent/pix-config.json). */
@@ -390,10 +500,184 @@ export function piAgentFiles(piHome: string): {
     extensionsDir: join(agent, "extensions"),
     skillsDir: join(agent, "skills"),
     agentPromptsDir: join(agent, "prompts"),
+    themesDir: join(agent, "themes"),
     npmDir: join(agent, "npm"),
     gitDir: join(agent, "git"),
     pixConfig: join(agent, "pix-config.json"),
     systemPrompt: join(agent, "SYSTEM.md"),
     appendSystemPrompt: join(agent, "APPEND_SYSTEM.md"),
   };
+}
+
+/**
+ * Theme discovery (pi 1:1: theme.ts getAvailableThemesWithPaths).
+ *
+ * Built-in themes are the engine's packaged dark/light palettes; custom
+ * themes are `*.json` files in ~/.pi/agent/themes whose JSON declares a
+ * `name` and a `colors` object (ThemeJsonSchema). The entry marked selected
+ * matches `settings.theme`.
+ */
+export interface ThemeInfo {
+  name: string;
+  path?: string;
+  builtin: boolean;
+  selected: boolean;
+}
+
+const BUILTIN_THEME_NAMES = ["dark", "light"] as const;
+
+/** Read a custom theme's declared name from its JSON; undefined when invalid. */
+export async function readThemeName(file: string): Promise<string | undefined> {
+  try {
+    const parsed: unknown = JSON.parse(await readFile(file, "utf8"));
+    if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return undefined;
+    }
+    const name = (parsed as Record<string, unknown>)["name"];
+    return typeof name === "string" && name.length > 0 ? name : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/** List built-in + custom themes; selected mirrors settings.theme. */
+export async function listThemes(
+  piHome: string,
+  selectedName?: string,
+): Promise<ThemeInfo[]> {
+  const themesDir = piAgentFiles(piHome).themesDir;
+  const out: ThemeInfo[] = [];
+  const seen = new Set<string>();
+  const push = (info: ThemeInfo) => {
+    if (seen.has(info.name)) return;
+    seen.add(info.name);
+    out.push(info);
+  };
+  for (const name of BUILTIN_THEME_NAMES) {
+    push({ name, builtin: true, selected: name === selectedName });
+  }
+  // Custom themes are `*.json` files in ~/.pi/agent/themes (pi 1:1:
+  // theme.ts getAvailableThemesWithPaths enumerates the themes dir and
+  // parses each file; broken JSON is skipped).
+  for (const full of await listJsonFiles(themesDir)) {
+    const name = await readThemeName(full);
+    if (name) {
+      push({ name, path: full, builtin: false, selected: name === selectedName });
+    }
+  }
+  return out.sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/**
+ * Write a custom theme file (~/.pi/agent/themes/<name>.json). Mirrors pi's
+ * ThemeJsonSchema validation: the JSON must be an object with a `name`
+ * string and a `colors` object; it is stored as-is otherwise.
+ * Returns the written file path.
+ */
+export async function writeCustomTheme(
+  piHome: string,
+  name: string,
+  themeJson: unknown,
+): Promise<string> {
+  const clean = name.trim().replace(/\.json$/, "");
+  if (!/^[\w.-]+$/.test(clean)) {
+    throw new Error(`Invalid theme name: ${name}`);
+  }
+  if (themeJson === null || typeof themeJson !== "object" || Array.isArray(themeJson)) {
+    throw new Error("Theme must be a JSON object");
+  }
+  const record = themeJson as Record<string, unknown>;
+  const declared = record["name"];
+  if (typeof declared !== "string" || declared.length === 0) {
+    throw new Error("Theme JSON must declare a \"name\" string");
+  }
+  if (record["colors"] === null || typeof record["colors"] !== "object") {
+    throw new Error("Theme JSON must declare a \"colors\" object");
+  }
+  const file = join(piAgentFiles(piHome).themesDir, `${clean}.json`);
+  await writeJsonObject(file, themeJson);
+  return file;
+}
+
+/** Remove a custom theme file; returns false when absent/built-in. */
+export async function deleteCustomTheme(piHome: string, name: string): Promise<boolean> {
+  const file = join(piAgentFiles(piHome).themesDir, `${name.replace(/\.json$/, "")}.json`);
+  try {
+    await rm(file, { force: false });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Context files (AGENTS.md / CLAUDE.md quick edit, pi docs §6.1 #13).
+//
+// pi merges AGENTS.md/CLAUDE.md walking UP the directory tree from the
+// project root. The app's quick-edit entry always targets the project-local
+// file (cwd/<name>) — a predictable, merge-friendly edit surface — while
+// `findNearestContextFile` reports which parent copy currently feeds the
+// engine so the UI can warn when a higher-up file exists.
+// ---------------------------------------------------------------------------
+
+/** Context file names pi discovers (docs: "目录向上合并", --no-context-files). */
+export const CONTEXT_FILE_NAMES = ["AGENTS.md", "CLAUDE.md"] as const;
+
+/** Canonicalize a context file name; null for anything else. */
+export function sanitizeContextFileName(name: unknown): string | null {
+  if (typeof name !== "string") return null;
+  const canonical = CONTEXT_FILE_NAMES.find(
+    (candidate) => candidate.toLowerCase() === name.trim().toLowerCase(),
+  );
+  return canonical ?? null;
+}
+
+async function existsFile(file: string): Promise<boolean> {
+  try {
+    return (await stat(file)).isFile();
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Find the nearest existing `<name>` file walking up from `cwd` to the
+ * filesystem root (pi's upward merge). Returns the absolute path or null.
+ */
+export async function findNearestContextFile(
+  cwd: string,
+  name: string,
+): Promise<string | null> {
+  const clean = sanitizeContextFileName(name);
+  if (!clean) return null;
+  let dir = cwd;
+  for (;;) {
+    const candidate = join(dir, clean);
+    if (await existsFile(candidate)) return candidate;
+    const parent = dirname(dir);
+    if (parent === dir) return null;
+    dir = parent;
+  }
+}
+
+export interface ContextFileInfo {
+  /** Canonical file name ("AGENTS.md" | "CLAUDE.md"). */
+  name: string;
+  /** Nearest existing file walking up from the project root (null = none). */
+  path: string | null;
+  /** Project-local write target: <cwd>/<name>. */
+  targetPath: string;
+}
+
+/** Enumerate AGENTS.md/CLAUDE.md for a project, per pi's upward merge. */
+export async function findContextFiles(cwd: string): Promise<ContextFileInfo[]> {
+  const out: ContextFileInfo[] = [];
+  for (const name of CONTEXT_FILE_NAMES) {
+    out.push({
+      name,
+      path: await findNearestContextFile(cwd, name),
+      targetPath: join(cwd, name),
+    });
+  }
+  return out;
 }

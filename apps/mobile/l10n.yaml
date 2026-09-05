@@ -3,3 +3,7 @@ template-arb-file: app_ja.arb
 output-localization-file: app_localizations.dart
 preferred-supported-locales: ["ja"]
 nullable-getter: false
+# Some UI strings embed literal JSON samples (e.g. the models.json import
+# hint). relax-syntax lets "{"/"}" appear as plain text when they don't form
+# a declared placeholder, instead of failing the ICU lexer.
+relax-syntax: true

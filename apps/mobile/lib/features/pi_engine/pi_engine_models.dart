@@ -303,3 +303,148 @@ const List<String> kProviderApis = [
   'anthropic-messages',
   'google-generative-ai',
 ];
+
+/// One model from the engine's RPC surface (docs/rpc.md "Model", pi 0.85.x).
+///
+/// Returned by `get_state` (`data.model`), `set_model` (`data`) and
+/// `get_available_models` (`data.models`). Only the fields the quick-switch
+/// UI displays are parsed; everything else is ignored (never written back).
+class PiModel {
+  const PiModel({
+    required this.id,
+    this.name,
+    this.api,
+    this.provider,
+    this.baseUrl,
+    this.reasoning,
+    this.input = const [],
+    this.contextWindow,
+    this.maxTokens,
+  });
+
+  factory PiModel.fromJson(Map<String, dynamic> json) {
+    final rawInput = json['input'];
+    return PiModel(
+      id: json['id'] as String? ?? '',
+      name: json['name'] as String?,
+      api: json['api'] as String?,
+      provider: json['provider'] as String?,
+      baseUrl: json['baseUrl'] as String?,
+      reasoning: json['reasoning'] as bool?,
+      input: rawInput is List ? rawInput.whereType<String>().toList() : const [],
+      contextWindow: (json['contextWindow'] as num?)?.toInt(),
+      maxTokens: (json['maxTokens'] as num?)?.toInt(),
+    );
+  }
+
+  final String id;
+  final String? name;
+  final String? api;
+  final String? provider;
+  final String? baseUrl;
+  final bool? reasoning;
+
+  /// Accepted input kinds (e.g. ["text", "image"]).
+  final List<String> input;
+
+  final int? contextWindow;
+  final int? maxTokens;
+
+  bool get isNull => id.isEmpty;
+
+  /// Display label: friendly name when pi provides one, else the raw id.
+  String get displayName =>
+      (name != null && name!.trim().isNotEmpty) ? name! : id;
+
+  /// `provider/id` composite key used by the switch sheet grouping.
+  String get qualifiedId => provider == null || provider!.isEmpty
+      ? id
+      : '$provider/$id';
+
+  @override
+  bool operator ==(Object other) =>
+      other is PiModel && other.qualifiedId == qualifiedId;
+
+  @override
+  int get hashCode => qualifiedId.hashCode;
+}
+
+/// Parse `get_available_models` data (`{models: [...]}`) into a sorted list.
+List<PiModel> parseAvailableModels(Map<String, dynamic>? data) {
+  final raw = data?['models'];
+  if (raw is! List) return const [];
+  final models = <PiModel>[
+    for (final entry in raw)
+      if (entry is Map)
+        PiModel.fromJson(entry.cast<String, dynamic>()),
+  ]..sort((a, b) {
+      final pa = a.provider ?? '';
+      final pb = b.provider ?? '';
+      final byProvider = pa.compareTo(pb);
+      return byProvider != 0 ? byProvider : a.displayName.compareTo(b.displayName);
+    });
+  return models;
+}
+
+/// A discovered model from an OpenAI-compatible `/models` endpoint.
+///
+/// Only `id`/`name` are meaningful for import; everything else (owned,
+/// created, …) is endpoint metadata and is dropped.
+class DiscoveredModel {
+  const DiscoveredModel({required this.id, this.name});
+
+  factory DiscoveredModel.fromJson(Map<String, dynamic> json) {
+    final id = json['id'] as String? ?? '';
+    final name = json['name'] as String? ?? json['displayName'] as String?;
+    return DiscoveredModel(
+      id: id.trim(),
+      name: (name == null || name.trim().isEmpty) ? null : name.trim(),
+    );
+  }
+
+  final String id;
+  final String? name;
+
+  /// Display label: friendly name when the endpoint provides one.
+  String get displayName => (name != null && name!.isNotEmpty) ? name! : id;
+}
+
+/// Parse an OpenAI-compatible models endpoint body.
+///
+/// Accepts `{data: [{id, name?}]}`, `{models: [...]}`, a bare `[...]` list,
+/// or the Anthropic-style `{data: [{id, display_name}]}` shape. Malformed
+/// entries are skipped; the result is sorted by display name.
+List<DiscoveredModel> parseDiscoveredModels(Object? body) {
+  List list;
+  if (body is List) {
+    list = body;
+  } else if (body is Map) {
+    final data = body['data'];
+    final models = body['models'];
+    if (data is List) {
+      list = data;
+    } else if (models is List) {
+      list = models;
+    } else {
+      return const [];
+    }
+  } else {
+    return const [];
+  }
+  final out = <DiscoveredModel>[
+    for (final entry in list)
+      if (entry is Map)
+        DiscoveredModel.fromJson(entry.cast<String, dynamic>()),
+  ];
+  out.removeWhere((m) => m.id.isEmpty);
+  out.sort((a, b) => a.displayName.compareTo(b.displayName));
+  return out;
+}
+
+/// Parse `get_state` data into the current model (null when `model` is null).
+PiModel? parseCurrentModel(Map<String, dynamic>? data) {
+  final raw = data?['model'];
+  if (raw is! Map) return null;
+  final model = PiModel.fromJson(raw.cast<String, dynamic>());
+  return model.isNull ? null : model;
+}

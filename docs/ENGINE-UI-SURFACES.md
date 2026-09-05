@@ -71,22 +71,22 @@ pi 的资源**全部是进程内按目录发现 + settings 记录**，没有编�
 |---|---|---|---|
 | `SYSTEM.md` | `~/.pi/agent/` + `.pi/`（项目需信任） | 整段替换默认系统提示 | ✅ 设置页"系统提示词"（`system_prompt_screen.dart`，全局/项目双作用域 + 保存后重启提示） |
 | `APPEND_SYSTEM.md` | `~/.pi/agent/` + `.pi/`（项目需信任） | 追加默认系统提示 | ✅ 同上（同屏编辑） |
-| `AGENTS.md`/`CLAUDE.md` | 工作区目录向上合并 | 项目约定/命令/安全规则 | 🔶 文件浏览器可打开，无快捷编辑 |
+| `AGENTS.md`/`CLAUDE.md` | 工作区目录向上合并 | 项目约定/命令/安全规则 | ✅ 上下文文件快捷编辑页（`context_files_screen.dart`：列表 + 向上合并检测 + 读写目标文件） |
 | `skills/` | `~/.pi/agent/skills`、`.pi/skills`、包 `pi.skills` | Agent Skills（按需注入） | ✅ 技能管理页（`skills_screen.dart`：全局/项目列表 + 查看 SKILL.md + 安全警告；启用停用/导入 M2） |
-| `extensions/` | `~/.pi/agent/extensions`、`.pi/extensions` | 扩展（TS 代码，任意代码信任警告） | 🔶 `list_extensions` 后端有；管理 UI M1 |
-| `prompts/` | `~/.pi/agent/prompts`、`.pi/prompts` | 斜杠命令模板（markdown） | ❌ UI 无 |
-| `themes/` | `~/.pi/agent/theme` 等 | 引擎主题 JSON | 🔶 `--use-theme` 启动参数可配；主题文件管理 M3 |
-| `packages` | settings `packages[]`（npm/git 包） | 扩展/技能/模板来源 | ❌ UI 无（M1 骨架 / M2 全） |
+| `extensions/` | `~/.pi/agent/extensions`、`.pi/extensions` | 扩展（TS 代码，任意代码信任警告） | ✅ 扩展管理页（`extensions_screen.dart`：已加载列表/来源/重载/任意代码信任警告；启用禁用 M2） |
+| `prompts/` | `~/.pi/agent/prompts`、`.pi/prompts` | 斜杠命令模板（markdown） | ✅ 模板管理页（`prompts_screen.dart`：全局/项目列表 + 新建/编辑/删除纯 markdown） |
+| `themes/` | `~/.pi/agent/theme` 等 | 引擎主题 JSON | ✅ 主题管理页（`themes_screen.dart`：引擎主题列表 + 选择 + 导入；`--use-theme` 启动参数可配） |
+| `packages` | settings `packages[]`（npm/git 包） | 扩展/技能/模板来源 | ✅ 包管理页（`packages_screen.dart`：列表 + npm/git 安装 + 更新/卸载；后端 `packages.ts` 与 pi 语义 1:1） |
 
 ### 6.2 settings.json 全键（双模：核心项表单 + opaque JSON 兜底）
 
 | 组 | 键 | 现状建议 |
 |---|---|---|
-| Model & Thinking | `defaultProvider`/`defaultModel`/`defaultThinkingLevel`/`modelThinkingLevels`/`hideThinkingBlock`/`showCacheMissNotices`/`thinkingBudgets` | 🔶 模型选择 UI 有；核心表单 M1 |
-| UI & Display | `theme`/`quietStartup`/`defaultProjectTrust`/`doubleEscapeAction`/`treeFilterMode`（TUI 专属项 App 忽略） | 🔶 `defaultProjectTrust`→信任对话框 M1 |
-| Compaction | `compaction.enabled`/`reserveTokens`/`keepRecentTokens` | ❌ 核心表单 |
-| Retry | `retry.enabled`/`maxRetries`/`baseDelayMs`/`provider.timeoutMs`/`provider.maxRetries`/`provider.maxRetryDelayMs` | ❌ 核心表单 |
-| Branch Summary | `branchSummary.reserveTokens`/`skipPrompt` | ❌ 核心表单 |
+| Model & Thinking | `defaultProvider`/`defaultModel`/`defaultThinkingLevel`/`modelThinkingLevels`/`hideThinkingBlock`/`showCacheMissNotices`/`thinkingBudgets` | ✅ 模型选择 UI 有 + 核心表单（`settings_core_screen.dart`） |
+| UI & Display | `theme`/`quietStartup`/`defaultProjectTrust`/`doubleEscapeAction`/`treeFilterMode`（TUI 专属项 App 忽略） | ✅ `defaultProjectTrust`→信任对话框 M1 + 核心表单 |
+| Compaction | `compaction.enabled`/`reserveTokens`/`keepRecentTokens` | ✅ 核心表单 |
+| Retry | `retry.enabled`/`maxRetries`/`baseDelayMs`/`provider.timeoutMs`/`provider.maxRetries`/`provider.maxRetryDelayMs` | ✅ 核心表单 |
+| Branch Summary | `branchSummary.reserveTokens`/`skipPrompt` | ✅ 核心表单 |
 | Message Delivery | `steeringMode`/`followUpMode`/`transport`/`httpIdleTimeoutMs`/`websocketConnectTimeoutMs` | 🔶 steering/followUp 已有 RPC `set_*`；App 开关 M2 |
 | Network | `httpProxy` | ❌ 表单（安卓本机代理通常不需要，低优先） |
 | Shell | `shellPath`/`shellCommandPrefix`/`npmCommand` | ❌ 表单（低优先） |
@@ -94,7 +94,7 @@ pi 的资源**全部是进程内按目录发现 + settings 记录**，没有编�
 | Sessions | `sessionDir` | ❌ 表单（App 会话由引擎 cwd 组织，一般不改） |
 | Model Cycling | `enabledModels` | ❌ 表单 |
 | Markdown | `markdown.codeBlockIndent`/`markdown.mermaid` | ❌ 表单（低优先） |
-| Resources | `packages`/`extensions`/`skills`/`prompts`/`themes`/`enableSkillCommands` | 🔶 见 6.1 |
+| Resources | `packages`/`extensions`/`skills`/`prompts`/`themes`/`enableSkillCommands` | ✅ 见 6.1（各管理页已落地） |
 | Telemetry/警告 | `enableInstallTelemetry`/`warnings.anthropicExtraUsage` | ❌ 表单（低优先） |
 
 ### 6.3 CLI 启动参数（PiHost 引擎启动 args；App 设置开关 → 重启引擎生效）

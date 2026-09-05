@@ -147,6 +147,22 @@ ldd --version 2>&1 | head -1            # bionic 而非 glibc
 - 代价：proot 有系统调用翻译开销（慢）、体积大（发行版数百 MB）、启动慢。**默认不启用**，仅当 AI 发现 bionic 源装不了目标软件时按需切到 proot 发行版执行。
 - 运行时布局：路线 B 的发行版 rootfs 作为独立目录（如 `engines/proot/rootfs`），与路线 A 互不干扰，可随时下载/删除。
 
+### 路线切换 UI 落地（默认 A，可下载/切换 B）
+
+默认启用路线 A（bionic 直跑，开箱即用）；路线 B 在 UI 中提供**按需下载并切换**入口，不预装（省几百 MB）。
+
+- **入口**：设置 → Pi 引擎 → "运行时路线"（`pi_engine_settings_screen.dart` 管理区新增 ListTile）。
+- **RPC 算子**（`PiGateway` 新增 3 个）：
+  - `runtime_status` → `{ route: "bionic" | "proot", prootInstalled: bool, rootfsSize?: bytes, installedPackages?: string[] }`
+  - `runtime_install_proot` → 下载流程：`pkg install proot proot-distro` → `proot-distro install ubuntu`（26.04.1 LTS）→ rootfs 内装 node 24 + pi 引擎 + git/rg/python；进度经事件流回传（percent + stage）。
+  - `runtime_switch` → 切换路线并重启引擎进程（`EngineProcess` 增加 `commandPrefix?: string[]`，路线 B 用 `proot -r <rootfs> -0 -w <cwd> -- node <entry> --mode rpc`）。
+- **UI 信息设计**（两条路线差异说明 + 已装包）：
+  - 页面顶部显示**当前路线徽标**（A：bionic 直跑 / B：完整发行版）+ 一键切换按钮。
+  - **路线说明必须给用户看**（一行核心差异 + 点开看对比表）：A=轻快省电、内置 bionic 工具集；B=完整 Ubuntu（glibc）、能装桌面软件但更慢更占空间。默认收起对比表，避免信息过载。
+  - **已装包显示**：路线 A 显示"内置最小集 + AI 已装 n 个包"；路线 B 显示"Ubuntu 26.04.1 + 已装 n 个包"，点击展开包列表（`dpkg -l` / `pkg list-installed` 结果）。不常驻展开，避免长列表刷屏。
+  - **切换确认**：切 B 前提示"下载约数百 MB、速度变慢、可随时切回"；切 A 前提示"返回内置环境，proot 发行版保留可再切"。
+- **回退**：两条路线 rootfs/内置集并存，切换即时生效、随时往返，不破坏任何一侧。
+
 ## App 更新流程
 
 1. 检查 manifest（npm watch / 自有更新服务器）

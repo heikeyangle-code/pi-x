@@ -165,13 +165,12 @@ ldd --version 2>&1 | head -1            # bionic 而非 glibc
 
 ### 路线 B 实现阶梯（2026-09 调研定稿）
 
-调研结论：proot+完整发行版有 ~10-15% ptrace 开销、login 20-30s、体积数百 MB；2026 年出现更快更轻的替代方案。路线 B 按"新 → 稳"三级实现，共享模型不变：
+调研结论：proot+完整发行版有 ~10-15% ptrace 开销、login 20-30s、体积数百 MB；2026 年出现更快更轻的替代方案。路线 B 按"新 → 稳"两级实现，共享模型不变：
 
 | 优先级 | 方案 | 原理 | 实测 |
 |---|---|---|---|
 | 1（首选） | **Proroot** | LD_PRELOAD + 二进制补丁替代 ptrace，零 ptrace 开销 | 免 root；Node 22.22/Python 3.12/Git 实测通过 |
-| 2（次选） | **proot-distro + Ubuntu** | ptrace 拦截系统调用 | 官方成熟稳定、兼容最广（GPL-3.0） |
-| ~~3~~ | ~~glibc-runner~~ | ~~LD_PRELOAD 原生直跑（21 个 glibc 库）~~ | **排除：需 KernelSU/Magisk root，与本项目免 root 定位冲突** |
+| 2（兜底） | **proot-distro + Ubuntu** | ptrace 拦截系统调用 | 官方成熟稳定、兼容最广（GPL-3.0） |
 
 - 统一入口：路线 B 的 `runtime_install_proot` 实际按阶梯自动选择（首选 Proroot，缺兼容再兜底 proot-distro），对 UI/协议透明。
 - 参考：

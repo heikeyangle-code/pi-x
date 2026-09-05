@@ -169,13 +169,15 @@ ldd --version 2>&1 | head -1            # bionic 而非 glibc
 
 | 优先级 | 方案 | 原理 | 实测 |
 |---|---|---|---|
-| 1（首选） | **glibc-runner** | 仅 21 个 glibc aarch64 库（ld-linux/libc/ssl），LD_PRELOAD 原生直跑 | 5-9x 加速，无 proot，体积最小 |
-| 2（次选） | **Proroot** | LD_PRELOAD + 二进制补丁替代 ptrace | 零 ptrace 开销，跑完整 glibc 用户空间 |
-| 3（兜底） | proot-distro + Ubuntu | ptrace 拦截系统调用 | 成熟稳定、兼容最广，慢 |
+| 1（首选） | **Proroot** | LD_PRELOAD + 二进制补丁替代 ptrace，零 ptrace 开销 | 免 root；Node 22.22/Python 3.12/Git 实测通过 |
+| 2（次选） | **proot-distro + Ubuntu** | ptrace 拦截系统调用 | 官方成熟稳定、兼容最广（GPL-3.0） |
+| ~~3~~ | ~~glibc-runner~~ | ~~LD_PRELOAD 原生直跑（21 个 glibc 库）~~ | **排除：需 KernelSU/Magisk root，与本项目免 root 定位冲突** |
 
-- 统一入口：路线 B 的 `runtime_install_proot` 实际按阶梯自动选择（先试 glibc-runner，缺库再上 Proroot，最后兜底 proot-distro），对 UI/协议透明。
-- 参考：glibc-runner（OpenClaw Android 方案，含 21 个预编译 aarch64 glibc 库）、proroot（零 ptrace 开销 drop-in proot 替代）、proot-distro（官方 OCI 容器管理）。三者均为社区验证方案，本项目以 glibc-runner 为默认首选。
-- 体积对比：glibc-runner ~几十 MB；Proroot ~中等；proot-distro + Ubuntu 数百 MB。下载入口默认推荐方案 1。
+- 统一入口：路线 B 的 `runtime_install_proot` 实际按阶梯自动选择（首选 Proroot，缺兼容再兜底 proot-distro），对 UI/协议透明。
+- 参考：
+  - **Proroot**（`coderredlab/proroot`，42 commits 活跃）：5 个 `.so` 文件从 GitHub Releases 下载，直接进 `jniLibs/arm64-v8a/` 打包进 APK；Android 8.0+/arm64；启动方式 `libproroot.so -r <rootfs> -0 --link2symlink -w <cwd> -- node <entry> --mode rpc`，支持 `-b <host>:<guest>` bind 共享。**风险**：源码未公开（专有，不可再分发修改版）、作者重心转 proroom（更新放缓）。
+  - **proot-distro**（`termux/proot-distro`，1207 commits，官方）：`pkg install proot-distro`（自动拉 proot），Ubuntu 26.04.1 LTS 从 Docker Hub 拉取 OCI 镜像；`proot-distro login ubuntu -- /bin/sh -c '<cmd>'` 支持 `--bind` 共享。最稳兜底。
+- 体积对比：Proroot ~几十 MB；proot-distro + Ubuntu 数百 MB。下载入口默认推荐方案 1（Proroot）。
 
 ### 跨路线共享模型（工作区 / 配置 / 插件 / 软件）
 

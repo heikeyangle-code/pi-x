@@ -85,15 +85,33 @@ sha256sum ../pi-engine-0.85.0.tgz > ../SHA256SUMS
 | 组件 | 版本 | 用途 |
 |---|---|---|
 | node（nodejs-lts） | 24.18.0-1 | pi 引擎运行时（上游 LTS 线 v24.20.0；`requiresRuntime >= 24`） |
+| npm | 11.19.1 | 随 node 自带；AI 可自行 `npm i` 安装任意包 |
 | bash | 5.3.15 | pi bash 工具 shell（硬依赖，`/bin/bash`） |
 | coreutils | 9.11-1 | ls/cat/mv 等基础命令 |
 | git | 2.55.0 | 版本操作 / 工作区 |
 | ripgrep | 15.2.0 | 快速搜索 |
+| apt + pkg | （Termux 系） | **包管理器：AI 自行安装/更新软件的入口**（`pkg install` / `apt update`） |
 | termux-exec | 1:2.5.0-1 | 同 UID exec 补丁（bionic 必需） |
 | openssl | 1:3.6.3 | TLS/HTTPS |
 | ca-certificates | 1:2026.08.13 | HTTPS 信任链 |
 
-可选增强：curl 8.22.0、tar 1.35-3、unzip 6.0-10、python 3.14.6-1、openssh 10.5p1、jq 1.8.2、file 5.48-3。
+建议内置（AI 脚本/数据分析常用）：python 3.14.6-1 + pip 26.2.1、busybox 1.38.0-1。
+
+可选增强：curl 8.22.0、tar 1.35-3、unzip 6.0-10、openssh 10.5p1、jq 1.8.2、file 5.48-3、ruby 3.4.1、php 8.5.1、go 1.27.0、rust 1.98.1（AI 需要时随时 `pkg install`，不必全内置）。
+
+### AI 自主装软件策略
+
+运行时带包管理器后，pi 引擎（bash 工具）可完全自主维护环境，无需用户手动操作：
+
+```bash
+pkg install python golang    # 装新语言（Termux 官方源）
+npm i -g typescript          # 装 npm 包
+pip install requests         # 装 Python 包
+```
+
+- 联网时：AI 先 `apt update`，再装所需软件；全部走 Termux 官方 bionic 源。
+- 离线时：仅可用随包内置的最小集；`pkg` 源可配置为内网镜像。
+- 安全边界：与 pi 信任模型一致——安装动作需经审批流（extension_ui_request 确认）。
 
 ### 内置后冒烟验证（必须全过）
 
@@ -113,6 +131,17 @@ ldd --version 2>&1 | head -1            # bionic 而非 glibc
 - 基线 = Node **24 LTS**（bionic），随 APK 内置；`requiresRuntime >= 24`（pi 要求 `>=22.19.0`，取 LTS 更稳）。
 - 版本跟随 Termux `nodejs-lts` 包升级（上游 LTS 线，长期支持至 2028-04）。
 - 新版本：启动/定时查远端 manifest → 下载（sha256 + 冒烟）→ `engines/current` 切换 + 旧版保留 2 份回滚。
+
+### 双路线：bionic 直跑 + proot 完整发行版（并存）
+
+两条路线**不冲突，同时保留**（见 DECISIONS #12 主路径 + 兜底 B）：
+
+- **路线 A（默认）bionic 直跑**：内置 bionic 最小集（node/bash/工具链/apt）。轻、快、离线可用；覆盖 pi 引擎 + 绝大多数场景，AI 可用 `pkg` 自行扩展。
+- **路线 B（兜底）proot 完整发行版**：proot 是**用户态 root 模拟器**（ptrace 拦截系统调用，把特权操作重定向到普通文件目录，不真正提权、无需 root）。在 bionic 之上再叠加一个完整 Linux 发行版（如 Ubuntu/Debian 的 glibc 环境），用于：
+  - 运行 **glibc-only** 的桌面二进制（bionic 装不了的软件）；
+  - 需要完整发行版包管理（`apt install` Ubuntu 系软件）。
+- 代价：proot 有系统调用翻译开销（慢）、体积大（发行版数百 MB）、启动慢。**默认不启用**，仅当 AI 发现 bionic 源装不了目标软件时按需切到 proot 发行版执行。
+- 运行时布局：路线 B 的发行版 rootfs 作为独立目录（如 `engines/proot/rootfs`），与路线 A 互不干扰，可随时下载/删除。
 
 ## App 更新流程
 

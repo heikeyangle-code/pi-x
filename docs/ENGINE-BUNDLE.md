@@ -137,9 +137,13 @@ ldd --version 2>&1 | head -1            # bionic 而非 glibc
 两条路线**不冲突，同时保留**（见 DECISIONS #12 主路径 + 兜底 B）：
 
 - **路线 A（默认）bionic 直跑**：内置 bionic 最小集（node/bash/工具链/apt）。轻、快、离线可用；覆盖 pi 引擎 + 绝大多数场景，AI 可用 `pkg` 自行扩展。
-- **路线 B（兜底）proot 完整发行版**：proot 是**用户态 root 模拟器**（ptrace 拦截系统调用，把特权操作重定向到普通文件目录，不真正提权、无需 root）。在 bionic 之上再叠加一个完整 Linux 发行版（如 Ubuntu/Debian 的 glibc 环境），用于：
+- **路线 B（兜底）proot 完整发行版**：proot 是**用户态 root 模拟器**（ptrace 拦截系统调用，把特权操作重定向到普通文件目录，不真正提权、无需 root）。在 bionic 之上再叠加一个完整 Linux 发行版（glibc 环境），用于：
   - 运行 **glibc-only** 的桌面二进制（bionic 装不了的软件）；
   - 需要完整发行版包管理（`apt install` Ubuntu 系软件）。
+- **路线 B 版本组合（2026-09-05 调研定稿）**：
+  - **proot 5.1.107.92**（Termux 官方维护 fork；proot-distro 官方明确要求用 Termux fork 而非上游原版，`5.1.107-71` 起为最低要求，本版本即当前最新维护版）；
+  - **proot-distro 5.8.0**（当前最新 release v5.8，纯 Python OCI 容器管理，Termux 源实时一致）；
+  - **Ubuntu 26.04.1 LTS（Resolute Raccoon）**（2026-04 发布的最新 LTS，支持至 2031，作为默认发行版；proot-distro 亦支持 Debian/Arch/Alpine 等按需另装）。
 - 代价：proot 有系统调用翻译开销（慢）、体积大（发行版数百 MB）、启动慢。**默认不启用**，仅当 AI 发现 bionic 源装不了目标软件时按需切到 proot 发行版执行。
 - 运行时布局：路线 B 的发行版 rootfs 作为独立目录（如 `engines/proot/rootfs`），与路线 A 互不干扰，可随时下载/删除。
 

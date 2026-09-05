@@ -3,10 +3,6 @@ const VALUE_FLAGS = new Set([
   "host",
   "api-key",
   "public-ws-url",
-  "codex-app-server-mode",
-  "codex-shared-app-server-url",
-  "codex-app-server-port",
-  "codex-app-server-url",
 ]);
 
 const BOOLEAN_FLAGS = new Set([

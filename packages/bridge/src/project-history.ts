@@ -1,7 +1,12 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { homedir } from "node:os";
-import { normalizeWorktreePath } from "./sessions-index.js";
+
+/** Strip a `-worktrees/<branch>` suffix so a worktree maps back to its project root. */
+function normalizeWorktreePath(p: string): string {
+  const match = p.match(/^(.+)-worktrees[\\/][^\\/]+$/);
+  return match?.[1] ?? p;
+}
 
 const DEFAULT_HISTORY_FILE = join(homedir(), ".ccpocket", "project-history.json");
 const MAX_PROJECTS = 20;

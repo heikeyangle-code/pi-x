@@ -8,6 +8,11 @@ const RECORDING_DIRNAME = "recordings";
 
 export interface RecordingMeta {
   bridgeSessionId: string;
+  /**
+   * Engine session id. The field name is kept as `claudeSessionId` because the
+   * mobile app's recording_list contract reads that exact key; in pi-only mode
+   * it stores the pi engine session id (a full UUID).
+   */
   claudeSessionId?: string;
   projectPath: string;
   projectId?: string;
@@ -21,7 +26,6 @@ export interface RecordingFileInfo {
   modified: string;
   sizeBytes: number;
   meta?: RecordingMeta;
-  // Enriched from sessions-index (populated by websocket layer)
   summary?: string;
   firstPrompt?: string;
   lastPrompt?: string;
@@ -115,12 +119,14 @@ export class RecordingStore {
   }
 
   /**
-   * Extract key info directly from JSONL content without requiring meta or sessions-index.
-   * Scans for first/last user input messages and claudeSessionId from system messages.
+   * Extract key info directly from JSONL content without requiring meta files.
+   * Scans for first/last user input messages and the session id from system messages.
+   * `claudeSessionId` is the retained app-contract name for the engine session id.
    */
   async extractInfoFromJsonl(sessionId: string): Promise<{
     firstPrompt?: string;
     lastPrompt?: string;
+    /** Engine session id — app-contract name retained (pi stores a UUID here). */
     claudeSessionId?: string;
     projectPath?: string;
   }> {
@@ -143,9 +149,10 @@ export class RecordingStore {
             lastPrompt = msg.text;
           }
 
-          // Extract claudeSessionId from system messages
+          // Extract the engine session id from system messages.
+          // pi session ids are full UUIDs (36 chars), shorter bridge session
+          // ids are skipped so the engine id wins.
           if (event.direction === "outgoing" && msg.type === "system" && typeof msg.sessionId === "string") {
-            // Claude CLI session IDs are full UUIDs (36 chars)
             const sid = msg.sessionId as string;
             if (sid.length > 8 && !claudeSessionId) {
               claudeSessionId = sid;

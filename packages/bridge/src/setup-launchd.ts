@@ -2,10 +2,6 @@ import { execSync } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync, unlinkSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import {
-  defaultCodexSharedAppServerUrl,
-  readCodexSharedAppServerUrl,
-} from "./codex-app-server-config.js";
 import { parseBridgePort } from "./bridge-port.js";
 import { BRIDGE_STABLE_PACKAGE_SPEC } from "./distribution.js";
 
@@ -36,12 +32,6 @@ interface SetupOptions {
   apiKey?: string;
   publicWsUrl?: string;
   disableMdns?: boolean;
-  codexAppServerMode?: string;
-  codexSharedAppServerUrl?: string;
-  /** @deprecated Use codexSharedAppServerUrl. */
-  codexAppServerPort?: string;
-  /** @deprecated Use codexSharedAppServerUrl. */
-  codexAppServerUrl?: string;
 }
 
 export function setupLaunchd(opts: SetupOptions): void {
@@ -52,30 +42,6 @@ export function setupLaunchd(opts: SetupOptions): void {
   const publicWsUrl =
     opts.publicWsUrl ?? process.env.BRIDGE_PUBLIC_WS_URL ?? "";
   const disableMdns = opts.disableMdns || process.env.BRIDGE_DISABLE_MDNS;
-  const allowClaudeOAuth = process.env.BRIDGE_ALLOW_CLAUDE_OAUTH === "1";
-  const codexAssistModel = process.env.BRIDGE_CODEX_ASSIST_MODEL?.trim() ?? "";
-  const codexAssistReasoningEffort =
-    process.env.BRIDGE_CODEX_ASSIST_REASONING_EFFORT?.trim() ?? "";
-  const codexAppServerMode =
-    opts.codexAppServerMode ?? process.env.BRIDGE_CODEX_APP_SERVER_MODE ?? "";
-  const legacyCodexAppServerPort =
-    opts.codexAppServerPort ?? process.env.BRIDGE_CODEX_APP_SERVER_PORT;
-  const explicitCodexAppServerUrl =
-    opts.codexSharedAppServerUrl ??
-    opts.codexAppServerUrl ??
-    readCodexSharedAppServerUrl();
-  const codexAppServerUrl =
-    explicitCodexAppServerUrl ??
-    (codexAppServerMode === "managed"
-      ? legacyCodexAppServerPort
-        ? `ws://127.0.0.1:${legacyCodexAppServerPort}`
-        : defaultCodexSharedAppServerUrl(String(port))
-      : "");
-  if (codexAppServerMode === "external" && !codexAppServerUrl) {
-    throw new Error(
-      "BRIDGE_CODEX_SHARED_APP_SERVER_URL is required when Codex app-server mode is external",
-    );
-  }
   const plistPath = getPlistPath();
 
   // Resolve the npx binary path
@@ -116,36 +82,6 @@ export function setupLaunchd(opts: SetupOptions): void {
     envBlock += `
         <key>BRIDGE_DISABLE_MDNS</key>
         <string>1</string>`;
-  }
-
-  if (allowClaudeOAuth) {
-    envBlock += `
-        <key>BRIDGE_ALLOW_CLAUDE_OAUTH</key>
-        <string>1</string>`;
-  }
-
-  if (codexAssistModel) {
-    envBlock += `
-        <key>BRIDGE_CODEX_ASSIST_MODEL</key>
-        <string>${codexAssistModel}</string>`;
-  }
-
-  if (codexAssistReasoningEffort) {
-    envBlock += `
-        <key>BRIDGE_CODEX_ASSIST_REASONING_EFFORT</key>
-        <string>${codexAssistReasoningEffort}</string>`;
-  }
-
-  if (codexAppServerMode) {
-    envBlock += `
-        <key>BRIDGE_CODEX_APP_SERVER_MODE</key>
-        <string>${codexAppServerMode}</string>`;
-  }
-
-  if (codexAppServerMode && codexAppServerUrl) {
-    envBlock += `
-        <key>BRIDGE_CODEX_SHARED_APP_SERVER_URL</key>
-        <string>${codexAppServerUrl}</string>`;
   }
 
   // Generate plist
@@ -198,11 +134,6 @@ ${envBlock}
   try {
     execSync(`launchctl start "${PLIST_LABEL}"`);
     console.log(`==> Bridge Server started on port ${port}`);
-    if (codexAppServerMode && codexAppServerUrl) {
-      console.log(
-        `    Codex remote: codex resume --all --remote ${codexAppServerUrl}`,
-      );
-    }
   } catch {
     console.log("==> Service registered (start may have failed — check logs at /tmp/ccpocket-bridge.log)");
   }

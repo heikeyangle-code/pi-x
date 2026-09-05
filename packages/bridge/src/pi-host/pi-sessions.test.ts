@@ -7,6 +7,7 @@ import {
   PiSessionRegistry,
   parsePiSessionJsonl,
   piMessagesToHistoryMessages,
+  piSessionImagesFromJsonl,
   scanPiRecentSessions,
 } from "./pi-sessions.js";
 
@@ -128,6 +129,79 @@ describe("piMessagesToHistoryMessages", () => {
       unknown
     >;
     expect(message.model).toBe("google");
+  });
+
+  it("preserves the pi message id as assistant uuid", () => {
+    const out = piMessagesToHistoryMessages([
+      {
+        id: "msg-42",
+        role: "assistant",
+        content: [{ type: "text", text: "hi" }],
+      },
+    ]);
+    expect(out[0]?.uuid).toBe("msg-42");
+    const message = (out[0] as Record<string, unknown>).message as Record<
+      string,
+      unknown
+    >;
+    expect(message.id).toBe("msg-42");
+  });
+});
+
+describe("piSessionImagesFromJsonl", () => {
+  const jsonl = [
+    JSON.stringify({ type: "session", id: "s1", cwd: "/p" }),
+    JSON.stringify({
+      type: "message",
+      id: "m1",
+      message: {
+        role: "user",
+        content: [
+          { type: "text", text: "look" },
+          {
+            type: "image",
+            source: {
+              type: "base64",
+              media_type: "image/png",
+              data: "AAAA",
+            },
+          },
+        ],
+      },
+    }),
+    JSON.stringify({
+      type: "message",
+      id: "m2",
+      message: {
+        role: "user",
+        content: [{ type: "image", data: "BBBB", mimeType: "image/jpeg" }],
+      },
+    }),
+    JSON.stringify({ type: "session_info", name: "x" }),
+  ].join("\n");
+
+  it("extracts image blocks across user messages", () => {
+    const images = piSessionImagesFromJsonl(jsonl);
+    expect(images).toEqual([
+      { base64: "AAAA", mimeType: "image/png" },
+      { base64: "BBBB", mimeType: "image/jpeg" },
+    ]);
+  });
+
+  it("filters images by message id", () => {
+    const images = piSessionImagesFromJsonl(jsonl, "m2");
+    expect(images).toEqual([{ base64: "BBBB", mimeType: "image/jpeg" }]);
+  });
+
+  it("skips non-message lines and blocks without data", () => {
+    const images = piSessionImagesFromJsonl(
+      [
+        JSON.stringify({ type: "message", id: "m3", message: { role: "user", content: [{ type: "image", source: {} }] } }),
+        "not json",
+        JSON.stringify({ type: "session_info" }),
+      ].join("\n"),
+    );
+    expect(images).toEqual([]);
   });
 });
 

@@ -13,7 +13,12 @@ type StorageData = Record<string, WorktreeMapping>;
 const STORE_DIR = join(homedir(), ".ccpocket");
 const STORE_FILE = join(STORE_DIR, "worktree-sessions.json");
 
-/** Persistent mapping between Claude session IDs and worktree paths. */
+/**
+ * Persistent mapping between engine session ids and worktree paths.
+ * The keys and the returned field name use `claudeSessionId` (the historical
+ * app-contract name); in pi-only mode they hold pi engine session ids. This is
+ * internal persistence only — never sent to the mobile app.
+ */
 export class WorktreeStore {
   private data: StorageData;
   private storeFile: string;

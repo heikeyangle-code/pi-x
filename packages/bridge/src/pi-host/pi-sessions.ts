@@ -108,14 +108,18 @@ export function piMessagesToHistoryMessages(messages: unknown[]): PiHistoryMessa
           : typeof m["provider"] === "string"
             ? m["provider"]
             : "";
+      // Keep the real pi message id so the app can correlate per-message
+      // follow-ups (get_message_images) against the on-disk session.
+      const piId = typeof m["id"] === "string" ? (m["id"] as string) : "";
       out.push({
         type: "assistant",
         message: {
-          id: nonce("pi-msg"),
+          id: piId !== "" ? piId : nonce("pi-msg"),
           role: "assistant",
           content,
           ...(model !== "" ? { model } : {}),
         },
+        ...(piId !== "" ? { uuid: piId } : {}),
         ...timestamp,
       });
     } else if (role === "toolResult") {
@@ -174,6 +178,64 @@ export function piSessionFileToHistoryMessages(
   content: string,
 ): PiHistoryMessage[] {
   return piMessagesToHistoryMessages(piSessionMessagesFromJsonl(content));
+}
+
+// ---------------------------------------------------------------------------
+// Image extraction (pi session JSONL -> base64 image refs)
+// ---------------------------------------------------------------------------
+
+export interface PiSessionImage {
+  base64: string;
+  mimeType: string;
+}
+
+/**
+ * Extract base64 image blocks from a pi session JSONL. Pi stores pasted
+ * images as content blocks `{type:"image", source:{type:"base64",
+ * media_type, data}}` on user/toolResult messages (ai package, image tool
+ * result tests). When `messageId` is given, only images on that message
+ * entry are returned; otherwise all user-message images are returned.
+ */
+export function piSessionImagesFromJsonl(
+  content: string,
+  messageId?: string,
+): PiSessionImage[] {
+  const out: PiSessionImage[] = [];
+  for (const line of content.split("\n")) {
+    const trimmed = line.trim();
+    if (trimmed === "") continue;
+    let entry: Record<string, unknown>;
+    try {
+      entry = JSON.parse(trimmed) as Record<string, unknown>;
+    } catch {
+      continue;
+    }
+    if (entry === null || typeof entry !== "object") continue;
+    if (String(entry["type"] ?? "") !== "message") continue;
+    if (messageId !== undefined && String(entry["id"] ?? "") !== messageId) {
+      continue;
+    }
+    const msg = entry["message"];
+    if (msg === null || typeof msg !== "object") continue;
+    const m = msg as Record<string, unknown>;
+    const contentBlocks = Array.isArray(m["content"]) ? m["content"] : [];
+    for (const block of contentBlocks) {
+      if (block === null || typeof block !== "object") continue;
+      const b = block as Record<string, unknown>;
+      if (String(b["type"] ?? "") !== "image") continue;
+      const source =
+        b["source"] !== null && typeof b["source"] === "object"
+          ? (b["source"] as Record<string, unknown>)
+          : undefined;
+      const data = String(source?.["data"] ?? b["data"] ?? "");
+      if (data === "") continue;
+      const mimeType = String(
+        source?.["media_type"] ?? b["mimeType"] ?? b["mediaType"] ?? "",
+      );
+      out.push({ base64: data, mimeType });
+    }
+  }
+  return out;
 }
 
 export interface PiSessionMeta {

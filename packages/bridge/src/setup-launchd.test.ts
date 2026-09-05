@@ -28,14 +28,6 @@ const originalBridgeEnv = {
   allowedDirs: process.env.BRIDGE_ALLOWED_DIRS,
   publicWsUrl: process.env.BRIDGE_PUBLIC_WS_URL,
   disableMdns: process.env.BRIDGE_DISABLE_MDNS,
-  allowClaudeOAuth: process.env.BRIDGE_ALLOW_CLAUDE_OAUTH,
-  codexAssistModel: process.env.BRIDGE_CODEX_ASSIST_MODEL,
-  codexAssistReasoningEffort:
-    process.env.BRIDGE_CODEX_ASSIST_REASONING_EFFORT,
-  codexAppServerMode: process.env.BRIDGE_CODEX_APP_SERVER_MODE,
-  codexSharedAppServerUrl: process.env.BRIDGE_CODEX_SHARED_APP_SERVER_URL,
-  codexAppServerPort: process.env.BRIDGE_CODEX_APP_SERVER_PORT,
-  codexAppServerUrl: process.env.BRIDGE_CODEX_APP_SERVER_URL,
 };
 
 describe("setup-launchd", () => {
@@ -67,11 +59,6 @@ describe("setup-launchd", () => {
       expect(content).not.toContain("BRIDGE_ALLOWED_DIRS");
       expect(content).not.toContain("BRIDGE_PUBLIC_WS_URL");
       expect(content).not.toContain("BRIDGE_DISABLE_MDNS");
-      expect(content).not.toContain("BRIDGE_ALLOW_CLAUDE_OAUTH");
-      expect(content).not.toContain("BRIDGE_CODEX_ASSIST_MODEL");
-      expect(content).not.toContain("BRIDGE_CODEX_ASSIST_REASONING_EFFORT");
-      expect(content).not.toContain("BRIDGE_CODEX_APP_SERVER_MODE");
-      expect(content).not.toContain("BRIDGE_CODEX_SHARED_APP_SERVER_URL");
     });
 
     it.each(["", "123abc"])(
@@ -94,31 +81,6 @@ describe("setup-launchd", () => {
       const content = mockWriteFileSync.mock.calls[0]![1] as string;
       expect(content).toContain("<key>BRIDGE_ALLOWED_DIRS</key>");
       expect(content).toContain("<string>/Users/testuser,/tmp/work</string>");
-    });
-
-    it("persists explicit Claude OAuth opt-in", () => {
-      process.env.BRIDGE_ALLOW_CLAUDE_OAUTH = "1";
-
-      setupLaunchd({});
-
-      const content = mockWriteFileSync.mock.calls[0]![1] as string;
-      expect(content).toContain("<key>BRIDGE_ALLOW_CLAUDE_OAUTH</key>");
-      expect(content).toContain("<string>1</string>");
-    });
-
-    it("persists Codex assist environment overrides", () => {
-      process.env.BRIDGE_CODEX_ASSIST_MODEL = "gpt-oss:20b-cloud";
-      process.env.BRIDGE_CODEX_ASSIST_REASONING_EFFORT = "low";
-
-      setupLaunchd({});
-
-      const content = mockWriteFileSync.mock.calls[0]![1] as string;
-      expect(content).toContain("<key>BRIDGE_CODEX_ASSIST_MODEL</key>");
-      expect(content).toContain("<string>gpt-oss:20b-cloud</string>");
-      expect(content).toContain(
-        "<key>BRIDGE_CODEX_ASSIST_REASONING_EFFORT</key>",
-      );
-      expect(content).toContain("<string>low</string>");
     });
 
     it("includes BRIDGE_DISABLE_MDNS when requested", () => {
@@ -146,59 +108,6 @@ describe("setup-launchd", () => {
       expect(content).toContain("<string>wss://flag.example.com</string>");
       expect(content).not.toContain("wss://env.example.com");
     });
-
-    it("does not persist shared app-server URL without an explicit mode", () => {
-      process.env.BRIDGE_CODEX_SHARED_APP_SERVER_URL = "ws://127.0.0.1:18766";
-
-      setupLaunchd({});
-
-      const content = mockWriteFileSync.mock.calls[0]![1] as string;
-      expect(content).not.toContain("BRIDGE_CODEX_APP_SERVER_MODE");
-      expect(content).not.toContain("BRIDGE_CODEX_SHARED_APP_SERVER_URL");
-    });
-
-    it("includes explicit Codex app-server startup options", () => {
-      setupLaunchd({
-        codexAppServerMode: "external",
-        codexSharedAppServerUrl: "ws://127.0.0.1:18766",
-      });
-
-      const content = mockWriteFileSync.mock.calls[0]![1] as string;
-      expect(content).toContain("<key>BRIDGE_CODEX_APP_SERVER_MODE</key>");
-      expect(content).toContain("<string>external</string>");
-      expect(content).toContain("<key>BRIDGE_CODEX_SHARED_APP_SERVER_URL</key>");
-      expect(content).toContain("<string>ws://127.0.0.1:18766</string>");
-      expect(content).not.toContain("BRIDGE_CODEX_APP_SERVER_PORT");
-      expect(content).not.toContain("BRIDGE_CODEX_APP_SERVER_URL");
-    });
-
-    it("requires a shared app-server URL for external mode", () => {
-      expect(() => setupLaunchd({ codexAppServerMode: "external" })).toThrow(
-        "BRIDGE_CODEX_SHARED_APP_SERVER_URL is required",
-      );
-    });
-
-    it("uses the documented default shared URL when managed mode is enabled", () => {
-      setupLaunchd({ port: "8765", codexAppServerMode: "managed" });
-
-      const content = mockWriteFileSync.mock.calls[0]![1] as string;
-      expect(content).toContain("<key>BRIDGE_PORT</key>");
-      expect(content).toContain("<string>8765</string>");
-      expect(content).toContain("<key>BRIDGE_CODEX_APP_SERVER_MODE</key>");
-      expect(content).toContain("<string>managed</string>");
-      expect(content).toContain("<key>BRIDGE_CODEX_SHARED_APP_SERVER_URL</key>");
-      expect(content).toContain("<string>ws://127.0.0.1:8767</string>");
-    });
-
-    it("moves the default shared app-server URL when Bridge uses 8767", () => {
-      setupLaunchd({ port: "8767", codexAppServerMode: "managed" });
-
-      const content = mockWriteFileSync.mock.calls[0]![1] as string;
-      expect(content).toContain("<key>BRIDGE_PORT</key>");
-      expect(content).toContain("<string>8767</string>");
-      expect(content).toContain("<key>BRIDGE_CODEX_SHARED_APP_SERVER_URL</key>");
-      expect(content).toContain("<string>ws://127.0.0.1:8768</string>");
-    });
   });
 
   describe("uninstallLaunchd", () => {
@@ -217,13 +126,6 @@ function clearBridgeEnv(): void {
   delete process.env.BRIDGE_ALLOWED_DIRS;
   delete process.env.BRIDGE_PUBLIC_WS_URL;
   delete process.env.BRIDGE_DISABLE_MDNS;
-  delete process.env.BRIDGE_ALLOW_CLAUDE_OAUTH;
-  delete process.env.BRIDGE_CODEX_ASSIST_MODEL;
-  delete process.env.BRIDGE_CODEX_ASSIST_REASONING_EFFORT;
-  delete process.env.BRIDGE_CODEX_APP_SERVER_MODE;
-  delete process.env.BRIDGE_CODEX_SHARED_APP_SERVER_URL;
-  delete process.env.BRIDGE_CODEX_APP_SERVER_PORT;
-  delete process.env.BRIDGE_CODEX_APP_SERVER_URL;
 }
 
 function restoreBridgeEnv(): void {
@@ -231,34 +133,6 @@ function restoreBridgeEnv(): void {
   restoreEnvVar("BRIDGE_ALLOWED_DIRS", originalBridgeEnv.allowedDirs);
   restoreEnvVar("BRIDGE_PUBLIC_WS_URL", originalBridgeEnv.publicWsUrl);
   restoreEnvVar("BRIDGE_DISABLE_MDNS", originalBridgeEnv.disableMdns);
-  restoreEnvVar(
-    "BRIDGE_ALLOW_CLAUDE_OAUTH",
-    originalBridgeEnv.allowClaudeOAuth,
-  );
-  restoreEnvVar(
-    "BRIDGE_CODEX_ASSIST_MODEL",
-    originalBridgeEnv.codexAssistModel,
-  );
-  restoreEnvVar(
-    "BRIDGE_CODEX_ASSIST_REASONING_EFFORT",
-    originalBridgeEnv.codexAssistReasoningEffort,
-  );
-  restoreEnvVar(
-    "BRIDGE_CODEX_APP_SERVER_MODE",
-    originalBridgeEnv.codexAppServerMode,
-  );
-  restoreEnvVar(
-    "BRIDGE_CODEX_SHARED_APP_SERVER_URL",
-    originalBridgeEnv.codexSharedAppServerUrl,
-  );
-  restoreEnvVar(
-    "BRIDGE_CODEX_APP_SERVER_PORT",
-    originalBridgeEnv.codexAppServerPort,
-  );
-  restoreEnvVar(
-    "BRIDGE_CODEX_APP_SERVER_URL",
-    originalBridgeEnv.codexAppServerUrl,
-  );
 }
 
 function restoreEnvVar(key: string, value: string | undefined): void {

@@ -85,6 +85,21 @@ describe("PiAdapter", () => {
     expect(prompt?.projectId).toBe("/p");
   });
 
+  it("surfaces failed engine responses (e.g. prompt with no provider) as CC error", async () => {
+    const { adapter, gateway, delivered } = makeAdapter();
+    (gateway.handleControl as ReturnType<typeof vi.fn>).mockResolvedValue({
+      success: false,
+      error: "no provider configured",
+    });
+    const { ws } = fakeSocket();
+    await adapter.handle(ws as never, { type: "start", projectPath: "/p" } as never);
+    delivered.length = 0;
+    await adapter.handle(ws as never, { type: "input", text: "hi", sessionId: "s1" } as never);
+    expect(delivered).toEqual([
+      { type: "error", message: "no provider configured", sessionId: "s1", projectId: "/p" },
+    ]);
+  });
+
   it("approve/reject/answer route to ui responses", async () => {
     const { adapter, responses } = makeAdapter();
     const { ws } = fakeSocket();

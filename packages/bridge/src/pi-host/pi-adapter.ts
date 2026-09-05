@@ -122,12 +122,27 @@ export class PiAdapter {
 
     for (const action of inboundToActions(msg as never)) {
       if (action.kind === "control" && action.op) {
-        await this.gateway.handleControl({
+        const result = await this.gateway.handleControl({
           type: "control",
           op: action.op,
           projectId,
           payload: action.payload,
         });
+        // Failed engine responses (e.g. prompt with no provider configured)
+        // carry success:false + error and produce no streamed events. Surface
+        // them as a CC `error` message, otherwise the app waits forever with
+        // no visible feedback (the engine stays alive and idle).
+        if (isFailedEngineResponse(result)) {
+          this.deliver?.(ws, {
+            type: "error",
+            message: result.error,
+            sessionId:
+              typeof (msg as Record<string, unknown>)["sessionId"] === "string"
+                ? String((msg as Record<string, unknown>)["sessionId"])
+                : undefined,
+            projectId,
+          });
+        }
       } else if (action.kind === "ui_response") {
         this.gateway.respondUi(String(action.uiRequestId ?? ""), action.value);
       }
@@ -175,4 +190,18 @@ export class PiAdapter {
 /** Narrow a CompatMessage to a ServerMessage for the server's send(). */
 export function toServerMessage(message: unknown): ServerMessage | Record<string, unknown> {
   return message as unknown as ServerMessage;
+}
+
+/**
+ * Narrow a handleControl() result to a failed engine response
+ * ({success:false, error}). Engine failures (e.g. prompt with no provider
+ * configured) resolve rather than reject, so without this guard the app would
+ * get no feedback at all (the engine stays alive and idle).
+ */
+export function isFailedEngineResponse(
+  result: unknown,
+): result is { success: false; error: string } {
+  if (result === null || typeof result !== "object") return false;
+  const r = result as Record<string, unknown>;
+  return r.success === false && typeof r.error === "string" && r.error !== "";
 }

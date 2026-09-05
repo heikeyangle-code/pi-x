@@ -1363,5 +1363,69 @@
   "piEngineSkillsGroupProject": "项目",
   "piEngineSkillsApply": "生效",
   "piEngineSkillsRestartHint": "技能在引擎启动时扫描，新增或修改的技能需重启引擎后生效。",
-  "piEngineSkillMissing": "该技能没有 SKILL.md。"
+  "piEngineSkillMissing": "该技能没有 SKILL.md。",
+
+  "piEngineRuntime": "运行时",
+  "piEngineRuntimeSubtitle": "执行环境（bionic / Proroot / proot-distro）",
+  "piEngineRuntimeBadgeA": "内置（bionic）",
+  "piEngineRuntimeBadgeB": "完整 Linux",
+  "piEngineRuntimeActive": "当前路线",
+  "piEngineRuntimeInstalled": "已安装",
+  "piEngineRuntimeNotInstalled": "未安装",
+  "piEngineRuntimeChoose": "运行时路线",
+  "piEngineRuntimeRecommended": "推荐",
+  "piEngineRuntimeRouteBionic": "内置（bionic）",
+  "piEngineRuntimeRouteBionicDesc": "Pi 内置的 Node.js 运行时与工具。快速轻量，开箱即用。",
+  "piEngineRuntimeRouteProroot": "Proroot",
+  "piEngineRuntimeRouteProrootDesc": "免 root 的完整 Linux 运行时（LD_PRELOAD，无 ptrace）。当 bionic 装不了所需软件时推荐。",
+  "piEngineRuntimeRouteProotDistro": "proot-distro",
+  "piEngineRuntimeRouteProotDistroDesc": "Termux proot-distro + Ubuntu LTS（ptrace 方式）。兼容性最好的兜底方案。",
+  "piEngineRuntimeComparisonTitle": "两条路线的区别",
+  "piEngineRuntimeComparisonExpand": "查看对比",
+  "piEngineRuntimeComparisonCollapse": "收起对比",
+  "piEngineRuntimeComparisonA": "路线 A：轻快省电、内置 bionic 工具集，适合日常使用。",
+  "piEngineRuntimeComparisonB": "路线 B：完整 Ubuntu（glibc），能装桌面软件，但更慢、更占空间。",
+  "piEngineRuntimeSharedModel": "工作区、配置与扩展/技能在两条路线间共享；已安装的软件包不共享。",
+  "piEngineRuntimeDownloadSources": "下载来源与校验：Proroot 运行时与 Ubuntu ARM64 rootfs 均从官方源下载，并做 SHA-256 校验；作废或校验失败的下载不会生效。",
+  "piEngineRuntimeInstall": "下载并切换",
+  "piEngineRuntimeInstallConfirm": "下载 {route} 并切换到它？需要下载安装包，可能需要一些时间。",
+  "@piEngineRuntimeInstallConfirm": {
+    "placeholders": {
+      "route": { "type": "String" }
+    }
+  },
+  "piEngineRuntimeInstalling": "正在安装 {route}…",
+  "@piEngineRuntimeInstalling": {
+    "placeholders": {
+      "route": { "type": "String" }
+    }
+  },
+  "piEngineRuntimeSwitchAction": "切换",
+  "piEngineRuntimeSwitch": "切换到 {route}？",
+  "@piEngineRuntimeSwitch": {
+    "placeholders": {
+      "route": { "type": "String" }
+    }
+  },
+  "piEngineRuntimeSwitchConfirmA": "返回内置环境？proot 发行版会保留，随时可以再切换。",
+  "piEngineRuntimeSwitchConfirmB": "切换到 {route}？速度会变慢、占用更多空间，但可以随时切回。",
+  "@piEngineRuntimeSwitchConfirmB": {
+    "placeholders": {
+      "route": { "type": "String" }
+    }
+  },
+  "piEngineRuntimeSwitched": "已切换到 {route}。",
+  "@piEngineRuntimeSwitched": {
+    "placeholders": {
+      "route": { "type": "String" }
+    }
+  },
+  "piEngineRuntimePackagesTitle": "已安装的软件包",
+  "piEngineRuntimePackages": "{count} 个软件包",
+  "@piEngineRuntimePackages": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "piEngineRuntimeRestartHint": "切换路线会重启引擎，新的运行时立即生效。"
 }

@@ -408,4 +408,101 @@ describe("PiGateway", () => {
     ).toEqual(["pr"]);
     await gateway.stopAll();
   }, slow);
+
+  it("runtime route: defaults to bionic, persists set_runtime_route, rejects invalid", async () => {
+    const cwd = workDir("gw-runtime");
+    const gateway = new PiGateway({
+      piEntry: fakeEnginePath(),
+      engineVersion: "0.0.0-test",
+      piHome: workDir("gw-pihome-runtime"),
+      resolveCwd: () => cwd,
+    });
+    gateway.send = () => undefined;
+    const ctl = (op: string, payload: Record<string, unknown> = {}) =>
+      gateway.handleControl({ id: "cX", type: "control", op, projectId: "proj", payload });
+
+    // default: bionic, no host probe -> bionic-only availability
+    const status0 = await ctl("get_runtime_status");
+    const d0 = (status0 as { data: { route: string; available: string[] } }).data;
+    expect(d0.route).toBe("bionic");
+    expect(d0.available).toEqual(["bionic"]);
+
+    // invalid route rejected
+    const bad = await ctl("set_runtime_route", { route: "hack" });
+    expect(bad).toMatchObject({ success: false, error: "invalid_runtime_route" });
+
+    // switch to proroot persists and restarts the engine
+    const sw = await ctl("set_runtime_route", { route: "proroot" });
+    expect(sw).toMatchObject({ success: true, route: "proroot", restarted: true });
+    const status1 = await ctl("get_runtime_status");
+    expect((status1 as { data: { route: string } }).data.route).toBe("proroot");
+
+    // engine still round-trips after route switch (next request respawns)
+    const st = await ctl("get_state");
+    expect(st).toMatchObject({ success: true });
+    await gateway.stopAll();
+  }, slow);
+
+  it("runtime route: surfaces host probe status and runtime_install routing", async () => {
+    const cwd = workDir("gw-runtime-host");
+    const installed: string[] = [];
+    const gateway = new PiGateway({
+      piEntry: fakeEnginePath(),
+      engineVersion: "0.0.0-test",
+      piHome: workDir("gw-pihome-runtime-host"),
+      resolveCwd: () => cwd,
+      runtimeStatus: async () => ({
+        route: "bionic",
+        prorootInstalled: installed.includes("proroot"),
+        prootDistroInstalled: installed.includes("proot-distro"),
+        available: ["bionic", "proroot", "proot-distro"],
+      }),
+      runtimeInstall: async (route) => {
+        if (route === "proroot" || route === "proot-distro") {
+          installed.push(route);
+          return { success: true };
+        }
+        return { success: false, error: "invalid_runtime_route" };
+      },
+    });
+    gateway.send = () => undefined;
+    const ctl = (op: string, payload: Record<string, unknown> = {}) =>
+      gateway.handleControl({ id: "cX", type: "control", op, projectId: "proj", payload });
+
+    const status0 = await ctl("get_runtime_status");
+    const d0 = (status0 as { data: { prorootInstalled: boolean; available: string[] } }).data;
+    expect(d0.prorootInstalled).toBe(false);
+    expect(d0.available).toEqual(["bionic", "proroot", "proot-distro"]);
+
+    // install via host hook
+    const ins = await ctl("runtime_install", { route: "proroot" });
+    expect(ins).toMatchObject({ success: true });
+    const status1 = await ctl("get_runtime_status");
+    expect((status1 as { data: { prorootInstalled: boolean } }).data.prorootInstalled).toBe(true);
+
+    // bionic not installable; without host hook -> unavailable error
+    const bad = await ctl("runtime_install", { route: "bionic" });
+    expect(bad).toMatchObject({ success: false });
+    await gateway.stopAll();
+  }, slow);
+
+  it("runtime route: runtime_install unavailable when no host hook is wired", async () => {
+    const cwd = workDir("gw-runtime-noop");
+    const gateway = new PiGateway({
+      piEntry: fakeEnginePath(),
+      engineVersion: "0.0.0-test",
+      piHome: workDir("gw-pihome-runtime-noop"),
+      resolveCwd: () => cwd,
+    });
+    gateway.send = () => undefined;
+    const resp = await gateway.handleControl({
+      id: "cX",
+      type: "control",
+      op: "runtime_install",
+      projectId: "proj",
+      payload: { route: "proroot" },
+    });
+    expect(resp).toMatchObject({ success: false, error: "runtime_install_unavailable" });
+    await gateway.stopAll();
+  }, slow);
 });

@@ -45,6 +45,13 @@ export interface EngineProcessOptions {
   env?: Record<string, string>;
   /** Extra argv, e.g. --no-session. */
   args?: string[];
+  /**
+   * Optional wrapper prefix for the engine command, e.g.
+   * ["proot","-r","<rootfs>","-0","--link2symlink","-w","<cwd>","--"] for the
+   * alternate runtime route (docs/ENGINE-BUNDLE.md "路线 B"). When present,
+   * the engine is spawned as `prefix[0] ...prefix.slice(1) <node> <entry> --mode rpc`.
+   */
+  commandPrefix?: string[];
 }
 
 export class EngineProcess {
@@ -85,17 +92,30 @@ export class EngineProcess {
     if (process.env.PI_DEBUG_SPAWN === "1") {
       console.log("SPAWN", JSON.stringify({ entry: opts.piEntry, cwd: opts.cwd, env: { ...env, PI_DEBUG_SPAWN: undefined } }));
     }
-    const child = isJsEntry
-      ? spawn(process.execPath, [opts.piEntry, "--mode", "rpc", ...(opts.args ?? [])], {
-          cwd: opts.cwd,
-          env,
-          stdio: ["pipe", "pipe", "pipe"],
-        })
-      : spawn(opts.piEntry, ["--mode", "rpc", ...(opts.args ?? [])], {
-          cwd: opts.cwd,
-          env,
-          stdio: ["pipe", "pipe", "pipe"],
-        });
+    const prefix = opts.commandPrefix ?? [];
+    const hasPrefix = prefix.length > 0;
+    let cmd: string;
+    let argv: string[];
+    if (isJsEntry) {
+      if (hasPrefix) {
+        cmd = prefix[0]!;
+        argv = [...prefix.slice(1), process.execPath, opts.piEntry, "--mode", "rpc", ...(opts.args ?? [])];
+      } else {
+        cmd = process.execPath;
+        argv = [opts.piEntry, "--mode", "rpc", ...(opts.args ?? [])];
+      }
+    } else if (hasPrefix) {
+      cmd = prefix[0]!;
+      argv = [...prefix.slice(1), opts.piEntry, "--mode", "rpc", ...(opts.args ?? [])];
+    } else {
+      cmd = opts.piEntry;
+      argv = ["--mode", "rpc", ...(opts.args ?? [])];
+    }
+    const child = spawn(cmd, argv, {
+      cwd: opts.cwd,
+      env,
+      stdio: ["pipe", "pipe", "pipe"],
+    });
     this.proc = child;
     this.lines = createInterface({ input: child.stdout });
 

@@ -1258,5 +1258,69 @@
   "piEngineSkillsGroupProject": "Project",
   "piEngineSkillsApply": "Apply",
   "piEngineSkillsRestartHint": "Skills are scanned when the engine starts; new or changed skills take effect after an engine restart.",
-  "piEngineSkillMissing": "No SKILL.md found for this skill."
+  "piEngineSkillMissing": "No SKILL.md found for this skill.",
+
+  "piEngineRuntime": "Runtime",
+  "piEngineRuntimeSubtitle": "Execution environment (bionic / Proroot / proot-distro)",
+  "piEngineRuntimeBadgeA": "Built-in (bionic)",
+  "piEngineRuntimeBadgeB": "Full Linux",
+  "piEngineRuntimeActive": "Active",
+  "piEngineRuntimeInstalled": "Installed",
+  "piEngineRuntimeNotInstalled": "Not installed",
+  "piEngineRuntimeChoose": "Runtime route",
+  "piEngineRuntimeRecommended": "Recommended",
+  "piEngineRuntimeRouteBionic": "Built-in (bionic)",
+  "piEngineRuntimeRouteBionicDesc": "Pi's built-in Node.js runtime and tools. Fast and lightweight, works out of the box.",
+  "piEngineRuntimeRouteProroot": "Proroot",
+  "piEngineRuntimeRouteProrootDesc": "Rootless full-Linux runtime (LD_PRELOAD, no ptrace). Recommended when bionic cannot install what you need.",
+  "piEngineRuntimeRouteProotDistro": "proot-distro",
+  "piEngineRuntimeRouteProotDistroDesc": "Termux proot-distro with Ubuntu LTS (ptrace-based). Most compatible fallback.",
+  "piEngineRuntimeComparisonTitle": "How the routes differ",
+  "piEngineRuntimeComparisonExpand": "See comparison",
+  "piEngineRuntimeComparisonCollapse": "Hide comparison",
+  "piEngineRuntimeComparisonA": "Route A: fast, lightweight, built-in bionic toolset. Best for everyday use.",
+  "piEngineRuntimeComparisonB": "Route B: full Ubuntu (glibc). Can install desktop software, but slower and uses more space.",
+  "piEngineRuntimeSharedModel": "Workspace, config and extensions/skills are shared across routes; installed packages are not.",
+  "piEngineRuntimeDownloadSources": "Download source & integrity: the Proroot runtime and the Ubuntu ARM64 rootfs are fetched from official sources and verified via SHA-256; a failed or invalid download is never applied.",
+  "piEngineRuntimeInstall": "Download runtime",
+  "piEngineRuntimeInstallConfirm": "Download {route} and switch to it? This downloads a package and may take a while.",
+  "@piEngineRuntimeInstallConfirm": {
+    "placeholders": {
+      "route": { "type": "String" }
+    }
+  },
+  "piEngineRuntimeInstalling": "Installing {route}…",
+  "@piEngineRuntimeInstalling": {
+    "placeholders": {
+      "route": { "type": "String" }
+    }
+  },
+  "piEngineRuntimeSwitchAction": "Switch",
+  "piEngineRuntimeSwitch": "Switch to {route}?",
+  "@piEngineRuntimeSwitch": {
+    "placeholders": {
+      "route": { "type": "String" }
+    }
+  },
+  "piEngineRuntimeSwitchConfirmA": "Return to the built-in environment? The proot distribution stays installed and can be re-selected anytime.",
+  "piEngineRuntimeSwitchConfirmB": "Switch to {route}? It is slower and uses more space. You can switch back anytime.",
+  "@piEngineRuntimeSwitchConfirmB": {
+    "placeholders": {
+      "route": { "type": "String" }
+    }
+  },
+  "piEngineRuntimeSwitched": "Switched to {route}.",
+  "@piEngineRuntimeSwitched": {
+    "placeholders": {
+      "route": { "type": "String" }
+    }
+  },
+  "piEngineRuntimePackagesTitle": "Installed packages",
+  "piEngineRuntimePackages": "{count} packages",
+  "@piEngineRuntimePackages": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "piEngineRuntimeRestartHint": "Switching routes restarts the engine so the new runtime takes effect immediately."
 }

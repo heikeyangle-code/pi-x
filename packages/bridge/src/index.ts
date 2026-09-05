@@ -1,5 +1,6 @@
 import { createServer } from "node:http";
 import { homedir } from "node:os";
+import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { setupProxy } from "./proxy.js";
 import { BridgeWebSocketServer } from "./websocket.js";
@@ -24,6 +25,7 @@ import {
 } from "./prompt-history-store.js";
 import { parseAllowedDirectories } from "./path-utils.js";
 import { startPiHostServer } from "./pi-host/server.js";
+import { createRuntimeHooks } from "./pi-host/runtime-manager.js";
 import { parseBridgePort } from "./bridge-port.js";
 import { listenForStartup } from "./server-listen.js";
 
@@ -60,11 +62,20 @@ export async function startServer() {
       throw new Error("PI_HOST=1 requires PI_ENGINE_ENTRY (absolute path to the pi CLI entry)");
     }
     const engineVersion = process.env.PI_ENGINE_VERSION ?? "dev";
+    const piHome = process.env.PI_HOME ?? process.env.HOME ?? "";
+    // Route B runtime hooks (docs/ENGINE-BUNDLE.md "路线切换 UI 落地").
+    const runtime = createRuntimeHooks({
+      piHome,
+      enginesDir: dirname(piEntry),
+    });
     const { httpServer: piHttp } = await startPiHostServer({
       port: PORT,
       piEntry,
       engineVersion,
       resolveCwd: (projectId) => projectId,
+      commandPrefix: (cwd) => runtime.resolveCommandPrefix(cwd),
+      runtimeStatus: () => runtime.status(),
+      runtimeInstall: (route, onProgress) => runtime.install(route, onProgress),
     });
     console.log(`[pi-host] Ready on ws://127.0.0.1:${PORT} (pi engine ${engineVersion})`);
     process.on("SIGINT", () => process.exit(0));

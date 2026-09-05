@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { mkdtempSync, existsSync } from "node:fs";
+import { mkdtempSync, existsSync, writeFileSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fakeEnginePath } from "./test-utils.js";
@@ -95,5 +95,50 @@ describe("EngineProcess", () => {
     const resp = await engine.request({ type: "get_state" });
     expect(resp.success).toBe(true);
     await engine.stop();
+  }, slow);
+
+  it("spawns through a commandPrefix wrapper (route B style)", async () => {
+    const piEntry = fakeEnginePath();
+    const dir = workDir("ep-prefix");
+    const logFile = join(dir, "wrapper.log");
+    const wrapper = join(dir, "wrapper.sh");
+    // A tiny wrapper that records its argv then execs everything after the
+    // `--` separator — mirroring proot/proroot semantics wrapping
+    // `-- node <entry> --mode rpc`.
+    writeFileSync(
+      wrapper,
+      [
+        "#!/bin/bash",
+        `printf 'WRAPPER_ARGS:%s\\n' "$*" >> "${logFile}"`,
+        "args=()",
+        'sep=0',
+        'for a in "$@"; do',
+        '  if [ "$sep" = "1" ]; then args+=("$a"); fi',
+        '  if [ "$a" = "--" ]; then sep=1; fi',
+        "done",
+        'exec "${args[@]}"',
+        "",
+      ].join("\n"),
+      { mode: 0o755 },
+    );
+
+    const engine = new EngineProcess();
+    await engine.start({
+      piEntry,
+      cwd: dir,
+      commandPrefix: [wrapper, "-r", "<rootfs>", "-0", "--link2symlink", "-w", dir, "--"],
+    });
+    expect(engine.running).toBe(true);
+
+    const resp = await engine.request({ type: "get_state" });
+    expect(resp).toMatchObject({ type: "response", command: "get_state", success: true });
+
+    await engine.stop();
+
+    const log = readFileSync(logFile, "utf8");
+    expect(log).toContain("--link2symlink");
+    expect(log).toContain("--mode");
+    expect(log).toContain("rpc");
+    expect(log).toContain(piEntry);
   }, slow);
 });

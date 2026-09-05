@@ -2851,6 +2851,51 @@ class AppLocalizationsEn extends AppLocalizations {
       'Custom providers and models (models.json)';
 
   @override
+  String get piEngineModelsEmpty =>
+      'No custom providers yet. Tap + to add one.';
+
+  @override
+  String get piEngineModelAdd => 'Add model';
+
+  @override
+  String get piEngineModelId => 'Model ID';
+
+  @override
+  String get piEngineModelName => 'Display name';
+
+  @override
+  String get piEngineModelReasoning => 'Reasoning model';
+
+  @override
+  String get piEngineModelReasoningTag => 'reasoning';
+
+  @override
+  String get piEngineProviderAdd => 'Add provider';
+
+  @override
+  String get piEngineProviderEdit => 'Edit provider';
+
+  @override
+  String get piEngineProviderDelete => 'Delete provider';
+
+  @override
+  String piEngineProviderDeleteConfirm(String id) {
+    return 'Delete provider \"$id\"? Its models will be removed too.';
+  }
+
+  @override
+  String get piEngineProviderId => 'Provider ID';
+
+  @override
+  String get piEngineProviderBaseUrl => 'Base URL';
+
+  @override
+  String get piEngineProviderApi => 'API';
+
+  @override
+  String get piEngineProviderApiKey => 'API key';
+
+  @override
   String get piEngineCommands => 'Command palette';
 
   @override
@@ -2876,6 +2921,64 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String piEngineCommandsCopied(String name) {
     return 'Copied /$name. Paste it into the input to use it.';
+  }
+
+  @override
+  String get piEnginePrompts => 'Prompt templates';
+
+  @override
+  String get piEnginePromptsSubtitle =>
+      'Slash-command templates (prompt-templates)';
+
+  @override
+  String get piEnginePromptsEmpty =>
+      'No templates yet. Place them in ~/.pi/agent/prompts/ or the project .pi/prompts/ folder, or tap + to create one.';
+
+  @override
+  String piEnginePromptsCount(int count) {
+    return '$count templates';
+  }
+
+  @override
+  String get piEnginePromptsGroupGlobal => 'Global';
+
+  @override
+  String get piEnginePromptsGroupProject => 'Project';
+
+  @override
+  String get piEnginePromptsNew => 'New template';
+
+  @override
+  String get piEnginePromptsNewName => 'Template name';
+
+  @override
+  String get piEnginePromptsNewHint => 'Without .md (e.g. pr). Placed in:';
+
+  @override
+  String get piEnginePromptsSave => 'Save';
+
+  @override
+  String get piEnginePromptsCancel => 'Cancel';
+
+  @override
+  String get piEnginePromptsEdit => 'Edit';
+
+  @override
+  String get piEnginePromptsDelete => 'Delete';
+
+  @override
+  String piEnginePromptsDeleteConfirm(String name) {
+    return 'Delete template $name?';
+  }
+
+  @override
+  String piEnginePromptsSaved(String name) {
+    return 'Saved $name';
+  }
+
+  @override
+  String piEnginePromptsCopied(String name) {
+    return 'Copied /$name. Paste it into the chat input.';
   }
 
   @override
@@ -2944,47 +3047,123 @@ class AppLocalizationsEn extends AppLocalizations {
   String get piEngineSkillMissing => 'No SKILL.md found for this skill.';
 
   @override
-  String get piEngineModelsEmpty =>
-      'No custom providers yet. Tap + to add one.';
+  String get piEngineRuntime => 'Runtime';
 
   @override
-  String get piEngineModelAdd => 'Add model';
+  String get piEngineRuntimeSubtitle =>
+      'Execution environment (bionic / Proroot / proot-distro)';
 
   @override
-  String get piEngineModelId => 'Model ID';
+  String get piEngineRuntimeBadgeA => 'Built-in (bionic)';
 
   @override
-  String get piEngineModelName => 'Display name';
+  String get piEngineRuntimeBadgeB => 'Full Linux';
 
   @override
-  String get piEngineModelReasoning => 'Reasoning model';
+  String get piEngineRuntimeActive => 'Active';
 
   @override
-  String get piEngineModelReasoningTag => 'reasoning';
+  String get piEngineRuntimeInstalled => 'Installed';
 
   @override
-  String get piEngineProviderAdd => 'Add provider';
+  String get piEngineRuntimeNotInstalled => 'Not installed';
 
   @override
-  String get piEngineProviderEdit => 'Edit provider';
+  String get piEngineRuntimeChoose => 'Runtime route';
 
   @override
-  String get piEngineProviderDelete => 'Delete provider';
+  String get piEngineRuntimeRecommended => 'Recommended';
 
   @override
-  String piEngineProviderDeleteConfirm(String id) {
-    return 'Delete provider \"$id\"? Its models will be removed too.';
+  String get piEngineRuntimeRouteBionic => 'Built-in (bionic)';
+
+  @override
+  String get piEngineRuntimeRouteBionicDesc =>
+      'Pi\'s built-in Node.js runtime and tools. Fast and lightweight, works out of the box.';
+
+  @override
+  String get piEngineRuntimeRouteProroot => 'Proroot';
+
+  @override
+  String get piEngineRuntimeRouteProrootDesc =>
+      'Rootless full-Linux runtime (LD_PRELOAD, no ptrace). Recommended when bionic cannot install what you need.';
+
+  @override
+  String get piEngineRuntimeRouteProotDistro => 'proot-distro';
+
+  @override
+  String get piEngineRuntimeRouteProotDistroDesc =>
+      'Termux proot-distro with Ubuntu LTS (ptrace-based). Most compatible fallback.';
+
+  @override
+  String get piEngineRuntimeComparisonTitle => 'How the routes differ';
+
+  @override
+  String get piEngineRuntimeComparisonExpand => 'See comparison';
+
+  @override
+  String get piEngineRuntimeComparisonCollapse => 'Hide comparison';
+
+  @override
+  String get piEngineRuntimeComparisonA =>
+      'Route A: fast, lightweight, built-in bionic toolset. Best for everyday use.';
+
+  @override
+  String get piEngineRuntimeComparisonB =>
+      'Route B: full Ubuntu (glibc). Can install desktop software, but slower and uses more space.';
+
+  @override
+  String get piEngineRuntimeSharedModel =>
+      'Workspace, config and extensions/skills are shared across routes; installed packages are not.';
+
+  @override
+  String get piEngineRuntimeDownloadSources =>
+      'Download source & integrity: the Proroot runtime and the Ubuntu ARM64 rootfs are fetched from official sources and verified via SHA-256; a failed or invalid download is never applied.';
+
+  @override
+  String get piEngineRuntimeInstall => 'Download runtime';
+
+  @override
+  String piEngineRuntimeInstallConfirm(String route) {
+    return 'Download $route and switch to it? This downloads a package and may take a while.';
   }
 
   @override
-  String get piEngineProviderId => 'Provider ID';
+  String piEngineRuntimeInstalling(String route) {
+    return 'Installing $route…';
+  }
 
   @override
-  String get piEngineProviderBaseUrl => 'Base URL';
+  String get piEngineRuntimeSwitchAction => 'Switch';
 
   @override
-  String get piEngineProviderApi => 'API';
+  String piEngineRuntimeSwitch(String route) {
+    return 'Switch to $route?';
+  }
 
   @override
-  String get piEngineProviderApiKey => 'API key';
+  String get piEngineRuntimeSwitchConfirmA =>
+      'Return to the built-in environment? The proot distribution stays installed and can be re-selected anytime.';
+
+  @override
+  String piEngineRuntimeSwitchConfirmB(String route) {
+    return 'Switch to $route? It is slower and uses more space. You can switch back anytime.';
+  }
+
+  @override
+  String piEngineRuntimeSwitched(String route) {
+    return 'Switched to $route.';
+  }
+
+  @override
+  String get piEngineRuntimePackagesTitle => 'Installed packages';
+
+  @override
+  String piEngineRuntimePackages(int count) {
+    return '$count packages';
+  }
+
+  @override
+  String get piEngineRuntimeRestartHint =>
+      'Switching routes restarts the engine so the new runtime takes effect immediately.';
 }

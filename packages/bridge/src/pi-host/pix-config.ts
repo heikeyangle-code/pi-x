@@ -22,19 +22,40 @@ import { dirname } from "node:path";
 export interface PixConfig {
   /** Extra argv appended after `--mode rpc` on every engine spawn. */
   engineArgs?: string[];
+  /**
+   * Active runtime route (docs/ENGINE-BUNDLE.md "路线"):
+   * "bionic" (default, built-in node/tools) | "proroot" | "proot-distro".
+   * Read at engine spawn time; a switch takes effect on the next spawn
+   * (the app calls `restart_engine` to apply it immediately).
+   */
+  runtimeRoute?: "bionic" | "proroot" | "proot-distro";
 }
 
 export const DEFAULT_PIX_CONFIG: PixConfig = {};
+
+export type RuntimeRoute = NonNullable<PixConfig["runtimeRoute"]>;
+
+export const RUNTIME_ROUTES: readonly RuntimeRoute[] = [
+  "bionic",
+  "proroot",
+  "proot-distro",
+];
 
 function normalize(input: unknown): PixConfig {
   if (input === null || typeof input !== "object" || Array.isArray(input)) {
     return { ...DEFAULT_PIX_CONFIG };
   }
   const raw = input as Record<string, unknown>;
+  const route = raw.runtimeRoute;
   return {
     engineArgs: Array.isArray(raw.engineArgs)
       ? raw.engineArgs.map(String).filter((s) => s.length > 0)
       : undefined,
+    runtimeRoute:
+      typeof route === "string" &&
+      (route === "bionic" || route === "proroot" || route === "proot-distro")
+        ? route
+        : undefined,
   };
 }
 
@@ -58,6 +79,7 @@ export class PixConfigFile {
       ...(patch.engineArgs === undefined
         ? {}
         : { engineArgs: patch.engineArgs.map(String).filter((s) => s.length > 0) }),
+      ...(patch.runtimeRoute === undefined ? {} : { runtimeRoute: patch.runtimeRoute }),
     };
     await mkdir(dirname(this.file), { recursive: true });
     await writeFile(this.file, `${JSON.stringify(next, null, 2)}\n`, "utf8");

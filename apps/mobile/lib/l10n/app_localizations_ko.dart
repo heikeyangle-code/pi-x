@@ -2762,11 +2762,54 @@ class AppLocalizationsKo extends AppLocalizations {
   String get piEngineModelsSubtitle => '사용자 정의 공급자 및 모델(models.json)';
 
   @override
+  String get piEngineModelsEmpty => '아직 사용자 정의 공급자가 없습니다. +를 눌러 추가하세요.';
+
+  @override
+  String get piEngineModelAdd => '모델 추가';
+
+  @override
+  String get piEngineModelId => '모델 ID';
+
+  @override
+  String get piEngineModelName => '표시 이름';
+
+  @override
+  String get piEngineModelReasoning => '추론 모델';
+
+  @override
+  String get piEngineModelReasoningTag => '추론';
+
+  @override
+  String get piEngineProviderAdd => '공급자 추가';
+
+  @override
+  String get piEngineProviderEdit => '공급자 편집';
+
+  @override
+  String get piEngineProviderDelete => '공급자 삭제';
+
+  @override
+  String piEngineProviderDeleteConfirm(String id) {
+    return '공급자 \"$id\"을(를) 삭제할까요? 모델도 함께 제거됩니다.';
+  }
+
+  @override
+  String get piEngineProviderId => '공급자 ID';
+
+  @override
+  String get piEngineProviderBaseUrl => '기본 URL';
+
+  @override
+  String get piEngineProviderApi => 'API';
+
+  @override
+  String get piEngineProviderApiKey => 'API 키';
+
+  @override
   String get piEngineCommands => '명령 팔레트';
 
   @override
-  String get piEngineCommandsSubtitle =>
-      '슬래시 명령·템플릿·스킬 (get_commands)';
+  String get piEngineCommandsSubtitle => '슬래시 명령·템플릿·스킬 (get_commands)';
 
   @override
   String get piEngineCommandsHint =>
@@ -2786,6 +2829,63 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String piEngineCommandsCopied(String name) {
+    return '/$name 을(를) 복사했습니다. 입력란에 붙여넣어 사용하세요.';
+  }
+
+  @override
+  String get piEnginePrompts => '프롬프트 템플릿';
+
+  @override
+  String get piEnginePromptsSubtitle => '슬래시 명령 템플릿 (prompt-templates)';
+
+  @override
+  String get piEnginePromptsEmpty =>
+      '템플릿이 아직 없습니다. ~/.pi/agent/prompts/ 또는 프로젝트의 .pi/prompts/ 폴더에 넣거나 오른쪽 아래 + 로 만드세요.';
+
+  @override
+  String piEnginePromptsCount(int count) {
+    return '템플릿 $count개';
+  }
+
+  @override
+  String get piEnginePromptsGroupGlobal => '전역';
+
+  @override
+  String get piEnginePromptsGroupProject => '프로젝트';
+
+  @override
+  String get piEnginePromptsNew => '새 템플릿';
+
+  @override
+  String get piEnginePromptsNewName => '템플릿 이름';
+
+  @override
+  String get piEnginePromptsNewHint => '.md 제외 (예: pr). 위치:';
+
+  @override
+  String get piEnginePromptsSave => '저장';
+
+  @override
+  String get piEnginePromptsCancel => '취소';
+
+  @override
+  String get piEnginePromptsEdit => '편집';
+
+  @override
+  String get piEnginePromptsDelete => '삭제';
+
+  @override
+  String piEnginePromptsDeleteConfirm(String name) {
+    return '템플릿 $name 을(를) 삭제할까요?';
+  }
+
+  @override
+  String piEnginePromptsSaved(String name) {
+    return '$name 저장됨';
+  }
+
+  @override
+  String piEnginePromptsCopied(String name) {
     return '/$name 을(를) 복사했습니다. 입력란에 붙여넣어 사용하세요.';
   }
 
@@ -2847,52 +2947,130 @@ class AppLocalizationsKo extends AppLocalizations {
   String get piEngineSkillsApply => '적용';
 
   @override
-  String get piEngineSkillsRestartHint => '스킬은 엔진 시작 시 스캔됩니다. 추가하거나 변경한 스킬은 엔진 재시작 후 적용됩니다.';
+  String get piEngineSkillsRestartHint =>
+      '스킬은 엔진 시작 시 스캔됩니다. 추가하거나 변경한 스킬은 엔진 재시작 후 적용됩니다.';
 
   @override
   String get piEngineSkillMissing => '이 스킬에 SKILL.md가 없습니다.';
 
   @override
-  String get piEngineModelsEmpty => '아직 사용자 정의 공급자가 없습니다. +를 눌러 추가하세요.';
+  String get piEngineRuntime => '런타임';
 
   @override
-  String get piEngineModelAdd => '모델 추가';
+  String get piEngineRuntimeSubtitle =>
+      '실행 환경 (bionic / Proroot / proot-distro)';
 
   @override
-  String get piEngineModelId => '모델 ID';
+  String get piEngineRuntimeBadgeA => '내장 (bionic)';
 
   @override
-  String get piEngineModelName => '표시 이름';
+  String get piEngineRuntimeBadgeB => '전체 Linux';
 
   @override
-  String get piEngineModelReasoning => '추론 모델';
+  String get piEngineRuntimeActive => '현재 경로';
 
   @override
-  String get piEngineModelReasoningTag => '추론';
+  String get piEngineRuntimeInstalled => '설치됨';
 
   @override
-  String get piEngineProviderAdd => '공급자 추가';
+  String get piEngineRuntimeNotInstalled => '미설치';
 
   @override
-  String get piEngineProviderEdit => '공급자 편집';
+  String get piEngineRuntimeChoose => '런타임 경로';
 
   @override
-  String get piEngineProviderDelete => '공급자 삭제';
+  String get piEngineRuntimeRecommended => '권장';
 
   @override
-  String piEngineProviderDeleteConfirm(String id) {
-    return '공급자 \"$id\"을(를) 삭제할까요? 모델도 함께 제거됩니다.';
+  String get piEngineRuntimeRouteBionic => '내장 (bionic)';
+
+  @override
+  String get piEngineRuntimeRouteBionicDesc =>
+      'Pi 내장 Node.js 런타임과 도구. 빠르고 가벼우며 바로 사용할 수 있습니다.';
+
+  @override
+  String get piEngineRuntimeRouteProroot => 'Proroot';
+
+  @override
+  String get piEngineRuntimeRouteProrootDesc =>
+      '루트 권한 없는 전체 Linux 런타임 (LD_PRELOAD, ptrace 없음). bionic으로 설치할 수 없는 소프트웨어가 있을 때 권장합니다.';
+
+  @override
+  String get piEngineRuntimeRouteProotDistro => 'proot-distro';
+
+  @override
+  String get piEngineRuntimeRouteProotDistroDesc =>
+      'Termux proot-distro + Ubuntu LTS (ptrace 방식). 호환성이 가장 높은 폴백입니다.';
+
+  @override
+  String get piEngineRuntimeComparisonTitle => '경로 차이점';
+
+  @override
+  String get piEngineRuntimeComparisonExpand => '비교 보기';
+
+  @override
+  String get piEngineRuntimeComparisonCollapse => '비교 숨기기';
+
+  @override
+  String get piEngineRuntimeComparisonA =>
+      '경로 A: 빠르고 가벼운 내장 bionic 도구 모음. 일상 사용에 최적입니다.';
+
+  @override
+  String get piEngineRuntimeComparisonB =>
+      '경로 B: 전체 Ubuntu (glibc). 데스크톱 소프트웨어도 설치할 수 있지만 더 느리고 공간을 더 차지합니다.';
+
+  @override
+  String get piEngineRuntimeSharedModel =>
+      '워크스페이스, 구성, 확장/스킬은 경로 간에 공유됩니다 (설치된 패키지는 공유되지 않음).';
+
+  @override
+  String get piEngineRuntimeDownloadSources =>
+      '다운로드 소스 및 검증: Proroot 런타임과 Ubuntu ARM64 rootfs는 공식 소스에서 받아 SHA-256으로 검증합니다. 검증에 실패한 다운로드는 적용되지 않습니다.';
+
+  @override
+  String get piEngineRuntimeInstall => '다운로드 후 전환';
+
+  @override
+  String piEngineRuntimeInstallConfirm(String route) {
+    return '$route를 다운로드하고 전환할까요? 패키지를 다운로드하며 시간이 걸릴 수 있습니다.';
   }
 
   @override
-  String get piEngineProviderId => '공급자 ID';
+  String piEngineRuntimeInstalling(String route) {
+    return '$route 설치 중…';
+  }
 
   @override
-  String get piEngineProviderBaseUrl => '기본 URL';
+  String get piEngineRuntimeSwitchAction => '전환';
 
   @override
-  String get piEngineProviderApi => 'API';
+  String piEngineRuntimeSwitch(String route) {
+    return '$route(으)로 전환할까요?';
+  }
 
   @override
-  String get piEngineProviderApiKey => 'API 키';
+  String get piEngineRuntimeSwitchConfirmA =>
+      '내장 환경으로 돌아갈까요? proot 배포판은 유지되며 언제든 다시 선택할 수 있습니다.';
+
+  @override
+  String piEngineRuntimeSwitchConfirmB(String route) {
+    return '$route(으)로 전환할까요? 더 느리고 공간을 더 차지하지만 언제든 되돌릴 수 있습니다.';
+  }
+
+  @override
+  String piEngineRuntimeSwitched(String route) {
+    return '$route(으)로 전환했습니다.';
+  }
+
+  @override
+  String get piEngineRuntimePackagesTitle => '설치된 패키지';
+
+  @override
+  String piEngineRuntimePackages(int count) {
+    return '패키지 $count개';
+  }
+
+  @override
+  String get piEngineRuntimeRestartHint =>
+      '경로를 전환하면 엔진이 다시 시작되어 새 런타임이 즉시 적용됩니다.';
 }

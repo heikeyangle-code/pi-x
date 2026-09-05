@@ -36,10 +36,25 @@ import {
   type CustomModelSpec,
   type SkillRoot,
 } from "./surfaces.js";
+import type { RuntimeRoute } from "./pix-config.js";
+import type { RuntimeInstallProgress } from "./runtime-manager.js";
 
 export const PI_WIRE_PROTOCOL_VERSION = 1;
 /** Default pi home; overridable for tests via PiGatewayOptions.piHome. */
 const DEFAULT_PI_HOME = process.env.PI_HOME ?? (process.env.HOME ?? "");
+
+/** Runtime installation status reported by the host (docs/ENGINE-BUNDLE.md). */
+export interface RuntimeStatus {
+  route: RuntimeRoute;
+  prorootInstalled: boolean;
+  prootDistroInstalled: boolean;
+  /** Size of the downloaded rootfs in bytes, when present. */
+  rootfsSize?: number;
+  /** Packages installed in the active environment, when enumerable. */
+  installedPackages?: string[];
+  /** Routes the host can switch to (installable ones included). */
+  available: RuntimeRoute[];
+}
 
 export interface PiFrameEnvelope {
   kind: "pi";
@@ -68,6 +83,20 @@ export interface PiGatewayOptions {
   piHome?: string;
   /** Resolve the cwd (filesystem path) for a project id. */
   resolveCwd: (projectId: string) => string;
+  /**
+   * Wrapper prefix for the engine command (route B runtimes). Fixed argv list
+   * or a per-cwd resolver (may be async); see EnginePoolOptions.commandPrefix.
+   */
+  commandPrefix?:
+    | string[]
+    | ((cwd: string) => string[] | undefined | Promise<string[] | undefined>);
+  /** Host probe for runtime install status (get_runtime_status). */
+  runtimeStatus?: () => Promise<RuntimeStatus | undefined>;
+  /** Host-triggered install of a route B runtime (runtime_install). */
+  runtimeInstall?: (
+    route: RuntimeRoute,
+    onProgress?: (progress: RuntimeInstallProgress) => void,
+  ) => Promise<{ success: boolean; error?: string }>;
 }
 
 export class PiGateway {
@@ -84,6 +113,7 @@ export class PiGateway {
       piEntry: opts.piEntry,
       maxIdleMs: opts.maxIdleMs,
       env: opts.env,
+      commandPrefix: opts.commandPrefix,
       onEvent: (projectId, event) => this.emit(projectId, event),
       onUiRequest: (projectId, request, respond) => {
         const id = String((request as Record<string, unknown>)["id"] ?? "ui");
@@ -401,6 +431,58 @@ export class PiGateway {
           (payload.patch as Partial<PixConfig> | undefined) ?? {},
         );
         return { success: true, data };
+      }
+      // ---- runtime route (docs/ENGINE-BUNDLE.md "路线切换 UI 落地") ----
+      case "get_runtime_status": {
+        const files = piAgentFiles(this.piHome);
+        const cfg = await new PixConfigFile(files.pixConfig).load();
+        const host = await this.opts.runtimeStatus?.().catch(() => undefined);
+        const route: RuntimeRoute = cfg.runtimeRoute ?? "bionic";
+        return {
+          success: true,
+          data: host ?? {
+            route,
+            prorootInstalled: false,
+            prootDistroInstalled: false,
+            available: ["bionic"],
+          },
+        };
+      }
+      case "set_runtime_route": {
+        const next = String(payload.route ?? "");
+        if (next !== "bionic" && next !== "proroot" && next !== "proot-distro") {
+          return { success: false, error: "invalid_runtime_route" };
+        }
+        const files = piAgentFiles(this.piHome);
+        const cfg = new PixConfigFile(files.pixConfig);
+        const current = await cfg.load();
+        if (current.runtimeRoute !== next) {
+          await cfg.update({ runtimeRoute: next });
+        }
+        // Route changes apply at spawn time; restart the project engine so the
+        // new runtime takes effect immediately (mirrors restart_engine).
+        await this.pool.stop(msg.projectId);
+        return { success: true, route: next, restarted: true };
+      }
+      case "runtime_install": {
+        const route = String(payload.route ?? "");
+        if (route !== "proroot" && route !== "proot-distro") {
+          return { success: false, error: "invalid_runtime_route" };
+        }
+        if (this.opts.runtimeInstall === undefined) {
+          return { success: false, error: "runtime_install_unavailable" };
+        }
+        const result = await this.opts.runtimeInstall(route, (progress) => {
+          // Progress is streamed as events (docs: "进度经事件流回传").
+          this.emit(msg.projectId, {
+            type: "runtime_install_progress",
+            projectId: msg.projectId,
+            route,
+            stage: progress.stage,
+            percent: progress.percent,
+          });
+        });
+        return { success: result.success, error: result.error };
       }
       case "read_prompt_files": {
         const files = piAgentFiles(this.piHome);

@@ -5147,6 +5147,90 @@ abstract class AppLocalizations {
   /// **'カスタムプロバイダーとモデル（models.json）'**
   String get piEngineModelsSubtitle;
 
+  /// No description provided for @piEngineModelsEmpty.
+  ///
+  /// In ja, this message translates to:
+  /// **'カスタムプロバイダーはまだありません。+ をタップして追加。'**
+  String get piEngineModelsEmpty;
+
+  /// No description provided for @piEngineModelAdd.
+  ///
+  /// In ja, this message translates to:
+  /// **'モデルを追加'**
+  String get piEngineModelAdd;
+
+  /// No description provided for @piEngineModelId.
+  ///
+  /// In ja, this message translates to:
+  /// **'モデル ID'**
+  String get piEngineModelId;
+
+  /// No description provided for @piEngineModelName.
+  ///
+  /// In ja, this message translates to:
+  /// **'表示名'**
+  String get piEngineModelName;
+
+  /// No description provided for @piEngineModelReasoning.
+  ///
+  /// In ja, this message translates to:
+  /// **'推論モデル'**
+  String get piEngineModelReasoning;
+
+  /// No description provided for @piEngineModelReasoningTag.
+  ///
+  /// In ja, this message translates to:
+  /// **'推論'**
+  String get piEngineModelReasoningTag;
+
+  /// No description provided for @piEngineProviderAdd.
+  ///
+  /// In ja, this message translates to:
+  /// **'プロバイダーを追加'**
+  String get piEngineProviderAdd;
+
+  /// No description provided for @piEngineProviderEdit.
+  ///
+  /// In ja, this message translates to:
+  /// **'プロバイダーを編集'**
+  String get piEngineProviderEdit;
+
+  /// No description provided for @piEngineProviderDelete.
+  ///
+  /// In ja, this message translates to:
+  /// **'プロバイダーを削除'**
+  String get piEngineProviderDelete;
+
+  /// No description provided for @piEngineProviderDeleteConfirm.
+  ///
+  /// In ja, this message translates to:
+  /// **'プロバイダー \"{id}\" を削除しますか？モデルも一緒に削除されます。'**
+  String piEngineProviderDeleteConfirm(String id);
+
+  /// No description provided for @piEngineProviderId.
+  ///
+  /// In ja, this message translates to:
+  /// **'プロバイダー ID'**
+  String get piEngineProviderId;
+
+  /// No description provided for @piEngineProviderBaseUrl.
+  ///
+  /// In ja, this message translates to:
+  /// **'ベース URL'**
+  String get piEngineProviderBaseUrl;
+
+  /// No description provided for @piEngineProviderApi.
+  ///
+  /// In ja, this message translates to:
+  /// **'API'**
+  String get piEngineProviderApi;
+
+  /// No description provided for @piEngineProviderApiKey.
+  ///
+  /// In ja, this message translates to:
+  /// **'API キー'**
+  String get piEngineProviderApiKey;
+
   /// No description provided for @piEngineCommands.
   ///
   /// In ja, this message translates to:
@@ -5194,6 +5278,102 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'「/{name}」をコピーしました。入力欄に貼り付けて使用してください。'**
   String piEngineCommandsCopied(String name);
+
+  /// No description provided for @piEnginePrompts.
+  ///
+  /// In ja, this message translates to:
+  /// **'プロンプトテンプレート'**
+  String get piEnginePrompts;
+
+  /// No description provided for @piEnginePromptsSubtitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'スラッシュコマンドのテンプレート（prompt-templates）'**
+  String get piEnginePromptsSubtitle;
+
+  /// No description provided for @piEnginePromptsEmpty.
+  ///
+  /// In ja, this message translates to:
+  /// **'テンプレートはまだありません。~/.pi/agent/prompts/ かプロジェクトの .pi/prompts/ に置くか、右下の + から作成してください。'**
+  String get piEnginePromptsEmpty;
+
+  /// No description provided for @piEnginePromptsCount.
+  ///
+  /// In ja, this message translates to:
+  /// **'{count} 個のテンプレート'**
+  String piEnginePromptsCount(int count);
+
+  /// No description provided for @piEnginePromptsGroupGlobal.
+  ///
+  /// In ja, this message translates to:
+  /// **'グローバル'**
+  String get piEnginePromptsGroupGlobal;
+
+  /// No description provided for @piEnginePromptsGroupProject.
+  ///
+  /// In ja, this message translates to:
+  /// **'プロジェクト'**
+  String get piEnginePromptsGroupProject;
+
+  /// No description provided for @piEnginePromptsNew.
+  ///
+  /// In ja, this message translates to:
+  /// **'テンプレートを新規作成'**
+  String get piEnginePromptsNew;
+
+  /// No description provided for @piEnginePromptsNewName.
+  ///
+  /// In ja, this message translates to:
+  /// **'テンプレート名'**
+  String get piEnginePromptsNewName;
+
+  /// No description provided for @piEnginePromptsNewHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'.md を含めない（例: pr）。配置先：'**
+  String get piEnginePromptsNewHint;
+
+  /// No description provided for @piEnginePromptsSave.
+  ///
+  /// In ja, this message translates to:
+  /// **'保存'**
+  String get piEnginePromptsSave;
+
+  /// No description provided for @piEnginePromptsCancel.
+  ///
+  /// In ja, this message translates to:
+  /// **'キャンセル'**
+  String get piEnginePromptsCancel;
+
+  /// No description provided for @piEnginePromptsEdit.
+  ///
+  /// In ja, this message translates to:
+  /// **'編集'**
+  String get piEnginePromptsEdit;
+
+  /// No description provided for @piEnginePromptsDelete.
+  ///
+  /// In ja, this message translates to:
+  /// **'削除'**
+  String get piEnginePromptsDelete;
+
+  /// No description provided for @piEnginePromptsDeleteConfirm.
+  ///
+  /// In ja, this message translates to:
+  /// **'テンプレート {name} を削除しますか？'**
+  String piEnginePromptsDeleteConfirm(String name);
+
+  /// No description provided for @piEnginePromptsSaved.
+  ///
+  /// In ja, this message translates to:
+  /// **'{name} を保存しました'**
+  String piEnginePromptsSaved(String name);
+
+  /// No description provided for @piEnginePromptsCopied.
+  ///
+  /// In ja, this message translates to:
+  /// **'「/{name}」をコピーしました。入力欄に貼り付けて使用してください。'**
+  String piEnginePromptsCopied(String name);
 
   /// No description provided for @piEngineExtensions.
   ///
@@ -5303,89 +5483,203 @@ abstract class AppLocalizations {
   /// **'このスキルに SKILL.md が見つかりません。'**
   String get piEngineSkillMissing;
 
-  /// No description provided for @piEngineModelsEmpty.
+  /// No description provided for @piEngineRuntime.
   ///
   /// In ja, this message translates to:
-  /// **'カスタムプロバイダーはまだありません。+ をタップして追加。'**
-  String get piEngineModelsEmpty;
+  /// **'実行環境'**
+  String get piEngineRuntime;
 
-  /// No description provided for @piEngineModelAdd.
+  /// No description provided for @piEngineRuntimeSubtitle.
   ///
   /// In ja, this message translates to:
-  /// **'モデルを追加'**
-  String get piEngineModelAdd;
+  /// **'実行環境（bionic / Proroot / proot-distro）'**
+  String get piEngineRuntimeSubtitle;
 
-  /// No description provided for @piEngineModelId.
+  /// No description provided for @piEngineRuntimeBadgeA.
   ///
   /// In ja, this message translates to:
-  /// **'モデル ID'**
-  String get piEngineModelId;
+  /// **'内蔵（bionic）'**
+  String get piEngineRuntimeBadgeA;
 
-  /// No description provided for @piEngineModelName.
+  /// No description provided for @piEngineRuntimeBadgeB.
   ///
   /// In ja, this message translates to:
-  /// **'表示名'**
-  String get piEngineModelName;
+  /// **'フル Linux'**
+  String get piEngineRuntimeBadgeB;
 
-  /// No description provided for @piEngineModelReasoning.
+  /// No description provided for @piEngineRuntimeActive.
   ///
   /// In ja, this message translates to:
-  /// **'推論モデル'**
-  String get piEngineModelReasoning;
+  /// **'現在の路線'**
+  String get piEngineRuntimeActive;
 
-  /// No description provided for @piEngineModelReasoningTag.
+  /// No description provided for @piEngineRuntimeInstalled.
   ///
   /// In ja, this message translates to:
-  /// **'推論'**
-  String get piEngineModelReasoningTag;
+  /// **'インストール済み'**
+  String get piEngineRuntimeInstalled;
 
-  /// No description provided for @piEngineProviderAdd.
+  /// No description provided for @piEngineRuntimeNotInstalled.
   ///
   /// In ja, this message translates to:
-  /// **'プロバイダーを追加'**
-  String get piEngineProviderAdd;
+  /// **'未インストール'**
+  String get piEngineRuntimeNotInstalled;
 
-  /// No description provided for @piEngineProviderEdit.
+  /// No description provided for @piEngineRuntimeChoose.
   ///
   /// In ja, this message translates to:
-  /// **'プロバイダーを編集'**
-  String get piEngineProviderEdit;
+  /// **'実行経路'**
+  String get piEngineRuntimeChoose;
 
-  /// No description provided for @piEngineProviderDelete.
+  /// No description provided for @piEngineRuntimeRecommended.
   ///
   /// In ja, this message translates to:
-  /// **'プロバイダーを削除'**
-  String get piEngineProviderDelete;
+  /// **'推奨'**
+  String get piEngineRuntimeRecommended;
 
-  /// No description provided for @piEngineProviderDeleteConfirm.
+  /// No description provided for @piEngineRuntimeRouteBionic.
   ///
   /// In ja, this message translates to:
-  /// **'プロバイダー \"{id}\" を削除しますか？モデルも一緒に削除されます。'**
-  String piEngineProviderDeleteConfirm(String id);
+  /// **'内蔵（bionic）'**
+  String get piEngineRuntimeRouteBionic;
 
-  /// No description provided for @piEngineProviderId.
+  /// No description provided for @piEngineRuntimeRouteBionicDesc.
   ///
   /// In ja, this message translates to:
-  /// **'プロバイダー ID'**
-  String get piEngineProviderId;
+  /// **'Pi 内蔵の Node.js ランタイムとツール。高速・軽量でそのまま使えます。'**
+  String get piEngineRuntimeRouteBionicDesc;
 
-  /// No description provided for @piEngineProviderBaseUrl.
+  /// No description provided for @piEngineRuntimeRouteProroot.
   ///
   /// In ja, this message translates to:
-  /// **'ベース URL'**
-  String get piEngineProviderBaseUrl;
+  /// **'Proroot'**
+  String get piEngineRuntimeRouteProroot;
 
-  /// No description provided for @piEngineProviderApi.
+  /// No description provided for @piEngineRuntimeRouteProrootDesc.
   ///
   /// In ja, this message translates to:
-  /// **'API'**
-  String get piEngineProviderApi;
+  /// **'ルート不要のフル Linux ランタイム（LD_PRELOAD、ptrace なし）。bionic で導入できないソフトがある場合に推奨。'**
+  String get piEngineRuntimeRouteProrootDesc;
 
-  /// No description provided for @piEngineProviderApiKey.
+  /// No description provided for @piEngineRuntimeRouteProotDistro.
   ///
   /// In ja, this message translates to:
-  /// **'API キー'**
-  String get piEngineProviderApiKey;
+  /// **'proot-distro'**
+  String get piEngineRuntimeRouteProotDistro;
+
+  /// No description provided for @piEngineRuntimeRouteProotDistroDesc.
+  ///
+  /// In ja, this message translates to:
+  /// **'Termux proot-distro と Ubuntu LTS（ptrace 方式）。最も互換性の高いフォールバック。'**
+  String get piEngineRuntimeRouteProotDistroDesc;
+
+  /// No description provided for @piEngineRuntimeComparisonTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'路線の違い'**
+  String get piEngineRuntimeComparisonTitle;
+
+  /// No description provided for @piEngineRuntimeComparisonExpand.
+  ///
+  /// In ja, this message translates to:
+  /// **'比較を見る'**
+  String get piEngineRuntimeComparisonExpand;
+
+  /// No description provided for @piEngineRuntimeComparisonCollapse.
+  ///
+  /// In ja, this message translates to:
+  /// **'比較を隠す'**
+  String get piEngineRuntimeComparisonCollapse;
+
+  /// No description provided for @piEngineRuntimeComparisonA.
+  ///
+  /// In ja, this message translates to:
+  /// **'路線 A：高速・軽量な内蔵 bionic ツールセット。普段使いに最適。'**
+  String get piEngineRuntimeComparisonA;
+
+  /// No description provided for @piEngineRuntimeComparisonB.
+  ///
+  /// In ja, this message translates to:
+  /// **'路線 B：完全な Ubuntu（glibc）。デスクトップ向けソフトも導入できますが、遅く、容量も使います。'**
+  String get piEngineRuntimeComparisonB;
+
+  /// No description provided for @piEngineRuntimeSharedModel.
+  ///
+  /// In ja, this message translates to:
+  /// **'ワークスペース・設定・拡張機能/スキルは路線間で共有されます（インストール済みパッケージは共有されません）。'**
+  String get piEngineRuntimeSharedModel;
+
+  /// No description provided for @piEngineRuntimeDownloadSources.
+  ///
+  /// In ja, this message translates to:
+  /// **'ダウンロード元と検証: Proroot ランタイムと Ubuntu ARM64 rootfs は公式ソースから取得し、SHA-256 で検証します。検証に失敗したダウンロードは適用されません。'**
+  String get piEngineRuntimeDownloadSources;
+
+  /// No description provided for @piEngineRuntimeInstall.
+  ///
+  /// In ja, this message translates to:
+  /// **'ダウンロードして切替'**
+  String get piEngineRuntimeInstall;
+
+  /// No description provided for @piEngineRuntimeInstallConfirm.
+  ///
+  /// In ja, this message translates to:
+  /// **'{route} をダウンロードして切り替えますか？パッケージのダウンロードに時間がかかることがあります。'**
+  String piEngineRuntimeInstallConfirm(String route);
+
+  /// No description provided for @piEngineRuntimeInstalling.
+  ///
+  /// In ja, this message translates to:
+  /// **'{route} をインストール中…'**
+  String piEngineRuntimeInstalling(String route);
+
+  /// No description provided for @piEngineRuntimeSwitchAction.
+  ///
+  /// In ja, this message translates to:
+  /// **'切り替える'**
+  String get piEngineRuntimeSwitchAction;
+
+  /// No description provided for @piEngineRuntimeSwitch.
+  ///
+  /// In ja, this message translates to:
+  /// **'{route} に切り替えますか？'**
+  String piEngineRuntimeSwitch(String route);
+
+  /// No description provided for @piEngineRuntimeSwitchConfirmA.
+  ///
+  /// In ja, this message translates to:
+  /// **'内蔵環境に戻しますか？proot ディストリビューションは保持され、いつでも再選択できます。'**
+  String get piEngineRuntimeSwitchConfirmA;
+
+  /// No description provided for @piEngineRuntimeSwitchConfirmB.
+  ///
+  /// In ja, this message translates to:
+  /// **'{route} に切り替えますか？遅くなり、容量も使います。いつでも戻せます。'**
+  String piEngineRuntimeSwitchConfirmB(String route);
+
+  /// No description provided for @piEngineRuntimeSwitched.
+  ///
+  /// In ja, this message translates to:
+  /// **'{route} に切り替えました。'**
+  String piEngineRuntimeSwitched(String route);
+
+  /// No description provided for @piEngineRuntimePackagesTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'インストール済みパッケージ'**
+  String get piEngineRuntimePackagesTitle;
+
+  /// No description provided for @piEngineRuntimePackages.
+  ///
+  /// In ja, this message translates to:
+  /// **'{count} 個のパッケージ'**
+  String piEngineRuntimePackages(int count);
+
+  /// No description provided for @piEngineRuntimeRestartHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'路線を切り替えるとエンジンが再起動し、新しい実行環境がすぐに反映されます。'**
+  String get piEngineRuntimeRestartHint;
 }
 
 class _AppLocalizationsDelegate

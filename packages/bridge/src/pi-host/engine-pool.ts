@@ -25,6 +25,15 @@ export interface EnginePoolOptions {
   /** Default 10 minutes of inactivity before an engine process is stopped. */
   maxIdleMs?: number;
   env?: Record<string, string>;
+  /**
+   * Optional wrapper prefix for the engine command (route B runtime). Either a
+   * fixed argv list, or a function that resolves it per project cwd (e.g. to
+   * include `-w <cwd>` for proot); the resolver may be async (the host reads
+   * the persisted route config at spawn time). See EngineProcessOptions.commandPrefix.
+   */
+  commandPrefix?:
+    | string[]
+    | ((cwd: string) => string[] | undefined | Promise<string[] | undefined>);
 }
 
 interface Slot {
@@ -86,6 +95,15 @@ export class EnginePool {
       env: this.opts.env,
       args,
     };
+    if (this.opts.commandPrefix !== undefined) {
+      const resolved =
+        typeof this.opts.commandPrefix === "function"
+          ? await this.opts.commandPrefix(cwd)
+          : this.opts.commandPrefix;
+      if (resolved !== undefined && resolved.length > 0) {
+        options.commandPrefix = resolved;
+      }
+    }
     await engine.start(options);
     // Boot guard: if the engine dies within the grace window (platform spawn
     // races), retry a bounded number of times before exposing it to callers.

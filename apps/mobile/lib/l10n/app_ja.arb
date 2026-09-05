@@ -1288,5 +1288,69 @@
   "piEngineSkillsGroupProject": "プロジェクト",
   "piEngineSkillsApply": "反映",
   "piEngineSkillsRestartHint": "スキルはエンジン起動時にスキャンされます。追加・変更したスキルはエンジンの再起動後に反映されます。",
-  "piEngineSkillMissing": "このスキルに SKILL.md が見つかりません。"
+  "piEngineSkillMissing": "このスキルに SKILL.md が見つかりません。",
+
+  "piEngineRuntime": "実行環境",
+  "piEngineRuntimeSubtitle": "実行環境（bionic / Proroot / proot-distro）",
+  "piEngineRuntimeBadgeA": "内蔵（bionic）",
+  "piEngineRuntimeBadgeB": "フル Linux",
+  "piEngineRuntimeActive": "現在の路線",
+  "piEngineRuntimeInstalled": "インストール済み",
+  "piEngineRuntimeNotInstalled": "未インストール",
+  "piEngineRuntimeChoose": "実行経路",
+  "piEngineRuntimeRecommended": "推奨",
+  "piEngineRuntimeRouteBionic": "内蔵（bionic）",
+  "piEngineRuntimeRouteBionicDesc": "Pi 内蔵の Node.js ランタイムとツール。高速・軽量でそのまま使えます。",
+  "piEngineRuntimeRouteProroot": "Proroot",
+  "piEngineRuntimeRouteProrootDesc": "ルート不要のフル Linux ランタイム（LD_PRELOAD、ptrace なし）。bionic で導入できないソフトがある場合に推奨。",
+  "piEngineRuntimeRouteProotDistro": "proot-distro",
+  "piEngineRuntimeRouteProotDistroDesc": "Termux proot-distro と Ubuntu LTS（ptrace 方式）。最も互換性の高いフォールバック。",
+  "piEngineRuntimeComparisonTitle": "路線の違い",
+  "piEngineRuntimeComparisonExpand": "比較を見る",
+  "piEngineRuntimeComparisonCollapse": "比較を隠す",
+  "piEngineRuntimeComparisonA": "路線 A：高速・軽量な内蔵 bionic ツールセット。普段使いに最適。",
+  "piEngineRuntimeComparisonB": "路線 B：完全な Ubuntu（glibc）。デスクトップ向けソフトも導入できますが、遅く、容量も使います。",
+  "piEngineRuntimeSharedModel": "ワークスペース・設定・拡張機能/スキルは路線間で共有されます（インストール済みパッケージは共有されません）。",
+  "piEngineRuntimeDownloadSources": "ダウンロード元と検証: Proroot ランタイムと Ubuntu ARM64 rootfs は公式ソースから取得し、SHA-256 で検証します。検証に失敗したダウンロードは適用されません。",
+  "piEngineRuntimeInstall": "ダウンロードして切替",
+  "piEngineRuntimeInstallConfirm": "{route} をダウンロードして切り替えますか？パッケージのダウンロードに時間がかかることがあります。",
+  "@piEngineRuntimeInstallConfirm": {
+    "placeholders": {
+      "route": { "type": "String" }
+    }
+  },
+  "piEngineRuntimeInstalling": "{route} をインストール中…",
+  "@piEngineRuntimeInstalling": {
+    "placeholders": {
+      "route": { "type": "String" }
+    }
+  },
+  "piEngineRuntimeSwitchAction": "切り替える",
+  "piEngineRuntimeSwitch": "{route} に切り替えますか？",
+  "@piEngineRuntimeSwitch": {
+    "placeholders": {
+      "route": { "type": "String" }
+    }
+  },
+  "piEngineRuntimeSwitchConfirmA": "内蔵環境に戻しますか？proot ディストリビューションは保持され、いつでも再選択できます。",
+  "piEngineRuntimeSwitchConfirmB": "{route} に切り替えますか？遅くなり、容量も使います。いつでも戻せます。",
+  "@piEngineRuntimeSwitchConfirmB": {
+    "placeholders": {
+      "route": { "type": "String" }
+    }
+  },
+  "piEngineRuntimeSwitched": "{route} に切り替えました。",
+  "@piEngineRuntimeSwitched": {
+    "placeholders": {
+      "route": { "type": "String" }
+    }
+  },
+  "piEngineRuntimePackagesTitle": "インストール済みパッケージ",
+  "piEngineRuntimePackages": "{count} 個のパッケージ",
+  "@piEngineRuntimePackages": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "piEngineRuntimeRestartHint": "路線を切り替えるとエンジンが再起動し、新しい実行環境がすぐに反映されます。"
 }

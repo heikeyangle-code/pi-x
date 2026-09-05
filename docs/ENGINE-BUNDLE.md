@@ -152,11 +152,11 @@ ldd --version 2>&1 | head -1            # bionic 而非 glibc
 默认启用路线 A（bionic 直跑，开箱即用）；路线 B 在 UI 中提供**按需下载并切换**入口，不预装（省几百 MB）。
 
 - **入口**：设置 → Pi 引擎 → "运行时路线"（`pi_engine_settings_screen.dart` 管理区新增 ListTile）。
-- **路线三选一（A / B 默认 Proroot / B 用 proot-distro）**：用户**显式选择**，不做自动探测。UI 单选卡片，默认勾选 A；选 B 时子选项 Proroot（推荐）与 proot-distro 均可选，切换即时重启引擎。选择状态存 `~/.pi/settings.json`（如 `runtime: { route: "bionic" | "proroot" | "proot-distro" }`）。
+- **路线三选一（A / B 默认 Proroot / B 用 proot-distro）**：用户**显式选择**，不做自动探测。UI 单选卡片，默认勾选 A；选 B 时子选项 Proroot（推荐）与 proot-distro 均可选，切换即时重启引擎。选择状态存 `~/.pi/agent/pix-config.json` 的 `runtimeRoute` 字段（与 `engineArgs` 同属启动时配置，`PiGateway` 读写）。
 - **RPC 算子**（`PiGateway` 新增 3 个）：
-  - `runtime_status` → `{ route: "bionic" | "proroot" | "proot-distro", prorootInstalled: bool, prootDistroInstalled: bool, rootfsSize?: bytes, installedPackages?: string[] }`
-  - `runtime_install_proot` → 下载所选实现的运行时：**Proroot** = 下载/校验 rootfs 镜像（5 个 .so 计划随 APK 内置到 `jniLibs/arm64-v8a/`，落地见代码实现）；**proot-distro** = `pkg install proot proot-distro` → `proot-distro install ubuntu`（26.04.1 LTS）→ rootfs 内装 node 24 + pi 引擎 + git/rg/python；进度经事件流回传（percent + stage）。
-  - `runtime_switch` → 切换路线并重启引擎进程（`EngineProcess` 增加 `commandPrefix?: string[]`，路线 B 用 `proot -r <rootfs> -0 -w <cwd> -- node <entry> --mode rpc`）。
+  - `get_runtime_status` → `{ route: "bionic" | "proroot" | "proot-distro", prorootInstalled: bool, prootDistroInstalled: bool, rootfsSize?: bytes, installedPackages?: string[], available: [...] }`
+  - `runtime_install` → 下载所选实现的运行时：**Proroot** = 运行时下载 5 个 `.so`（GitHub Releases `coderredlab/proroot` v1.2.7，逐文件 SHA-256 校验）+ Ubuntu ARM64 rootfs（默认 `us.cloud-images.ubuntu.com` Ubuntu 26.04 LTS minimal，xz，SHA-256 校验；`PIX_PROROOT_ROOTFS_URL/SHA256/FORMAT/STRIP`、`PIX_PROROOT_LIBS_BASE_URL` 可覆盖）；校验失败（`download_sha256_mismatch`）不生效。rootfs 落 `$PI_HOME/runtimes/proroot/rootfs`，`.so` 落 `$PI_HOME/runtimes/proroot/`；**proot-distro** = `pkg install proot proot-distro` → `proot-distro install ubuntu`（26.04.1 LTS）→ rootfs 内装 node 24 + pi 引擎 + git/rg/python；进度经事件流回传（percent + stage）。
+  - `set_runtime_route` → 切换路线并重启引擎进程（`EngineProcess` 增加 `commandPrefix?: string[]`，路线 B 用 `proot -r <rootfs> -0 -w <cwd> -- node <entry> --mode rpc`）。
 - **UI 信息设计**（两条路线差异说明 + 已装包）：
   - 页面顶部显示**当前路线徽标**（A：bionic 直跑 / B：完整发行版）+ 一键切换按钮。
   - **路线说明必须给用户看**（一行核心差异 + 点开看对比表）：A=轻快省电、内置 bionic 工具集；B=完整 Ubuntu（glibc）、能装桌面软件但更慢更占空间。默认收起对比表，避免信息过载。

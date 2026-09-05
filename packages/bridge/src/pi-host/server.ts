@@ -15,6 +15,7 @@ import {
   PI_WIRE_PROTOCOL_VERSION,
   type PiFrameEnvelope,
   type ClientControlMessage,
+  type PiGatewayOptions,
 } from "./pi-gateway.js";
 
 export interface PiHostServerOptions {
@@ -24,6 +25,12 @@ export interface PiHostServerOptions {
   /** projectId -> cwd. Defaults to identity (projectId is an absolute path). */
   resolveCwd?: (projectId: string) => string;
   apiKey?: string;
+  /** Wrapper prefix for the engine command (route B runtimes); see PiGatewayOptions. */
+  commandPrefix?: PiGatewayOptions["commandPrefix"];
+  /** Host probe for runtime install status; see PiGatewayOptions. */
+  runtimeStatus?: PiGatewayOptions["runtimeStatus"];
+  /** Host-triggered install of a route B runtime; see PiGatewayOptions. */
+  runtimeInstall?: PiGatewayOptions["runtimeInstall"];
 }
 
 export function parsePort(value: string | undefined, fallback: number): number {
@@ -42,6 +49,9 @@ export async function startPiHostServer(
     engineVersion: opts.engineVersion,
     protocolVersion: PI_WIRE_PROTOCOL_VERSION,
     resolveCwd: opts.resolveCwd ?? ((projectId) => projectId),
+    commandPrefix: opts.commandPrefix,
+    runtimeStatus: opts.runtimeStatus,
+    runtimeInstall: opts.runtimeInstall,
   });
 
   const sockets = new Set<WebSocket>();

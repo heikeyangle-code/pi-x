@@ -11,6 +11,8 @@
 
 import { parsePort } from "./pi-host/server.js";
 import { startPiHostServer } from "./pi-host/server.js";
+import { createRuntimeHooks } from "./pi-host/runtime-manager.js";
+import { dirname } from "node:path";
 
 async function main(): Promise<void> {
   const piEntry = process.env.PI_ENGINE_ENTRY;
@@ -21,12 +23,23 @@ async function main(): Promise<void> {
   }
   const engineVersion = process.env.PI_ENGINE_VERSION ?? "dev";
   const port = parsePort(process.env.BRIDGE_PORT, 8765);
+  const piHome = process.env.PI_HOME ?? process.env.HOME ?? "";
+
+  // Route B runtime hooks (docs/ENGINE-BUNDLE.md "路线切换 UI 落地"): spawn
+  // prefix from the active route, truthful status probe, install orchestration.
+  const runtime = createRuntimeHooks({
+    piHome,
+    enginesDir: dirname(piEntry),
+  });
 
   const { stop } = await startPiHostServer({
     port,
     piEntry,
     engineVersion,
     resolveCwd: (projectId) => projectId,
+    commandPrefix: (cwd) => runtime.resolveCommandPrefix(cwd),
+    runtimeStatus: () => runtime.status(),
+    runtimeInstall: (route, onProgress) => runtime.install(route, onProgress),
   });
 
   console.log(`[pi-host] Ready on ws://127.0.0.1:${port} (pi engine ${engineVersion})`);

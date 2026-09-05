@@ -2703,96 +2703,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get piEngineModelsSubtitle => '自定义 Provider 与模型（models.json）';
 
   @override
-  String get piEngineCommands => '命令面板';
-
-  @override
-  String get piEngineCommandsSubtitle => '斜杠命令、模板与技能（get_commands）';
-
-  @override
-  String get piEngineCommandsHint =>
-      '命令由引擎展开。点击复制 /name，粘贴到聊天输入框即可使用。';
-
-  @override
-  String get piEngineCommandsEmpty => '引擎没有返回任何命令。';
-
-  @override
-  String get piEngineCommandsGroupExtension => '扩展';
-
-  @override
-  String get piEngineCommandsGroupPrompt => '模板';
-
-  @override
-  String get piEngineCommandsGroupSkill => '技能';
-
-  @override
-  String piEngineCommandsCopied(String name) {
-    return '已复制 /$name，粘贴到输入框使用。';
-  }
-
-  @override
-  String get piEngineExtensions => '扩展';
-
-  @override
-  String get piEngineExtensionsSubtitle => '已发现的扩展与信任警告';
-
-  @override
-  String get piEngineExtensionsTrustWarning =>
-      '扩展是可执行代码，可访问你的文件和网络。请只安装可信来源的扩展。';
-
-  @override
-  String get piEngineExtensionsEmpty =>
-      '还没有扩展。请放入 ~/.pi/agent/extensions/ 或项目的 .pi/extensions/ 目录。';
-
-  @override
-  String piEngineExtensionsCount(int count) {
-    return '$count 个扩展';
-  }
-
-  @override
-  String get piEngineExtensionsGroupGlobal => '全局';
-
-  @override
-  String get piEngineExtensionsGroupProject => '项目';
-
-  @override
-  String get piEngineExtensionsApply => '应用更改';
-
-  @override
-  String get piEngineExtensionsReloadHint =>
-      '新增或修改的扩展需重启引擎（或 /reload）后生效。';
-
-  @override
-  String get piEngineSkills => '技能';
-
-  @override
-  String get piEngineSkillsSubtitle => '已发现的技能与安全提示';
-
-  @override
-  String get piEngineSkillsTrustWarning =>
-      '技能是指引模型的提示词/脚本，使用前请先阅读 SKILL.md——技能可能让模型执行任意命令。';
-
-  @override
-  String get piEngineSkillsEmpty =>
-      '还没有技能。请将技能放在 ~/.pi/agent/skills/ 或项目 .pi/skills/ 目录。';
-
-  @override
-  String piEngineSkillsCount(int count) {
-    return '$count 个技能';
-  }
-
-  @override
-  String get piEngineSkillsGroupProject => '项目';
-
-  @override
-  String get piEngineSkillsApply => '生效';
-
-  @override
-  String get piEngineSkillsRestartHint => '技能在引擎启动时扫描，新增或修改的技能需重启引擎后生效。';
-
-  @override
-  String get piEngineSkillMissing => '该技能没有 SKILL.md。';
-
-  @override
   String get piEngineModelsEmpty => '还没有自定义 Provider。点击 + 添加。';
 
   @override
@@ -2835,4 +2745,265 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get piEngineProviderApiKey => 'API 密钥';
+
+  @override
+  String get piEngineCommands => '命令面板';
+
+  @override
+  String get piEngineCommandsSubtitle => '斜杠命令、模板与技能（get_commands）';
+
+  @override
+  String get piEngineCommandsHint => '命令由引擎展开。点击复制 /name，粘贴到聊天输入框即可使用。';
+
+  @override
+  String get piEngineCommandsEmpty => '引擎没有返回任何命令。';
+
+  @override
+  String get piEngineCommandsGroupExtension => '扩展';
+
+  @override
+  String get piEngineCommandsGroupPrompt => '模板';
+
+  @override
+  String get piEngineCommandsGroupSkill => '技能';
+
+  @override
+  String piEngineCommandsCopied(String name) {
+    return '已复制 /$name，粘贴到输入框使用。';
+  }
+
+  @override
+  String get piEnginePrompts => '提示词模板';
+
+  @override
+  String get piEnginePromptsSubtitle => '斜杠命令模板（prompt-templates）';
+
+  @override
+  String get piEnginePromptsEmpty =>
+      '还没有模板。请放入 ~/.pi/agent/prompts/ 或项目 .pi/prompts/ 目录，或点右下角新建。';
+
+  @override
+  String piEnginePromptsCount(int count) {
+    return '$count 个模板';
+  }
+
+  @override
+  String get piEnginePromptsGroupGlobal => '全局';
+
+  @override
+  String get piEnginePromptsGroupProject => '项目';
+
+  @override
+  String get piEnginePromptsNew => '新建模板';
+
+  @override
+  String get piEnginePromptsNewName => '模板名称';
+
+  @override
+  String get piEnginePromptsNewHint => '不含 .md（如 pr）。放在：';
+
+  @override
+  String get piEnginePromptsSave => '保存';
+
+  @override
+  String get piEnginePromptsCancel => '取消';
+
+  @override
+  String get piEnginePromptsEdit => '编辑';
+
+  @override
+  String get piEnginePromptsDelete => '删除';
+
+  @override
+  String piEnginePromptsDeleteConfirm(String name) {
+    return '删除模板 $name？';
+  }
+
+  @override
+  String piEnginePromptsSaved(String name) {
+    return '已保存 $name';
+  }
+
+  @override
+  String piEnginePromptsCopied(String name) {
+    return '已复制 /$name，粘贴到输入框使用。';
+  }
+
+  @override
+  String get piEngineExtensions => '扩展';
+
+  @override
+  String get piEngineExtensionsSubtitle => '已发现的扩展与信任警告';
+
+  @override
+  String get piEngineExtensionsTrustWarning =>
+      '扩展是可执行代码，可访问你的文件和网络。请只安装可信来源的扩展。';
+
+  @override
+  String get piEngineExtensionsEmpty =>
+      '还没有扩展。请放入 ~/.pi/agent/extensions/ 或项目的 .pi/extensions/ 目录。';
+
+  @override
+  String piEngineExtensionsCount(int count) {
+    return '$count 个扩展';
+  }
+
+  @override
+  String get piEngineExtensionsGroupGlobal => '全局';
+
+  @override
+  String get piEngineExtensionsGroupProject => '项目';
+
+  @override
+  String get piEngineExtensionsApply => '应用更改';
+
+  @override
+  String get piEngineExtensionsReloadHint => '新增或修改的扩展需重启引擎（或 /reload）后生效。';
+
+  @override
+  String get piEngineSkills => '技能';
+
+  @override
+  String get piEngineSkillsSubtitle => '已发现的技能与安全提示';
+
+  @override
+  String get piEngineSkillsTrustWarning =>
+      '技能是指引模型的提示词/脚本，使用前请先阅读 SKILL.md——技能可能让模型执行任意命令。';
+
+  @override
+  String get piEngineSkillsEmpty =>
+      '还没有技能。请将技能放在 ~/.pi/agent/skills/ 或项目 .pi/skills/ 目录。';
+
+  @override
+  String piEngineSkillsCount(int count) {
+    return '$count 个技能';
+  }
+
+  @override
+  String get piEngineSkillsGroupProject => '项目';
+
+  @override
+  String get piEngineSkillsApply => '生效';
+
+  @override
+  String get piEngineSkillsRestartHint => '技能在引擎启动时扫描，新增或修改的技能需重启引擎后生效。';
+
+  @override
+  String get piEngineSkillMissing => '该技能没有 SKILL.md。';
+
+  @override
+  String get piEngineRuntime => '运行时';
+
+  @override
+  String get piEngineRuntimeSubtitle => '执行环境（bionic / Proroot / proot-distro）';
+
+  @override
+  String get piEngineRuntimeBadgeA => '内置（bionic）';
+
+  @override
+  String get piEngineRuntimeBadgeB => '完整 Linux';
+
+  @override
+  String get piEngineRuntimeActive => '当前路线';
+
+  @override
+  String get piEngineRuntimeInstalled => '已安装';
+
+  @override
+  String get piEngineRuntimeNotInstalled => '未安装';
+
+  @override
+  String get piEngineRuntimeChoose => '运行时路线';
+
+  @override
+  String get piEngineRuntimeRecommended => '推荐';
+
+  @override
+  String get piEngineRuntimeRouteBionic => '内置（bionic）';
+
+  @override
+  String get piEngineRuntimeRouteBionicDesc =>
+      'Pi 内置的 Node.js 运行时与工具。快速轻量，开箱即用。';
+
+  @override
+  String get piEngineRuntimeRouteProroot => 'Proroot';
+
+  @override
+  String get piEngineRuntimeRouteProrootDesc =>
+      '免 root 的完整 Linux 运行时（LD_PRELOAD，无 ptrace）。当 bionic 装不了所需软件时推荐。';
+
+  @override
+  String get piEngineRuntimeRouteProotDistro => 'proot-distro';
+
+  @override
+  String get piEngineRuntimeRouteProotDistroDesc =>
+      'Termux proot-distro + Ubuntu LTS（ptrace 方式）。兼容性最好的兜底方案。';
+
+  @override
+  String get piEngineRuntimeComparisonTitle => '两条路线的区别';
+
+  @override
+  String get piEngineRuntimeComparisonExpand => '查看对比';
+
+  @override
+  String get piEngineRuntimeComparisonCollapse => '收起对比';
+
+  @override
+  String get piEngineRuntimeComparisonA => '路线 A：轻快省电、内置 bionic 工具集，适合日常使用。';
+
+  @override
+  String get piEngineRuntimeComparisonB =>
+      '路线 B：完整 Ubuntu（glibc），能装桌面软件，但更慢、更占空间。';
+
+  @override
+  String get piEngineRuntimeSharedModel => '工作区、配置与扩展/技能在两条路线间共享；已安装的软件包不共享。';
+
+  @override
+  String get piEngineRuntimeDownloadSources =>
+      '下载来源与校验：Proroot 运行时与 Ubuntu ARM64 rootfs 均从官方源下载，并做 SHA-256 校验；作废或校验失败的下载不会生效。';
+
+  @override
+  String get piEngineRuntimeInstall => '下载并切换';
+
+  @override
+  String piEngineRuntimeInstallConfirm(String route) {
+    return '下载 $route 并切换到它？需要下载安装包，可能需要一些时间。';
+  }
+
+  @override
+  String piEngineRuntimeInstalling(String route) {
+    return '正在安装 $route…';
+  }
+
+  @override
+  String get piEngineRuntimeSwitchAction => '切换';
+
+  @override
+  String piEngineRuntimeSwitch(String route) {
+    return '切换到 $route？';
+  }
+
+  @override
+  String get piEngineRuntimeSwitchConfirmA => '返回内置环境？proot 发行版会保留，随时可以再切换。';
+
+  @override
+  String piEngineRuntimeSwitchConfirmB(String route) {
+    return '切换到 $route？速度会变慢、占用更多空间，但可以随时切回。';
+  }
+
+  @override
+  String piEngineRuntimeSwitched(String route) {
+    return '已切换到 $route。';
+  }
+
+  @override
+  String get piEngineRuntimePackagesTitle => '已安装的软件包';
+
+  @override
+  String piEngineRuntimePackages(int count) {
+    return '$count 个软件包';
+  }
+
+  @override
+  String get piEngineRuntimeRestartHint => '切换路线会重启引擎，新的运行时立即生效。';
 }

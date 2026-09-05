@@ -2740,11 +2740,54 @@ class AppLocalizationsJa extends AppLocalizations {
   String get piEngineModelsSubtitle => 'カスタムプロバイダーとモデル（models.json）';
 
   @override
+  String get piEngineModelsEmpty => 'カスタムプロバイダーはまだありません。+ をタップして追加。';
+
+  @override
+  String get piEngineModelAdd => 'モデルを追加';
+
+  @override
+  String get piEngineModelId => 'モデル ID';
+
+  @override
+  String get piEngineModelName => '表示名';
+
+  @override
+  String get piEngineModelReasoning => '推論モデル';
+
+  @override
+  String get piEngineModelReasoningTag => '推論';
+
+  @override
+  String get piEngineProviderAdd => 'プロバイダーを追加';
+
+  @override
+  String get piEngineProviderEdit => 'プロバイダーを編集';
+
+  @override
+  String get piEngineProviderDelete => 'プロバイダーを削除';
+
+  @override
+  String piEngineProviderDeleteConfirm(String id) {
+    return 'プロバイダー \"$id\" を削除しますか？モデルも一緒に削除されます。';
+  }
+
+  @override
+  String get piEngineProviderId => 'プロバイダー ID';
+
+  @override
+  String get piEngineProviderBaseUrl => 'ベース URL';
+
+  @override
+  String get piEngineProviderApi => 'API';
+
+  @override
+  String get piEngineProviderApiKey => 'API キー';
+
+  @override
   String get piEngineCommands => 'コマンドパレット';
 
   @override
-  String get piEngineCommandsSubtitle =>
-      'スラッシュコマンド・テンプレート・スキル（get_commands）';
+  String get piEngineCommandsSubtitle => 'スラッシュコマンド・テンプレート・スキル（get_commands）';
 
   @override
   String get piEngineCommandsHint =>
@@ -2764,6 +2807,63 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String piEngineCommandsCopied(String name) {
+    return '「/$name」をコピーしました。入力欄に貼り付けて使用してください。';
+  }
+
+  @override
+  String get piEnginePrompts => 'プロンプトテンプレート';
+
+  @override
+  String get piEnginePromptsSubtitle => 'スラッシュコマンドのテンプレート（prompt-templates）';
+
+  @override
+  String get piEnginePromptsEmpty =>
+      'テンプレートはまだありません。~/.pi/agent/prompts/ かプロジェクトの .pi/prompts/ に置くか、右下の + から作成してください。';
+
+  @override
+  String piEnginePromptsCount(int count) {
+    return '$count 個のテンプレート';
+  }
+
+  @override
+  String get piEnginePromptsGroupGlobal => 'グローバル';
+
+  @override
+  String get piEnginePromptsGroupProject => 'プロジェクト';
+
+  @override
+  String get piEnginePromptsNew => 'テンプレートを新規作成';
+
+  @override
+  String get piEnginePromptsNewName => 'テンプレート名';
+
+  @override
+  String get piEnginePromptsNewHint => '.md を含めない（例: pr）。配置先：';
+
+  @override
+  String get piEnginePromptsSave => '保存';
+
+  @override
+  String get piEnginePromptsCancel => 'キャンセル';
+
+  @override
+  String get piEnginePromptsEdit => '編集';
+
+  @override
+  String get piEnginePromptsDelete => '削除';
+
+  @override
+  String piEnginePromptsDeleteConfirm(String name) {
+    return 'テンプレート $name を削除しますか？';
+  }
+
+  @override
+  String piEnginePromptsSaved(String name) {
+    return '$name を保存しました';
+  }
+
+  @override
+  String piEnginePromptsCopied(String name) {
     return '「/$name」をコピーしました。入力欄に貼り付けて使用してください。';
   }
 
@@ -2832,46 +2932,122 @@ class AppLocalizationsJa extends AppLocalizations {
   String get piEngineSkillMissing => 'このスキルに SKILL.md が見つかりません。';
 
   @override
-  String get piEngineModelsEmpty => 'カスタムプロバイダーはまだありません。+ をタップして追加。';
+  String get piEngineRuntime => '実行環境';
 
   @override
-  String get piEngineModelAdd => 'モデルを追加';
+  String get piEngineRuntimeSubtitle => '実行環境（bionic / Proroot / proot-distro）';
 
   @override
-  String get piEngineModelId => 'モデル ID';
+  String get piEngineRuntimeBadgeA => '内蔵（bionic）';
 
   @override
-  String get piEngineModelName => '表示名';
+  String get piEngineRuntimeBadgeB => 'フル Linux';
 
   @override
-  String get piEngineModelReasoning => '推論モデル';
+  String get piEngineRuntimeActive => '現在の路線';
 
   @override
-  String get piEngineModelReasoningTag => '推論';
+  String get piEngineRuntimeInstalled => 'インストール済み';
 
   @override
-  String get piEngineProviderAdd => 'プロバイダーを追加';
+  String get piEngineRuntimeNotInstalled => '未インストール';
 
   @override
-  String get piEngineProviderEdit => 'プロバイダーを編集';
+  String get piEngineRuntimeChoose => '実行経路';
 
   @override
-  String get piEngineProviderDelete => 'プロバイダーを削除';
+  String get piEngineRuntimeRecommended => '推奨';
 
   @override
-  String piEngineProviderDeleteConfirm(String id) {
-    return 'プロバイダー \"$id\" を削除しますか？モデルも一緒に削除されます。';
+  String get piEngineRuntimeRouteBionic => '内蔵（bionic）';
+
+  @override
+  String get piEngineRuntimeRouteBionicDesc =>
+      'Pi 内蔵の Node.js ランタイムとツール。高速・軽量でそのまま使えます。';
+
+  @override
+  String get piEngineRuntimeRouteProroot => 'Proroot';
+
+  @override
+  String get piEngineRuntimeRouteProrootDesc =>
+      'ルート不要のフル Linux ランタイム（LD_PRELOAD、ptrace なし）。bionic で導入できないソフトがある場合に推奨。';
+
+  @override
+  String get piEngineRuntimeRouteProotDistro => 'proot-distro';
+
+  @override
+  String get piEngineRuntimeRouteProotDistroDesc =>
+      'Termux proot-distro と Ubuntu LTS（ptrace 方式）。最も互換性の高いフォールバック。';
+
+  @override
+  String get piEngineRuntimeComparisonTitle => '路線の違い';
+
+  @override
+  String get piEngineRuntimeComparisonExpand => '比較を見る';
+
+  @override
+  String get piEngineRuntimeComparisonCollapse => '比較を隠す';
+
+  @override
+  String get piEngineRuntimeComparisonA =>
+      '路線 A：高速・軽量な内蔵 bionic ツールセット。普段使いに最適。';
+
+  @override
+  String get piEngineRuntimeComparisonB =>
+      '路線 B：完全な Ubuntu（glibc）。デスクトップ向けソフトも導入できますが、遅く、容量も使います。';
+
+  @override
+  String get piEngineRuntimeSharedModel =>
+      'ワークスペース・設定・拡張機能/スキルは路線間で共有されます（インストール済みパッケージは共有されません）。';
+
+  @override
+  String get piEngineRuntimeDownloadSources =>
+      'ダウンロード元と検証: Proroot ランタイムと Ubuntu ARM64 rootfs は公式ソースから取得し、SHA-256 で検証します。検証に失敗したダウンロードは適用されません。';
+
+  @override
+  String get piEngineRuntimeInstall => 'ダウンロードして切替';
+
+  @override
+  String piEngineRuntimeInstallConfirm(String route) {
+    return '$route をダウンロードして切り替えますか？パッケージのダウンロードに時間がかかることがあります。';
   }
 
   @override
-  String get piEngineProviderId => 'プロバイダー ID';
+  String piEngineRuntimeInstalling(String route) {
+    return '$route をインストール中…';
+  }
 
   @override
-  String get piEngineProviderBaseUrl => 'ベース URL';
+  String get piEngineRuntimeSwitchAction => '切り替える';
 
   @override
-  String get piEngineProviderApi => 'API';
+  String piEngineRuntimeSwitch(String route) {
+    return '$route に切り替えますか？';
+  }
 
   @override
-  String get piEngineProviderApiKey => 'API キー';
+  String get piEngineRuntimeSwitchConfirmA =>
+      '内蔵環境に戻しますか？proot ディストリビューションは保持され、いつでも再選択できます。';
+
+  @override
+  String piEngineRuntimeSwitchConfirmB(String route) {
+    return '$route に切り替えますか？遅くなり、容量も使います。いつでも戻せます。';
+  }
+
+  @override
+  String piEngineRuntimeSwitched(String route) {
+    return '$route に切り替えました。';
+  }
+
+  @override
+  String get piEngineRuntimePackagesTitle => 'インストール済みパッケージ';
+
+  @override
+  String piEngineRuntimePackages(int count) {
+    return '$count 個のパッケージ';
+  }
+
+  @override
+  String get piEngineRuntimeRestartHint =>
+      '路線を切り替えるとエンジンが再起動し、新しい実行環境がすぐに反映されます。';
 }

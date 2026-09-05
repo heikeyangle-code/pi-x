@@ -38,4 +38,28 @@ describe("PixConfigFile", () => {
     await cfg.update({});
     expect((await cfg.load()).engineArgs).toEqual(["--tools", "bash"]);
   });
+
+  it("round-trips runtimeRoute through update + load", async () => {
+    const cfg = new PixConfigFile(tmpFile());
+    const next = await cfg.update({ runtimeRoute: "proroot" });
+    expect(next.runtimeRoute).toBe("proroot");
+    expect((await cfg.load()).runtimeRoute).toBe("proroot");
+  });
+
+  it("ignores unknown runtimeRoute values on load", async () => {
+    const { writeFileSync } = await import("node:fs");
+    const file = tmpFile();
+    writeFileSync(file, JSON.stringify({ runtimeRoute: "hack-route" }), "utf8");
+    const cfg = new PixConfigFile(file);
+    expect((await cfg.load()).runtimeRoute).toBeUndefined();
+  });
+
+  it("merge keeps engineArgs when only runtimeRoute changes", async () => {
+    const cfg = new PixConfigFile(tmpFile());
+    await cfg.update({ engineArgs: ["--no-skills"] });
+    await cfg.update({ runtimeRoute: "proot-distro" });
+    const read = await cfg.load();
+    expect(read.engineArgs).toEqual(["--no-skills"]);
+    expect(read.runtimeRoute).toBe("proot-distro");
+  });
 });

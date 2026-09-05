@@ -69,6 +69,51 @@ tar -czf ../pi-engine-0.85.0.tgz .
 sha256sum ../pi-engine-0.85.0.tgz > ../SHA256SUMS
 ```
 
+## 运行时完整性（node + shell + 工具链，2026-09-05 定稿）
+
+> 单独一个 Node 二进制 ≠ 完整运行时。pi 引擎本体只需 node，但 **bash 工具执行命令
+> 需要 shell + 系统命令**（源码 `packages/coding-agent/src/utils/shell.ts` 解析顺序：
+> `/bin/bash` → PATH 上 `bash` → `sh`，**bash 为硬依赖**）。因此 "运行时" =
+> node + bash + 工具链，三者一起才算"能运行所有终端操作"。
+> 这是 **bionic 精简版 Linux 运行时**：运行在 Android 的 Linux 内核上，所有二进制为
+> bionic ABI（非 glibc），等价于 Termux 系的用户空间环境；桌面 Linux 的二进制不可直接使用。
+
+### 最小工具集（随 APK 内置，aarch64 bionic）
+
+版本来自 Termux 官方 aarch64 包索引实时抓取（2026-09-05）。
+
+| 组件 | 版本 | 用途 |
+|---|---|---|
+| node（nodejs-lts） | 24.18.0-1 | pi 引擎运行时（上游 LTS 线 v24.20.0；`requiresRuntime >= 24`） |
+| bash | 5.3.15 | pi bash 工具 shell（硬依赖，`/bin/bash`） |
+| coreutils | 9.11-1 | ls/cat/mv 等基础命令 |
+| git | 2.55.0 | 版本操作 / 工作区 |
+| ripgrep | 15.2.0 | 快速搜索 |
+| termux-exec | 1:2.5.0-1 | 同 UID exec 补丁（bionic 必需） |
+| openssl | 1:3.6.3 | TLS/HTTPS |
+| ca-certificates | 1:2026.08.13 | HTTPS 信任链 |
+
+可选增强：curl 8.22.0、tar 1.35-3、unzip 6.0-10、python 3.14.6-1、openssh 10.5p1、jq 1.8.2、file 5.48-3。
+
+### 内置后冒烟验证（必须全过）
+
+```bash
+# 1. node + pi 引擎
+node_modules/.bin/pi --version          # 0.85.0
+# 2. bash 工具（pi 的 shell 解析）
+bash -c 'echo ok && git --version && rg --version | head -1'
+# 3. 离线 RPC 冒烟（确认 bash 工具可用：get_state 往返）
+printf '{"type":"get_state","id":"s1"}\n' | PI_OFFLINE=1 node_modules/.bin/pi --mode rpc --no-session
+# 4. bionic 自检
+ldd --version 2>&1 | head -1            # bionic 而非 glibc
+```
+
+### 运行时版本策略
+
+- 基线 = Node **24 LTS**（bionic），随 APK 内置；`requiresRuntime >= 24`（pi 要求 `>=22.19.0`，取 LTS 更稳）。
+- 版本跟随 Termux `nodejs-lts` 包升级（上游 LTS 线，长期支持至 2028-04）。
+- 新版本：启动/定时查远端 manifest → 下载（sha256 + 冒烟）→ `engines/current` 切换 + 旧版保留 2 份回滚。
+
 ## App 更新流程
 
 1. 检查 manifest（npm watch / 自有更新服务器）

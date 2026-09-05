@@ -131,6 +131,6 @@
 - 工作区数据模型（pi-home+workspace 两级、项目 .pi/AGENTS.md、worktree 并行、每项目一进程）：照用不变
 
 ## Termux 快速跑通（开发路径，不等自带运行时）
-`scripts/termux-setup.sh`：手机装 Termux → node22 + pi 引擎 → `pi-host-entry.js` 监听
+`scripts/termux-setup.sh`：手机装 Termux → node24 LTS + pi 引擎 → `pi-host-entry.js` 监听
 127.0.0.1:8765 → App 连本机种子。UI/审批/会话树全链路当天可验证；
-自带运行时（自编译 Node22 等）作为第二步，见 DECISIONS #12。
+自带运行时（自编译 Node24 LTS + bash + 工具链，见 ENGINE-BUNDLE "运行时完整性"）作为第二步，见 DECISIONS #12。

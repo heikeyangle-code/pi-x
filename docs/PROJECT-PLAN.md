@@ -4,7 +4,7 @@
 
 把 CC Pocket（手机遥控 Codex/Claude 的 Flutter App + Node Bridge，MIT）改造成**纯本地**的 pi 安卓壳：
 
-- 引擎层：pi（MIT）跑在手机本地 runtime（node22 + shell），版本化热换、回滚，插件 100% 兼容 pi 原生（extensions/skills/prompts/themes、npm/git 包、trust）。
+- 引擎层：pi（MIT）跑在手机本地 runtime（node24 LTS + bash + 工具链），版本化热换、回滚，插件 100% 兼容 pi 原生（extensions/skills/prompts/themes、npm/git 包、trust）。
 - UI/协议层：保留 CC Pocket 的会话/审批/diff/文件浏览/输入框/断线队列/恢复；**删除一切远程连接功能**（扫码、QR、mDNS、主机管理、远程 SSH、推送中与远程相关的部分）。
 - 日常交互 = 原生 App 直接对话内嵌 pi 引擎（不经终端）+ **runBash 命令卡片流**（agent 执行命令/看输出/审批，必需）；真终端页（xterm.dart + 原生 PTY）**远期可选**，不内置为必须。
 
@@ -40,7 +40,7 @@ Flutter App ──WS@127.0.0.1(JSONL, CC Pocket 协议)──▶ Pi Host(Node si
                                                         ├─ workspace 文件 API（App Dart 直读目录，diff/git 走此）
                                                         └─ runBash 命令执行卡片流（必需）；PTY 出口(远期可选)
                                                         ▼
-                                             engines/<ver>/current (node22+pi, 热换回滚)
+                                             engines/<ver>/current (node24 LTS+pi, 热换回滚)
 ```
 
 pi-provider 映射重点：增量文本/thinking/工具执行事件 → CC Pocket 消息；审批卡（bash/写文件）→ CC Pocket 审批流；pi JSONL 会话 ↔ bridge 会话模型；usage/cost → 用量事件。

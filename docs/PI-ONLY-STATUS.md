@@ -7,10 +7,10 @@
 
 ## 一句话现状
 
-**已 100% pi-only：** 对话、会话列表、会话历史、最近会话、会话改名、图片提取、git 提交信息生成全部走本地
-pi；文件/工作区/git/上传下载本就是本地直连；入口强制 pi-only（缺 `PI_ENGINE_ENTRY` 拒启）；Firebase 推送
-中继已删除；codex/claude 的 provider 源码、运行时耦合与依赖已物理删除。协议层保留客户端仍在发送的
-codex/claude 字段解析（app 契约兼容），但运行时不存在任何 codex/claude 引擎路径。
+**已 100% pi-only：** 对话、会话列表、会话历史、最近会话、会话改名、会话自动命名、图片提取、git 提交信息生成
+全部走本地 pi；文件/工作区/git/上传下载本就是本地直连；入口强制 pi-only（缺 `PI_ENGINE_ENTRY` 拒启）；
+Firebase 推送中继已删除；codex/claude 的 provider 源码、运行时耦合与依赖已物理删除。协议层保留客户端仍在
+发送的 codex/claude 字段解析（app 契约兼容），但运行时不存在任何 codex/claude 引擎路径。
 
 ## 已完成（带提交与验证）
 
@@ -24,14 +24,15 @@ codex/claude 字段解析（app 契约兼容），但运行时不存在任何 co
 | 历史磁盘回退 | 引擎内存未加载会话时（`get_messages` 为空），`get_history`/`get_history_delta` 直接解析 `~/.pi/agent/sessions/<proj>.jsonl` 回放（`piSessionFileToHistoryMessages`），列表里每个会话都能完整回放 | 会话表面提交 |
 | 图片提取 pi 原生 | `piSessionImagesFromJsonl` 解析 pi 会话 JSONL 中 `{type:"image",source:{type:"base64",...}}` 块，替代 claude 图片读取路径 | 本次 |
 | git 提交信息生成 pi | `git-assist.ts` 改用 `pi --print --no-tools --no-session` 一次性生成（`engine-assist.ts`），替代 codex/claude CLI | 本次 |
+| 会话自动命名恢复 | 被物理删除的 legacy `auto-rename.ts` 以 pi 原生方式重写：`pi --print --no-tools --no-session` 一次性生成（`engine-assist.ts`），`PiAdapter` 在首条用户输入触发，`set_session_name` 持久化到引擎会话元数据；失败静默降级到引擎首条消息兜底，不阻塞主流程。新增单测 + adapter 集成测试 | 本次 |
 | 引擎失败反馈 | `isFailedEngineResponse` 把引擎失败（如无 provider）转成 CC `error` 消息，App 不再无响应挂起 | `ddbee57` |
 | 健康检查 pi-only | `doctor.ts` 只查 pi 引擎（`PI_ENGINE_ENTRY` + 凭据），去掉 claude/codex CLI、Tailscale、Firebase、Keychain 检查 | 先前 |
 | 用量 pi-only | `usage.ts` 去掉 codex 磁盘扫描，改为报告本地 pi 引擎 | 先前 |
 | mDNS 关闭 | `mdns.ts` 默认不再广播 LAN 服务 | 先前 |
 | 移除 Firebase 推送中继 | 删除 `firebase-auth.ts`、`push-relay.ts`、`push-i18n.ts` 及测试；`index.ts` 不再初始化 Firebase Anonymous Auth；`websocket.ts` 删除 `push_register`/`push_unregister` 处理与全部推送通知路径；App 侧 `push_registration_result` 协议仍保留解析（bridge 不再发送） | 推送移除提交 |
-| 阶段 3：物理删除 | 删除 23 个 codex/claude 源码与测试文件（`sdk-process`、`claude-provider`、`codex-*`、`session`、`sessions-index`、`resume-metrics`、`auto-rename` 等）；`websocket.ts` 移除 29 个 legacy 消息 handler；`cli-args`/`cli` 移除 codex flags；`setup-launchd`/`setup-systemd` 移除 codex/claude 环境变量；`package.json` 移除 `@anthropic-ai/claude-agent-sdk`；README 重写为 pi-only | 本次 |
-| 单元测试 | `pi-sessions.test.ts`（历史转换/JSONL 解析/扫描/注册表）；`pi-adapter.test.ts` 覆盖 `session_created` 与状态流；`git-assist.test.ts` 覆盖 `pi --print` 集成；`websocket.test.ts` 重写为 pi 兼容 | 本次 |
-| 验证 | `tsc --noEmit` 0 错误；bridge 全量 vitest 42 文件 700 用例通过 | 本次 |
+| 阶段 3：物理删除 | 删除 23 个 codex/claude 源码与测试文件（`sdk-process`、`claude-provider`、`codex-*`、`session`、`sessions-index`、`resume-metrics` 等；`auto-rename` 随后以 pi 原生方式恢复，见上）；`websocket.ts` 移除 29 个 legacy 消息 handler；`cli-args`/`cli` 移除 codex flags；`setup-launchd`/`setup-systemd` 移除 codex/claude 环境变量；`package.json` 移除 `@anthropic-ai/claude-agent-sdk`；README 重写为 pi-only | 本次 |
+| 单元测试 | `pi-sessions.test.ts`（历史转换/JSONL 解析/扫描/注册表）；`pi-adapter.test.ts` 覆盖 `session_created` 与状态流、auto-rename 首条输入触发；`auto-rename.test.ts`（提示词构建/清洗/生成）；`git-assist.test.ts` 覆盖 `pi --print` 集成；`websocket.test.ts` 重写为 pi 兼容 | 本次 |
+| 验证 | `tsc --noEmit` 0 错误；bridge 全量 vitest 43 文件 712 用例通过 | 本次 |
 
 ## 未完成
 
@@ -50,6 +51,6 @@ codex/claude 字段解析（app 契约兼容），但运行时不存在任何 co
 - **协议兼容优先于命名洁癖**：`claudeSessionId`（`recording_list` 响应、`get_message_images`/`resume_session`
   请求）、`usage.ts` 的 `provider: "claude" | "codex" | "pi"`、parser 的 Codex 字段均为 App 契约，字段名
   保留，仅在注释中说明 pi-only 语义。
-- **测试数量下降是预期**：删除 23 个 legacy 文件及其测试后，vitest 从 53 文件 1197 用例降到 42 文件
-  700 用例，均为 pi-only 路径的有效覆盖。
+- **测试数量下降是预期**：删除 23 个 legacy 文件及其测试后，vitest 从 53 文件 1197 用例降到 43 文件
+  712 用例（含 pi 原生 auto-rename 恢复新增用例），均为 pi-only 路径的有效覆盖。
 - **部分验证依赖 Flutter App**（`apps/mobile`）端到端运行，当前主要靠单测与协议契约保证。

@@ -29,6 +29,7 @@ import {
   piFrameToServerMessages,
 } from "./cc-adapter.js";
 import { PiSessionRegistry } from "./pi-sessions.js";
+import { generateAutoRenameName } from "../auto-rename.js";
 
 /**
  * Minimal gateway surface the adapter needs. Structural so tests can inject a
@@ -72,6 +73,13 @@ export class PiAdapter {
 
   /** Active pi sessions (CC sessionId -> project); fed by `start` + events. */
   readonly registry = new PiSessionRegistry();
+
+  /**
+   * Sessions awaiting an auto-generated name (sessionId -> first user text,
+   * "" until the first input arrives). Populated by `start` with autoRename
+   * on brand-new sessions; drained by the first `input`.
+   */
+  private readonly pendingAutoRename = new Map<string, string>();
 
   /**
    * Status transition callback (projectId, status). The bridge uses it to
@@ -151,6 +159,13 @@ export class PiAdapter {
       if (sessionId === "") {
         sessionId = generateSessionId();
       }
+      // Auto-rename (app start option): only for brand-new sessions that are
+      // not resuming/continuing. The name is generated from the first user
+      // input via a headless pi invocation, then persisted with
+      // set_session_name (see runAutoRename).
+      if (raw.autoRename === true && !raw.sessionId && raw.continue !== true) {
+        this.pendingAutoRename.set(sessionId, "");
+      }
       this.registry.register(sessionId, projectId, "idle");
       this.registry.touch(sessionId);
       await this.warm(projectId);
@@ -172,6 +187,25 @@ export class PiAdapter {
 
     for (const action of inboundToActions(msg as never)) {
       if (action.kind === "control" && action.op) {
+        // First user input of an auto-rename session: kick off name
+        // generation off the hot path; the engine keeps streaming normally.
+        if (action.op === "prompt") {
+          const sid = String((msg as Record<string, unknown>)["sessionId"] ?? "");
+          const pending = this.pendingAutoRename.get(sid);
+          if (pending !== undefined) {
+            this.pendingAutoRename.delete(sid);
+            const text =
+              action.payload !== null &&
+              typeof action.payload === "object" &&
+              "message" in action.payload &&
+              typeof action.payload.message === "string"
+                ? action.payload.message
+                : "";
+            if (text !== "") {
+              void this.runAutoRename(sid, projectId, text);
+            }
+          }
+        }
         const result = await this.gateway.handleControl({
           type: "control",
           op: action.op,
@@ -251,6 +285,38 @@ export class PiAdapter {
       if (entry !== undefined) {
         this.registry.rename(entry.sessionId, sessionName);
       }
+    }
+  }
+
+  /**
+   * Generate a concise session name from the first user input and persist it
+   * through the engine (set_session_name). Non-blocking: failures degrade
+   * silently to the engine's first-message fallback in session lists.
+   */
+  private async runAutoRename(
+    sessionId: string,
+    projectId: string,
+    userText: string,
+  ): Promise<void> {
+    try {
+      const name = generateAutoRenameName({
+        projectPath: projectId,
+        transcript: { userText },
+      });
+      if (!name) return;
+      // Give the engine a beat to persist the session file before naming it.
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      const result = await this.gatewayImpl.handleControl({
+        type: "control",
+        op: "set_session_name",
+        projectId,
+        payload: { name },
+      });
+      if (!isFailedEngineResponse(result)) {
+        this.registry.rename(sessionId, name);
+      }
+    } catch (err) {
+      console.warn(`[pi-adapter] auto-rename failed for ${sessionId}:`, err);
     }
   }
 

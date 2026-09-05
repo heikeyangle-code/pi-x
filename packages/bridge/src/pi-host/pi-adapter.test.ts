@@ -1,9 +1,20 @@
 /**
  * PiAdapter unit tests — drive routing with a fake gateway (no real pi spawn).
  */
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { PiAdapter, type PiGatewayLike } from "./pi-adapter.js";
 import type { PiFrameEnvelope } from "./pi-gateway.js";
+import { generateAutoRenameName } from "../auto-rename.js";
+
+vi.mock("../auto-rename.js", () => ({
+  generateAutoRenameName: vi.fn(),
+}));
+
+const generateMock = vi.mocked(generateAutoRenameName);
+
+beforeEach(() => {
+  generateMock.mockReset();
+});
 
 /** Minimal WebSocket stand-in (adapter only needs once()/close()). */
 function fakeSocket(): {
@@ -247,5 +258,66 @@ describe("PiAdapter", () => {
     const { ws } = fakeSocket();
     const handled = await adapter.handle(ws as never, { type: "list_directory", path: "/" } as never);
     expect(handled).toBe(false);
+  });
+
+  it("autoRename on a brand-new session names it from the first input", async () => {
+    vi.useFakeTimers();
+    try {
+      const { adapter, gateway, controls, delivered } = makeAdapter();
+      generateMock.mockReturnValue("Auth refactor");
+      const { ws } = fakeSocket();
+      await adapter.handle(ws as never, {
+        type: "start",
+        projectPath: "/proj",
+        autoRename: true,
+      } as never);
+      const sessionId = (delivered[0] as Record<string, unknown>).sessionId as string;
+      await adapter.handle(ws as never, {
+        type: "input",
+        text: "refactor the auth flow",
+        sessionId,
+      } as never);
+
+      // Name generation kicked off from the first input (off the hot path).
+      expect(generateMock).toHaveBeenCalledWith({
+        projectPath: "/proj",
+        transcript: { userText: "refactor the auth flow" },
+      });
+
+      // After the engine-settle delay the name is persisted via set_session_name.
+      await vi.advanceTimersByTimeAsync(800);
+      const setName = controls.find((c) => c.op === "set_session_name");
+      expect(setName?.projectId).toBe("/proj");
+      expect(setName?.payload).toEqual({ name: "Auth refactor" });
+      expect(adapter.registry.get(sessionId)?.name).toBe("Auth refactor");
+      expect((gateway.handleControl as ReturnType<typeof vi.fn>)).toHaveBeenCalled();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("does not auto-rename sessions that carry a sessionId or continue=true", async () => {
+    const { adapter } = makeAdapter();
+    const { ws } = fakeSocket();
+    // resume-style start: sessionId present -> no auto-rename.
+    await adapter.handle(ws as never, {
+      type: "start",
+      projectPath: "/p",
+      sessionId: "existing",
+      autoRename: true,
+    } as never);
+    await adapter.handle(ws as never, {
+      type: "input",
+      text: "hello",
+      sessionId: "existing",
+    } as never);
+    // continue-mode start: continue=true -> no auto-rename.
+    await adapter.handle(ws as never, {
+      type: "start",
+      projectPath: "/p2",
+      autoRename: true,
+      continue: true,
+    } as never);
+    expect(generateMock).not.toHaveBeenCalled();
   });
 });

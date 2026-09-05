@@ -4,6 +4,9 @@ All notable changes to `@ccpocket/bridge` will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+- Restore session auto-rename through a pi-native headless invocation (`pi --print --no-tools --no-session`) after removing the legacy Codex/Claude rename helper; the generated name is persisted via `set_session_name` and failures degrade silently to the engine's first-message fallback.
+
 ## [1.81.1] - 2026-09-01
 
 ### Fixed

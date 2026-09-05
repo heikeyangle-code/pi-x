@@ -62,7 +62,8 @@
     notify → SnackBar；响应经 `extension_ui_response` 回传引擎（confirmed/cancelled 语义闭环）。
   - 共享助手 `confirmRestartEngine`（各管理子页统一"重启引擎"入口）+ `ensurePiHostConnected`
     （首连/重连引导）；本地化键 `piEngine*` 补齐 en/zh/ja/ko 四个 arb。
-    验证：flutter analyze 无 error/warning、pi_engine 模型层单测全绿、bridge tsc + 1161 单测全过。
+    验证：flutter analyze 无 error/warning、pi_engine 模型层单测全绿、bridge tsc 全过（当时 1161 单测，
+    后经 codex/claude 物理删除降至 43 文件 712 用例，见下）。
 - **命令面板 + 扩展管理 UI（Flutter，2026-09-04）**：Pi 引擎设置页新增两个入口——
   - 命令面板（`commands_screen.dart` + `pi_engine_commands.dart`）：`get_commands` 拉取
     引擎全部斜杠命令/模板/技能，按来源（extension/prompt/skill）分组展示（名称+描述），
@@ -82,7 +83,13 @@
   - 本地化键 `piEngineSkills*` 补齐 en/zh/ja/ko 四个 arb（手工同步 5 个生成 .dart）；
     新增 `pi_engine_skills_test.dart`（解析/作用域/相等性单测）+ 网关端到端单测
     （全局/项目列表带描述、read_skill 正文与缺失、`../` 穿越拒绝）；
-    验证：bridge tsc + 1162 单测全绿。
+    验证：bridge tsc 全过（当时 1162 单测，后经 codex/claude 物理删除降至 43 文件 712 用例，见下）。
+- **codex/claude 物理删除 + auto-rename 恢复（2026-09-05）**：删除 23 个 legacy 文件（sdk-process/
+  claude-provider/codex-*/session/sessions-index/resume-metrics/auto-rename 等，约 4.3 万行）；
+  `websocket.ts` 移除 29 个 codex/claude 消息 handler；`package.json` 移除 `@anthropic-ai/claude-agent-sdk`。
+  随后以 pi 原生方式恢复会话自动命名：`pi --print --no-tools --no-session` 一次性生成 + `set_session_name`
+  持久化（`auto-rename.ts` + `PiAdapter` 首条输入触发，失败静默降级）。验证：tsc 0 错误；vitest 43 文件
+  712 用例通过；真实 pi 引擎 e2e 冒烟通过（详见 PI-ONLY-STATUS）。
 
 ## 已知问题（open）
 
